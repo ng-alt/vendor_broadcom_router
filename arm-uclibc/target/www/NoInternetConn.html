@@ -3,7 +3,7 @@
 <head>
 <%11%>
 <title>NETGEAR Router <%12%></title>
-<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/table.css">
 <link rel="stylesheet" href="css/scrollbar.css">
 <link rel="stylesheet" href="css/button.css">
 
@@ -13,7 +13,7 @@
 
 <script src="script/script.js"></script>
 <link rel="stylesheet" href="form.css">
-<%14%>
+<%13%>
 <script language="javascript" type="text/javascript">
 <!--
 
@@ -31,16 +31,15 @@
 function goHome() {
 	if (top.tophideframe)
 		top.close();
-	else if(document.forms[0].call_by_genie.value == 1 )
-             window.location.href="genie_redirect_successpage3.htm";
-    else if (document.forms[0].enable_ap_mode.value == 1)
+	else
+    if (document.forms[0].enable_ap_mode.value == 1)
 	    location.href="RST_status.htm";
     else
 		location.href="BAS_basic.htm"
 }
 function preCheck(){
 	if (top.tophideframe)
-		document.forms[0].Button.value = "<%1305%>";
+		document.forms[0].Button.value = "<%1255%>";
 }
 //-->
 </script>
@@ -52,13 +51,13 @@ function preCheck(){
 
 <tr>
 <td colspan="2" align="center">
-<h1><%1770%> </H1>
+<h1><%1711%> </H1>
 </td>
 </tr>
 
 <tr>
 <td colspan="2" align="center">
-    <%1771%>
+    <%1712%>
 </td>
 </tr>
 
@@ -67,11 +66,10 @@ function preCheck(){
 <tr></tr>
 <tr>
 <td colspan="2" align="center">
-&nbsp;&nbsp;&nbsp;<button type="Button" value="<%1739%>" name="Button" class="button-rule" onClick="buttonClick(this,'<%1739%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%1739%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="Button" value="<%1713%>" name="Button" class="button-rule" onClick="buttonClick(this,'<%1713%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%1713%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </tr>
 </table>
-<input type="hidden" name="enable_ap_mode" value="<%390%>">
-<input type="hidden" name="call_by_genie" value="<%1727%>">
+<input type="hidden" name="enable_ap_mode" value="<%369%>">
 </form>
 <p></p>
 </body>

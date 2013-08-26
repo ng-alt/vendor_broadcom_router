@@ -40,8 +40,6 @@
 
 #define WL_DOWNLOADER_4323_VEND_ID "a5c/bd13/1"
 #define WL_DOWNLOADER_43236_VEND_ID "a5c/bd17/1"
-#define WL_DOWNLOADER_43526_VEND_ID "a5c/bd1d/1"
-#define WL_DOWNLOADER_4360_VEND_ID "a5c/bd1d/1"
 
 static int usb_start_services(void);
 static int usb_stop_services(void);
@@ -119,7 +117,7 @@ retry:
 #ifdef USB_DEBUG
         cprintf("target %s not available wait another seconds..\n", target);
 #endif
-        if (++wait_count < 20) /* wait for 20 seconds at most */
+        if (++wait_count < 30) /* wait for 30 seconds at most */
             goto retry;
     } 
     /* foxconn wklin added end, 03/16/2011 */
@@ -140,13 +138,7 @@ retry:
 #endif
         system(buf);
     }
-/*Foxconn added start by Kathy, 08/05/2014 @ support XFS requested by Netgear Bing*/
-    else if ((rval = mount(source, target, "xfs", 0, "")) == 0)
-    {
-        //printf("Mount xfs for '%s' success!\n", target);
-        get_vol_id(source);
-    }
-/*Foxconn added end by Kathy, 08/05/2014 @ support XFS requested by Netgear Bing*/
+
     /* Foxconn added start pling 05/19/2010 */
     /* Try to mount HFS+ and ext2/ext3 */
     //rval = mount(source, target, "hfsplus", 0, "");
@@ -200,21 +192,7 @@ retry:
         ret = system(buf);
 
 #ifdef USE_KERNEL_NTFS        
-        if (ret == 0 )        // foxconn add by ken chen, 11/13/2013, fix crash issue when mount fs failed.
-		    get_vol_id(source);
-        /* Foxconn added start pling 09/30/2014 */
-        /* Chk NTFS is mount failed */
-        else
-        {
-            sprintf(buf, "/bin/chkntfs -f -a %s", source);
-            cprintf("***[%s] %s\n", __FUNCTION__, buf);
-            system(buf);
-            sprintf(buf, "mount -t ufsd -o force %s %s", source, target);
-            ret = system(buf);
-            if (ret == 0)
-                get_vol_id(source);
-        }
-        /* Foxconn added end pling 09/30/2014 */
+		get_vol_id(source);
 #endif        
 
         /* can't judge if mount is successful*/
@@ -462,7 +440,6 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
 #ifdef USB_DEBUG
         cprintf("%s:%d error mouting disk\n",__func__, __LINE__);
 #endif
-        system("killall -SIGHUP httpd"); /* foxconn add ken chen, 11/08/2013, re-enable smb just in case other usb disks are live */
         return 0;
     }
     /* Bob added start 04/01/2011, to log usb activities */
@@ -656,11 +633,9 @@ int usb_umount_block(int major_no, int minor_no)
     snprintf(path, 128, "/tmp/mnt/not_approved%dpart%d", 16*(major_no/64) + minor_no/16, minor_no%16);
     rval2 = umount2(path, MNT_DETACH);
 
-    if (rval != 0 && rval2 != 0) {
-        system("killall -SIGHUP httpd");    /* foxconn add ken chen, 11/08/2013, re-enable smb just in case other usb disks are live */
+    if (rval != 0 && rval2 != 0)
         return 0;
-    }
-		
+
     /* only remove the volume name file of the unmounted device */
     device = minor_no/16;
     part = minor_no%16;
@@ -863,18 +838,14 @@ hotplug_block(void)
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */
 #if defined(R6300v2) || defined (R7000)
-		err = usb_mount_block(major_no, minor_no, mntdev, usb_port);
+		usb_mount_block(major_no, minor_no, mntdev, usb_port);
 #else /* R6300v2 */
-		err = usb_mount_block(major_no, minor_no, mntdev);
+		usb_mount_block(major_no, minor_no, mntdev);
 #endif /* R6300v2 */
         /* Foxconn modified end, Wins, 04/11/2011 */
 		USB_UNLOCK();
         /* foxconn wklin modified end, 01/17/2011 */
 		hotplug_dbg("err = %d\n", err);
-		/*Foxconn add start by Hank 08/27/2013*/
-		/*add for change read_ahead_kb to speed up USB throughput*/
-		optimize_block_device(devname);
-		/*Foxconn add end by Hank 08/27/2013*/
 
 		if (err) {
 			hotplug_dbg("unsuccess %d!\n", err);
@@ -961,15 +932,6 @@ hotplug_block(void)
 exit:
 	close(lock_fd);
 	unlink(LOCK_FILE);
-
-#ifdef __CONFIG_SAMBA__
-#if defined(LINUX_2_6_36)
-	/* Restart samba service since USB device is plugged or unplugged */
-	if (err == 0)
-		restart_samba();
-#endif
-#endif /* __CONFIG_SAMBA__ */
-
 	return 0;
 }
 
@@ -1027,9 +989,7 @@ hotplug_usb(void)
 
 #ifdef __CONFIG_USBAP__
 	/* download the firmware and insmod wl_high for USBAP */
-	if ((!strcmp(product, WL_DOWNLOADER_43236_VEND_ID)) ||
-		(!strcmp(product, WL_DOWNLOADER_43526_VEND_ID)) ||
-		(!strcmp(product, WL_DOWNLOADER_4360_VEND_ID))) {
+	if (!strcmp(product, WL_DOWNLOADER_43236_VEND_ID)) {
 		if (!strcmp(action, "add")) {
 			eval("rc", "restart");
 		} else if (!strcmp(action, "remove")) {

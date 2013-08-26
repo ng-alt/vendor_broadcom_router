@@ -3,7 +3,7 @@
 <head>
 <%11%>
 <title>NETGEAR Router <%12%></title> 
-<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/table.css">
 <link rel="stylesheet" href="css/scrollbar.css">
 <link rel="stylesheet" href="css/button.css">
 
@@ -13,7 +13,7 @@
 
 <script src="script/script.js"></script>
 <link rel="stylesheet" href="form.css">
-<%14%>
+<%13%>
 <style type="text/css">
     a {
         color: blue;
@@ -40,12 +40,12 @@
 
     function showHelpIframe() {
 
+
         var imgSrc=document.getElementById('help-button');
 
         if(imgSrc.src.search("up")>=0)
         {
             $(".help-frame-div").show();
-            window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
             imgSrc.src="img/helparrowdown-icon.gif";
         }
         else
@@ -54,12 +54,9 @@
             imgSrc.src="img/helparrowup-icon.gif";
             setTimeout(setHelpIframeVisible,500);
         }
-        if((navigator.appName.indexOf("Internet Explorer")==-1) ||
-           (navigator.appVersion.indexOf("MSIE 9")==-1))
              change_size();
 
     }
-
     function moveToHTMLend()
     {
         window.location.href='#helpframe-anchor';
@@ -99,17 +96,15 @@
 
 //-->
 </script></head>
-<body onload="change_size();"  class="subpage-body" onResize="change_size();" >
-<img class="cover-image" src="<%61%>">
-<img class="body-image" src="<%62%>"> 
+<body onload="change_size();"  class="page-body" onResize="change_size();" >
+<img class="cover-image" src="img/cover-image.gif">
+<img class="body-image" src="img/subhead2-background.jpg"> 
 <div id="full-page-container">
 
 <form id="target"  name="frmService" method="post" action="usb_remote_invite.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-    <img class="subtop-image" src="<%63%>">
-<%2196%>
-<div class="subhead2"><%2197%></div>
-<%2198%>
+    <img class="subtop-image" src="img/subhead2-top.gif">
+<div class="subhead2"><%1980%></div>
 
 <table border="0"    style="height:370px"  class="subhead2-table">
 
@@ -117,29 +112,32 @@
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
+<tr><td colspan="2" height="12" >
+    <%2080%>
+</td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
-<!--<tr>
-    <td colspan="2" ><%2199%></td>
+<tr>
+    <td colspan="2" ><%2081%></td>
 </tr>
+
 
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
--->
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
     <td colspan="2" >
 		<table border="0">
-			<tr><td colspan="2"><b><%2200%>&nbsp;<%2201%></b></td></tr>
+			<tr><td colspan="2"><b><%2082%>:&nbsp;<%2083%></b></td></tr>
 			<tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 			<tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
-			<tr><td colspan="2"><%2202%></td></tr>
+			<tr><td colspan="2"><%2084%></td></tr>
 			<tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 			<tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
-			<tr><td colspan="2"><%2203%></td></tr>
+			<tr><td colspan="2"><%2085%></td></tr>
 			<tr>
 				<td colspan="2" align="center">
-					&nbsp;&nbsp;&nbsp;<button value="Unregister" onclick="buttonClick(this,'do_unregister');" type="submit" name="Unregister" class="button-rule" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%2204%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+					&nbsp;&nbsp;&nbsp;<button value="Unregister" onclick="buttonClick(this,'do_unregister');" type="submit" name="Unregister" class="button-rule" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%2086%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 				</td>
 			</tr>
 		</table>
@@ -147,9 +145,6 @@
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-<tr><td colspan="2" height="12" >
-    <%2205%>
-</td></tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 
 </table></div></td></tr>
@@ -158,10 +153,10 @@
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%237%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%227%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%238%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%228%> </span>
       </div>
 
 <a name="helpframe-anchor"></a>

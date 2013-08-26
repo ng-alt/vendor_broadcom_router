@@ -2,7 +2,7 @@
 <html><head>
 <%11%>
 <title>NETGEAR Router <%12%></title> 
-<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/table.css">
 <link rel="stylesheet" href="css/scrollbar.css">
 <link rel="stylesheet" href="css/button.css">
 
@@ -16,7 +16,7 @@
     classes.num.all.fontFamily = "Courier";
     classes.num.all.fontSize = "10pt" ;
 </style>
-<%14%>
+<%13%>
 <script language="javascript" type="text/javascript">
 <!--
   
@@ -41,12 +41,12 @@
 
     function showHelpIframe() {
 
+
         var imgSrc=document.getElementById('help-button');
 
         if(imgSrc.src.search("up")>=0)
         {
             $(".help-frame-div").show();
-            window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
             imgSrc.src="img/helparrowdown-icon.gif";
         }
         else
@@ -55,12 +55,9 @@
             imgSrc.src="img/helparrowup-icon.gif";
             setTimeout(setHelpIframeVisible,500);
         }
-        if((navigator.appName.indexOf("Internet Explorer")==-1) ||
-           (navigator.appVersion.indexOf("MSIE 9")==-1))
              change_size();
 
     }
-
     function moveToHTMLend()
     {
         window.location.href='#helpframe-anchor';
@@ -124,7 +121,7 @@ function remove_disk()
 	
 	if(cf.usb_num.value == 0)
 	{
-         msg+= "<%2066%>.\n";
+         msg+= "<%1975%>.\n";
     }
     if (msg.length > 1)
 	{
@@ -136,7 +133,6 @@ function remove_disk()
 
 function loadSettings()
 {
-<%2067%>
     var cf=document.forms[0];
     
     setUSBSupportLevel();
@@ -147,14 +143,14 @@ function loadSettings()
 var removeButton;
 cf.Remove.disabled = 'true';
 removeButton=document.getElementsByName("Remove");
-removeButton[0].outerHTML='<button type="submit" disabled value="<%2068%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%2068%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%2068%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="submit" disabled value="<%1976%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%1976%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%1976%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='default';
 }
 
     if (cf.umountsucc.value == "1")
     {
         //openWarnWindow();
-          alert("<%2069%>");
+          alert("<%1977%>");
     }
     else if (cf.umountsucc.value == "2")
     {
@@ -169,7 +165,6 @@ function setUSBSupportLevel()
     var support_basic = SupportLevel & 1 ? 1 : 0;
     var support_remote = SupportLevel & 2 ? 1 : 0;
     var support_printing = SupportLevel & 4 ? 1 : 0;
-    var support_ready_vault = SupportLevel & 8 ? 1 : 0;
     if(SupportLevel == 0)
        document.getElementById("USB_line").style.visibility = "hidden";
     else
@@ -180,22 +175,15 @@ function setUSBSupportLevel()
     else
         document.getElementById("USB_basic").style.display = "none";
 
-<%2070%> 
-	if(support_remote)
+    if(support_remote)
         document.getElementById("USB_remote").style.display = "block";
     else
         document.getElementById("USB_remote").style.display = "none";
-<%2071%>
 
     if(support_printing)
         document.getElementById("USB_printer").style.display = "block";
     else
         document.getElementById("USB_printer").style.display = "none";        
-
-    if(support_ready_vault)
-        document.getElementById("USB_vault").style.display = "block";
-    else
-        document.getElementById("USB_vault").style.display = "none";        
 }
 
 function openWarnWindow()
@@ -220,19 +208,19 @@ function UpdateAliveLink()
 //-->
 </script></head>
 <body onload="change_size();loadSettings();"  class="page-body" onResize="change_size();" >
-<img class="cover-image" src="<%61%>">
-<img class="body-image" src="<%62%>"> 
+<img class="cover-image" src="img/cover-image.gif">
+<img class="body-image" src="img/subhead2-background.jpg"> 
 <div id="full-page-container">
 
 <form id="target"  name="frmService" method="post" action="usb_adv.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-    <img class="subtop-image" src="<%63%>">
-<div class="subhead2"> <%2072%></div>
+    <img class="subtop-image" src="img/subhead2-top.gif">
+<div class="subhead2"> <%1978%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%67%>" onclick="buttonClick(this,'<%647%>');location.href='USB_basic.htm'" type="button" name="Refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%647%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%61%>" onclick="buttonClick(this,'<%622%>');location.href='USB_basic.htm'" type="button" name="Refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%622%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -240,63 +228,55 @@ function UpdateAliveLink()
 <tr id="USB_line"><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr><td></td></tr>
 <tr id="USB_basic">
-    <td colspan="2"><input type="radio" name="USB_support" checked><%2073%></td>
+    <td><input type="radio" name="USB_support" checked><%1979%></td>
 </tr>
-
-<%2074%>
-<tr id="USB_readycloud">
-    <td colspan="2"><input type="radio" name="USB_support"  onclick="location.replace('USB_basic_remote.htm');"><%2075%></td>
-</tr> 
-<%2076%>
-
+<tr id="USB_remote">
+    <td><input type="radio" name="USB_support" onclick="location.replace('USB_basic_remote.htm');"><%1980%> (<%1981%>)</td>
+</tr>
 <tr id="USB_printer">
-    <td colspan="2"><input type="radio" name="USB_support"  onclick="location.replace('USB_basic_printing.htm');"><%342%></td>
+    <td><input type="radio" name="USB_support"  onclick="location.replace('USB_basic_printing.htm');"><%1982%></td>
 </tr>    
-<tr id="USB_vault">
-    <td colspan="2"><input type="radio" name="USB_support"  onclick="location.replace('USB_basic_vault.htm');"><%343%></td>
-</tr> 
-
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
 <td colspan="2" ><a href="javascript:loadhelp('USB_basic','device')" 
-tabindex="-1"><b><%2077%>:</b></a>&nbsp;&nbsp;&nbsp;&nbsp; <%2078%></td>
+tabindex="-1"><b><%1983%>:</b></a>&nbsp;&nbsp;&nbsp;&nbsp; <%1984%></td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
-<td colspan="2" ><a href="javascript:loadhelp('USB_basic','available_folder')" tabindex="-1"><b><%2079%></b></a></td>
+<td colspan="2" ><a href="javascript:loadhelp('USB_basic','available_folder')" tabindex="-1"><b><%1985%></b></a></td>
 </tr>
 <tr>
 <td colspan="2" >
 <table border="1" cellpadding="2" cellspacing="0" width="100%">
 
 <tr>
-<td align="center" nowrap="nowrap" width="20%"><span class="thead"><%2080%></span></td>
-<td align="center" nowrap="nowrap" width="17%"><span class="thead"><%2081%></span></td>
-<td align="center" nowrap="nowrap" width="17%"><span class="thead"><%2082%></span></td>
-<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2083%></span></td>
-<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2084%></span></td>
-<td align="center" nowrap="nowrap" width="8%"><span class="thead"><%2085%></span></td>
-<td align="center" nowrap="nowrap" width="8%"><span class="thead"><%2086%></span></td>
+<td align="center" nowrap="nowrap" width="20%"><span class="thead"><%1986%></span></td>
+<td align="center" nowrap="nowrap" width="20%"><span class="thead"><%1987%></span></td>
+<td align="center" nowrap="nowrap" width="7%"><span class="thead"><%1988%></span></td>
+<td align="center" nowrap="nowrap" width="19%"><span class="thead"><%1989%></span></td>
+<td align="center" nowrap="nowrap" width="20%"><span class="thead"><%1990%></span></td>
+<td align="center" nowrap="nowrap" width="7%"><span class="thead"><%1991%></span></td>
+<td align="center" nowrap="nowrap" width="7%"><span class="thead"><%1992%></span></td>
 </tr>
 
-<%2087%>
+<%1993%>
 </table>
 </td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
 <td colspan="2" >
-&nbsp;&nbsp;&nbsp;<button type="button" value="<%594%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%594%>');UpdateAliveLink();location.href='USB_adv.htm'"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%594%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+&nbsp;&nbsp;&nbsp;<button type="button" value="<%569%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%569%>');UpdateAliveLink();location.href='USB_adv.htm'"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%569%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
 <td colspan="2" >
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%2068%>" name="Remove" class="button-rule" onclick="buttonClick(this,'<%2068%>');return remove_disk();"><span class="roundleft_button">&nbsp;&nbsp; <%2068%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1976%>" name="Remove" class="button-rule" onclick="buttonClick(this,'<%1976%>');return remove_disk();"><span class="roundleft_button">&nbsp;&nbsp; <%1976%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
@@ -309,19 +289,19 @@ tabindex="-1"><b><%2077%>:</b></a>&nbsp;&nbsp;&nbsp;&nbsp; <%2078%></td>
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%237%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%227%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%238%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%228%> </span>
       </div>
 
 
 
-<input type="hidden" name="usb_num" value="<%2088%>">
+<input type="hidden" name="usb_num" value="<%1994%>">
 <input type="hidden" name="action" value="basic">
-<INPUT name=umountsucc type=hidden value="<%2089%>">
-<INPUT name=router_smb_link_style type=hidden value="<%2090%>">
-<input name="ReadyShareSupportedLevel" type="hidden" value="<%1778%>">
+<INPUT name=umountsucc type=hidden value="<%1995%>">
+<INPUT name=router_smb_link_style type=hidden value="<%1996%>">
+<input name="ReadyShareSupportedLevel" type="hidden" value="<%1720%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>

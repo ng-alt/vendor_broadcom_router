@@ -28,9 +28,9 @@ export FW_TYPE
 
 
 
-ifeq ($(PROFILE),R6400)
-BOARDID_FILE=compatible_r6400.txt
-FW_NAME=R6400
+ifeq ($(PROFILE),R7000)
+BOARDID_FILE=compatible_r7000.txt
+FW_NAME=R7000
 endif
 #
 # Paths
@@ -269,6 +269,8 @@ endif
 export CFLAGS += -DINCLUDE_UCP
 
 #export CFLAGS += -DECOSYSTEM_SUPPORT
+
+
 ifeq ($(PROFILE),R7000)
 export CFLAGS += -DU12H270 -DR7000
 export CFLAGS += -DMULTIPLE_SSID
@@ -276,16 +278,9 @@ export CFLAGS += -DENABLE_ML
 export CFLAGS += -DOPEN_SOURCE_SUPPORT
 export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
-export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
 export CFLAGS += -DVIDEO_STREAMING_QOS
-export CFLAGS += -DSPEEDTEST_SUPPORT
-ifeq ($(INCLUDE_FBWIFI_FLAG),y)
-export CFLAGS += -DFBWIFI_FLAG
-endif
-ifeq ($(CONFIG_FBWIFI_DEBUG),y)
-export CFLAGS += -DCONFIG_FBWIFI_DEBUG
-endif
+
 ifeq ($(CONFIG_DLNA),y)
 export CFLAGS += -DDLNA
 #export CFLAGS += -DDLNA_DEBUG
@@ -317,64 +312,7 @@ export CFLAGS += -DSUPPORT_AC_MODE
 export CFLAGS += -DSTA_MODE
 export CFLAGS += -DPPP_RU_DESIGN
 export CFLAGS += -DEXT_ACS
-export CFLAGS += -DVLAN_SUPPORT
-export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 endif
-
-
-ifeq ($(PROFILE),R6400)
-export CFLAGS += -DU12H332 -DR7000 -DR6400
-export CFLAGS += -DMULTIPLE_SSID
-export CFLAGS += -DENABLE_ML
-export CFLAGS += -DOPEN_SOURCE_SUPPORT
-export CFLAGS += -DBCM53125
-export CFLAGS += -DBCM5301X
-export CFLAGS += -DACS_INTF_DETECT_PATCH
-export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
-export CFLAGS += -DVIDEO_STREAMING_QOS
-#export CFLAGS += -DSPEEDTEST_SUPPORT
-ifeq ($(INCLUDE_FBWIFI_FLAG),y)
-export CFLAGS += -DFBWIFI_FLAG
-endif
-ifeq ($(CONFIG_FBWIFI_DEBUG),y)
-export CFLAGS += -DCONFIG_FBWIFI_DEBUG
-endif
-ifeq ($(CONFIG_DLNA),y)
-export CFLAGS += -DDLNA
-#export CFLAGS += -DDLNA_DEBUG
-endif
-export CFLAGS += -DHTTP_ACCESS_USB
-export CFLAGS += -DMAX_USB_ACCESS
-export CFLAGS += -DSAMBA_ENABLE
-export CFLAGS += -DUSB_NEW_SPEC
-export CFLAGS += -DINCLUDE_WIFI_BUTTON
-export CONFIG_LIBNSL=y
-export CFLAGS += -DINCLUDE_USB_LED
-export CFLAGS += -DINCLUDE_DUAL_BAND
-export CFLAGS += -DSINGLE_FIRMWARE
-export CFLAGS += -DINCLUDE_GET_ST_CHKSUM
-export CFLAGS += -DUNIFIED_STR_TBL
-export CFLAGS += -DFIRST_MTD_ROTATION
-export CFLAGS += -DWIFI_ON_OFF_SCHE
-export CFLAGS += -DAUTO_CONN_24HR
-export CFLAGS += -DIGMP_PROXY
-export CFLAGS += -DAP_MODE
-export CFLAGS += -D__CONFIG_IGMP_SNOOPING__
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
-export CFLAGS += -DLINUX26
-export CFLAGS += -DINCLUDE_IPV6
-endif
-export CFLAGS += -DPRESET_WL_SECURITY
-export CFLAGS += -DNEW_BCM_WPS_IPC
-export CFLAGS += -DSUPPORT_AC_MODE
-export CFLAGS += -DSTA_MODE
-export CFLAGS += -DPPP_RU_DESIGN
-export CFLAGS += -DEXT_ACS
-export CFLAGS += -DVLAN_SUPPORT
-export CFLAGS += -DINCLUDE_DETECT_AP_MODE
-endif
-
-
 
 
 
@@ -456,12 +394,6 @@ endef
 # note : the dongle target is only for after pre-build 
 obj-$(CONFIG_USBAP) += bmac dongle
 
-#added start @ NEW_DEBUG_HIDDEN_PAGE
-ifeq ($(PROFILE),R6400)
-obj-y += mpstat
-endif
-#added end @ NEW_DEBUG_HIDDEN_PAGE
-
 # always build libbcmcrypto
 obj-y += libbcmcrypto
 
@@ -480,10 +412,18 @@ obj-$(CONFIG_APLAY) += alsa-utils/aplay
 #endif
 obj-$(CONFIG_NVRAM) += nvram
 obj-$(CONFIG_SHARED) += shared
-obj-$(CONFIG_SHARED) += acos_shared
 obj-$(CONFIG_LIBBCM) += libbcm
 
 #obj-$(CONFIG_OPENSSL) += openssl
+
+ifeq ($(CONFIG_ACOS_MODULES),y)
+#obj-y += ../../ap/acos
+obj-y += ../../ap/gpl
+fw_cfg_file := ../../../project/acos/include/ambitCfg.h
+else
+obj-$(CONFIG_HTTPD) += httpd
+obj-$(CONFIG_WWW) += www
+endif
 
 obj-$(CONFIG_RC) += rc
 obj-$(CONFIG_GLIBC) += lib
@@ -544,11 +484,7 @@ obj-$(CONFIG_SWRESETD) += swresetd
 obj-$(CONFIG_PHYMON_UTILITY) += phymon
 #endif
 #if defined(EXT_ACS)
-ifeq ($(PROFILE),R6400)
-#obj-$(CONFIG_EXTACS) += acsd
-else
-#obj-$(CONFIG_EXTACS) += acsd
-endif
+obj-$(CONFIG_EXTACS) += acsd
 #endif
 obj-$(CONFIG_VMSTAT) += vmstat
 
@@ -557,11 +493,6 @@ obj-$(CONFIG_IPROUTE2) += iproute2
 obj-$(CONFIG_IPUTILS) += iputils
 obj-$(CONFIG_DHCPV6S) += dhcp6s
 obj-$(CONFIG_DHCPV6C) += dhcp6c
-
-obj-$(CONFIG_BCMBSD) += gbsd
-
-obj-$(CONFIG_TASKSET) += taskset
-#speed up USB throughput
 
 # BUZZZ tools: function call tracing, performance monitoring, event history
 obj-$(CONFIG_BUZZZ) += buzzz
@@ -582,16 +513,6 @@ obj-y += voipd
 endif
 
 
-ifeq ($(CONFIG_ACOS_MODULES),y)
-#obj-y += ../../ap/acos
-obj-y += ../../ap/gpl
-fw_cfg_file := ../../../project/acos/include/ambitCfg.h
-else
-obj-$(CONFIG_HTTPD) += httpd
-obj-$(CONFIG_WWW) += www
-endif
-
-
 obj-clean := $(foreach obj,$(obj-y) $(obj-n),$(obj)-clean)
 obj-install := $(foreach obj,$(obj-y),$(obj)-install)
 
@@ -606,12 +527,8 @@ endif
 #
 
 
-all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
+all: acos_link version $(LINUXDIR)/.config $(obj-y)
         # Also build kernel
-        
-
-        
-linux_kernel:        
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 	$(MAKE) -C $(LINUXDIR) zImage
 	$(MAKE) CONFIG_SQUASHFS=$(CONFIG_SQUASHFS) -C $(SRCBASE)/router/compressed
@@ -679,7 +596,7 @@ ifneq (2_4,$(LINUX_VERSION))
 else
 	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) clean
 endif
-	$(MAKE) -C $(SRCBASE)/cfe/build/broadcom/bcm947xx ARCH=$(ARCH) clean
+#	$(MAKE) -C $(SRCBASE)/cfe/build/broadcom/bcm947xx ARCH=$(ARCH) clean
 #	[ ! -f $(SRCBASE)/tools/misc/Makefile ] || $(MAKE) -C $(SRCBASE)/tools/misc clean
 
 distclean mrproper: clean
@@ -716,27 +633,14 @@ endif
 	rm -rf $(TARGETDIR)/usr/sbin/upnpnat
 	rm -rf $(TARGETDIR)/usr/sbin/epi_ttcp
 	$(STRIP) $(TARGETDIR)/bin/eapd
-ifeq ($(PROFILE),R6400)
+ifeq ($(PROFILE),R7000)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
-	cp $(BASEDIR)/src/router/usbprinter/GPL_NetUSB_$(PROFILE).ko $(BASEDIR)/src/router/usbprinter/GPL_NetUSB.ko 
-	cp $(BASEDIR)/src/router/usbprinter/NetUSB_$(PROFILE).ko $(BASEDIR)/src/router/usbprinter/NetUSB.ko 
-	cp $(BASEDIR)/src/router/usbprinter/KC_BONJOUR_$(PROFILE) $(BASEDIR)/src/router/usbprinter/KC_BONJOUR 
-	cp $(BASEDIR)/src/router/usbprinter/KC_PRINT_$(PROFILE) $(BASEDIR)/src/router/usbprinter/KC_PRINT 
 	install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
 	install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
 	install usbprinter/KC_BONJOUR $(TARGETDIR)/usr/bin
 	install usbprinter/KC_PRINT $(TARGETDIR)/usr/bin
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
-	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
-	install ufsd/chkntfs $(TARGETDIR)/bin
-	install ufsd/mkntfs $(TARGETDIR)/bin
-	install utelnetd/utelnetd $(TARGETDIR)/bin
-	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
-	install utelnetd/ookla $(TARGETDIR)/bin
-	install fbwifi/fbwifi $(TARGETDIR)/bin
-#	rm $(TARGETDIR)/usr/bin/soapcpp2
-	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
@@ -745,14 +649,11 @@ ifeq ($(PROFILE),R6400)
 	install prebuilt/ubd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/br_dns_hijack.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/l7_filter.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
-	
-endif
-ifeq ($(CONFIG_IPERF),y)
-	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
-	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
-endif
+	install ufsd/chkntfs $(TARGETDIR)/bin
+	install utelnetd/utelnetd $(TARGETDIR)/bin
+	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 
-
+endif
 
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
@@ -773,13 +674,7 @@ endif
 endif
 	# Prepare filesystem
 	cd $(TARGETDIR) && $(TOP)/misc/rootprep.sh
-ifeq ($(PROFILE),R6400)
-#	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
-#	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
-else
-	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
-	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
-endif
+
 ifeq ($(CONFIG_SQUASHFS), y)
 	###########################################
 	### Create Squashfs filesystem ############
@@ -1220,6 +1115,8 @@ endif
 
 ifeq (2_6_36,$(LINUX_VERSION))
 iptables:
+	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
+	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 
 iptables-install:
 ifeq ($(CONFIG_IPTABLES),y)
@@ -1384,9 +1281,6 @@ endif
 ifneq ($(PROFILE),)
 	cp $(LINUXDIR)/.config_$(PROFILE) $(LINUXDIR)/.config
 endif
-ifeq ($(PROFILE),R6400)
-	cp -f $(SRCBASE)/wl/linux/wl_apsta_$(PROFILE).o $(SRCBASE)/wl/linux/wl_apsta.o
-endif	
 
 
 acos:

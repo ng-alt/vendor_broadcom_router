@@ -4,7 +4,7 @@
 <%11%>
 
 <title>NETGEAR Router <%12%></title>
-<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/table.css">
 <link rel="stylesheet" href="css/scrollbar.css">
 <link rel="stylesheet" href="css/button.css">
 
@@ -36,12 +36,10 @@
 
 
 function goHome(){
-    if(document.forms[0].call_by_genie.value == 1 )
-        window.location.href="genie_redirect_successpage3.htm";
-    else if (top.tophideframe)
-		    top.close();
-	  else{
-         if(parent.$("#BasicTab").hasClass('current')){ 
+	if (top.tophideframe)
+		top.close();
+	else{
+        if(parent.$("#BasicTab").hasClass('current')){ 
              parent.$('.subHeader').hide();
              parent.$('.menuActive').removeClass('menuActive');
              parent.$('#basic-home').addClass('menuActive');            
@@ -59,7 +57,7 @@ function goHome(){
              parent.$('#adv-home').addClass('noSubActive');  
              parent.$('.subHeader:visible').slideUp('fast');
              window.location.href="ADV_home.htm";        
-		    /*window.location.href="<%1729%>";*/
+		    /*window.location.href="<%1671%>";*/
          }
     }
 }
@@ -73,7 +71,7 @@ function goHome(){
 
 <tr>
 <td colspan="2">
-	<h1><%1725%></H1>
+	<h1><%1668%></H1>
 </td>
 </tr>
 
@@ -82,35 +80,34 @@ function goHome(){
 </tr>
 
 <tr>
-    <td colspan="2"><b><%1730%></b></td>
+    <td colspan="2"><b><%1672%></b></td>
 </tr>
 <tr></tr>
 <tr>
-	<td width="50%"><%1731%></td>
-        <td width="50%"><%1732%></td>
+	<td width="50%"><%1673%></td>
+        <td width="50%"><%1674%></td>
 </tr>
 <tr></tr>
 <tr>
-	<td width="50%"><%1733%></td>
-        <td width="50%"><%1734%></td>
+	<td width="50%"><%1675%></td>
+        <td width="50%"><%1676%></td>
 </tr>
 <tr></tr>
 <tr>
 <tr></tr>
-    <td><b><%1735%></b></td>
+    <td><b><%1677%></b></td>
 </tr>
-	<%1736%>
+	<%1678%>
 
 <tr>
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
 <tr>
 	<td colspan="2" align="center">
-		&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%407%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%407%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%407%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-		&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%408%>" name="No" class="button-rule" onClick="buttonClick(this,'<%408%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%408%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%386%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%386%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%386%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%387%>" name="No" class="button-rule" onClick="buttonClick(this,'<%387%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%387%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td></tr>
 </table>
-<input type="hidden" name="call_by_genie" value="<%1727%>">
 </form>
 <p></p>
 </body>

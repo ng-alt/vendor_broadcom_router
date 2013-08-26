@@ -253,7 +253,6 @@ wl_vif_hwaddr_set(const char *name)
 	char *ea;
 	char hwaddr[20];
 	struct ifreq ifr;
-
 	snprintf(hwaddr, sizeof(hwaddr), "%s_hwaddr", name);
 	ea = nvram_get(hwaddr);
 	if (ea == NULL) {
@@ -261,12 +260,14 @@ wl_vif_hwaddr_set(const char *name)
 		return;
 	}
 
+
 	fprintf(stderr, "NET: Setting %s hw addr to %s\n", name, ea);
 	ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
 	ether_atoe(ea, (unsigned char *)ifr.ifr_hwaddr.sa_data);
 	if ((rc = soc_req(name, SIOCSIFHWADDR, &ifr)) < 0) {
 		fprintf(stderr, "NET: Error setting hw for %s; returned %d\n", name, rc);
 	}
+
 }
 
 #ifdef __CONFIG_EMF__
@@ -549,28 +550,12 @@ start_lan(void)
 	symlink("/sbin/rc", "/tmp/ldhclnt");
 
 
-/*Foxconn modified start, edward zhang, 2013/07/03*/
-#ifdef VLAN_SUPPORT
-	nvram_unset("unbridged_ifnames");
-    /*unset some bridge nvram*/
-    char br_ifname_tag[16] = "";
-    char br_ifnames_tag[64] = "";
-    
-    for(i=0; i<7; i++)
-    {
-        sprintf(br_ifname_tag,"br%d_ifname",i);
-        sprintf(br_ifnames_tag,"br%d_ifnames",i);
-        nvram_unset(br_ifname_tag);
-        nvram_unset(br_ifnames_tag);
-    }
-#else
 	nvram_unset("br0_ifname");
 	nvram_unset("br1_ifname");
 	nvram_unset("unbridged_ifnames");
 	nvram_unset("br0_ifnames");
 	nvram_unset("br1_ifnames");
-#endif
-/*Foxconn modified end, edward zhang, 2013/07/03*/
+
 #if defined(__CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__)
 	nvram_unset("acs_ifnames");
 #endif /* defined(_CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__ */
@@ -671,9 +656,7 @@ start_lan(void)
                 /*Foxconn, add-end by MJ., for debugging 5G crash. */
 				if (ifconfig(name, IFUP | IFF_ALLMULTI, NULL, NULL)){
 					perror("ifconfig");
-				} 
-//				else 
-				{
+				} else {
 					/* Set the logical bridge address to that of the first interface */
 					if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0) {
 						perror("socket");
@@ -742,24 +725,21 @@ start_lan(void)
 						 * dpsta interface.
 						 */
 						if (strstr(nvram_safe_get("dpsta_ifnames"), name)) {
-							/* Assign first wl i/f as dpsta hw address */
+							strcpy(name, !dpsta ?  "dpsta" : "");
+							dpsta++;
+
+							/* Assign hw address */
 							if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) >= 0) {
 								strncpy(ifr.ifr_name, "dpsta", IFNAMSIZ);
 								if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0 &&
 								    memcmp(ifr.ifr_hwaddr.sa_data, "\0\0\0\0\0\0",
 								           ETHER_ADDR_LEN) == 0) {
-									strncpy(ifr.ifr_name, name, IFNAMSIZ);
-									if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0) {
-										strncpy(ifr.ifr_name, "dpsta", IFNAMSIZ);
-										ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
-										ioctl(s, SIOCSIFHWADDR, &ifr);
-									}
+									ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
+									memcpy(ifr.ifr_hwaddr.sa_data, hwaddr, ETHER_ADDR_LEN);
+									ioctl(s, SIOCSIFHWADDR, &ifr);
 								}
 								close(s);
 							}
-
-							strcpy(name, !dpsta ?  "dpsta" : "");
-							dpsta++;
 						}
 					
 						eval("brctl", "addif", lan_ifname, name);
@@ -1159,7 +1139,7 @@ start_wl(void)
 	char tmp[100];
     /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifnames;
-	char lan_ifnames[128];
+	char lan_ifnames[32];
     /* Foxconn modified end pling 11/26/2009 */
 	int region;
 
@@ -1243,69 +1223,17 @@ start_wl(void)
     system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
     if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
     {
-#if (defined R6400) 
-		system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x698 0x30 0x680 0x30 0x690 0x30 0x690 0x30");
-#else
-	    system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
-#endif
-	}
+	    system("wl -i eth2 radarthrs 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30");
+    }
 	else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
     {
-        system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth2 radarthrs 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30");
     }
     else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
     {
-        system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth2 radarthrs 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30");
     }
     
-    if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region==14) || (region==1) || (region==5) || (region==6) || (region==12) || (region==20) || (region==22) || (region==24)))
-    {
-        system("wl -i eth1 country_abbrev_override 0x4544");
-        system("wl -i eth2 country_abbrev_override 0x4544");
-    }
-    
-    system("wl -i eth1 pspretend_threshold 4");
-    
-    system("wl -i eth1 mfp_enable 0");
-    system("wl -i eth2 mfp_enable 0");
-
-    if (nvram_match("enable_atf", "1"))
-    {
-//      system("wl -i eth2 shmem 0x80 2");
-      eval("wl", "-i", "eth2", "frameburst", "1");
-	  }
-	  else
-	  {
-      eval("wl", "-i", "eth2", "frameburst", "1");
-	  }
-      eval("wl", "assert_type", "1");
-
-    /* Foxconn added start by Antony 02/26/2014 The wifi driver could receive/transmit all multicast packets */      
-    if(nvram_match("enable_sta_mode","1"))
-    {
-        system("wl -i eth1 allmulti 1");
-        system("wl -i eth2 allmulti 1");
-    }
-    else
-    {
-        system("wl -i eth1 allmulti 0");
-        system("wl -i eth2 allmulti 0");
-    }
-    /* Fxoconn added end by Antony 02/26/2014  */
-
-    /*Foxconn add start by Antony start 09/13/2013 Add rf support of Russia Region */
-    if (nvram_match("wla_region", "14"))
-    {
-        system("wl -i eth2 txpwr1 -o -d 14");
-    }
-    else
-    {
-        system("wl -i eth2 txpwr1 -1");
-    }
-    /*Foxconn add start by Antony end 09/13/2013 */
-#if (defined R6400)
-    system("wl -i eth1 interference 4");
-#endif  
 }
 
 #ifdef __CONFIG_NAT__
@@ -2138,36 +2066,6 @@ void stop_wlan(void)
 	return;
 }
 
-#ifdef VLAN_SUPPORT
-void add_if_to_vlan_group(char *guest_if)
-{
-    int br_num;
-    char lanxx_ifnames[64];
-    char *lan_ifnames;
-    
-    for(br_num=1; br_num < MAX_NO_BRIDGE; br_num++)
-    {
-        sprintf(lanxx_ifnames,"lan%d_ifnames",br_num);
-        lan_ifnames=nvram_safe_get(lanxx_ifnames);
-        if(strlen(lan_ifnames))
-            if(strstr(lan_ifnames,guest_if))
-            {
-                char bridge[32];
-                sprintf(bridge,"br%d",br_num);
-                eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
-                eval("brctl", "addif", bridge, guest_if);
-            }
-            	
-    }
-    
-    if(br_num==MAX_NO_BRIDGE)
-    {
-        eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
-        eval("brctl", "addif", "br0", guest_if);
-    }    
-}
-#endif
-
 void start_wlan(void)
 {
     /* Foxconn modified start pling 11/26/2009 */
@@ -2175,10 +2073,9 @@ void start_wlan(void)
      *  of keeping just the pointer, since other processes
      *  might modify NVRAM at any time.
      */
-	char lan_ifname[32],wan_ifname[32];
+	char lan_ifname[32];
 	char wlif[32];
     strcpy(lan_ifname, nvram_safe_get("lan_ifname"));
-    strcpy(wan_ifname, nvram_safe_get("wan_ifname"));
     strcpy(wlif, nvram_safe_get("wl0_ifname"));
     /* Foxconn modified end pling 11/26/2009 */
     char wl1_ifname[32];
@@ -2188,23 +2085,14 @@ void start_wlan(void)
     /* Foxconn added start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
     char iptv_intf[32];
-#if defined(R8000)
-    unsigned int iptv_intf_val = 0x00;
-#else
     unsigned char iptv_intf_val = 0x00;
-#endif
     int ru_iptv_en = 0;
     int wlan1_en = 0;
     int wlan2_en = 0;
-
-    if (nvram_match(NVRAM_IPTV_ENABLED, "1") || nvram_match("enable_vlan", "enable"))
+    if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
     {
         strcpy(iptv_intf, nvram_get(NVRAM_IPTV_INTF));
-#if defined(R8000)
-        sscanf(iptv_intf, "0x%04X", &iptv_intf_val);
-#else
         sscanf(iptv_intf, "0x%02X", &iptv_intf_val);
-#endif
         if (iptv_intf_val & IPTV_WLAN1)
             wlan1_en = 1;
         /* Foxconn modified start pling 04/20/2012 */
@@ -2221,23 +2109,16 @@ void start_wlan(void)
     ifconfig(wlif, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if(!nvram_match("enable_vlan", "enable"))
+    if (wlan1_en)
     {
-        if (wlan1_en)
-        {
-            eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
-            eval("brctl", "addif", "br1", wlif);
-        }
-        else
-        {
-            eval("brctl", "addif", "br0", wlif);        /* pling added 04/03/2012 */
-        }
+        eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
+	    eval("brctl", "addif", "br1", wlif);
     }
-#ifdef VLAN_SUPPORT
     else
-    	add_if_to_vlan_group(wlif);
-#endif
-    	
+    {
+        eval("brctl", "delif", "br1", wlif);        /* pling added 04/03/2012 */
+	    eval("brctl", "addif", lan_ifname, wlif);
+    }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wlif);
 #endif /* CONFIG_RUSSIA_IPTV */
@@ -2248,22 +2129,16 @@ void start_wlan(void)
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if(!nvram_match("enable_vlan", "enable"))
+    if (wlan2_en)
     {
-        if (wlan2_en)
-        {
-            eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
-            eval("brctl", "addif", "br1", wl1_ifname);
-        }
-        else
-        {
-            eval("brctl", "addif", "br0", wl1_ifname);  /* pling added 04/03/2012 */
-        }
+        eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
+	    eval("brctl", "addif", "br1", wl1_ifname);
     }
-#ifdef VLAN_SUPPORT
     else
-    	add_if_to_vlan_group(wl1_ifname);
-#endif
+    {
+        eval("brctl", "delif", "br1", wl1_ifname);  /* pling added 04/03/2012 */
+        eval("brctl", "addif", lan_ifname, wl1_ifname);
+    }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl1_ifname);
 #endif /* CONFIG_RUSSIA_IPTV */
@@ -2300,22 +2175,7 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name);
                 ifconfig(if_name, IFUP, NULL, NULL);
-#ifdef VLAN_SUPPORT
-                if(nvram_match("enable_vlan", "enable"))
-                    add_if_to_vlan_group(if_name);
-                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
-                {
-                    if (iptv_intf_val & IPTV_WLAN_GUEST1)
-      	                eval("brctl", "addif", wan_ifname, if_name);
-  	                else
-  	                    eval("brctl", "addif", lan_ifname, if_name);
-                        
-                }
-                else
-  	                eval("brctl", "addif", lan_ifname, if_name);
-#else
-  	                eval("brctl", "addif", lan_ifname, if_name);
-#endif  	                
+	            eval("brctl", "addif", lan_ifname, if_name);
             }
         }
         for (bssid_num=1; bssid_num<=3; bssid_num++)
@@ -2328,22 +2188,7 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name_5g);
                 ifconfig(if_name_5g, IFUP, NULL, NULL);
-#ifdef VLAN_SUPPORT
-                if(nvram_match("enable_vlan", "enable"))
-                    add_if_to_vlan_group(if_name_5g);
-                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
-                {
-                    if (iptv_intf_val & IPTV_WLAN_GUEST2)
-      	                eval("brctl", "addif", wan_ifname, if_name_5g);
-  	                else
-  	                    eval("brctl", "addif", lan_ifname, if_name_5g);
-                        
-                }
-                else
-   	                eval("brctl", "addif", lan_ifname, if_name_5g);
-#else
-                eval("brctl", "addif", lan_ifname, if_name_5g);
-#endif   	                
+	            eval("brctl", "addif", lan_ifname, if_name_5g);
             }
         }
     }
