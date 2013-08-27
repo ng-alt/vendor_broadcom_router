@@ -1117,6 +1117,14 @@ stop_lan(void)
 	dprintf("done\n");
 }
 
+#define cprintf(fmt, args...) do { \
+	FILE *fp = fopen("/dev/console", "w"); \
+	if (fp) { \
+		fprintf(fp, fmt , ## args); \
+		fclose(fp); \
+	} \
+} while (0)
+
 void
 start_wl(void)
 {
@@ -1207,124 +1215,89 @@ start_wl(void)
 #endif
     /* add end by Hank 03/07/2012*/
 
-
-#if 0
-	if(nvram_match("wla_region", "3") || nvram_match("wla_region", "11"))  //AU or NA
-	{
-		/* modify start by Hank 05/17/2012*/
-        /*change 2.4G country code*/
-        eval("wl", "country", "Q2/12");
-        /* modify end by Hank 05/17/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-        /* modify start by Hank 03/05/2012*/
-        /*disable set country code to let HT80 work*/
-		eval("wl", "-i", "eth2", "country", "Q2/12");
-        /* modify end by Hank 03/05/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");	/* change 5G to SISO mode(MCS0!MCS7 ??) to improve performance, from HW */
-        /*change txcore for 5G from broadcom*/
-        /* modify end by Hank 03/29/2012*/
-	}
-	else if(nvram_match("wla_region", "5"))
-	{
-		/* modify start by Hank 05/21/2012*/
-        /*change 2.4G country code for CE*/
-		eval("wl", "country", "EU/31");
-		/* modify end by Hank 05/21/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify start by Hank 05/21/2012*/
-        /*change 5G country code for CE*/
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 03/05/2012*/
-        /*disable set country code to let HT80 work*/
-		eval("wl", "-i", "eth2", "country", "EU/31");
-        /* modify end by Hank 03/05/2012*/
-		/* modify end by Hank 05/21/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-        
-	}
-    else if(nvram_match("wla_region", "7"))
-	{
-		eval("wl", "country", "Q2/12");
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
-		eval("wl", "-i", "eth2", "country", "Q2/12");
-        /* modify end by Hank 06/12/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}
-
-	else
-#endif
-		/* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
 	region=atoi(nvram_get("wla_region"));
-#if defined(R6250)
-	if(region == 4 || region == 9 || region == 11){
-		eval("wl", "country", "Q2/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}else if(region == 1 || region == 5 || region == 6 || region == 7 || region == 12 || region == 20 || region == 22){
-		eval("wl", "country", "EU/55");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "EU/55");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 24){
-		eval("wl", "country", "Q2/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "TW/1");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else{
-		eval("wl", "country", "EU/55");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}
-#else
-	if(region == 4 || region == 9 || region == 11){
-		eval("wl", "country", "Q2/40");
-		/* modify end by Hank 06/12/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify start by Hank 05/21/2012*/
-        /*change 5G country code for CE*/
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
-		eval("wl", "-i", "eth2", "country", "Q2/40");
-        /* modify end by Hank 06/12/2012*/
-		/* modify end by Hank 05/21/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}else if(region == 1 || region == 5 || region == 6 || region == 7 || region == 12 || region == 20 || region == 22){
-		eval("wl", "country", "EU/58");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "EU/58");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 24){
-		eval("wl", "country", "Q2/40");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "TW/1");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 3){
-		eval("wl", "country", "AU/16");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "AU/16");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 14){
-		eval("wl", "country", "RU/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "RU/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else{
-		eval("wl", "country", "EU/58");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/40");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}
+#if defined(R6250) || defined(R6300v2) || defined(AC1450)
+
+    system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
+    system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
+    if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
+    {
+	    system("wl -i eth2 radarthrs 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30 0x6BD 0x30");
+    }
+	else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
+    {
+        system("wl -i eth2 radarthrs 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30 0x6B8 0x30");
+    }
+    else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
+    {
+        system("wl -i eth2 radarthrs 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30 0x6a8 0x30");
+    }
+
+#elif defined(R6200v2)
+    if (nvram_match("wla_region", "3"))/* Australia */
+    {
+        eval("wl", "-i", "eth1", "country", "EU/32");
+        if( (unsigned short)atoi(nvram_get("wlg_channel")) >= 149)
+            eval("wl", "-i", "eth2", "country", "Q2/14");
+        else
+            eval("wl", "-i", "eth2", "country", "EU/32");	    
+    }
+    else
+    if (nvram_match("wla_region", "10")) /* South America */
+    {
+        eval("wl", "-i", "eth1", "country", "Q2/14");
+        if( (unsigned short)atoi(nvram_get("wlg_channel")) >= 149)
+            eval("wl", "-i", "eth2", "country", "Q2/14");
+        else
+            eval("wl", "-i", "eth2", "country", "EU/32");
+    }
+    else
+    if (nvram_match("wla_region", "4") || /* Canada */
+        nvram_match("wla_region", "9") || /* Mexico */
+        nvram_match("wla_region", "24")|| /* Taiwan */
+        nvram_match("wla_region", "11"))  /* US */
+    {
+        /*  Use Q2/14 for FCC */
+        eval("wl", "-i", "eth1", "country", "Q2/14");
+        eval("wl", "-i", "eth2", "country", "Q2/14");
+    }
+    /* Set correct country code for below regions */
+    else
+    if (nvram_match("wla_region", "5") || /* Europe */
+        nvram_match("wla_region", "1") || /* Africa */
+        nvram_match("wla_region", "6") || /* Israel */
+        nvram_match("wla_region", "7") || /* Japan */
+        nvram_match("wla_region", "20")|| /* Middle East(Turkey/...) */
+        nvram_match("wla_region", "22"))  /* Middle East(United Arab Emirates) */
+    {
+        /*  Use EU/32 for CE */
+        eval("wl", "-i", "eth1", "country", "EU/32");
+        eval("wl", "-i", "eth2", "country", "EU/32");
+    }
+    else
+    if (nvram_match("wla_region", "14")) /* Russia */
+    {
+        /*  Use RU/26 for Russia */
+        eval("wl", "-i", "eth1", "country", "EU/32");
+        eval("wl", "-i", "eth2", "country", "RU/26");
+    }
+    else
+    {
+        eval("wl", "-i", "eth1", "country", "EU/32"); /* Foxconn modified by kent, 11/12/2012 */
+        eval("wl", "-i", "eth2", "country", "Q2/14");
+    }
+
+    /* Set wl interference (2.4G) to 0 per Netgear (Rick/Joseph) request.
+     * (Only for FCC regions), remove Australia, add Mexico */
+    if (nvram_match("wla_region", "4") ||   /* Canada */
+        nvram_match("wla_region", "9") ||   /* Mexico */
+        nvram_match("wla_region", "11"))    /* US */
+        eval("wl", "-i", "eth1", "interference", "0");
+    else
+        eval("wl", "-i", "eth1", "interference", "4");
+
+    /* Fix the txcore issue on R6200 */
+    eval("wl", "-i", "eth2", "txcore", "-o", "3", "-s", "1", "-c", "3", "-s", "2", "-c", "3");	
 #endif
 	/*  added end, Bob, 08/04/2011 */
 
