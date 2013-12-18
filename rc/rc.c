@@ -302,10 +302,11 @@ static void convert_wlan_params(void)
         if (!nvram_match("wps_randomssid", "") ||
             !nvram_match("wps_randomkey", ""))
         {
-  	        nvram_set("wla_secu_type", "WPA2-PSK");
-            nvram_set("wla_temp_secu_type", "WPA2-PSK");
-            nvram_set("wl0_akm", "psk2 ");
-            nvram_set("wl0_crypto", "aes");
+            nvram_set("wla_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wla_temp_secu_type", "WPA-AUTO-PSK");
+
+            nvram_set("wl0_akm", "psk psk2 ");
+            nvram_set("wl0_crypto", "tkip+aes");
 
             nvram_set("wps_mixedmode", "2");
             //nvram_set("wps_randomssid", "");
@@ -565,10 +566,11 @@ static void convert_wlan_params(void)
         if (!nvram_match("wps_randomssid", "") ||
             !nvram_match("wps_randomkey", ""))
         {
-	        nvram_set("wlg_secu_type", "WPA2-PSK");
-            nvram_set("wlg_temp_secu_type", "WPA2-PSK");
-            nvram_set("wl1_akm", "psk2 ");
-            nvram_set("wl1_crypto", "aes");
+            nvram_set("wlg_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wlg_temp_secu_type", "WPA-AUTO-PSK");
+
+            nvram_set("wl1_akm", "psk psk2 ");
+            nvram_set("wl1_crypto", "tkip+aes");
 
             nvram_set("wps_mixedmode", "2");
             //nvram_set("wps_randomssid", "");
@@ -1976,6 +1978,62 @@ set_wan0_vars(void)
 }
 #endif	/* __CONFIG_NAT__ */
 
+/*  add start by Hank for ecosystem support 08/14/2012 */
+#ifdef ECOSYSTEM_SUPPORT
+int jffs2_mtd_mount(void)
+{
+	FILE *fp;
+	char dev[PATH_MAX];
+	int i, ret = -1;
+	char *jpath = "/tmp/media/nand";
+	struct stat tmp_stat;
+
+	if (!(fp = fopen("/proc/mtd", "r")))
+		return ret;
+
+	while (fgets(dev, sizeof(dev), fp)) {
+		if (sscanf(dev, "mtd%d:", &i) && strstr(dev, "brcmnand")) {
+#ifdef LINUX26
+			snprintf(dev, sizeof(dev), "/dev/mtdblock%d", i);
+#else
+			snprintf(dev, sizeof(dev), "/dev/mtdblock/%d", i);
+#endif
+			if (stat(jpath, &tmp_stat) != 0)
+				mkdir(jpath, 0777);
+
+			/*
+			 * More time will be taken for the first mounting of JFFS2 on
+			 * bare nand device.
+			 */
+			ret = mount(dev, jpath, "jffs2", 0, NULL);
+
+			/*
+			 * Erase nand flash MTD partition and mount again, in case of mount failure.
+			 */
+			if (ret) {
+				fprintf(stderr, "Erase nflash MTD partition and mount again\n");
+				if ((ret = mtd_erase("brcmnand"))) {
+					fprintf(stderr, "Erase nflash MTD partition %s failed %d\n",
+						dev, ret);
+				} else {
+					ret = mount(dev, jpath, "jffs2", 0, NULL);
+				}
+			}
+			break;
+		}
+	}
+	fclose(fp);
+
+	/* mount successfully */
+	if (ret != 0) {
+		fprintf(stderr, "Mount nflash MTD jffs2 partition %s to %s failed\n", dev, jpath);
+	}
+
+	return ret;
+}
+#endif
+/*  add end by Hank for ecosystem support 08/14/2012 */
+
 static int noconsole = 0;
 
 static void
@@ -2025,6 +2083,7 @@ sysinit(void)
 	mkdir("/var/run", 0777);
 	mkdir("/var/tmp", 0777);
 	mkdir("/tmp/media", 0777);
+    mkdir("/tmp/fbwifi", 0777);
 
 #ifdef __CONFIG_UTELNETD__
 	/* If kernel enable unix908 pty then we have to make following things. */
@@ -2118,6 +2177,12 @@ sysinit(void)
 		eval("insmod", "proxyarp");
 #endif /*  __CONFIG_HSPOT__ || __CONFIG_NPS__ */
 
+        /* add start by Hank for mount mtd of ecosystem support 08/14/2012*/
+#ifdef ECOSYSTEM_SUPPORT
+		system("mkdir /tmp/media/nand");
+        jffs2_mtd_mount();
+#endif
+		/* add end by Hank for mount mtd of ecosystem support 08/14/2012*/
     /* Bob added start to avoid sending unexpected dad, 09/16/2009 */
 #ifdef INCLUDE_IPV6
 		if (nvram_match("ipv6ready","1"))

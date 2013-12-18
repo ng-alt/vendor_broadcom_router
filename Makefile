@@ -587,6 +587,7 @@ endif
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
+	install fbwifi/fbwifi $(TARGETDIR)/bin
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
 	echo "=====> Don't delete wl_high.ko for USBAP"
@@ -608,8 +609,6 @@ endif
 	cd $(TARGETDIR) && $(TOP)/misc/rootprep.sh
 	#  add start by Hank for ecosystem support 08/14/2012
 	#cp -f $(PLATFORMDIR)/cp_installer.sh $(TARGETDIR)/usr/sbin/cp_installer.sh
-	#cp -f $(PLATFORMDIR)/cp_checkbox.sh $(TARGETDIR)/usr/sbin/cp_checkbox.sh
-	#cp -f $(PLATFORMDIR)/cp_platform.sh $(TARGETDIR)/usr/sbin/cp_platform.sh
 	#cp -f $(PLATFORMDIR)/CAs.txt $(TARGETDIR)/etc/CAs.txt
 	#  add end by Hank for ecosystem support 08/14/2012 
 
