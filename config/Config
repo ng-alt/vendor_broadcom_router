@@ -156,6 +156,18 @@ config CONFIG_USBAP
        help
        Answer Y to build the bottom mac and the usb downloader. Works only along with the high driver
 
+config CONFIG_GMAC3
+       bool "experimental 3 gmac support"
+       default n
+       help
+       Answer Y to build a 3 gmac based switch to host interface in Northstar
+
+config CONFIG_DHDAP
+       bool "DHD PCIe full dongle driver support"
+       default n
+       help
+       Answer Y to build the PCIe full dongle driver, dhd and dhd.ko
+
 choice
 	prompt "Kernel Root filesystem"
 	default CONFIG_SQUASHFS
@@ -204,8 +216,24 @@ config CONFIG_SAMBA
        bool "Support SAMBA"
        default n
 
+config CONFIG_TASKSET
+       bool "Support taskset"
+       default y
+       help
+       Set a process's CPU affinity
+
+config CONFIG_MPSTAT
+       bool "Support mpstat"
+       default n
+       help
+       Report processors related statistics
+
 config CONFIG_FFMPEG
        bool "ffmpeg Library"
+       default n
+
+config CONFIG_BCM_MEVENT
+       bool "Support user space to receive BRCM event"
        default n
 
 menu "DLNA"
@@ -220,7 +248,7 @@ config CONFIG_DLNA_DMR
 endmenu
 
 config CONFIG_MFP
-       bool "PMF support"
+       bool "Protected Management Frames (802.11w PMF) support"
        default n
 
 config CONFIG_HSPOT
@@ -228,8 +256,8 @@ config CONFIG_HSPOT
        depends on CONFIG_NVRAM && CONFIG_SHARED
        default n
 
-config CONFIG_NPS
-       bool "Network Power Save support"
+config CONFIG_WNM
+       bool "Wireless Network Management/Network Power Save(802.11v) support"
        depends on CONFIG_NVRAM && CONFIG_SHARED
        default n
 
@@ -258,6 +286,12 @@ config CONFIG_NAND_JFFS2
        help
        Mount nand flash partition with JFFS2 filesystem in /tmp/media/nand.
 
+config CONFIG_NAND_YAFFS2
+       bool "Add nand flash YAFFS2 partition (Linux2.6.36 only)"
+       default n
+       help
+       Mount nand flash partition with YAFFS2 filesystem in /tmp/media/nand.
+
 config CONFIG_WAPI_IAS
        bool "WAPI network authentication server"
        depends on CONFIG_NVRAM
@@ -278,6 +312,11 @@ config CONFIG_SES_CL
 config CONFIG_WPS
        bool "WPS Support"
        depends on CONFIG_NVRAM && CONFIG_SHARED
+       default n
+
+config CONFIG_NFC
+       bool "WPS NFC Support"
+       depends on CONFIG_NVRAM && CONFIG_SHARED && CONFIG_WPS
        default n
 
 #ifdef BCMWFI
@@ -374,6 +413,18 @@ config CONFIG_EXTACS
        bool "External Auto Channel Selection"
        default n
 
+config CONFIG_BCMBSD
+       bool "Brcm Band Steer Selection"
+       default n
+
+config CONFIG_TOAD
+        bool "Traffic Ordering Agent Daemon"
+        default n
+        help
+        Answer Y to enable support for the Broadcom Traffic Ordering Agent Daemon, which handles
+        Traffic Scheduler Phase II assignments on a per-station basis.
+        Answer N to disable TOAD support and use only default scheduler assignments.
+
 config CONFIG_PLC
        bool "Broadcom WiFi PLC Support"
        default n
@@ -439,6 +490,12 @@ config CONFIG_VOIP
        help
        Answer Y to enable VoIP service.
 
+config CONFIG_MDNSRESPONDER
+       bool "mDNSResponder"
+       default n
+       help
+       mDNSResponder Networking Service
+
 #ifdef BCMSOUND
 config CONFIG_LIBZ
        bool "Zlib compression library"
@@ -451,42 +508,75 @@ config CONFIG_SOUND
        default n
        help
        Support for playing audio.
+choice
+	prompt "ALSA library"
+	default CONFIG_ALSALIB
+	depends CONFIG_SOUND
+	help
+	Alsa Library (libasound) for applications to configure sound hardware.
 
 config CONFIG_SALSA
        bool "Small ALSA Library"
-       default y
-       depends CONFIG_SOUND
-       help
-       Small Alsa Library (libasound) for applications to configure sound hardware.
+
+config CONFIG_ALSALIB
+       bool "Full-blown ALSA Library"
+
+endchoice
 
 config CONFIG_APLAY
        bool "Alsa Player"
        default y
-       depends on CONFIG_SOUND && CONFIG_SALSA
+       depends on CONFIG_SOUND && (CONFIG_SALSA || CONFIG_ALSALIB)
        help
        Alsa Player audio application.
 
+config CONFIG_AMIXER
+       bool "Alsa Mixer"
+       default y
+       depends on CONFIG_SOUND && (CONFIG_SALSA || CONFIG_ALSALIB)
+       help
+       Alsa Mixer audio application.
+
+config CONFIG_ALSACTL
+       bool "Alsa Advanced Controls"
+       default n
+       depends on CONFIG_SOUND && CONFIG_ALSALIB
+       help
+       Alsa Advanced Controls utility.
+
 config CONFIG_LIBMAD
        bool "MAD MP3 Library"
-       default y
-       depends on CONFIG_SOUND && CONFIG_LIBZ && CONFIG_SALSA
+       default n
+       depends on CONFIG_SOUND && CONFIG_LIBZ && (CONFIG_SALSA || CONFIG_ALSALIB)
        help
        LIBMAD MP3 Codec Library.
 
 config CONFIG_LIBID3TAG
        bool "ID3tag Library"
        default y
-       depends on (CONFIG_SOUND && CONFIG_LIBZ && CONFIG_SALSA) || CONFIG_DLNA_DMS
+       depends on (CONFIG_SOUND && CONFIG_LIBZ && (CONFIG_SALSA || CONFIG_ALSALIB)) || CONFIG_DLNA_DMS
        help
        LIB ID3 Tag parsing Library.
 
 config CONFIG_MADPLAY
        bool "MAD MP3 player"
-       default y
+       default n
        depends on CONFIG_SOUND && CONFIG_LIBMAD
        help
        MADPLAY MP3 player.
 
+config CONFIG_AIRPLAY
+       bool "Apple Airplay"
+       default n
+       depends on CONFIG_SOUND && CONFIG_MDNSRESPONDER && (CONFIG_SALSA || CONFIG_ALSALIB)
+       help
+       Apple Airplay Receiver.
+
+config AIRPLAYDIR
+       string "Source location of Airplay release" if CONFIG_AIRPLAY
+       default "$(BASEDIR)/airplay"
+       help
+       Directory location of Airplay source release.
 #endif
 
 endmenu
@@ -728,5 +818,10 @@ config CONFIG_BCMQOS
        bool "Broadcom IQoS (New)"
        default y
        help
-       Broadcom IQos 
+       Broadcom IQos
+config CONFIG_VISUALIZATION
+       bool "Visualization Application (New)"
+       default n
+       help
+       Visualization
 endmenu

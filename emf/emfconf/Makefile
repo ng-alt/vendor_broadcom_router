@@ -1,5 +1,5 @@
 #
-# $Id: Makefile 241182 2011-02-17 21:50:03Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
 CROSS =
@@ -9,7 +9,7 @@ STRIP = $(CROSS)strip
 
 ALL_OBJS = emfu.o emfu_linux.o
 
-CCFLAGS = -Os -Wall -I../../../include -I../../shared -I../../../include/emf/emf
+CCFLAGS = -Os -Wall -I../../../include ${WLAN_StdIncPathA} -I../../../common/include -I../../shared -I../../../include/emf/emf
 
 ifneq ($(wildcard ./prebuilt),)
 all:

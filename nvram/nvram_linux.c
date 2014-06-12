@@ -105,7 +105,7 @@ nvram_init(void *unused)
 		goto err;
 	}
 
-	fcntl(nvram_fd, F_SETFD, FD_CLOEXEC);
+	(void)fcntl(nvram_fd, F_SETFD, FD_CLOEXEC);
 
 	return 0;
 
@@ -117,7 +117,7 @@ err:
 char *
 nvram_get(const char *name)
 {
-	size_t count = strlen(name) + 1;
+	ssize_t count = strlen(name) + 1;
 	char tmp[100], *value;
 	unsigned long *off = (unsigned long *) tmp;
 

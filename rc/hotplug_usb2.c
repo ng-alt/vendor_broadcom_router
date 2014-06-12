@@ -109,7 +109,7 @@ int usb_sem_init(void)
 #include <fcntl.h>
 
 /* Foxconn added start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 #define MAX_BUF_LEN     512
 #define USB_MNT_TABLE   "/tmp/usb_mnt_table"
 #define USB_MNT_TABLE2  "/tmp/usb_mnt_table2"
@@ -125,7 +125,7 @@ int get_usb_port(char *pDevPath, char *pUsbPort)
     if ((strPos1 = strstr(pDevPath, "/usb")) != NULL) 
     {
         sscanf(strPos1, "/usb%s", buf);    
-#elif defined(R7000)
+#elif defined(R7000) || defined(R8000)
     if ((strstr(pDevPath, "/usb1/1-") != NULL) || (strstr(pDevPath, "/usb3/3-") != NULL)) 
     {
 
@@ -644,7 +644,7 @@ int usb_mount(void)
     /* USB LED on / off */
 #ifdef INCLUDE_USB_LED
     /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
     usb_dual_led();
 #else /* R6300v2 */
     usb_led();

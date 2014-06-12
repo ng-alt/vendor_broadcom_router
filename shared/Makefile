@@ -19,12 +19,16 @@
 #
 
 include $(SRCBASE)/router/.config
+include $(SRCBASE)/makefiles/WLAN_Common.mk
 
-CFLAGS	+= -I. -I../httpd -I$(SRCBASE)/include -Wall -fPIC
-CFLAGS	+= $(WLAN_ComponentIncPath)
+CFLAGS	+= -I. -I../httpd -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall -fPIC
+CFLAGS	+= $(WLAN_ComponentIncPath) -I../../shared/bcmwifi/include 
 ifneq (2_4,$(LINUX_VERSION))
 CFLAGS += -I$(LINUXDIR)/include
 CFLAGS += -DLINUX26
+ifeq (2_6_36,$(LINUX_VERSION))
+CFLAGS += -DAUTOFW_PORT_DEPRECATED
+endif
 endif
 #CFLAGS	+= -g -DDEBUG
 CFLAGS	+= -s -O2
@@ -36,7 +40,7 @@ endif
 LDFLAGS += -L.
 
 
-OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o
+OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o bcmwifi_channels.o et_linux.o
 
 ifneq ($(CONFIG_WAPI)$(CONFIG_CIFS),)
 OBJS += confmtd_utils.o
@@ -45,6 +49,10 @@ endif
 ifeq ($(CONFIG_PLC),y)
 OBJS += dict.o
 endif
+
+# Actually all builds use the new 11ac ratespec/chanspec
+CFLAGS  += -DD11AC_IOTYPES
+vpath %.c $(WLAN_StdSrcDirsA) $(WLAN_ComponentSrcDirs) ../../shared/bcmwifi/src/
 
 all: libshared.so
 

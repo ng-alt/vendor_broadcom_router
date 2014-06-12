@@ -107,6 +107,11 @@ install: all
 	cd $(INSTALLDIR)/sbin && ln -sf rc init
 	cd $(INSTALLDIR)/sbin && ln -sf rc erase
 	cd $(INSTALLDIR)/sbin && ln -sf rc write
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_isbad
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_markbad
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_write_oob
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_read_oob
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_write_page
 	cd $(INSTALLDIR)/sbin && ln -sf rc stats
 	cd $(INSTALLDIR)/sbin && ln -sf rc hotplug
 	cd $(INSTALLDIR)/sbin && ln -sf rc preinit

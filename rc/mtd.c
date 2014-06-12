@@ -1,7 +1,7 @@
 /*
  * MTD utility functions
  *
- * Copyright (C) 2011, Broadcom Corporation. All Rights Reserved.
+ * Copyright (C) 2014, Broadcom Corporation. All Rights Reserved.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: mtd.c 289794 2011-10-14 08:24:08Z $
+ * $Id: mtd.c 437682 2013-11-19 19:25:16Z $
  */
 
 #include <stdio.h>
@@ -75,6 +75,212 @@ mtd_open(const char *mtd, int flags)
 	return open(mtd, flags);
 }
 
+/* Foxconn Bob added start for nand page write, 03/19/2014 */
+int mtd_isbad(const char *mtd, const char *off)
+{
+    loff_t offset;
+    int mtd_fd;
+    int ret;
+    
+    /* Open MTD device */
+	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
+		perror(mtd);
+		return errno;
+	}
+    
+    offset = strtoull(off, NULL, 16);
+    
+    ret = ioctl(mtd_fd, MEMGETBADBLOCK, &offset);
+    
+    if(ret==0)
+    {
+        cprintf("This blosk is good block\n");
+    }
+    else if(ret==-1)
+    {
+        cprintf("This blosk is bad block\n");
+    }
+    else
+    {
+        perror(mtd);
+		close(mtd_fd);
+		return errno;
+    }
+    
+    close(mtd_fd);
+    return 0;
+}
+
+int mtd_markbad(const char *mtd, const char *off)
+{
+    loff_t offset;
+    int mtd_fd;
+    
+    /* Open MTD device */
+	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
+		perror(mtd);
+		return errno;
+	}
+    
+    offset = strtoull(off, NULL, 16);
+    
+    if (ioctl(mtd_fd, MEMSETBADBLOCK, &offset) != 0) {
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+    
+    close(mtd_fd);
+    return 0;
+}
+
+/*it doesn't work, not sure if it related to HW ECC, Bob comments on 03/19/2014 */
+int mtd_write_oob(const char *mtd, const char *off) 
+{
+    loff_t offset;
+    int mtd_fd;
+    mtd_info_t mtd_info;
+    struct mtd_oob_buf oob;
+    char *buf;
+
+    /* Open MTD device */
+	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
+		perror(mtd);
+		return errno;
+	}
+	
+	/* Get sector size */
+	if (ioctl(mtd_fd, MEMGETINFO, &mtd_info) != 0) {
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+	
+	buf = malloc(mtd_info.oobsize);
+	if(!buf)
+	{
+	    perror(mtd);
+	    close(mtd_fd);
+        return errno;
+	}
+	offset = strtoull(off, NULL, 16);
+    
+    memset(buf, 0xff, mtd_info.oobsize);    /* test purpose, alway write 0xff to this page oob. */
+    oob.start = (__u32)offset;
+	oob.length = mtd_info.oobsize;
+    oob.ptr = buf;
+    
+    if (ioctl(mtd_fd, MEMWRITEOOB, &oob) != 0) {
+        free(buf);
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+    free(buf);
+    close(mtd_fd);
+    return 0;
+}
+
+int mtd_read_oob(const char *mtd, const char *off)
+{
+    loff_t offset;
+    int i;
+    int mtd_fd;
+    mtd_info_t mtd_info;
+    struct mtd_oob_buf oob;
+    char *buf;
+
+    /* Open MTD device */
+	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
+		perror(mtd);
+		return errno;
+	}
+	/* Get sector size */
+	if (ioctl(mtd_fd, MEMGETINFO, &mtd_info) != 0) {
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+	
+	buf = malloc(mtd_info.oobsize);
+	if(!buf)
+	{
+	    perror(mtd);
+	    close(mtd_fd);
+        return errno;
+	}
+	offset = strtoull(off, NULL, 16);
+    
+    oob.start = (__u32)offset;
+	oob.length = mtd_info.oobsize;
+    oob.ptr = buf;
+    
+    if (ioctl(mtd_fd, MEMREADOOB, &oob) != 0) {
+        free(buf);
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+
+    for(i=0;i<mtd_info.oobsize;i++)
+    {
+        cprintf("%02x ", *(buf+i));
+    }
+
+    free(buf);
+    close(mtd_fd);
+    
+    return 0;
+}
+
+int mtd_write_page(const char *mtd, const char *ofs)
+{
+    loff_t offset;
+    int mtd_fd;
+    struct mtd_oob_buf oob;
+    mtd_info_t mtd_info;
+    char *buf;
+
+    /* Open MTD device */
+	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
+		perror(mtd);
+		return errno;
+	}
+	
+	/* Get sector size */
+	if (ioctl(mtd_fd, MEMGETINFO, &mtd_info) != 0) {
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+	
+	buf = malloc(mtd_info.writesize);
+	if(!buf)
+	{
+	    perror(mtd);
+	    close(mtd_fd);
+        return errno;
+	}
+	offset = strtoull(ofs, NULL, 16);
+
+    memset(buf, 0x42, mtd_info.writesize);  /* test purpose, alway write 'B' to this page. */
+    oob.start = (__u32)offset;
+	oob.length = mtd_info.writesize;
+    oob.ptr = buf;
+    
+    if (ioctl(mtd_fd, MEMWRITEPAGE, &oob) != 0) {
+		free(buf);
+		perror(mtd);
+		close(mtd_fd);
+		return errno;
+	}
+	
+    free(buf);
+    close(mtd_fd);
+    return 0;
+}
+/* Foxconn Bob added end for nand page write, 03/19/2014 */
+
 /*
  * Erase an MTD device
  * @param	mtd	path to or partition name of MTD device
@@ -86,8 +292,6 @@ mtd_erase(const char *mtd)
 	int mtd_fd;
 	mtd_info_t mtd_info;
 	erase_info_t erase_info;
-	int cnt;
-	int isNvram = 0;
 
 	/* Open MTD device */
 	if ((mtd_fd = mtd_open(mtd, O_RDWR)) < 0) {
@@ -102,30 +306,18 @@ mtd_erase(const char *mtd)
 		return errno;
 	}
 
-    /* Foxconn Bob modified start, 09/06/2013, a workaround to avoid erase to next partition,
-       unknown reason, erase bad block won't return error in the case of 15th block(last block of nvram partition) is bad block */
-	if(!strcmp(mtd, "/dev/mtd1"))
-	    isNvram = 1;
 	erase_info.length = mtd_info.erasesize;
-	cnt = 0;
 
 	for (erase_info.start = 0;
 	     erase_info.start < mtd_info.size;
 	     erase_info.start += mtd_info.erasesize) {
 		(void) ioctl(mtd_fd, MEMUNLOCK, &erase_info);
 		if (ioctl(mtd_fd, MEMERASE, &erase_info) != 0) {
-		    cprintf("%s: erase failed, could be bad block, continue next block!\n", mtd);
-		        mtd_info.size -= mtd_info.erasesize;
-		    continue;
-			//perror(mtd);
-			//close(mtd_fd);
-			//return errno;
+			perror(mtd); /* this means there is bad block(s) in this partition, Bob */
+			close(mtd_fd);
+			return errno;
 		}
-		    cnt++;
-		    if(isNvram==1 && cnt>=4)
-		        break;
 	}
-	/* Foxconn Bob modified end on 09/06/2013 */
 
 	close(mtd_fd);
 	return 0;

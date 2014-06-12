@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html><head>
+<%11%>
+<title>NETGEAR Router <%12%></title> 
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<style type="text/javascript">
+    classes.num.all.fontFamily = "Courier";
+    classes.num.all.fontSize = "10pt" ;
+</style>
+<%14%>
+<script language="javascript" type="text/javascript">
+<!--
+
+
+    $(document).ready(function()
+    {	
+        $("#target").submit(function() {
+            buttonFilter();
+        });
+
+    });
+
+
+
+function Browse_folder()
+{
+    document.forms[0].mode.value = "browse";
+    document.forms[0].submit();
+    window.open('USB_folderBrowse.htm','_blank','resizable=0,scrollbars=yes,width=400,height=400,left=400,top=300').focus();
+}
+function checkData()
+{
+    var cf = document.forms[0];
+    var isAllAdmin;    
+	var msg = "";
+	var r, re, fail;
+	var usb_folder_string = cf.usb_folder.value;
+	fail = 1;
+	<%2340%>
+	if(fail == 1)
+	    msg+= "<%2321%>\n";
+	
+	if (cf.usb_folder.value == "")
+		 msg+= "<%2322%>\n";
+	if ( (cf.usb_folder.value.match( /[\x2E-\x2E]/ )) )
+	   {
+			alert("<%2321%>\n");
+			return false;
+	   }	 
+	if (cf.share_name.value == "")
+		msg+= "<%2323%>\n";
+	
+    if (   (cf.share_name.value.match( /[\x22-\x22]/ ))
+        || (cf.share_name.value.match( /[\x3A-\x3A]/ ))
+        || (cf.share_name.value.match( /[\x3C-\x3C]/ ))
+        || (cf.share_name.value.match( /[\x3E-\x3E]/ ))
+        || (cf.share_name.value.match( /[\x27-\x27]/ ))
+        || (cf.share_name.value.match( /[\x7C-\x7C]/ ))
+        || (cf.share_name.value.match( /[\x2F-\x2F]/ ))
+        || (cf.share_name.value.match( /[\x5D-\x5D]/ ))
+		|| (cf.share_name.value.match( /[\x3E-\x3E]/ ))
+		|| (cf.share_name.value.match( /[\x5C-\x5C]/ ))
+       )
+    {
+		cf.share_name.focus();
+		msg+= "<%2324%>.\n";
+	}
+	<%2325%>
+	if (msg.length > 1)
+	{
+		alert(msg);
+		return false;
+	}
+	if( (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 0) )
+	    cf.write_access.selectedIndex = 1;
+        
+    /* There exist folder is "admin" privilege but no "All - no password" privilege. */
+    isAllAdmin = cf.isAllAdminFolder.value;    
+    if ( cf.no_dlna.value != 1 ) {
+       if((isAllAdmin >= 0) && (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 1) )
+          alert("<%2285%>");        
+    }    
+    
+    pageRefresh();
+    return true;
+}
+function pageRefresh()
+{
+    document.forms[0].submit();
+    //window.close();
+    //opener.document.location.href = "USB_adv.htm";
+}
+
+function chgRd()
+{
+    var cf = document.forms[0];
+    if (cf.read_access.selectedIndex == 1)
+	    cf.write_access.selectedIndex = 1;
+}
+function chgWt()
+{
+    var cf = document.forms[0];
+    if (cf.write_access.selectedIndex == 0)
+	    cf.read_access.selectedIndex = 0;
+}
+//-->
+</script></head>
+<body  style="margin:0px;background-color:#e5e5e5">
+<form id="target"  name="frmService" method="post" action="usb_device.cgi">
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+<script language="javascript" type="text/javascript">
+var NotExistFolder = "<%2326%>";
+if (NotExistFolder == "1")
+{
+    opener.document.location.href = "USB_adv.htm";
+    window.close();
+}
+else if (NotExistFolder == "2")
+    alert("<%2321%>\n");
+</script>
+<table border="0" cellpadding="0" cellspacing="3" width="100%">
+<tr>
+    <td><h1><%2341%></h1></td>
+</tr>
+<tr>
+ <td>
+ <img src="liteblue.gif" height="12" width="100%">
+ </td>
+</tr>
+
+<table border="1" cellpadding="2" cellspacing="0" width="100%">
+<tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2327%></span></td>
+<td align="center" nowrap="nowrap" width="60%">
+<p align="left"><%2342%></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2343%></span></td>
+<td align="center" nowrap="nowrap" width="60%"> 
+<p align="left"><%2344%></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2329%></span></td>
+<td align="center" nowrap="nowrap" width="60%"> 
+<input name="usb_folder" value="<%2345%>" style="float: left">
+&nbsp;&nbsp;&nbsp;<button type="button" value="<%434%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%434%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%434%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2272%></span></td>
+<td align="left" nowrap="nowrap" width="60%"> 
+<input name="share_name" value="<%2346%>" size="21" maxlength="20" style="float: left"></td>
+</tr>
+<tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2332%></span></td>
+<td align="center" nowrap="nowrap" width="60%">
+<p align="left"><select name="read_access" onchange="chgRd()" size="1">
+        <option value=0><%2333%></option>
+        <option value=1 <%2334%> ><%2335%></option>
+    </select></td>
+</tr>
+<td align="center" nowrap="nowrap" width="40%">
+<p align="left"><span class="thead"><%2336%></span></td>
+<td align="center" nowrap="nowrap" width="60%">
+<p align="left"><select name="write_access" onchange="chgWt()" size="1">
+        <option value=0><%2333%></option>
+        <option value=1 <%2337%> ><%2335%></option>
+    </select></td>
+</tr>
+</table>
+
+	<table border="0" cellpadding="0" cellspacing="3" width="100%">
+		<tr>
+			<td>&nbsp;&nbsp;</td>
+		</tr>
+	</table>
+ <table border="0" cellpadding="0" cellspacing="3" width="100%">
+<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%61%>" name="Apply" class="button-rule" onclick="buttonClick(this,'<%61%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp; <%61%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="3" width="100%">
+<tr>
+ <td>
+ <img src="liteblue.gif" height="12" width="100%">
+ </td>
+</tr>
+</table>  
+ <table border="0" cellpadding="0" cellspacing="3" width="100%">
+<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%455%>" name="Close" class="button-rule" onclick="buttonClick(this,'<%455%>');window.close();"><span class="roundleft_button">&nbsp;&nbsp; <%455%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+</table>
+</table>
+<INPUT name=mode type=hidden value="edit">
+<INPUT name=fromPage type=hidden value="2">
+<INPUT name=isAllAdminFolder type=hidden value="<%2339%>">
+<input name="no_dlna" type="hidden" value="<%2318%>">
+</form>
+</body></html>

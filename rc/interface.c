@@ -30,6 +30,8 @@
 #include <sys/socket.h>
 #include <linux/route.h>
 #include <linux/if.h>
+#include <linux/sockios.h>
+#include <linux/ethtool.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <net/if_arp.h>
@@ -52,7 +54,8 @@ ifconfig(char *name, int flags, char *addr, char *netmask)
 		goto err;
 
 	/* Set interface name */
-	strncpy(ifr.ifr_name, name, IFNAMSIZ);
+	strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name)-1);
+	ifr.ifr_name[sizeof(ifr.ifr_name)-1] = 0;
 
 	/* Set interface flags */
 	ifr.ifr_flags = flags;
@@ -88,7 +91,8 @@ ifconfig(char *name, int flags, char *addr, char *netmask)
 	return 0;
 
 err:
-	close(s);
+	if (s >= 0)
+		close(s);
 	perror(name);
 	return errno;
 }
@@ -104,7 +108,8 @@ ifconfig_get(char *name, int *flags, unsigned long *addr, unsigned long *netmask
 		goto err;
 
 	/* Set interface name */
-	strncpy(ifr.ifr_name, name, IFNAMSIZ);
+	strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name) - 1);
+	ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
 
 	/* Check MAC first */
 	if (ioctl(s, SIOCGIFHWADDR, &ifr) < 0)
@@ -145,7 +150,8 @@ ifconfig_get(char *name, int *flags, unsigned long *addr, unsigned long *netmask
 	return 0;
 
 err:
-	close(s);
+	if (s >= 0)
+		close(s);
 	perror(name);
 	return errno;
 }
@@ -188,7 +194,8 @@ route_manip(int cmd, char *name, int metric, char *dst, char *gateway, char *gen
 	return 0;
 
 err:
-	close(s);
+	if (s >= 0)
+		close(s);
 	perror(name);
 	return errno;
 }
@@ -242,13 +249,13 @@ start_vlan(void)
 	if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0)
 		return errno;
 
-	for (i = 0; i <= VLAN_MAXVID; i ++) 
-	{
+	for (i = 0; i <= VLAN_MAXVID; i ++) {
 		char nvvar_name[16];
 		char vlan_id[16];
 		char *hwname, *hwaddr;
 		char prio[8];
-		
+		struct ethtool_drvinfo info;
+
 		/* get the address of the EMAC on which the VLAN sits */
 		snprintf(nvvar_name, sizeof(nvvar_name), "vlan%dhwname", i);
 		if (!(hwname = nvram_get(nvvar_name)))
@@ -266,7 +273,15 @@ start_vlan(void)
 				continue;
 			if (ifr.ifr_hwaddr.sa_family != ARPHRD_ETHER)
 				continue;
-			if (!bcmp(ifr.ifr_hwaddr.sa_data, ea, ETHER_ADDR_LEN))
+			if (bcmp(ifr.ifr_hwaddr.sa_data, ea, ETHER_ADDR_LEN))
+				continue;
+			/* Get driver info, it can handle both et0 and et2 have same MAC */
+			memset(&info, 0, sizeof(info));
+			info.cmd = ETHTOOL_GDRVINFO;
+			ifr.ifr_data = (caddr_t)&info;
+			if (ioctl(s, SIOCETHTOOL, &ifr) < 0)
+				continue;
+			if (strcmp(info.driver, hwname) == 0)
 				break;
 		}
 		if (j > DEV_NUMIFS)

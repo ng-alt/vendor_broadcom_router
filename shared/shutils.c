@@ -61,7 +61,7 @@ char *
 fd2str(int fd)
 {
 	char *buf = NULL;
-	size_t count = 0, n;
+	ssize_t count = 0, n;
 
 	do {
 		buf = realloc(buf, count + 512);
@@ -142,7 +142,7 @@ _eval(char *const argv[], char *path, int timeout, int *ppid)
 			signal(sig, SIG_DFL);
 
 		/* Clean up */
-		ioctl(0, TIOCNOTTY, 0);
+		(void)ioctl(0, TIOCNOTTY, 0);
 		close(STDIN_FILENO);
 		setsid();
 
@@ -321,6 +321,7 @@ get_pid_by_name(char *name)
 		}
 	}
 
+	closedir(dir);
 	return pid;
 }
 
@@ -388,7 +389,7 @@ get_bridged_interfaces(char *bridge_name)
 
 	ifnames = nvram_get(bridge);
 
-	if (ifnames)
+	if (ifnames && strlen(ifnames) < sizeof(interfaces))
 		strncpy(interfaces, ifnames, sizeof(interfaces));
 	else
 		return NULL;

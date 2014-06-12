@@ -64,7 +64,8 @@ wl_ioctl(char *name, int cmd, void *buf, int len)
 	ioc.used = 0;
 	ioc.needed = 0;
 
-	strncpy(ifr.ifr_name, name, IFNAMSIZ);
+	strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name) - 1);
+	ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
 	ifr.ifr_data = (caddr_t) &ioc;
 	if ((ret = ioctl(s, SIOCDEVPRIVATE, &ifr)) < 0)
 		if (cmd != WLC_GET_MAGIC && cmd != WLC_GET_BSSID) {
@@ -123,7 +124,8 @@ wl_hwaddr(char *name, unsigned char *hwaddr)
 	}
 
 	/* do it */
-	strncpy(ifr.ifr_name, name, IFNAMSIZ);
+	strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name)-1);
+	ifr.ifr_name[sizeof(ifr.ifr_name)-1] = '\0';
 	if ((ret = ioctl(s, SIOCGIFHWADDR, &ifr)) == 0)
 		memcpy(hwaddr, ifr.ifr_hwaddr.sa_data, ETHER_ADDR_LEN);
 

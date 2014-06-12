@@ -77,7 +77,11 @@ wget(int method, const char *server, char *buf, size_t count, off_t offset)
 		return (0);
 	}
 
-	strncpy(url, server, sizeof(url));
+	if (strlen(server) >= sizeof(url)) {
+		dprintf("wget: server url is too long\n");
+		return 0;
+	}
+	strcpy(url, server);
 
 	/* Parse URL */
 	if (!strncmp(url, "http://", 7)) {

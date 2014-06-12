@@ -2,7 +2,7 @@
  * Broadcom Home Gateway Reference Design
  * Web Page Configuration Support Routines
  *
- * Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+ * Copyright (C) 2014, Broadcom Corporation. All Rights Reserved.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- * $Id: broadcom.c 388032 2013-02-27 22:42:23Z $
+ * $Id: broadcom.c 465779 2014-03-28 09:48:53Z $
  */
 
 #ifdef WEBS
@@ -35,6 +35,11 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#ifdef __CONFIG_VISUALIZATION__
+#include <sys/fcntl.h>
+#include <sys/unistd.h>
+#endif /* __CONFIG_VISUALIZATION__ */
+#include <netdb.h>
 #include <assert.h>
 #include <httpd.h>
 #endif /* WEBS */
@@ -78,6 +83,13 @@
 #endif
 
 
+
+#ifdef __CONFIG_HSPOT__
+#include<dirent.h>
+#endif
+
+#include <etioctl.h>
+
 /* FILE-CSTYLED */
 int internal_init(void);
 
@@ -96,6 +108,219 @@ static int cert_revoke(webs_t wp, char *sn_str);
 
 /* From wlc_rate.[ch] */
 #define MCS_TABLE_SIZE 33
+
+#ifdef __CONFIG_HSPOT__
+#define VENUE_GROUP_COUNT 13
+#define IMAGE_HEADER_BYTE_OFFSET 24
+typedef struct{
+	int vanue_group_code;
+	int vanue_type_count;
+	int vanue_type_offset;
+	char* vanue_group_description;
+}vanue_group_description;
+
+vanue_group_description vanue_groups[] = {
+	{0,2,0,"Unspecified"},
+	{1,17,2,"Assembly"},
+	{2,10,19,"Business"},
+	{3,5,29,"Educational"},
+	{4,2,34,"Factory and Industrial"},
+	{5,7,36,"Institutional"},
+	{6,7,43,"Mercantile"},
+	{7,6,50,"Residential"},
+	{8,2,56,"Storage"},
+	{9,2,58,"Utility and Miscellaneous"},
+	{10,9,60,"Vehicular"},
+	{11,8,69,"Outdoor"},
+	{12,1,77,"Reserved"}
+};
+
+typedef struct{
+	int vanue_group_code;
+	int vanue_type_code;
+	char* vanue_type_description;
+}vanue_type_assignments;
+
+vanue_type_assignments vanue_types[] = {
+	{0,0,"Unspecified"},
+	{0,1,"Reserved"},
+
+	{1,0,"Unspecified Assembly"},
+	{1,1,"Areana"},
+	{1,2,"Stadium"},
+	{1,3,"Passage Terminal(e.g., airport, bus, ferry, train station)"},
+	{1,4,"Amphitheter"},
+	{1,5,"Amusement Park"},
+	{1,6,"Place of Worship"},
+	{1,7,"Convention Center"},
+	{1,8,"Library"},
+	{1,9,"Museum"},
+	{1,10,"Restaurant"},
+	{1,11,"Theater"},
+	{1,12,"Bar"},
+	{1,13,"Coffee Shop"},
+	{1,14,"Zoo or Aquarium"},
+	{1,15,"Emergency Coordination Center"},
+	{1,16,"Reserved"},
+
+	{2,0,"Unspecified Business"},
+	{2,1,"Doctor or Dentist office"},
+	{2,2,"Bank"},
+	{2,3,"Fire Station"},
+	{2,4,"Police Station"},
+	{2,6,"Post Office"},
+	{2,7,"Professional Office"},
+	{2,8,"Research and Development Facility"},
+	{2,9,"Attorney Office"},
+	{2,10,"Reserved"},
+
+	{3,0,"Unspecified Educational"},
+	{3,1,"School, Primary"},
+	{3,2,"School, Secondary"},
+	{3,3,"University or College"},
+	{3,4,"Reserved"},
+
+	{4,0,"Unspecified Factory and Industrial"},
+	{4,1,"Reserved"},
+
+	{5,0,"Unspecified Institutional"},
+	{5,1,"Hospital"},
+	{5,2,"Long Term Care Facility(e.g., Nursing home, Hospice, etc.)"},
+	{5,3,"Alcohol and Drug Rehabilitation Center"},
+	{5,4,"Group Home"},
+	{5,5,"Prison or Jail"},
+	{5,6,"Reserved"},
+
+	{6,0,"Unspecified Mercantile"},
+	{6,1,"Retail Store"},
+	{6,2,"Grocery Market"},
+	{6,3,"Automative Service Station"},
+	{6,4,"Shopping Mall"},
+	{6,5,"Gas Station"},
+	{6,6,"Reserved"},
+
+	{7,0,"Unspecified Residential"},
+	{7,1,"Private Residence"},
+	{7,2,"Hotel or Motel"},
+	{7,3,"Dormitory"},
+	{7,4,"Boarding House"},
+	{7,5,"Reserved"},
+
+	{8,0,"Unspecified Storage"},
+	{8,1,"Reserved"},
+
+	{9,0,"Unspecified Utility and Miscellaneous"},
+	{9,1,"Reserved"},
+
+	{10,0,"Unspecified Vehicular"},
+	{10,1,"Automobile or Truck"},
+	{10,2,"Airplane"},
+	{10,3,"Bus"},
+	{10,4,"Ferry"},
+	{10,5,"Ship or Boat"},
+	{10,6,"Train"},
+	{10,7,"Motor Bike"},
+	{10,8,"Reserved"},
+
+	{11,0,"Unspecified Outdoor"},
+	{11,1,"Muni-mesh Network"},
+	{11,2,"City Park"},
+	{11,3,"Rest Area"},
+	{11,4,"Traffic Control"},
+	{11,5,"Bus Stop"},
+	{11,6,"Kiosk"},
+	{11,7,"Reserved"},
+
+	{12,0,"Reserved"}
+};
+
+
+typedef struct {
+	uint8 eap_method_val;
+	char* eap_method_name;
+} eap_method_col;
+
+#define EAP_METHOD_COUNT	11
+eap_method_col eap_methods[] = {
+	{-1,"Select"},
+	{13,"EAP-TLS"},
+	{17,"EAP-LEAP"},
+	{18,"EAP-SIM"},
+	{21,"EAP-TTLS"},
+	{23,"EAP-AKA"},
+	{25,"EAP-PEAP"},
+	{43,"EAP-FAST"},
+	{47,"EAP-PSK"},
+	{50,"EAP-AKAP"},
+	{254,"EAP-EXTENDED"}
+};
+
+typedef struct{
+	int auth_id_code;
+	int auth_param_count;
+	int auth_param_offset;
+	char* auth_id_description;
+}auth_id_description;
+
+#define AUTH_ID_COUNT		4
+auth_id_description auth_ids[] = {
+	{2,5,0,"Non-EAP Inner Auth Method"},
+	{3,8,5,"Inner Auth Type"},
+	{5,11,13,"Credential Type"},
+	{6,11,24,"Tunnle EAP Method Type"},
+};
+
+typedef struct{
+	int auth_id_code;
+	int auth_param_code;
+	char* auth_param_description;
+}auth_param_assignments;
+
+
+auth_param_assignments auth_params[] = {
+
+	{2,-1,"Select"},
+	{2,1,"PAP"},
+	{2,2,"CHAP"},
+	{2,3,"MSCHAP"},
+	{2,4,"MSCHAPV2"},
+
+	{3,-1,"Select"},
+	{3,17,"LEAP"},
+	{3,25,"PEAP"},
+	{3,13,"EAP-TLS"},
+	{3,43,"EAP-FAST"},
+	{3,18,"EAP-SIM"},
+	{3,21,"EAP-TTLS"},
+	{3,23,"EAP-AKA"},
+
+	{5,-1,"Select"},
+	{5,1,"SIM"},
+	{5,2,"USIM"},
+	{5,3,"NFC Secure Element"},
+	{5,4,"Hardware Token"},
+	{5,5,"Soft Token"},
+	{5,6,"Certificate"},
+	{5,7,"Username Password"},
+	{5,8,"Reserved"},
+	{5,9,"Anonymous"},
+	{5,10,"Vendor Specific"},
+
+	{6,-1,"Select"},
+	{6,1,"SIM"},
+	{6,2,"USIM"},
+	{6,3,"NFC Secure Element"},
+	{6,4,"Hardware Token"},
+	{6,5,"Soft Token"},
+	{6,6,"Certificate"},
+	{6,7,"Username Password"},
+	{6,8,"Reserved"},
+	{6,9,"Anonymous"},
+	{6,10,"Vendor Specific"}
+};
+
+#endif /* __CONFIG_HSPOT__ */
+
 
 struct mcs_table_info {
 	uint phy_rate_20;
@@ -232,9 +457,297 @@ inline void sys_reboot(void)
 #define SLEEP(X)	sleep(X)
 #define USLEEP(X)	usleep(X)
 
+#define NVNAME_BUFF					32
+#define NVVAL_BUFF					2048
+#define ITEM_BUFF					512
+#define NAME_BUFF					256
+#define CODE_BUFF					20
+#define	HTTP_ERR_PAGE_NOT_FOUND		400
+
+#ifndef min
+#define min(a, b)	(((a) < (b)) ? (a) : (b))
+#endif
+
 #ifndef WEBS
 
 #define MIN_BUF_SIZE	4096
+
+#ifdef __CONFIG_VISUALIZATION__
+#define INVALID_SOCKET	-1
+#define VIS_SOCKET_WAIT_TIMEOUT	15
+#define MAX_READ_BUFFER 1449
+#define VISUALIZATION_SERVER_PORT 8888
+#define VISUALIZATION_SERVER_ADDRESS "127.0.0.1"
+#define VIS_LEN_FIELD_SZ	4 /* Number of bytes used to specify the length */
+#define VIS_MAX_XML_LEN		1024
+
+enum vis_enum_req_args {
+	VIS_UNKNOWN,
+	VIS_REQUEST,
+	VIS_DUTMAC,
+	VIS_STAMAC,
+	VIS_FREQBAND,
+	VIS_INTERVAL,
+	VIS_DURATION,
+	VIS_FREQUENCY,
+	VIS_DBSIZE,
+	VIS_STARTSTOP,
+	VIS_TOTAL,
+	VIS_GRAPHNAME,
+	VIS_DCONIP,
+	VIS_ISREMOTE_ENABLE,
+};
+
+typedef struct{
+	enum vis_enum_req_args id; /* ID of the request argument */
+	char *req_name; /* Name of the argument */
+}vis_req_args;
+
+vis_req_args vis_req_args_list[] = {
+	{VIS_UNKNOWN, "Unknown"},
+	{VIS_REQUEST, "Req"},
+	{VIS_DUTMAC, "DutMac"},
+	{VIS_STAMAC, "StaMac"},
+	{VIS_FREQBAND, "FreqBand"},
+	{VIS_INTERVAL, "Interval"},
+	{VIS_DURATION, "Duration"},
+	{VIS_FREQUENCY, "Frequency"},
+	{VIS_DBSIZE, "DBSize"},
+	{VIS_STARTSTOP, "StartStop"},
+	{VIS_TOTAL, "Total"},
+	{VIS_GRAPHNAME, "graphname"},
+	{VIS_DCONIP, "DCONIP"},
+	{VIS_ISREMOTE_ENABLE, "IsRemoteDebugEnabled"}
+};
+
+#endif /* __CONFIG_VISUALIZATION__ */
+
+#ifdef __CONFIG_HSPOT__
+
+/* Structure to hold the image file names and language code */
+typedef struct {
+	char imgfilename[BCM_DECODE_HSPOT_ANQP_MAX_ICON_FILENAME_LENGTH + 1];
+	char lang[VENUE_LANGUAGE_CODE_SIZE + 1];
+} imagefilenames;
+
+/* Array for holding file names */
+imagefilenames imgfilearr[CODE_BUFF];
+
+static char*
+strncpy_n(char *destination, const char *source, size_t num)
+{
+	char *ret = strncpy(destination, source, num - 1);
+	destination[num - 1] = '\0';
+	return ret;
+}
+
+static int
+GetImageSize(const char *fn, uint16 *x, uint16 *y)
+{
+	unsigned char buf[IMAGE_HEADER_BYTE_OFFSET];
+	int ret = 0;
+	long len = 0;
+	FILE *filePtr = fopen(fn, "rb");
+
+	if (filePtr == 0) {
+		ret = -1;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	if (fseek(filePtr, 0, SEEK_END) == -1) {
+		ret = -1;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	len = ftell(filePtr);
+
+	if (fseek(filePtr, 0, SEEK_SET) == -1) {
+		ret = -1;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	if (len < IMAGE_HEADER_BYTE_OFFSET) {
+		ret = -1;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	/*
+	Strategy:
+	reading GIF dimensions requires the first 10 bytes of the file
+	reading PNG dimensions requires the first 24 bytes of the file
+	reading JPEG dimensions requires scanning through jpeg chunks
+	In all formats, the file is at least 24 bytes big, so we'll read that always
+	*/
+
+	if (fread(buf, 1, IMAGE_HEADER_BYTE_OFFSET, filePtr) < IMAGE_HEADER_BYTE_OFFSET) {
+		ret = -1;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	/* For JPEGs, we need to read the first 12 bytes of each chunk.
+	 We'll read those 12 bytes at buf+2...buf+14, i.e. overwriting the existing buf.
+	*/
+
+	if ((buf[0] == 0xFF) && (buf[1] == 0xD8) &&
+		(buf[2] == 0xFF) && (buf[3] == 0xE0) &&
+		(buf[6] == 'J') && (buf[7] == 'F') &&
+		(buf[8] == 'I') && (buf[9] == 'F'))
+	{
+		long pos = 2;
+		while (buf[2] == 0xFF)
+		{
+			if ((buf[3] == 0xC0) || (buf[3] == 0xC1) ||
+				(buf[3] == 0xC2) || (buf[3] == 0xC3) ||
+				(buf[3] == 0xC9) || (buf[3] == 0xCA) ||
+				(buf[3] == 0xCB))
+					break;
+			pos += 2 + (buf[4]<<8) + buf[5];
+
+			if (pos+12 > len)
+				break;
+
+			if (fseek(filePtr, pos, SEEK_SET) == -1) {
+				ret = -1;
+				goto GETIMAGESIZE_DONE;
+			}
+
+			if (fread(buf+2, 1, 12, filePtr) < 12) {
+				ret = -1;
+				goto GETIMAGESIZE_DONE;
+			}
+		}
+	}
+	/*
+	JPEG:first two bytes of buf are
+	first two bytes of the jpeg file;
+	rest of buf is the DCT frame
+	*/
+
+	if ((buf[0] == 0xFF) &&
+		(buf[1] == 0xD8) && (buf[2] == 0xFF))
+	{
+		*y = (buf[7] << 8) + buf[8];
+		*x = (buf[9] << 8) + buf[10];
+		ret = 0;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	/* GIF: first three bytes say "GIF", next three give version number. Then dimensions */
+	if ((buf[0] == 'G') &&
+		(buf[1] == 'I') &&
+		(buf[2] == 'F'))
+	{
+		*x = buf[6] + (buf[7] << 8);
+		*y = buf[8] + (buf[9] << 8);
+		ret = 0;
+		goto GETIMAGESIZE_DONE;
+	}
+
+	/* PNG: the first frame is by definition an IHDR frame, which gives dimensions */
+
+	if ((buf[0] == 0x89) && (buf[1] == 'P') &&
+		(buf[2] == 'N') && (buf[3] == 'G') &&
+		(buf[4] == 0x0D) && (buf[5] == 0x0A) &&
+		(buf[6] == 0x1A) && (buf[7] == 0x0A) &&
+		(buf[12] == 'I') &&
+		(buf[13] == 'H') &&
+		(buf[14] == 'D') &&
+		(buf[15] == 'R'))
+	{
+		*x = (buf[16]<<24) + (buf[17]<<16) + (buf[18]<<8) + (buf[19]<<0);
+		*y = (buf[20]<<24) + (buf[21]<<16) + (buf[22]<<8) + (buf[23]<<0);
+		ret = 0;
+		goto GETIMAGESIZE_DONE;
+	}
+
+GETIMAGESIZE_DONE :
+	if(filePtr)
+		fclose(filePtr);
+	return ret;
+}
+
+static int
+GetMimeType(const char *fn, char *MIME_type, int size)
+{
+	/* From File Extension decide the MIME Type */
+	char *pch = strrchr(fn, '.');
+	if (pch != NULL)
+	{
+		if ((!strcmp(pch, ".bmp")) ||
+			(!strcmp(pch, ".dib")) ||
+			(!strcmp(pch, ".rle")))
+				strncpy_n(MIME_type, "image/bmp", size);
+		else if ((!strcmp(pch, ".jpg")) ||
+			(!strcmp(pch, ".jpeg")) ||
+			(!strcmp(pch, ".jpe")) ||
+			(!strcmp(pch, ".jfif")))
+			strncpy_n(MIME_type, "image/jpeg", size);
+		else if ((!strcmp(pch, ".gif")))
+			strncpy_n(MIME_type, "image/gif", size);
+		else if ((!strcmp(pch, ".emf")))
+			strncpy_n(MIME_type, "image/emf", size);
+		else if ((!strcmp(pch, ".wmf")))
+			strncpy_n(MIME_type, "image/wmf", size);
+		else if ((!strcmp(pch, ".tif")) || (!strcmp(pch, ".tiff")))
+			strncpy_n(MIME_type, "image/tiff", size);
+		else if ((!strcmp(pch, ".png")))
+			strncpy_n(MIME_type, "image/png", size);
+		else if ((!strcmp(pch, ".ico")))
+			strncpy_n(MIME_type, "image/x-icon", size);
+		else
+			strncpy_n(MIME_type, "image/unknown", size);
+	}
+	return 0;
+}
+
+static int
+GetIconFiles(const char* path, bcm_decode_hspot_anqp_osu_provider_t *osu)
+{
+	DIR* FD;
+	struct dirent* in_file;
+	int i = 0;
+
+	/* open the directory*/
+	FD = opendir (path);
+
+	memset(imgfilearr, 0, sizeof(imgfilearr));
+
+	/* Read the file names from directory structure */
+	while (FD && ((in_file = readdir(FD)) != NULL))
+	{
+		/* Check for the image file name extension */
+		if(strstr(in_file->d_name, ".png") || strstr(in_file->d_name, ".jpg") || strstr(in_file->d_name, ".gif") ||
+		strstr(in_file->d_name, ".bmp") || strstr(in_file->d_name, ".jpeg") || strstr(in_file->d_name, ".ico") ||
+		strstr(in_file->d_name, ".tif") || strstr(in_file->d_name, ".tiff") )
+		{
+			strncpy_n(osu->iconMetadata[i].filename, in_file->d_name, BCM_DECODE_HSPOT_ANQP_MAX_ICON_FILENAME_LENGTH+1);
+			strncpy_n(osu->iconMetadata[i].lang,
+				strstr(in_file->d_name, "_zxx.") ? LANG_ZXX : ENGLISH, VENUE_LANGUAGE_CODE_SIZE+1);
+			strncpy_n(imgfilearr[i].imgfilename, osu->iconMetadata[i].filename, BCM_DECODE_HSPOT_ANQP_MAX_ICON_FILENAME_LENGTH+1);
+			strncpy_n(imgfilearr[i].lang, osu->iconMetadata[i].lang, VENUE_LANGUAGE_CODE_SIZE+1);
+			i++;
+		}
+
+	}
+	osu->iconMetadataCount = i;
+	if(FD)
+		closedir(FD);
+	return 1;
+}
+
+static int
+GetIconMetadata(const char* path, const char* filename, bcm_decode_hspot_anqp_icon_metadata_t *metadata)
+{
+	char fullpath[NAME_BUFF];
+	memset(fullpath, 0, sizeof(fullpath));
+	strncpy_n(fullpath, path, NAME_BUFF);
+	strncat(fullpath, filename, min(strlen(filename), NAME_BUFF-strlen(fullpath)));
+	GetImageSize(fullpath, &metadata->width, &metadata->height);
+	GetMimeType(filename, (char*)metadata->type, BCM_DECODE_HSPOT_ANQP_MAX_ICON_TYPE_LENGTH+1);
+	return 0;
+}
+
+#endif /* __CONFIG_HSPOT__ */
 
 static int
 ej_kernel_version(int eid, webs_t wp, int argc, char_t **argv)
@@ -251,17 +764,21 @@ ej_kernel_version(int eid, webs_t wp, int argc, char_t **argv)
 	strncpy(buf, utsn.release, sizeof(buf)-1);
 	buf[sizeof(buf)-1] = 0;
 
-	ptr = strstr(buf, ".");
-	if (!ptr)
-		return -1;
+	if (strstr(buf, "2.6.36")) {
+		websWrite(wp,"2.6.36 (%s)", utsn.machine);
+	} else {
+		ptr = strstr(buf, ".");
+		if (!ptr)
+			return -1;
 
-	ptr = ptr+1;
-	end = strstr(ptr, ".");
-	if (end)
-		*end='\0';
-	
-	if (memcmp(buf, "2.4", 3))
-		websWrite(wp,"%s", buf);
+		ptr = ptr+1;
+		end = strstr(ptr, ".");
+		if (end)
+			*end='\0';
+
+		if (memcmp(buf, "2.4", 3))
+			websWrite(wp,"%s (%s)", buf, utsn.machine);
+	}
 
 	return 0;
 }
@@ -276,7 +793,7 @@ static char* get_linux_partition_to_update(int* next)
 	char *target_to_flash;
 
 	/* Second priority: If the LINUX_BOOT_SEQUENCE is not set, we suppose the
- 	 * the user wants to disable the dual boot, always return the first one
+	 * the user wants to disable the dual boot, always return the first one
 	 */
 	char *the_image = nvram_get(IMAGE_BOOT);
 	FILE *fp;
@@ -285,7 +802,7 @@ static char* get_linux_partition_to_update(int* next)
 	if(the_image != NULL) {
 		unsigned int current_image = atoi(the_image);
 		unsigned int next_image = -1;
-		
+
 		if(current_image > 1) {
 			cprintf("Image more than 2 is not supported, use default!!\n");
 			goto my_default;
@@ -298,7 +815,7 @@ static char* get_linux_partition_to_update(int* next)
 		if ( (next_image == 1) && (fp = fopen("/proc/mtd", "r"))) {
 			char dev[PATH_MAX];
 
-                	while (fgets(dev, sizeof(dev), fp)) {
+			while (fgets(dev, sizeof(dev), fp)) {
 				if (strstr(dev, LINUX_SECOND)) {
 					fclose(fp);
 					goto my_continue;
@@ -332,7 +849,6 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	char *buf = NULL;
 	int count, ret = 0;
 	long flags = -1;
-	int size = BUFSIZ;
 	char *target_partition;
 	int the_next=-1;
 
@@ -376,10 +892,12 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	* fact is data buffered in the stream file's buffer. Since no
 	* one has changed the default stream file's buffer size, let's
 	* use the constant BUFSIZ until someone changes it.
+	* The code should be as follows
+	* if (size < MIN_BUF_SIZE)
+	*	size = MIN_BUF_SIZE;
 	*/
-	if (size < MIN_BUF_SIZE)
-		size = MIN_BUF_SIZE;
-	if ((buf = malloc(size)) == NULL) {
+
+	if ((buf = malloc(BUFSIZ)) == NULL) {
 		ret = ENOMEM;
 		goto err;
 	}
@@ -389,7 +907,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	while (total && *total) {
 		if (waitfor(fileno(stream), 5) <= 0)
 			break;
-		count = safe_fread(buf, 1, size, stream);
+		count = safe_fread(buf, 1, BUFSIZ, stream);
 		if (!count && (ferror(stream) || feof(stream)))
 			break;
 		*total -= count;
@@ -419,7 +937,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	}
 
  err:
- 	if (buf)
+	if (buf)
 		free(buf);
 	if (fifo)
 		fclose(fifo);
@@ -439,7 +957,6 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	char *buf = NULL;
 	int count, ret = 0;
 	long flags = -1;
-	int size = BUFSIZ;
 	char *cmd = "write";
 	char *boot_partition = "boot";
 	char *target_partition = "linux";
@@ -480,10 +997,12 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	* fact is data buffered in the stream file's buffer. Since no
 	* one has changed the default stream file's buffer size, let's
 	* use the constant BUFSIZ until someone changes it.
+	*
+	* if (size < MIN_BUF_SIZE)
+	*	size = MIN_BUF_SIZE;
 	*/
-	if (size < MIN_BUF_SIZE)
-		size = MIN_BUF_SIZE;
-	if ((buf = malloc(size)) == NULL) {
+
+	if ((buf = malloc(BUFSIZ)) == NULL) {
 		ret = ENOMEM;
 		goto err;
 	}
@@ -493,7 +1012,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	while (total && *total) {
 		if (waitfor(fileno(stream), 5) <= 0)
 			break;
-		count = safe_fread(buf, 1, size, stream);
+		count = safe_fread(buf, 1, BUFSIZ, stream);
 		if (!count && (ferror(stream) || feof(stream)))
 			break;
 		*total -= count;
@@ -514,7 +1033,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	}
 
  err:
- 	if (buf)
+	if (buf)
 		free(buf);
 	if (fifo)
 		fclose(fifo);
@@ -663,6 +1182,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 			/* Do not display reserved leases */
 			if (ETHER_ISNULLADDR(lease.chaddr))
 				continue;
+			lease.hostname[sizeof(lease.hostname) - 1] = '\0';
 			ret += websWrite(wp, "<tr><td>%s</td><td>", lease.hostname);
 			for (i = 0; i < 6; i++) {
 				ret += websWrite(wp, "%02X", lease.chaddr[i]);
@@ -774,7 +1294,9 @@ ej_wan_link(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp, "N/A");
 
 	/* Check for hardware link */
-	strncpy(ifr.ifr_name, wan_ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, wan_ifname, sizeof(ifr.ifr_name) - 1);
+	ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
+
 	ifr.ifr_data = (void *) &ecmd;
 	ecmd.cmd = ETHTOOL_GSET;
 	if (ioctl(s, SIOCETHTOOL, &ifr) < 0) {
@@ -787,7 +1309,8 @@ ej_wan_link(int eid, webs_t wp, int argc, char_t **argv)
 	}
 
 	/* Check for valid IP address */
-	strncpy(ifr.ifr_name, wan_ifname, IFNAMSIZ);
+	strncpy(ifr.ifr_name, wan_ifname, sizeof(ifr.ifr_name) - 1);
+	ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
 	if (ioctl(s, SIOCGIFADDR, &ifr) < 0) {
 		close(s);
 		return websWrite(wp, "Connecting");
@@ -938,7 +1461,6 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	char *buf = NULL;
 	int count, ret = 0;
 	long flags = -1;
-	int size = BUFSIZ;
 
 	assert(stream);
 	assert(total);
@@ -972,10 +1494,11 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	* fact is data buffered in the stream file's buffer. Since no
 	* one has changed the default stream file's buffer size, let's
 	* use the constant BUFSIZ until someone changes it.
+	* The code should be as follows
+	* if (size < MIN_BUF_SIZE)
+	*	size = MIN_BUF_SIZE;
 	*/
-	if (size < MIN_BUF_SIZE)
-		size = MIN_BUF_SIZE;
-	if ((buf = malloc(size)) == NULL) {
+	if ((buf = malloc(BUFSIZ)) == NULL) {
 		ret = ENOMEM;
 		goto err;
 	}
@@ -985,7 +1508,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	while (total && *total) {
 		if (waitfor(fileno(stream), 5) <= 0)
 			break;
-		count = safe_fread(buf, 1, size, stream);
+		count = safe_fread(buf, 1, BUFSIZ, stream);
 		if (!count && (ferror(stream) || feof(stream)))
 			break;
 		*total -= count;
@@ -1006,7 +1529,7 @@ sys_upgrade(char *url, FILE *stream, int *total)
 	}
 
  err:
- 	if (buf)
+	if (buf)
 		free(buf);
 	if (fifo)
 		fclose(fifo);
@@ -1026,7 +1549,7 @@ ej_dumplog(int eid, webs_t wp, int argc, char_t **argv)
 static int
 ej_syslog(int eid, webs_t wp, int argc, char_t **argv)
 {
-	
+
 
 	return (0);
 }
@@ -1045,14 +1568,14 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 	unsigned long expires = 0;
 	int ret = 0;
 	time_t tm;
-	
+
 	/* Count the number of lan and guest interfaces */
 	if (nvram_get("lan_ifname"))
 		num_interfaces++;
 
 	if (nvram_get("lan1_ifname"))
 		num_interfaces++;
-	
+
 	for (index =0; index < num_interfaces; index++){
 		snprintf(word, sizeof(word),"/etc/dhcpd%d.leases",index);
 
@@ -1068,7 +1591,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 			continue;
 			*cp2 = '\0';
 			ret += websWrite(wp, "<tr><td>%s</td><td>", cp1);
-			
+
 			/* hardware address */
 			for (cp1 = cp2+1, cp2 = cp1; *cp2 && *cp2 != ';'; ++cp2)
 				;
@@ -1083,7 +1606,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 			continue;
 			*cp2 = '\0';
 			ret += websWrite(wp, "</td><td>%s</td><td>", cp1);
-			
+
 			/* expires */
 			cp1 = cp2+1;
 			if (!strcmp(cp1, "never"))
@@ -1106,7 +1629,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 
 		fclose(fp);
 	}
-	
+
 	return ret;
 }
 
@@ -1311,7 +1834,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 		/* dump lease */
 		dump = lease = dhcpd_lease_dump(ifname);
 		if (!dump)
-			return 0;	
+			return 0;
 
 		/* Write HTML until last */
 		last = 0;
@@ -1323,7 +1846,7 @@ ej_lan_leases(int eid, webs_t wp, int argc, char_t **argv)
 				lease++;
 				continue;
 			}
-		
+
 			ret += websWrite(wp, "<tr><td>%s</td><td>", lease->hostname);
 
 			for (i = 0; i < 6; i++) {
@@ -1604,7 +2127,12 @@ ej_asp_list(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 	websWrite(wp,
 	  "  <td><a href=\"radio.asp\"><img border=\"0\" src=\"radio.gif\" alt=\"Wlan I/F\"></a></td>\n"
-	  "  <td><a href=\"ssid.asp\"><img border=\"0\" src=\"ssid.gif\" alt=\"xyz\"></a></td>\n"
+	  "  <td><a href=\"ssid.asp\"><img border=\"0\" src=\"ssid.gif\" alt=\"xyz\"></a></td>\n");
+#ifdef __CONFIG_HSPOT__
+	websWrite(wp,
+	  "  <td><a href=\"passpoint.asp\"><img border=\"0\" src=\"passpoint.gif\" alt=\"Passpoint\"></a></td>\n");
+#endif
+	websWrite(wp,
 	  "  <td><a href=\"security.asp\"><img border=\"0\" src=\"security.gif\" alt=\"Security\"></a></td>\n");
 #ifdef __CONFIG_WAPI_IAS__
 	websWrite(wp,
@@ -1621,6 +2149,10 @@ ej_asp_list(int eid, webs_t wp, int argc, char_t **argv)
 	websWrite(wp,
 	  "  <td><a href=\"netboot.asp\"><img border=\"0\" src=\"firmware.gif\" alt=\"Firmware\"></a></td>\n");
 #endif	/* __CONFIG_NETBOOT */
+#ifdef __CONFIG_VISUALIZATION__
+	websWrite(wp,
+          "  <td><a href=\"visindex.asp\"><img border=\"0\" src=\"visualization.gif\" alt=\"Visualization\"></a></td>\n");
+#endif /* __CONFIG_VISUALIZATION__ */
 	websWrite(wp,
 	  "  <td width=\"100%%\"></td>\n"
 	  "</tr>\n");
@@ -1799,7 +2331,7 @@ static char *
 translate_ssid(char *ssid)
 {
 	static char ssid_html[32*5+1]; /* *5 => &#255 */
-	char *c = NULL, *pssid = ssid_html;;
+	char *c = NULL, *pssid = ssid_html;
 	int len, size = sizeof(ssid_html);
 
 	/* Clear static ssid_html */
@@ -1885,7 +2417,7 @@ ej_wl_bssid_list(int eid, webs_t wp, int argc, char_t **argv)
 		if (!bssid){
 			bssid = "virtual_bssid";
 		}
-		snprintf(vif, sizeof(vif), "%c%c%c.%d_bss_enabled", prefix[0], prefix[1], 
+		snprintf(vif, sizeof(vif), "%c%c%c.%d_bss_enabled", prefix[0], prefix[1],
 			prefix[2], i);
 		bss_enabled = nvram_safe_get(vif);
 		websWrite(wp, "<option value=%d %s > %s (%s %sabled)</option>\n", i,
@@ -2025,7 +2557,7 @@ ej_emf_enable_display(int eid, webs_t wp, int argc, char_t **argv)
 
 #ifdef __CONFIG_EMF__
 /*
- * Example: 
+ * Example:
  * emf_entry=225.0.0.1:wds0.1 225.0.0.2:wds0.2 ...
  * get_emf_entry("mgrp", 0) : produces "225.0.0.1"
  * get_emf_entry("if", 0) : produces "wds0.1"
@@ -2067,17 +2599,17 @@ ej_emf_entries_display(int eid, webs_t wp, int argc, char_t **argv)
 
 	websWrite(wp, "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
 	websWrite(wp, "<tr>\n");
-    	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
+	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
 	websWrite(wp, "onMouseOver=\"return overlib(\'Add/Delete static forwarding entries for the multicast groups.\', LEFT);\"\n");
 	websWrite(wp, "onMouseOut=\"return nd();\">\n");
 	websWrite(wp, "<input type=\"hidden\" name=\"emf_entry\" value=\"5\">\n");
 	websWrite(wp, "Static Multicast Forwarding Entries:&nbsp;&nbsp;\n");
-    	websWrite(wp, "</th>\n");
-    	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td class=\"label\">Multicast IP Address</td>\n");
-    	websWrite(wp, "<td></td>\n");
-    	websWrite(wp, "<td class=\"label\">Interface</td>\n");
-  	websWrite(wp, "</tr>\n");
+	websWrite(wp, "</th>\n");
+	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
+	websWrite(wp, "<td class=\"label\">Multicast IP Address</td>\n");
+	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td class=\"label\">Interface</td>\n");
+	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_entry("mgrp", 0, value);
@@ -2126,7 +2658,7 @@ ej_emf_entries_display(int eid, webs_t wp, int argc, char_t **argv)
 
 #ifdef __CONFIG_EMF__
 /*
- * Example: 
+ * Example:
  * emf_uffp_entry=wds0.1 wds0.2 ...
  * get_emf_uffp_entry("if", 0) : produces "wds0.1"
  * get_emf_uffp_entry("if", 1) : produces "wds0.2"
@@ -2140,7 +2672,7 @@ get_emf_uffp_entry(char *arg, int entry, char *output)
 	foreach(word, nvram_safe_get("emf_uffp_entry"), next) {
 		if (entry-- == 0) {
 			ifname = word;
-			if (!ifname)
+			if (ifname[0] == '\0')
 				continue;
 			if (!strcmp(arg, "if")) {
 				strcpy(output, ifname);
@@ -2155,7 +2687,7 @@ get_emf_uffp_entry(char *arg, int entry, char *output)
 }
 
 /*
- * Example: 
+ * Example:
  * emf_rtport_entry=wds0.1 wds0.2 ...
  * get_emf_rtport_entry("if", 0) : produces "wds0.1"
  * get_emf_rtport_entry("if", 1) : produces "wds0.2"
@@ -2169,7 +2701,7 @@ get_emf_rtport_entry(char *arg, int entry, char *output)
 	foreach(word, nvram_safe_get("emf_rtport_entry"), next) {
 		if (entry-- == 0) {
 			ifname = word;
-			if (!ifname)
+			if (ifname[0] == '\0')
 				continue;
 			if (!strcmp(arg, "if")) {
 				strcpy(output, ifname);
@@ -2192,50 +2724,50 @@ ej_emf_uffp_entries_display(int eid, webs_t wp, int argc, char_t **argv)
 
 	websWrite(wp, "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
 	websWrite(wp, "<tr>\n");
-    	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
+	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
 	websWrite(wp, "onMouseOver=\"return overlib(\'Add/Delete unregistered multicast data frames forwarding port entries. Multicast data frames that fail MFDB lookup will be flooded on to these ports.\', LEFT);\"\n");
 	websWrite(wp, "onMouseOut=\"return nd();\">\n");
 	websWrite(wp, "<input type=\"hidden\" name=\"emf_uffp_entry\" value=\"5\">\n");
 	websWrite(wp, "Unregistered Multicast Frames Forwarding Ports:&nbsp;&nbsp;\n");
-    	websWrite(wp, "</th>\n");
-    	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td class=\"label\">Interface</td>\n");
-    	websWrite(wp, "<td></td>\n");
-  	websWrite(wp, "</tr>\n");
+	websWrite(wp, "</th>\n");
+	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
+	websWrite(wp, "<td class=\"label\">Interface</td>\n");
+	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_uffp_entry("if", 0, value);
 	websWrite(wp, "<td><input name=\"emf_uffp_entry_if0\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_uffp_entry("if", 1, value);
 	websWrite(wp, "<td><input name=\"emf_uffp_entry_if1\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_uffp_entry("if", 2, value);
 	websWrite(wp, "<td><input name=\"emf_uffp_entry_if2\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_uffp_entry("if", 3, value);
 	websWrite(wp, "<td><input name=\"emf_uffp_entry_if3\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_uffp_entry("if", 4, value);
 	websWrite(wp, "<td><input name=\"emf_uffp_entry_if4\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "</table>\n");
 #endif /* __CONFIG_EMF__ */
@@ -2251,50 +2783,50 @@ ej_emf_rtport_entries_display(int eid, webs_t wp, int argc, char_t **argv)
 
 	websWrite(wp, "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
 	websWrite(wp, "<tr>\n");
-    	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
+	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"6\"\n");
 	websWrite(wp, "onMouseOver=\"return overlib(\'These are the LAN interfaces on which multicast routers are present. IGMP Report frames are forwared to these ports.\', LEFT);\"\n");
 	websWrite(wp, "onMouseOut=\"return nd();\">\n");
 	websWrite(wp, "<input type=\"hidden\" name=\"emf_rtport_entry\" value=\"5\">\n");
 	websWrite(wp, "Multicast Router / IGMP Forwarding Ports:&nbsp;&nbsp;\n");
-    	websWrite(wp, "</th>\n");
-    	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td class=\"label\">Interface</td>\n");
-    	websWrite(wp, "<td></td>\n");
-  	websWrite(wp, "</tr>\n");
+	websWrite(wp, "</th>\n");
+	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
+	websWrite(wp, "<td class=\"label\">Interface</td>\n");
+	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_rtport_entry("if", 0, value);
 	websWrite(wp, "<td><input name=\"emf_rtport_entry_if0\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_rtport_entry("if", 1, value);
 	websWrite(wp, "<td><input name=\"emf_rtport_entry_if1\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_rtport_entry("if", 2, value);
 	websWrite(wp, "<td><input name=\"emf_rtport_entry_if2\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_rtport_entry("if", 3, value);
 	websWrite(wp, "<td><input name=\"emf_rtport_entry_if3\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "<tr>\n");
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
 	get_emf_rtport_entry("if", 4, value);
 	websWrite(wp, "<td><input name=\"emf_rtport_entry_if4\" value=\"%s\" size=\"15\" maxlength=\"15\"></td>\n", value);
 	websWrite(wp, "<td>&nbsp;&nbsp;</td>\n");
-    	websWrite(wp, "<td></td>\n");
+	websWrite(wp, "<td></td>\n");
 	websWrite(wp, "</tr>\n");
 	websWrite(wp, "</table>\n");
 #endif /* __CONFIG_EMF__ */
@@ -2460,7 +2992,7 @@ static char *mntdir = "/mnt";
 
 
 #if defined(__CONFIG_DLNA_DMS__)
-static int 
+static int
 ej_get_mnt_path(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char mntpath[128] = {0};
@@ -2491,7 +3023,7 @@ typedef struct wps_ap_list_info
 {
 	bool        used;
 	uint8       ssid[33];
-	uint8       ssidLen; 
+	uint8       ssidLen;
 	uint8       BSSID[6];
 	uint8       *ie_buf;
 	uint32      ie_buflen;
@@ -2505,7 +3037,7 @@ typedef struct wps_ap_list_info
 #define WPS_ENR_SCAN_RETRY_TIMES	5
 
 static wps_ap_list_info_t ap_list[WPS_ENR_MAX_AP_SCAN_LIST_LEN];
-static char scan_result[WPS_ENR_DUMP_BUF_LEN]; 
+static char scan_result[WPS_ENR_DUMP_BUF_LEN];
 static int scanned = 0, wps_ap_num = 0;
 wps_ap_list_info_t *selected_ap = NULL;
 
@@ -2543,7 +3075,7 @@ static int wps_is_oob();
 static void wps_disable_oob();
 static int wps_get_oob_name(char *name, int lan);
 
-static void 
+static void
 wl_wpsPinGen(char *devPwd)
 {
 	unsigned long PIN;
@@ -2558,13 +3090,13 @@ wl_wpsPinGen(char *devPwd)
 	PIN = strtoul( devPwd, NULL, 10 );
 
 	PIN *= 10;
-	accum += 3 * ((PIN / 10000000) % 10); 
-	accum += 1 * ((PIN / 1000000) % 10); 
-	accum += 3 * ((PIN / 100000) % 10); 
-	accum += 1 * ((PIN / 10000) % 10); 
-	accum += 3 * ((PIN / 1000) % 10); 
-	accum += 1 * ((PIN / 100) % 10); 
-	accum += 3 * ((PIN / 10) % 10); 
+	accum += 3 * ((PIN / 10000000) % 10);
+	accum += 1 * ((PIN / 1000000) % 10);
+	accum += 3 * ((PIN / 100000) % 10);
+	accum += 1 * ((PIN / 10000) % 10);
+	accum += 3 * ((PIN / 1000) % 10);
+	accum += 1 * ((PIN / 100) % 10);
+	accum += 3 * ((PIN / 10) % 10);
 
 	digit = (accum % 10);
 	accum = (10 - digit) % 10;
@@ -2577,7 +3109,7 @@ wl_wpsPinGen(char *devPwd)
 	return;
 }
 
-static int 
+static int
 wl_wpsPincheck(char *pin_string)
 {
 	unsigned long PIN = strtoul(pin_string, NULL, 10);
@@ -2585,7 +3117,7 @@ wl_wpsPincheck(char *pin_string)
 	unsigned int len = strlen(pin_string);
 
 	if (len != 4 && len != 8)
-		return 	-1;
+		return -1;
 
 	if (len == 8) {
 		accum += 3 * ((PIN / 10000000) % 10);
@@ -2635,7 +3167,7 @@ ej_wps_nfc_dm_status(int eid, webs_t wp, int argc, char_t **argv)
 
 
 /* Always have following ej_wps_xxx functions */
-static int 
+static int
 ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -2652,7 +3184,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 		printf("ej_wps_display: wl_unit=%s\n", value);
 		nvram_set("wl_unit", value);
 	}
-	
+
 	if (!make_wl_prefix(prefix,sizeof(prefix), 1, NULL)) {
 		websError(wp, 400, "unit number variable doesn't exist\n");
 		return EINVAL;
@@ -2667,7 +3199,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 		!strcmp(value, "mac_spoof")) {
 		wps_sta = 1;
 	}
-	
+
 	if ((value = websGetVar(wp, "wps_action", NULL))) {
 		if (!strcmp(value, "AddEnrollee"))
 			wps_action = WPS_UI_ACT_ADDENROLLEE;
@@ -2684,7 +3216,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 			wps_action = WPS_UI_ACT_ADDENROLLEE;
 	}
 	else {
-		if (wps_action == WPS_UI_ACT_NONE || 
+		if (wps_action == WPS_UI_ACT_NONE ||
 		    wps_action == WPS_UI_ACT_ADDENROLLEE ){
 			wps_action = WPS_UI_ACT_ENROLL;
 		}
@@ -2699,7 +3231,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 				wps_method = WPS_UI_METHOD_PBC;
 		}
 		snprintf(tmp, sizeof(tmp), "%d", wps_method);
-		nvram_set("wps_method", tmp);	
+		nvram_set("wps_method", tmp);
 	}
 
 	websWrite(wp,"<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">");
@@ -2712,7 +3244,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 		  "</th>"
 		  "<td>&nbsp;&nbsp;</td>"
 		  "<td>");
-	
+
 	ej_wps_current_mode(eid, wp, argc, argv, wps_sta);
 	websWrite(wp, "</td> </tr>");
 	websWrite(wp, "<tr><th width=\"310\"></th><td>&nbsp;&nbsp;</td><td></td></tr>\n");
@@ -2724,7 +3256,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 	          "WPS Configuration:&nbsp;&nbsp;"
 	          "</th>"
 	          "<td>&nbsp;&nbsp;</td>\n"
-	          "<td>" ); 
+	          "<td>" );
 	websWrite(wp,"<select name=\"wl_wps_mode\" onChange=\"wps_config_change();\">");
 
 	sprintf(wps_mode, "%swps_mode", prefix);
@@ -2738,7 +3270,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 	}
 
 	websWrite(wp, "</select> </td> </tr>\n");
-	
+
 	/* If WPS is disabled, don't show any configurations util wps_mode is enabled */
 	if (nvram_invmatch(wps_mode, "enabled")) {
 		websWrite(wp, "</table>\n");
@@ -2846,10 +3378,10 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 				      "<td><input type=\"hidden\" name=\"wps_action\""
 				      " value=\"AddEnrollee\"></td></tr>\n");
 		}
-		
+
 		/* Show WPS credentials */
 		ej_wps_credentials(eid, wp, argc, argv, wps_sta);
-		
+
 		/* show empty column */
 		websWrite(wp, "<tr><th width=\"310\"></th><td>&nbsp;&nbsp;</td><td></td></tr>\n");
 
@@ -3005,7 +3537,7 @@ ej_wps_display(int eid, webs_t wp, int argc, char_t **argv)
 		ej_wps_process(eid, wp, argc, argv);
 	else
 		ej_wps_enr_process(eid, wp, argc, argv);
-	
+
 	websWrite(wp, "</td> </tr>\n");
 	websWrite(wp, "</table>\n");
 
@@ -3270,7 +3802,7 @@ out:
 	return 1;
 }
 
-static int 
+static int
 ej_wps_config_change_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -3291,7 +3823,7 @@ ej_wps_config_change_display(int eid, webs_t wp, int argc, char_t **argv)
 	if (!strcmp(mode, "wet") ||
 		!strcmp(mode, "sta") ||
 		!strcmp(mode, "psr") ||
-		!strcmp(mode, "psta") ||		
+		!strcmp(mode, "psta") ||
 		!strcmp(mode, "mac_spoof")) {
 
 		wps_sta = 1;
@@ -3314,12 +3846,12 @@ ej_wps_config_change_display(int eid, webs_t wp, int argc, char_t **argv)
 	return 1;
 }
 
-static int 
+static int
 ej_wps_current_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
 	char prefix[] = "wlXXXXXXXXXX_";
-	char tmp[100], psk[65];
+	char tmp[100];
 	char *value;
 
 	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL)) {
@@ -3328,16 +3860,15 @@ ej_wps_current_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 	}
 	snprintf(tmp, sizeof(tmp), "%swpa_psk", prefix);
 	value = nvram_safe_get(tmp);
-	strcpy(psk, value);
-	
+
 	websWrite(wp,"	var psk_window = window.open(\"\", \"\", \"toolbar=no,scrollbars=yes,width=400,height=100\");\n");
-	websWrite(wp,"	psk_window.document.write(\"The WPA passphrase is %s\");\n", psk);
+	websWrite(wp,"	psk_window.document.write(\"The WPA passphrase is %s\");\n", value);
 	websWrite(wp,"	psk_window.document.close();\n");
 #endif /* __CONFIG_WPS__ */
 	return 1;
 }
 
-static int 
+static int
 ej_wps_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -3347,8 +3878,10 @@ ej_wps_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 	int oob = wps_is_oob();
 
 	if (oob) {
-		if ((value  = nvram_get("wps_randomkey")))
-			strcpy(random_psk, value);
+		if ((value  = nvram_get("wps_randomkey"))) {
+			strncpy(random_psk, value, sizeof(random_psk));
+			random_psk[sizeof(random_psk)-1] = '\0';
+		}
 		else if (random_psk[0] == 0)
 			wps_gen_key(random_psk, sizeof(random_psk));
 		strcpy(psk, random_psk);
@@ -3360,7 +3893,8 @@ ej_wps_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 		}
 		snprintf(tmp, sizeof(tmp), "%swpa_psk", prefix);
 		value = nvram_safe_get(tmp);
-		strcpy(psk, value);
+		strncpy(psk, value, sizeof(psk));
+		psk[sizeof(psk)-1] = '\0';
 	}
 	websWrite(wp,"	var psk_window = window.open(\"\", \"\", \"toolbar=no,scrollbars=yes,width=400,height=100\");\n");
 	websWrite(wp,"	psk_window.document.write(\"The WPA passphrase is %s\");\n", psk);
@@ -3369,7 +3903,7 @@ ej_wps_psk_window_display(int eid, webs_t wp, int argc, char_t **argv)
 	return 1;
 }
 
-static int 
+static int
 ej_wps_closed_check_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -3385,7 +3919,7 @@ ej_wps_closed_check_display(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 
-static int 
+static int
 ej_wps_wep_change_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -3415,7 +3949,7 @@ ej_wps_wep_change_display(int eid, webs_t wp, int argc, char_t **argv)
 	return 1;
 }
 
-static int 
+static int
 ej_wps_get_ap_config_submit_display(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef __CONFIG_WPS__
@@ -3440,7 +3974,7 @@ ej_wps_get_ap_config_submit_display(int eid, webs_t wp, int argc, char_t **argv)
 	ap = wpsaplist;
 	while(ap->used == TRUE ) {
 		if (ap->scstate == FALSE) {
-			buf_len = strlen(buf); 
+			buf_len = strlen(buf);
 			if (buf_len)
 				sprintf(buf+buf_len, ", \"%d\"",  i);
 			else
@@ -3455,7 +3989,7 @@ ej_wps_get_ap_config_submit_display(int eid, webs_t wp, int argc, char_t **argv)
 	websWrite(wp,"        if (unconfig[i] == ap_index)\n");
 	websWrite(wp,"            return confirm(str);\n");
 	websWrite(wp,"    };\n");
-	websWrite(wp,"    return 1;\n");	
+	websWrite(wp,"    return 1;\n");
 #endif /* __CONFIG_WPS__ */
 
 	return 1;
@@ -3625,13 +4159,14 @@ ej_nvram_get(int eid, webs_t wp, int argc, char_t **argv)
 	return ret;
 }
 
+#define MAX_BRIDGE_PREFIX_LEN 14
 static int
 ej_wl_get_bridge(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int mode=0;
-	char vif[10];
+	char vif[MAX_BRIDGE_PREFIX_LEN];
 	char *wl_bssid = NULL;
-	char prefix[] = "wlXXXXXXXXXX_";
+	char prefix[MAX_BRIDGE_PREFIX_LEN] = "wlXXXXXXXXXX_";
 	unsigned int len;
 	char name[IFNAMSIZ], *next = NULL;
 	int found = 0;
@@ -3653,7 +4188,8 @@ ej_wl_get_bridge(int eid, webs_t wp, int argc, char_t **argv)
 	}
 
 	/* interface name is prefix less the trailing '_' */
-	strcpy(vif, prefix);
+	strncpy(vif, prefix,MAX_BRIDGE_PREFIX_LEN-1);
+	vif[MAX_BRIDGE_PREFIX_LEN - 1] = '\0';
 	len = strlen(vif);
 	len--;
 	vif[len] = 0;
@@ -3878,6 +4414,9 @@ wl_print_country_rev_list(webs_t wp, char *name, char *abbrev)
 	wl_uint32_list_t *list;
 	int ret = 0, i = 0, c = 0;
 
+	if (buf == NULL)
+		return -1;
+
 	strcpy(buf, "country_rev");
 	buflen = strlen(buf) + 1;
 
@@ -3911,8 +4450,7 @@ wl_print_country_rev_list(webs_t wp, char *name, char *abbrev)
 	websWrite(wp,");\n");
 
 exit:
-	if (buf)
-		free((void *)buf);
+	free((void *)buf);
 	return ret;
 }
 
@@ -4788,7 +5326,7 @@ static void cgi(webs_t wp, const char * const cmd)
   static char line[512];
   FILE *f;
 
-  snprintf(line, sizeof line, 
+  snprintf(line, sizeof line,
       "/usr/sbin/gigle_util cgi %s", cmd);
 
   system(line);
@@ -4969,7 +5507,7 @@ static void do_plc_cgi(char *url, FILE *stream)
   websDone(stream, 200);
   DictIteratorFree(iterator);
   DictFree(BcmPostArgs);
-  
+
   sleep(1);
 }
 #endif
@@ -4994,7 +5532,6 @@ ej_wl_list(int eid, webs_t wp, int argc, char_t **argv)
 			return -1;
 		}
 	}
-
 
 	snprintf(ifnames, sizeof(ifnames), "%s %s %s",
 		nvram_safe_get("lan_ifnames"),
@@ -5126,14 +5663,14 @@ ej_wl_phytypes(int eid, webs_t wp, int argc, char_t **argv)
 			if ((phytype[0] == 'n') || (phytype[0] == 's')|| (phytype[0] == 'c') || (phytype[0] == 'h') || phytype[0] == 'v')
 				ret += websWrite(wp, "<option value=\"%d\" %s> %s GHz</option>",
 					list[i], (bandtype == list[i])? "selected": "",
-		                 	(list[i] == WLC_BAND_5G)? "5":"2.4");
+					(list[i] == WLC_BAND_5G)? "5":"2.4");
 			else /* if lpphy */ {
-			    	if (list[i] == WLC_BAND_5G)
+				if (list[i] == WLC_BAND_5G)
 					sprintf(tmp, "802.11%c (%s GHz)",'a',"5");
 				else
 					sprintf(tmp, "802.11%c (%s GHz)",'g',"2.4");
 				ret += websWrite(wp, "<option value=\"%c\" %s>%s</option>",
-		                 	((list[i] == WLC_BAND_5G)? 'a':'g'), 
+					((list[i] == WLC_BAND_5G)? 'a':'g'),
 					bandtype == list[i] ? "selected" : "", tmp);
 			}
 		}
@@ -5162,12 +5699,12 @@ ej_wl_nmode_enabled(int eid, webs_t wp, int argc, char_t **argv)
 
 	temp = nvram_get("wl_unit");
 	if (strlen(temp) == 0) {
- 		websError(wp, 400, "Error getting wl_unit\n");
+		websError(wp, 400, "Error getting wl_unit\n");
 		return EINVAL;
 	}
 
 	if (get_ifname_unit(temp, &unit, &sub_unit) != 0) {
- 		websError(wp, 400, "Error getting unit/subunit\n");
+		websError(wp, 400, "Error getting unit/subunit\n");
 		return EINVAL;
 	}
 
@@ -5518,7 +6055,7 @@ ej_wl_cur_channel(int eid, webs_t wp, int argc, char_t **argv)
 				chan_adj = -2;
 			else
 				chan_adj = 2;
-		} 
+		}
 
 		channel = CHSPEC_CHANNEL(chanspec);
 	}
@@ -5745,8 +6282,8 @@ ej_wl_mimo_preamble(int eid, webs_t wp, int argc, char_t **argv)
 
 	wl_ioctl(name, WLC_GET_REVINFO, &rev, sizeof(rev));
 
-	if (!((rev.chipnum == BCM4716_CHIP_ID) || 
-		(rev.chipnum == BCM47162_CHIP_ID) || 
+	if (!((rev.chipnum == BCM4716_CHIP_ID) ||
+		(rev.chipnum == BCM47162_CHIP_ID) ||
 		(rev.chipnum == BCM4748_CHIP_ID) ||
 		(rev.chipnum == BCM4331_CHIP_ID) ||
 		(rev.chipnum == BCM43431_CHIP_ID)))
@@ -5822,10 +6359,11 @@ ej_wl_nphy_comment_end(int eid, webs_t wp, int argc, char_t **argv)
 static int
 ej_wl_phytype_name(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int phytype;
+	int phytype, status;
 
 	/* Get configured phy type */
-	wl_phytype_get(wp, &phytype);
+	if ((status = wl_phytype_get(wp, &phytype)) != 0)
+		return status;
 
 	return websWrite(wp, "%s", ((phytype == WLC_PHY_TYPE_N) || (phytype == WLC_PHY_TYPE_SSN) ||
 	                            (phytype == WLC_PHY_TYPE_LCN) || (phytype == WLC_PHY_TYPE_HT) ||
@@ -5864,12 +6402,12 @@ ej_wl_crypto(int eid, webs_t wp, int argc, char_t **argv)
 
 	temp = nvram_get("wl_unit");
 	if (strlen(temp) == 0) {
- 		websError(wp, 400, "Error getting wl_unit\n");
+		websError(wp, 400, "Error getting wl_unit\n");
 		return EINVAL;
 	}
 
 	if (get_ifname_unit(temp, &unit, &sub_unit) != 0) {
- 		websError(wp, 400, "Error getting unit/subunit\n");
+		websError(wp, 400, "Error getting unit/subunit\n");
 		return EINVAL;
 	}
 
@@ -5890,12 +6428,12 @@ ej_wl_wep(int eid, webs_t wp, int argc, char_t **argv)
 
 	temp = nvram_get("wl_unit");
 	if (strlen(temp) == 0) {
- 		websError(wp, 400, "Error getting wl_unit\n");
+		websError(wp, 400, "Error getting wl_unit\n");
 		return EINVAL;
 	}
 
 	if (get_ifname_unit(temp, &unit, &sub_unit) != 0) {
- 		websError(wp, 400, "Error getting unit/subunit\n");
+		websError(wp, 400, "Error getting unit/subunit\n");
 		return EINVAL;
 	}
 
@@ -5958,7 +6496,7 @@ ej_wl_txbf_capable(int eid, webs_t wp, int argc, char_t **argv)
 
 /*
 */
-#ifdef __CONFIG_WFI__ 
+#ifdef __CONFIG_WFI__
 #define WPSM_WFI_CMD_NVNAME			"wfi_cmd"
 
 /* Return WFI enabled STA list */
@@ -5968,11 +6506,13 @@ ej_wl_invite_list(int eid, webs_t wp, int argc, char_t **argv)
 	int i;
 	char *sta_list, *wl_unit, *tmp1= NULL;
 	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+	char *dest_ptr, *dest, *src_ptr;
+	int count = 0, len = 0;
 
 	if(!nvram_match("wl_wfi_enable", "1" ))
 		return 0;
 
-	nvram_set(WPSM_WFI_CMD_NVNAME, "list 0 1"); 
+	nvram_set(WPSM_WFI_CMD_NVNAME, "list 0 1");
 	for (i = 0; i < 3; i++) {
 		SLEEP(1);
 		if (nvram_match(WPSM_WFI_CMD_NVNAME , ""))
@@ -5988,41 +6528,48 @@ ej_wl_invite_list(int eid, webs_t wp, int argc, char_t **argv)
 	}
 	else
 		sprintf(prefix,"wl%s_", wl_unit);
-		
+
 	strcat_r(prefix, "wfi_list", tmp);
 	sta_list = nvram_safe_get(tmp);
-	
-	/* change '"' to '\''"' */
-	tmp1 = strchr(sta_list, '"');
-	while(tmp1){
-		strncpy( tmp, sta_list, (strlen(sta_list) - strlen(tmp1)));
-		tmp[strlen(sta_list) - strlen(tmp1)]='\\';
-		tmp[strlen(sta_list) - strlen(tmp1)+1]='\0';
-		sta_list  = malloc (strlen(tmp)+strlen(tmp1)+1);
-		strcat_r(tmp, tmp1, sta_list);
-		tmp1 = strchr(tmp1+1, '"');
-	}
 
-	/*if (sta_list)
-		printf (" sta_list -> %s\n", sta_list); */
-	
-	return websWrite(wp, sta_list);	
-	
+	/* change '"' to '\''"' */
+	while(sta_list[len])
+		if (sta_list[len++] == '"') ++count;
+	src_ptr = sta_list;
+	dest = (char *) malloc(sizeof(char) * (count + len + 1));
+	if (dest == NULL) /* malloc failed */
+		return 0;
+	dest_ptr = dest;
+
+	while(tmp1 = strchr(src_ptr, '"')) {
+		int chunk_len = tmp1 - src_ptr; /* length of current chunk without " in it */
+		memcpy(dest_ptr, src_ptr, chunk_len);
+		dest_ptr[chunk_len++] = '\\';
+		dest_ptr[chunk_len++] = '"';
+		dest_ptr += chunk_len;
+		src_ptr = tmp1 +1; /* skip " too */
+	}
+	strcpy(dest_ptr,src_ptr); /* yes, strcpy, copy rest of the string there is no " in it */
+
+	len =  websWrite(wp, dest);
+	free(dest);
+	return len;
+
 }
 
 static int
 ej_wl_wfi_mode(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char tmp[32], *wl_unit, *wfi_mode; 
-	
+	char tmp[32], *wl_unit, *wfi_mode;
+
 	wl_unit = nvram_safe_get("wl_unit");
 	sprintf(tmp, "wl%s_wps_mode", wl_unit);
 	wfi_mode = nvram_safe_get(tmp);
 	if(nvram_match("wl_wfi_enable", "1" )){
 		if (!strcmp("enabled", wfi_mode))
-			return websWrite(wp, "WPS mode is enabled on this BSS.");	
+			return websWrite(wp, "WPS mode is enabled on this BSS.");
 		else
-			return websWrite(wp, "WPS mode is not enabled on this BSS.");	
+			return websWrite(wp, "WPS mode is not enabled on this BSS.");
 	}
 	return 0;
 }
@@ -6081,11 +6628,11 @@ ej_wps_current_mode(int eid, webs_t wp, int argc, char_t **argv, int wps_sta)
 		if (wps_sta)
 		{
 			websWrite(wp, "Station Disabled");
-			return 0;	
+			return 0;
 		}
 		else {
 			websWrite(wp, "AP Disabled");
-			return 0;	
+			return 0;
 		}
 	}
 
@@ -6190,6 +6737,7 @@ ej_wps_process(int eid, webs_t wp, int argc, char_t **argv)
 		}
 #endif /* __CONFIG_NFC__ */
 	}
+
 	return 0;
 }
 
@@ -6240,7 +6788,7 @@ wps_gen_ssid(char *ssid, int ssid_len)
 	}
 	snprintf(vif, sizeof(vif), "%shwaddr", prefix);
 	value  = nvram_get(vif);
-	strncpy(mac, value, sizeof(mac));
+	strncpy(mac, value, sizeof(mac) - 1);
 
 	RAND_bytes((unsigned char *)&ssid_length, sizeof(ssid_length));
 	ssid_length = (unsigned short)((((long)ssid_length + 56791)*13579)%8) + 1;
@@ -6293,7 +6841,8 @@ ej_wps_credentials(int eid, webs_t wp, int argc, char_t **argv, int wps_sta)
 	/* Get current SSID */
 	snprintf(tmp, sizeof(tmp), "%sssid", prefix);
 	value  = nvram_safe_get(tmp);
-	strcpy(ssid, value);
+	strncpy(ssid, value, sizeof(ssid)-1);
+	ssid[sizeof(ssid) - 1] = '\0';
 
 	/* Get current AKM */
 	snprintf(tmp, sizeof(tmp), "%sakm", prefix);
@@ -6315,7 +6864,8 @@ ej_wps_credentials(int eid, webs_t wp, int argc, char_t **argv, int wps_sta)
 	/* psk */
 	snprintf(tmp, sizeof(tmp), "%swpa_psk", prefix);
 	value  = nvram_safe_get(tmp);
-	strcpy(psk, value);
+	strncpy(psk, value, sizeof(psk) - 1);
+	psk[sizeof(psk) - 1] = '\0';
 
 	/* If the credentials can be configured, also display the current credentials. */
 	if (configable) {
@@ -6342,8 +6892,10 @@ ej_wps_credentials(int eid, webs_t wp, int argc, char_t **argv, int wps_sta)
 
 	/* Show SSID */
 	if (oob && configable) {
-		if ((value  = nvram_get("wps_randomssid")))
-			strcpy(random_ssid, value);
+		if ((value  = nvram_get("wps_randomssid"))) {
+			strncpy(random_ssid, value, sizeof(random_ssid) - 1 );
+			random_ssid[sizeof(random_ssid) - 1] = '\0';
+		}
 		else if (random_ssid[0] == 0)
 			wps_gen_ssid(random_ssid, sizeof(random_ssid));
 		strcpy(ssid, random_ssid);
@@ -6358,8 +6910,10 @@ ej_wps_credentials(int eid, webs_t wp, int argc, char_t **argv, int wps_sta)
 		 */
 		crypto = 2; /* Default to TKIP + AES */
 
-		if ((value  = nvram_get("wps_randomkey")))
-			strcpy(random_psk, value);
+		if ((value  = nvram_get("wps_randomkey"))) {
+			strncpy(random_psk, value, sizeof(random_psk) - 1);
+			random_psk[sizeof(random_psk) - 1] = '\0';
+		}
 		else  if (random_psk[0] == 0)
 			wps_gen_key(random_psk, sizeof(random_psk));
 		strcpy(psk, random_psk);
@@ -6435,7 +6989,7 @@ wps_enr_display_aplist(wps_ap_list_info_t *ap)
 {
 	char eastr[ETHER_ADDR_STR_LEN];
 	int i=0;
-	
+
 	if(!ap)
 		return 0;
 
@@ -6443,21 +6997,21 @@ wps_enr_display_aplist(wps_ap_list_info_t *ap)
 	while(ap->used == TRUE ) {
 		printf(" %d :  ", i);
 		printf("SSID:%s  ", ap->ssid);
-		printf("BSSID:%s  ", ether_etoa(ap->BSSID, eastr));	
+		printf("BSSID:%s  ", ether_etoa(ap->BSSID, eastr));
 		printf("Channel:%d  ", ap->channel);
 		printf("Configured:%s  ", ap->scstate?"True":"False");
 		if(ap->wep)
 			printf("WEP");
 		printf("\n");
-		ap++; 
+		ap++;
 		i++;
 	}
-	
+
 	printf("-------------------------------------\n");
 	return 0;
 }
 
-static uint8* 
+static uint8*
 wps_enr_parse_wsc_tlvs(uint8 *tlv_buf, int buflen, uint16 type)
 {
 	uint8 *cp;
@@ -6569,7 +7123,7 @@ wps_enr_get_aplist(wps_ap_list_info_t *list_in, wps_ap_list_info_t *list_out )
 			ap_in->scstate = configured;
 			memcpy(ap_out, ap_in, sizeof(wps_ap_list_info_t));
 			wps_apcount++;
-			ap_out = &list_out[wps_apcount];	
+			ap_out = &list_out[wps_apcount];
 		}
 		i++;
 		ap_in = &list_in[i];
@@ -6580,7 +7134,7 @@ wps_enr_get_aplist(wps_ap_list_info_t *list_in, wps_ap_list_info_t *list_out )
 
 	return wps_apcount;
 }
- 
+
 /* WL_NUMCHANNELS is deemed a "bad word", define a local one  */
 #define NUMCHANS 64
 
@@ -6683,7 +7237,7 @@ wps_enr_create_aplist()
 			bi->chanspec = CH20MHZ_CHSPEC(old_bi->channel);
 			bi->ie_length = old_bi->ie_length;
 			bi->ie_offset = sizeof(wl_bss_info_107_t);
-		}    
+		}
 		if (bi->ie_length) {
 			if(wps_ap_count < WPS_ENR_MAX_AP_SCAN_LIST_LEN){
 				ap_list[wps_ap_count].used = TRUE;
@@ -6756,12 +7310,14 @@ ej_wps_enr_scan_result(int eid, webs_t wp, int argc, char_t **argv)
 			ap->BSSID[3], ap->BSSID[4], ap->BSSID[5]);
 		if (selected_ap == NULL) {
 			ret += websWrite(wp, "<option value=\"%d\" %s>%s (%s)</option>\n", i,
-					(i == 0) ? "selected" : "", translate_ssid(ap->ssid),
+					(i == 0) ? "selected" : "",
+					translate_ssid((char *)ap->ssid),
 					macstr);
 		}
 		else {
 			ret += websWrite(wp, "<option value=\"%d\" %s>%s (%s)</option>\n", i,
-					(selected_ap == ap) ? "selected" : "", translate_ssid(ap->ssid),
+					(selected_ap == ap) ? "selected" : "",
+					translate_ssid((char *)ap->ssid),
 					macstr);
 		}
 		ap++;
@@ -6927,12 +7483,12 @@ ej_ure_enabled(int eid, webs_t wp, int argc, char_t **argv)
 
 	temp = nvram_get("wl_unit");
 	if(strlen( temp ) == 0) {
- 		websError(wp, 400, "Error getting wl_unit\n");
+		websError(wp, 400, "Error getting wl_unit\n");
 		return EINVAL;
 	}
 
 	if( get_ifname_unit( temp, &unit, &sub_unit ) != 0 ) {
- 		websError(wp, 400, "Error getting unit/subunit\n");
+		websError(wp, 400, "Error getting unit/subunit\n");
 		return EINVAL;
 	}
 
@@ -7015,6 +7571,151 @@ ej_wl_ibss_mode(int eid, webs_t wp, int argc, char_t **argv)
 	}
 
 	return 0;
+}
+
+/* Fill HTML input form with DSCP to WMM AC Mapping filters data stored in NVRAM */
+static int
+ej_trf_mgmt_dwm_display(int eid, webs_t wp, int argc, char_t **argv)
+{
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+	char cap[WLC_IOCTL_SMLEN], caps[WLC_IOCTL_MEDLEN];
+	char *name = NULL, *next = NULL, *mode = NULL;
+	int trf_mgmt_cap = 0, trf_mgmt_dwm_cap = 0, ret = 0, i, ap = 0;
+	int n = MAX_NUM_TRF_MGMT_DWM_RULES;
+	bool valid;
+	netconf_trmgmt_t trm_dwm;
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 0, NULL)) {
+		websError(wp, 400, "unit number variable doesn't exist\n");
+		return -1;
+	}
+
+	name = nvram_safe_get(strcat_r(prefix, "ifname", tmp));
+	if (wl_iovar_get(name, "cap", (void *)caps, sizeof(caps)))
+		return -1;
+
+	foreach(cap, caps, next) {
+		if (!strcmp(cap, "traffic-mgmt")) {
+			trf_mgmt_cap = 1;
+		}
+		if (!strcmp(cap, "traffic-mgmt-dwm")) {
+			trf_mgmt_dwm_cap = 1;
+		}
+	}
+
+	mode = nvram_safe_get(strcat_r(prefix, "mode", tmp));
+	ap = (!strcmp(mode, "") || !strcmp(mode, "ap"));
+
+	if (trf_mgmt_cap == 0 || trf_mgmt_dwm_cap == 0 || ap == 0)
+		return -1;
+
+	websWrite(wp, "<p>");
+	websWrite(wp, "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">");
+	websWrite(wp, "<tr>");
+	websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"23\"");
+	websWrite(wp, "onMouseOver=\"return overlib('Adds up to 21 DSCP to WMM AC mapping filters which specifies DSCP and its matching WMM AC.', LEFT);\"");
+	websWrite(wp, "onMouseOut=\"return nd();\">");
+	websWrite(wp, "<input type=\"hidden\" name=\"trf_mgmt_dwm\" value=\"22\">");
+	websWrite(wp, "Traffic Management DSCP to WMM AC Mapping:&nbsp;&nbsp;");
+	websWrite(wp, "</th>");
+	websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+	websWrite(wp, "<td class=\"label\">DSCP</td>");
+	websWrite(wp, "<td></td>");
+	websWrite(wp, "<td class=\"label\">Priority</td>");
+	websWrite(wp, "<td></td>");
+	websWrite(wp, "<td class=\"label\">Favored</td>");
+	websWrite(wp, "<td></td>");
+	websWrite(wp, "<td class=\"label\">Enabled</td>");
+	websWrite(wp, "</tr>");
+
+	for (i = 0; i < n; i++) {
+
+		valid = get_trf_mgmt_dwm(prefix, i, &trm_dwm);
+
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print DSCP */
+		ret += websWrite(wp, "<td>");
+		ret += websWrite(wp, "<select name=\"%strf_mgmt_dwm_dscp%d\">", prefix, i);
+		ret += websWrite(wp, "<option value=\"0\" %s>None   (0x0)</option>",
+				 valid && trm_dwm.match.dscp == 0 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"8\" %s>CS1    (0x08)</option>",
+				 valid && trm_dwm.match.dscp == 8 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"10\" %s>AF11  (0x0A)</option>",
+				 valid && trm_dwm.match.dscp == 10 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"12\" %s>AF12  (0x0C)</option>",
+				 valid && trm_dwm.match.dscp == 12 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"14\" %s>AF13  (0x0E)</option>",
+				 valid && trm_dwm.match.dscp == 14 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"16\" %s>CS2   (0x10)</option>",
+				 valid && trm_dwm.match.dscp == 16 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"18\" %s>AF21  (0x12)</option>",
+				 valid && trm_dwm.match.dscp == 18 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"20\" %s>AF22  (0x14)</option>",
+				 valid && trm_dwm.match.dscp == 20 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"22\" %s>AF23  (0x16)</option>",
+				 valid && trm_dwm.match.dscp == 22 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"24\" %s>CS3   (0x18)</option>",
+				 valid && trm_dwm.match.dscp == 24 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"26\" %s>AF31  (0x1A)</option>",
+				 valid && trm_dwm.match.dscp == 26 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"28\" %s>AF32  (0x1C)</option>",
+				 valid && trm_dwm.match.dscp == 28 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"30\" %s>AF33  (0x1E)</option>",
+				 valid && trm_dwm.match.dscp == 30 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"32\" %s>CS4   (0x20)</option>",
+				 valid && trm_dwm.match.dscp == 32 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"34\" %s>AF41  (0x22)</option>",
+				 valid && trm_dwm.match.dscp == 34 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"36\" %s>AF42  (0x24)</option>",
+				 valid && trm_dwm.match.dscp == 36 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"38\" %s>AF43  (0x26)</option>",
+				 valid && trm_dwm.match.dscp == 38 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"40\" %s>CS5   (0x28)</option>",
+				 valid && trm_dwm.match.dscp == 40 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"46\" %s>EF    (0x2E)</option>",
+				 valid && trm_dwm.match.dscp == 46 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"48\" %s>CS6   (0x30)</option>",
+				 valid && trm_dwm.match.dscp == 48 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"56\" %s>CS7   (0x38)</option>",
+				 valid && trm_dwm.match.dscp == 56 ? "selected" : "");
+
+		ret += websWrite(wp, "</select>");
+		ret += websWrite(wp, "</td>");
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print priority */
+		ret += websWrite(wp, "<td>");
+		ret += websWrite(wp, "<select name=\"%strf_mgmt_dwm_prio%d\">", prefix, i);
+		ret += websWrite(wp, "<option value=\"1\" %s>BK</option>",
+				 valid && trm_dwm.prio == 1 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"0\" %s>BE</option>",
+				 valid && trm_dwm.prio == 0 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"5\" %s>VI</option>",
+				 valid && trm_dwm.prio == 5 ? "selected" : "");
+		ret += websWrite(wp, "<option value=\"6\" %s>VO</option>",
+				 valid && trm_dwm.prio == 6 ? "selected" : "");
+
+		ret += websWrite(wp, "</select>");
+		ret += websWrite(wp, "</td>");
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print Favored */
+		ret += websWrite(wp, "<td><input type=\"checkbox\" name=\"%strf_mgmt_dwm_favored%d\" %s></td>",
+				 prefix, i, valid && (trm_dwm.favored) ? "checked" : "");
+
+		/* Print enable */
+		ret += websWrite(wp, "<td><input type=\"checkbox\" name=\"%strf_mgmt_dwm_enable%d\" %s></td>",
+				 prefix, i, valid && !(trm_dwm.match.flags & NETCONF_DISABLED) ? "checked" : "");
+
+		ret += websWrite(wp, "</tr>\n");
+
+	} /* for all filters */
+
+	websWrite(wp, "</table>");
+
+	return ret;
 }
 
 /* Display DFS Reentry parameters */
@@ -7301,13 +8002,13 @@ validate_dfs_window(webs_t wp, char *value, struct variable *v, char *varname)
 	char name[40]; /* wl_xxxxxxxxx_acs_dfsr_immediate_sec */
 	unsigned sec,thr;
 
-	snprintf(name, sizeof(name), "%s_sec", v->name );
-	value = websGetVar(wp, name, NULL);
-	sec = (value && *value) ? atoi(value) : 0;
-
 	snprintf(name, sizeof(name), "%s_thr", v->name );
 	value = websGetVar(wp, name, NULL);
 	thr = (value && *value) ? atoi(value) : 0;
+
+	snprintf(name, sizeof(name), "%s_sec", v->name );
+	value = websGetVar(wp, name, NULL);
+	sec = (value && *value) ? atoi(value) : 0;
 
 	/* A zero threshold is valid, but a zero window size is not. */
 	if (!sec) {
@@ -7570,6 +8271,47 @@ valid_name(webs_t wp, char *value, struct variable *v)
 	return TRUE;
 }
 
+static int
+valid_hex(webs_t wp, char *value, struct variable *v)
+{
+	int n, min, max;
+	char *c=NULL;
+
+	assert(v);
+
+	n = strlen(value);
+	min = atoi(v->argv[0]);
+	max = atoi(v->argv[1]);
+
+	if (n > max) {
+		websBufferWrite(wp, "Invalid <b>%s</b> %s: longer than %d characters<br>",
+			v->longname, value, max);
+		return FALSE;
+	}
+	else if (n < min) {
+		websBufferWrite(wp, "Invalid <b>%s</b> %s: shorter than %d characters<br>",
+			v->longname, value, min);
+		return FALSE;
+	}
+	else if(n%2)
+	{
+		websBufferWrite(wp, "Invalid <b>%s</b> %s: must be in even length<br>",
+			v->longname, value);
+		return FALSE;
+	}
+
+	for (c = value; *c; c++) {
+		if (!isxdigit((int) *c)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: character %c is not a hexadecimal digit<br>",
+			v->longname, *c);
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+
 static void
 validate_guest_lan_ifname(webs_t wp, char *value, struct variable *v, char *varname )
 {
@@ -7651,7 +8393,7 @@ validate_vif_ssid(webs_t wp, char *value, struct variable *v, char *varname )
 	else
 		wl_unit=websGetVar(wp, "wl_unit", NULL);
 
-	if (get_ifname_unit(wl_unit,&p,NULL) < 0) return ;
+	if (!wl_unit || get_ifname_unit(wl_unit,&p,NULL) < 0) return ;
 
 	if (p < 0) return;
 
@@ -7682,7 +8424,7 @@ validate_vif_ssid(webs_t wp, char *value, struct variable *v, char *varname )
 	wl_vif_value = nvram_get(wl_vif);
 
 	if (wl_vif_value ){
-	 		char vif[]="wlXXXXXXXXX";
+			char vif[]="wlXXXXXXXXX";
 			int  found = 0;
 			char name[IFNAMSIZ], *next = NULL;
 
@@ -7754,9 +8496,6 @@ validate_vif_ssid(webs_t wp, char *value, struct variable *v, char *varname )
 		nvram_unset(wl_radio);
 		nvram_unset(wl_mode);
 		nvram_unset("wl_bss_enabled");
-#ifdef __CONFIG_HSPOT__
-		nvram_unset("wl_bss_hs2_enabled");
-#endif  /* __CONFIG_HSPOT__ */
 	}
 
 	ret_code = 0;
@@ -7777,15 +8516,30 @@ validate_name(webs_t wp, char *value, struct variable *v, char *varname )
 
 	ret_code = 0;
 }
+
+static void
+validate_names(webs_t wp, char *value, struct variable *v, char *varname )
+{
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	validate_list(wp, value, v, valid_name, varname);
+}
+
 static void
 validate_bridge(webs_t wp, char *value, struct variable *v, char *varname )
 {
 	char prefix[] = "wlXXXXXXXXXX_";
 	char *wl_bssid = NULL;
 	int mode = 0;
-	char vif[]= "XXXXXX_";
+	char vif[sizeof(prefix)];
 	char add_br[] = "xxxxxxxxxxxxx_" ;
 	char del_br[] = "xxxxxxxxxxxxx_" ;
+#ifdef __CONFIG_GMAC3__
+	char fwd_wlandevs[NVRAM_MAX_VALUE_LEN];
+#endif
 	char name[IFNAMSIZ], *next = NULL;
 	int need_to_add = 1;
 	char buf[NVRAM_MAX_VALUE_LEN];
@@ -7835,7 +8589,7 @@ validate_bridge(webs_t wp, char *value, struct variable *v, char *varname )
 	}
 	nvram_set(del_br, buf);
 	memset(buf,0,sizeof(buf));
-	strcpy(buf, nvram_get(add_br));
+	strncpy(buf, nvram_get(add_br),sizeof(buf) - 1);
 	foreach(name, buf, next) {
 		if (!strcmp(name,vif)){
 			need_to_add = 0;
@@ -7923,7 +8677,7 @@ validate_wl_macmode(webs_t wp, char *value, struct variable *v, char *varname )
 		wl_wps_mode = nvram_get("wl_wps_mode");
 		if (strcmp(wl_wps_mode, "enabled") == 0) {
 			for (i = 0; i < MACLIST_MAX_NUM; i++) {
-				sprintf(wl_maclist, "wl_maclist%d", i); 
+				sprintf(wl_maclist, "wl_maclist%d", i);
 				wl_mac = websGetVar(wp, wl_maclist, "");
 				/* a legal non-empty mac check */
 				if (strlen(wl_mac) && ether_atoe(wl_mac, hwaddr) &&
@@ -8073,12 +8827,12 @@ validate_wps_mode(webs_t wp, char *value, struct variable *v, char *varname)
 			 * GUI has the WEP Enable/Disable field disabled when the user selects
 			 * WPA2, so WEP setting doesn't come in the HTTP buffer, which means we
 			 * must manually turn it off here to disable WEP.
-			 * 
+			 *
 			 * According above description and WSC 2.0 only allowed WPA2, WPA2-PSK
 			 * and WPA-PSK+WPA2-PSK(mix mode). Here WEP is allowed only when
 			 * wep_survival back door enabled and akm is empty.
 			 */
-		 	 /*
+			/*
 			 * WSC 2.0, Authentication type check.
 			 * Allowed type : Open, WPA2, WPA2-PSK and WPA-PSK+WPA2-PSK(Mix mode)
 			 * Deprecated type: Shared, WPA and WPS-PSK only
@@ -8096,7 +8850,7 @@ validate_wps_mode(webs_t wp, char *value, struct variable *v, char *varname)
 			if (!strcmp(wpa, "enabled") || !strcmp(psk, "enabled")
 			    || !strcmp(wpa2, "enabled") || !strcmp(psk2, "enabled")
 			    ) {
-			    	/* AKM enabled */
+				/* AKM enabled */
 				/*
 				 * For now, Broadcom WPS does not support WPA and WPA2.
 				 * We support WPA2-PSK and WPA2PSK+WPA-PSK
@@ -8118,7 +8872,7 @@ validate_wps_mode(webs_t wp, char *value, struct variable *v, char *varname)
 				 * Note: A back door to keep supporting WEP by seting
 				 * NVRAM "wps_wep_survival"
 				 */
-			    	crypto = websGetVar(wp, "wl_crypto", NULL);
+				crypto = websGetVar(wp, "wl_crypto", NULL);
 				if (!crypto || (
 				    strcmp(crypto, "tkip") &&
 				    strcmp(crypto, "aes") &&
@@ -8159,7 +8913,7 @@ validate_wps_mode(webs_t wp, char *value, struct variable *v, char *varname)
 		/* WSC 2.0, MAC filter check */
 		if (nvram_match("wl_macmode", "allow")) {
 			for (i = 0; i < MACLIST_MAX_NUM; i++) {
-				sprintf(wl_maclist, "wl_maclist%d", i); 
+				sprintf(wl_maclist, "wl_maclist%d", i);
 				wl_mac = nvram_get(wl_maclist);
 				/* a legal non-empty mac check */
 				if (wl_mac && strlen(wl_mac) && ether_atoe(wl_mac, hwaddr) &&
@@ -8285,8 +9039,13 @@ validate_ure(webs_t wp, char *value, struct variable *v, char *varname)
 
 	if ((temp = websGetVar(wp, "wl_unit", NULL)))
 	{
-		if( *temp )
-			get_ifname_unit( temp, &wl_unit, &wl_subunit );
+		if( *temp ) {
+			if (get_ifname_unit( temp, &wl_unit, &wl_subunit ) != 0) {
+				websError(wp, 400, "URE error getting wl_unit\n");
+				ret_code = EINVAL;
+				return;
+			}
+		}
 
 		if( wl_subunit != -1 )
 		{
@@ -8359,7 +9118,7 @@ validate_ure(webs_t wp, char *value, struct variable *v, char *varname)
 			/* nothing to do, bail out now */
 			return;
 		}
- 		/* turn URE on for this primary interface */
+		/* turn URE on for this primary interface */
 		nvram_set( nv_param, "1" );
 
 		nvram_set( "ure_disable", "0" );
@@ -8588,7 +9347,7 @@ validate_ure(webs_t wp, char *value, struct variable *v, char *varname)
 			add_to_list(nv_interface, interface_list, interface_list_size );
 			nvram_set(strcat_r(nv_interface, "_hwaddr",tmp),"");
 		}
-	       	nvram_set("lan1_ifnames", interface_list );
+		nvram_set("lan1_ifnames", interface_list );
 
 	}
 	action = REBOOT;
@@ -8673,7 +9432,7 @@ validate_dhcp(webs_t wp, char *value, struct variable *v, char *varname)
 
 	ret_code = EINVAL;
 
-	memset(index,sizeof(index),0);
+	memset(index,0,sizeof(index));
 	/* fixup the nvram varnames if varname override is provided */
 	if (varname){
 		if (!get_index_string(v->prefix,
@@ -9172,8 +9931,8 @@ validate_autofw_port(webs_t wp, char *value, struct variable *v, char *varname)
 		{ name: "autofw_port_in_proto%d", longname: "Inbound Protocol", argv: ARGV("tcp", "udp") },
 		{ name: "autofw_port_in_start%d", longname: "Inbound Port Start", argv: ARGV("0", "65535") },
 		{ name: "autofw_port_in_end%d", longname: "Inbound Port End", argv: ARGV("0", "65535") },
- 		{ name: "autofw_port_to_start%d", longname: "To Port Start", argv: ARGV("0", "65535") },
- 		{ name: "autofw_port_to_end%d", longname: "To Port End", argv: ARGV("0", "65535") },
+		{ name: "autofw_port_to_start%d", longname: "To Port Start", argv: ARGV("0", "65535") },
+		{ name: "autofw_port_to_end%d", longname: "To Port End", argv: ARGV("0", "65535") },
 	};
 	char *out_proto=NULL, *out_start=NULL, *out_end=NULL, *in_proto=NULL;
 	char *in_start=NULL, *in_end=NULL, *to_start=NULL, *to_end=NULL, *enable=NULL;
@@ -9298,6 +10057,86 @@ validate_autofw_port(webs_t wp, char *value, struct variable *v, char *varname)
 }
 #endif /* !AUTOFW_PORT_DEPRECATED */
 #endif	/* __CONFIG_NAT__ */
+
+/* Validate HTML input data modified by Web user and stored in NVRAM */
+static void
+validate_trf_mgmt_dwm(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	int n, i, j, enable = 0;
+	bool valid;
+	struct variable fields[] = {
+		{ name: "%strf_mgmt_dwm_dscp%d", longname: "Traffic Management DWM DSCP", argv: ARGV("0", "8", "10", "12", "14", 
+				"16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36", "38", "40", "46", "48", "56") },
+		{ name: "%strf_mgmt_dwm_prio%d", longname: "Traffic Management DWM Priority", argv: ARGV("1", "0", "5", "6") },
+	};
+	char *dscp=NULL, *prio=NULL, *flags=NULL;
+	char **locals[] = { &dscp, &prio, &flags };
+	char name[512], prefix[16];
+	netconf_trmgmt_t trm_dwm;
+	char *wlunit = nvram_get("wl_unit");
+
+	snprintf(prefix, sizeof(prefix), "wl%s_", wlunit);
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	/* forward_port indicates how many to expect */
+	if (!valid_range(wp, value, v)){
+		websBufferWrite(wp, "Invalid traffic management dwm string <b>%s</b><br>",value);
+		return;
+	}
+	n = atoi(value);
+
+	for (i = 0; i <= n; i++) {
+		/* Set up field names */
+		for (j = 0; j < ARRAYSIZE(fields); j++) {
+			snprintf(name, sizeof(name), fields[j].name, prefix, i);
+			if (!(*locals[j] = websGetVar(wp, name, NULL)))
+				break;
+		}
+		/* Incomplete web page */
+		if (j < ARRAYSIZE(fields))
+			continue;
+
+		/* Set up parameters */
+		memset(&trm_dwm, 0, sizeof(netconf_trmgmt_t));
+
+		/* Enable is a checkbox */
+		snprintf(name, sizeof(name), "%strf_mgmt_dwm_enable%d", prefix, i);
+		if (!websGetVar(wp, name, NULL))
+			trm_dwm.match.flags |= NETCONF_DISABLED;
+		else
+			enable = 1;
+
+		/* Check favored checkbox */
+		snprintf(name, sizeof(name), "%strf_mgmt_dwm_favored%d", prefix, i);
+		if (websGetVar(wp, name, NULL))
+			trm_dwm.favored = 1;
+		else
+			trm_dwm.favored = 0;
+
+		/* Check DSCP field, remove if not valid */
+		if (!valid_choice(wp, dscp, &fields[0])) {
+			del_trf_mgmt_dwm(prefix, i);
+			continue;
+		}
+		trm_dwm.match.dscp = atoi(dscp);
+
+		/* Delete entry if priority field is blank */
+		if (!*prio ) {
+			if (enable)
+				websBufferWrite(wp, "Invalid <b>settings at index %d </b><br>",i);
+			del_trf_mgmt_dwm(prefix, i);
+			continue;
+		}
+		trm_dwm.prio = atoi(prio);
+
+		valid = set_trf_mgmt_dwm(prefix, i, &trm_dwm);
+		a_assert(valid);
+	}
+	ret_code = 0;
+}
 
 /* Validate HTML input data modified by Web user and stored in NVRAM */
 static void
@@ -9478,10 +10317,10 @@ validate_lan_route(webs_t wp, char *value, struct variable *v, char *varname)
 		char lan_route_metric[] = "lan_route_metricXXX";
 		char *ipaddr, *netmask, *gateway, *metric;
 
- 		snprintf(lan_route_ipaddr, sizeof(lan_route_ipaddr), "%s_ipaddr%d", v->name, i);
+		snprintf(lan_route_ipaddr, sizeof(lan_route_ipaddr), "%s_ipaddr%d", v->name, i);
 		snprintf(lan_route_netmask, sizeof(lan_route_netmask), "%s_netmask%d", v->name, i);
- 		snprintf(lan_route_gateway, sizeof(lan_route_gateway), "%s_gateway%d", v->name, i);
- 		snprintf(lan_route_metric, sizeof(lan_route_metric), "%s_metric%d", v->name, i);
+		snprintf(lan_route_gateway, sizeof(lan_route_gateway), "%s_gateway%d", v->name, i);
+		snprintf(lan_route_metric, sizeof(lan_route_metric), "%s_metric%d", v->name, i);
 		if (!(ipaddr = websGetVar(wp, lan_route_ipaddr, NULL)) ||
 		    !(netmask = websGetVar(wp, lan_route_netmask, NULL)) ||
 		    !(gateway = websGetVar(wp, lan_route_gateway, NULL)) ||
@@ -9533,12 +10372,12 @@ validate_emf_entry(webs_t wp, char *value, struct variable *v, char *varname)
 {
 	int n, i;
 	char buf[1000] = "", temp[128], *cur = buf;
-	
+
 	assert(v);
-	
+
 	bzero(buf, sizeof(buf));
 	ret_code = EINVAL;
-	
+
 	n = atoi(value);
 
 	for (i = 0; i < n; i++) {
@@ -9547,7 +10386,7 @@ validate_emf_entry(webs_t wp, char *value, struct variable *v, char *varname)
 		char *mgrp, *ifname;
 		struct in_addr mgrp_addr;
 
- 		snprintf(emf_entry_mgrp, sizeof(emf_entry_mgrp), "%s_mgrp%d", v->name, i);
+		snprintf(emf_entry_mgrp, sizeof(emf_entry_mgrp), "%s_mgrp%d", v->name, i);
 
 		snprintf(emf_entry_if, sizeof(emf_entry_if), "%s_if%d", v->name, i);
 
@@ -9571,7 +10410,7 @@ validate_emf_entry(webs_t wp, char *value, struct variable *v, char *varname)
 			                v->longname);
 			return;
 		}
-		
+
 		if ((strstr(nvram_safe_get("br0_ifnames"), ifname) == NULL) &&
 		    (strstr(nvram_safe_get("new_lan_ifnames"), ifname) == NULL) &&
 		    (strncmp(ifname, "wds", 3) != 0)) {
@@ -9604,12 +10443,12 @@ validate_emf_uffp_entry(webs_t wp, char *value, struct variable *v, char *varnam
 {
 	int n, i;
 	char buf[1000] = "", *cur = buf;
-	
+
 	assert(v);
-	
+
 	bzero(buf, sizeof(buf));
 	ret_code = EINVAL;
-	
+
 	n = atoi(value);
 
 	for (i = 0; i < n; i++) {
@@ -9629,7 +10468,7 @@ validate_emf_uffp_entry(webs_t wp, char *value, struct variable *v, char *varnam
 			                v->longname);
 			return;
 		}
-		
+
 		if ((strstr(nvram_safe_get("br0_ifnames"), ifname) == NULL) &&
 		    (strstr(nvram_safe_get("new_lan_ifnames"), ifname) == NULL) &&
 		    (strncmp(ifname, "wds", 3) != 0)) {
@@ -9661,12 +10500,12 @@ validate_emf_rtport_entry(webs_t wp, char *value, struct variable *v, char *varn
 {
 	int n, i;
 	char buf[1000] = "", *cur = buf;
-	
+
 	assert(v);
-	
+
 	bzero(buf, sizeof(buf));
 	ret_code = EINVAL;
-	
+
 	n = atoi(value);
 
 	for (i = 0; i < n; i++) {
@@ -9686,7 +10525,7 @@ validate_emf_rtport_entry(webs_t wp, char *value, struct variable *v, char *varn
 			                v->longname);
 			return;
 		}
-		
+
 		if ((strstr(nvram_safe_get("br0_ifnames"), ifname) == NULL) &&
 		    (strstr(nvram_safe_get("new_lan_ifnames"), ifname) == NULL) &&
 		    (strncmp(ifname, "wds", 3) != 0)) {
@@ -9740,10 +10579,10 @@ validate_wan_route(webs_t wp, char *value, struct variable *v, char *varname)
 		char wan_route_metric[] = "wan_route_metricXXX";
 		char *ipaddr, *netmask, *gateway, *metric;
 
- 		snprintf(wan_route_ipaddr, sizeof(wan_route_ipaddr), "%s_ipaddr%d", v->name, i);
+		snprintf(wan_route_ipaddr, sizeof(wan_route_ipaddr), "%s_ipaddr%d", v->name, i);
 		snprintf(wan_route_netmask, sizeof(wan_route_netmask), "%s_netmask%d", v->name, i);
- 		snprintf(wan_route_gateway, sizeof(wan_route_gateway), "%s_gateway%d", v->name, i);
- 		snprintf(wan_route_metric, sizeof(wan_route_metric), "%s_metric%d", v->name, i);
+		snprintf(wan_route_gateway, sizeof(wan_route_gateway), "%s_gateway%d", v->name, i);
+		snprintf(wan_route_metric, sizeof(wan_route_metric), "%s_metric%d", v->name, i);
 		if (!(ipaddr = websGetVar(wp, wan_route_ipaddr, NULL)) ||
 		    !(netmask = websGetVar(wp, wan_route_netmask, NULL)) ||
 		    !(gateway = websGetVar(wp, wan_route_gateway, NULL)) ||
@@ -9785,11 +10624,11 @@ validate_wan_route(webs_t wp, char *value, struct variable *v, char *varname)
 
 /*
 */
-#ifdef __CONFIG_IPV6__ 
+#ifdef __CONFIG_IPV6__
 static void
 validate_ipv6mode(webs_t wp, char *value, struct variable *v , char *varname)
 {
-	char *pvarname; 
+	char *pvarname;
 
 	assert(v);
 
@@ -9800,14 +10639,14 @@ validate_ipv6mode(webs_t wp, char *value, struct variable *v , char *varname)
 		return;
 	}
 
-	if (varname) 
+	if (varname)
 		pvarname = varname;
 	else
 		pvarname = v->name;
 
 	nvram_set(pvarname, value);
 
-	ret_code = 0; 
+	ret_code = 0;
 }
 
 static void
@@ -9815,7 +10654,7 @@ validate_ipv6prefix(webs_t wp, char *value, struct variable *v , char *varname)
 {
 	char prefix[48];
 	struct in6_addr addr;
-	int bits = -1; 
+	int bits = -1;
 	int i;
 
 	assert(v);
@@ -9825,20 +10664,20 @@ validate_ipv6prefix(webs_t wp, char *value, struct variable *v , char *varname)
 		websBufferWrite(wp, "<p>Invalid <b>%s</b> %s: IPv6 network prefix contains an IPv6 address followed by a slash(/) and then by the number of netmask bits.<br>",
 			v->longname, value);
 		ret_code = EINVAL;
-		return;  
+		return;
 	}
 	if (bits >= 128 || bits <= 0) {
 		websBufferWrite(wp, "<p>Invalid <b>%s</b> %s: the number of netmask bits after shash(/) is between 1~127.<br>",
 			v->longname, value);
 		ret_code = EINVAL;
 		return;
-	}	
+	}
 	if (inet_pton(AF_INET6, prefix, &addr) <= 0) {
 		websBufferWrite(wp, "<p>Invalid <b>%s</b> %s: Not a proper IPv6 address before slash(/).<br>",
 			v->longname, value);
 		ret_code = EINVAL;
 		return;
-	}	
+	}
 
 	if (varname)
 		nvram_set(varname, value);
@@ -9851,7 +10690,7 @@ validate_ipv6prefix(webs_t wp, char *value, struct variable *v , char *varname)
 static void
 validate_ipv6addr(webs_t wp, char *value, struct variable *v , char *varname)
 {
-	struct in6_addr addr; 
+	struct in6_addr addr;
 
 	assert(v);
 
@@ -9867,8 +10706,8 @@ validate_ipv6addr(webs_t wp, char *value, struct variable *v , char *varname)
 	else
 		nvram_set(v->name, value);
 
-	ret_code = 0; 
-} 
+	ret_code = 0;
+}
 
 #endif	/* __CONFIG_IPV6__ */
 /*
@@ -10311,8 +11150,13 @@ validate_psta(webs_t wp, char *value, struct variable *v, char *varname)
 	bool psta, psr, db_rpt;
 
 	if ((temp = websGetVar(wp, "wl_unit", NULL))) {
-		if (*temp)
-			get_ifname_unit(temp, &wl_unit, &wl_subunit);
+		if (*temp) {
+			if (get_ifname_unit(temp, &wl_unit, &wl_subunit) != 0) {
+				websError(wp, 400, "psta error getting wl_unit\n");
+				ret_code = EINVAL;
+				return FALSE;
+			}
+		}
 
 		if (wl_subunit != -1) {
 			websError(wp, 400, "psta can't be enabled for a virtual i/f\n");
@@ -10360,7 +11204,7 @@ validate_psta(webs_t wp, char *value, struct variable *v, char *varname)
 
 	/* See if other interface also has psta or psr enabled */
 	sprintf(nv_param, "wl%d_mode", 1 - wl_unit);
-	db_rpt = ((!strcmp(nvram_safe_get(nv_param), "psta") || 
+	db_rpt = ((!strcmp(nvram_safe_get(nv_param), "psta") ||
 		   !strcmp(nvram_safe_get(nv_param), "psr")) && (psta || psr));
 
 	if (psta || psr) {
@@ -10389,7 +11233,7 @@ validate_psta(webs_t wp, char *value, struct variable *v, char *varname)
 			nvifname_to_osifname(nv_interface, os_interface,
 			                     sizeof(os_interface));
 			add_to_list(os_interface, if_list, if_list_size);
-	        	nvram_set(nv_param, if_list);
+			nvram_set(nv_param, if_list);
 		} else
 			nvram_set("dpsta_ifnames", "");
 
@@ -10408,7 +11252,7 @@ validate_psta(webs_t wp, char *value, struct variable *v, char *varname)
 			/* For Repeater we need to add our ap interface to the bridged lan */
 			add_to_list(nv_interface, interface_list, interface_list_size);
 			nvram_set(lan_ifnames, interface_list);
-			
+
 			/* Set the ap mode */
 			nvram_set(nv_param, "ap");
 		}
@@ -10501,7 +11345,7 @@ validate_psta(webs_t wp, char *value, struct variable *v, char *varname)
 			add_to_list(nv_interface, interface_list, interface_list_size);
 			nvram_set(strcat_r(nv_interface, "_hwaddr", tmp), "");
 		}
-	       	nvram_set("lan1_ifnames", interface_list);
+		nvram_set("lan1_ifnames", interface_list);
 	}
 
 	return TRUE;
@@ -10623,12 +11467,16 @@ validate_wl_wme_params(webs_t wp, char *value, struct variable *v, char *varname
 	}
 
 	if ((value = websGetVar(wp, strcat_r(v->name, "5", tmp), NULL)) != NULL)
-		if (!strcmp(value, "off") || !strcmp(value, "on"))
-			strcpy(acm_str, value);
+		if (!strcmp(value, "off") || !strcmp(value, "on")) {
+			strncpy(acm_str, value, sizeof(acm_str)-1);
+			acm_str[sizeof(acm_str)-1] = '\0';
+		}
 
 	if ((value = websGetVar(wp, strcat_r(v->name, "6", tmp), NULL)) != NULL)
-		if (!strcmp(value, "off") || !strcmp(value, "on"))
-			strcpy(dof_str, value);
+		if (!strcmp(value, "off") || !strcmp(value, "on")) {
+			strncpy(dof_str, value, sizeof(dof_str)-1);
+			dof_str[sizeof(dof_str)-1] = '\0';
+		}
 
 	sprintf(tmp, "%d %d %d %d %d %s %s",
 	        cwmin, cwmax, aifsn, txop_b, txop_ag, acm_str, dof_str);
@@ -10644,6 +11492,2848 @@ error:
         websBufferWrite(wp, errmsg);
 	websBufferWrite(wp, "<b><br>");
 }
+
+
+/* ------------------------------------------------------------------- */
+#ifdef __CONFIG_HSPOT__
+static int
+get_hex_data(uchar *data_str, uchar *hex_data, int len)
+{
+	uchar *src, *dest;
+	uchar val;
+	int idx;
+	char hexstr[3];
+
+	src = data_str;
+	dest = hex_data;
+
+	for (idx = 0; idx < len; idx++) {
+		hexstr[0] = src[0];
+		hexstr[1] = src[1];
+		hexstr[2] = '\0';
+
+		val = (uchar) strtoul(hexstr, NULL, 16);
+
+		*dest++ = val;
+		src += 2;
+	}
+
+	return 0;
+}
+
+void BytestoHex(uchar* str, int strbuflen, uchar* utf8, int utf8buflen)
+{
+	char temp[3];
+	uchar *src = str, *dst = utf8;
+	int len = strlen((char*)src), i, optlen;
+	optlen = len < (utf8buflen-1) ? len : (utf8buflen-1);
+
+	for (i = 0; i < optlen ; i++)
+	{
+		memset(temp, 0, sizeof(temp));
+		snprintf(temp, sizeof(temp), "%02X", (uchar)src[i]);
+		*dst++ = temp[0];
+		*dst++ = temp[1];
+	}
+}
+
+void HextoBytes(uchar* str, int strbuflen, uchar* utf8, int utf8buflen)
+{
+	char temp[3];
+	uchar *src = utf8, *dst = str;
+	int len = strlen((char*)src)/2, i, optlen;
+	optlen = len < strbuflen ? len : strbuflen;
+
+	for (i = 0; i < optlen; i++)
+	{
+		memset(temp, 0, sizeof(temp));
+		temp[0] = src[0];
+		temp[1] = src[1];
+		temp[2] = '\0';
+		*dst++ = (uchar) strtoul(temp, NULL, 16);
+		src += 2;
+	}
+}
+
+static int
+ej_print_wl_oplist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	oper_name_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *oper, *lang;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "oplist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+	for (; iter <= last; iter++) {
+
+		valid = FALSE;
+		oper = lang = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, "|", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			/* Parse oper:lang */
+			lang = item_value;
+			oper = strsep(&lang, "!");
+
+			if (oper && lang)
+			{
+				strncpy_n(nat.name, oper, VENUE_NAME_SIZE+1);
+				nat.nameLen = strlen(oper);
+				strncpy_n(nat.lang, lang, VENUE_LANGUAGE_CODE_SIZE+1);
+				nat.langLen = strlen(lang);
+				valid = TRUE;
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set Operator Friendly Name List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_oplist_%d_\" value=\"2\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print oper */
+		ret += websWrite(wp, "<td><input name=\"wl_oplist_%d_0\" value=\"%s\" size=\"32\" maxlength=\"255\"></td>", iter, valid ? nat.name : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print lang */
+		ret += websWrite(wp, "<td><input name=\"wl_oplist_%d_1\" value=\"%s\" size=\"5\" maxlength=\"5\"></td>", iter, valid ? nat.lang : "");
+
+		ret += websWrite(wp, "</tr>");
+
+	}
+
+	return ret;
+}
+
+
+static void
+validate_wl_oplist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_oplist_%d_%d", longname: "Operator Name", argv: ARGV("0", "255") },
+		{ name: "wl_oplist_%d_%d", longname: "Language Code", argv: ARGV("0", "3") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char oper[NAME_BUFF], lang[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_oplist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(oper, 0, sizeof(oper));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+			strncpy_n(oper, val, NAME_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(lang, 0, sizeof(lang));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			strncpy_n(lang, val, CODE_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(oper) && !strlen(lang)) {
+			continue;
+		}
+
+		/* Fill in empty fields with default values or check for mendetory fields */
+		if (!strlen(oper) && (strlen(lang) > 0)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Operator Name<br>",  fields[0].longname);
+			continue;
+		}
+
+		if ((strlen(oper) > 0) && !strlen(lang)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Language Code <br>", fields[1].longname);
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, oper, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Operator Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!valid_name(wp, lang, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Language Code<br>",  fields[1].longname);
+			continue;
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s!%s", oper, lang);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, "|", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+
+	nvram_set("wl_oplist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+static int
+ej_authid_change(int eid, webs_t wp, int argc, char_t** argv)
+{
+	int authidcode, ret = 0, index;
+	if(ejArgs(argc,argv,"%d",&authidcode) < 1){
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		ret = -1;
+	}
+	/* Create HTML stringArray for Auth Param Name, according to Auth ID */
+	websWrite(wp,"\t\t var authTypes = new Array(");
+	for(index = auth_ids[authidcode].auth_param_offset;
+		index < auth_ids[authidcode].auth_param_offset + auth_ids[authidcode].auth_param_count;
+		index++){
+			websWrite(wp,"\"%s\"",auth_params[index].auth_param_description);
+			if(index < (auth_ids[authidcode].auth_param_offset + auth_ids[authidcode].auth_param_count - 1))
+				websWrite(wp, ", ");
+		}
+	websWrite(wp, ");\n");
+	/* Create HTML stringArray for Auth Param ID, according to Auth ID */
+	websWrite(wp,"\t\t var authTypesCode = new Array(");
+	for(index = auth_ids[authidcode].auth_param_offset;
+		index < auth_ids[authidcode].auth_param_offset + auth_ids[authidcode].auth_param_count;
+		index++){
+			websWrite(wp,"\"%d\"",auth_params[index].auth_param_code);
+			if(index < (auth_ids[authidcode].auth_param_offset + auth_ids[authidcode].auth_param_count - 1))
+				websWrite(wp, ", ");
+		}
+	websWrite(wp, ");\n");
+
+	return ret;
+}
+
+static int
+ej_print_eapauth(int eid, webs_t wp, int argc, char **argv)
+{
+	realm_list_t *nat;
+	int ret = 0, iter = 0, last = 0, iter_eap = 0, iter_auth = 0, index_eap =0, index_auth =0, idx = 0;
+	int total_auth = 0, row_index;
+	int iEap_method = 0, iAuth_id = 0, iAuth_param = 0;
+	int  iE = 0, iA = 0, iR = 0;
+	char tmp[NVRAM_BUFSIZE], nvram_val[NVVAL_BUFF], prefix[] = "wlXXXXXXXXXX_", *ptrv = NULL;
+	char *eap, *eap_left, *eap_method, *eap_right;
+	char *auth_id, *auth_param, *auth, *auth_left, *auth_right;
+	char  *realm, *realm_name, *realm_encode, *realm_left, *realm_right;
+	bool valid_eap = FALSE, valid_auth = FALSE, noNvram = FALSE;
+	uint8 auth_param_val[1];
+	int index, selected_auth_id, eapcount;
+
+	nat = (realm_list_t*)malloc(sizeof(realm_list_t));
+	if(!nat)
+		return -1;
+
+	memset(nat, 0, sizeof *nat);
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	if (ejArgs(argc,argv,"%d%d%d",&row_index,&iter,&last) < 1) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args test\n");
+		ret = -1;
+		goto EJ_PRINT_EAPAUTH_DONE;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL)) {
+		ret = -1;
+		goto EJ_PRINT_EAPAUTH_DONE;
+	}
+
+	ptrv = nvram_get(strcat_r(prefix, "realmlist", tmp));
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	iter_eap = iter_auth = iter;
+	if (!noNvram)
+	{
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+		realm = nvram_val;
+		realm_right = realm;
+		while (realm) {
+			iE = 0;
+			realm_left = strsep(&realm_right, "?");
+			eap = realm_left;
+			realm_name   = strsep(&eap, "+");
+			realm_encode = strsep(&eap, "+");
+
+			/* Fill Realm Encoding */
+			nat->realm[iR].encoding
+				= (uint8)atoi(realm_encode);
+
+			/* Fill Realm Name and length */
+			nat->realm[iR].realmLen = strlen(realm_name);
+			strncpy_n((char*)nat->realm[iR].realm,
+				realm_name, BCM_DECODE_ANQP_MAX_REALM_LENGTH+1);
+
+			/* Fill EAP Info, to print in EapAuth Field on UI */
+			strncpy_n((char*)nat->realm[iR].eapInfo,
+				eap, BCM_DECODE_ANQP_MAX_REALM_LENGTH+1);
+
+			while (eap) {
+				iA = 0;
+				eap_right = eap;
+				eap_left = strsep(&eap_right, ";");
+
+				auth = eap_left;
+				eap_method = strsep(&auth, "=");
+				iEap_method = atoi(eap_method);
+
+				/* Fill EAP Method */
+				nat->realm[iR].eap[iE].eapMethod
+					= (uint8)iEap_method;
+
+				while (auth) {
+					auth_right = auth;
+					auth_left = strsep(&auth_right, "#");
+
+					auth_param = auth_left;
+					auth_id = strsep(&auth_param, ",");
+
+					iAuth_id = atoi(auth_id);
+					iAuth_param = atoi(auth_param);
+
+					/* Fill Auth ID */
+					nat->realm[iR].eap[iE].auth[iA].id
+						= (uint8)iAuth_id;
+
+					/* Fill Auth Param */
+					auth_param_val[0] = iAuth_param;
+					memcpy(nat->realm[iR].eap[iE].auth[iA].value,
+							auth_param_val, sizeof(auth_param_val));
+
+					/* Fill Auth Len */
+					nat->realm[iR].eap[iE].auth[iA].len
+						= sizeof(auth_param_val);
+
+					auth = auth_right;
+					iA++;
+				}
+				/* Fill Auth Count */
+				nat->realm[iR].eap[iE].authCount = iA;
+				eap = eap_right;
+				iE++;
+			}
+			/* Fill Eap Count */
+			nat->realm[iR].eapCount = iE;
+			realm = realm_right;
+			iR++;
+		}
+		/* Fill Realm Count */
+		nat->realmCount = iR;
+	}
+
+	/* --------------------------------- */
+	/* Start Printing Popup Dialog */
+	websWrite(wp, "var test = new String(\"");
+	websWrite(wp,"<table id=\'eaplisttblid\'>");
+	websWrite(wp,"<tr>");
+	websWrite(wp,"<td>Eap Name</td>");
+	websWrite(wp,"<td>Auth Id</td>");
+	websWrite(wp,"<td>Auth Param</td>");
+	websWrite(wp,"</tr>");
+
+	/* Print Eap & Auth for selected Realm */
+	for (; iter_eap <= last; iter_eap++)
+	{
+		eapcount = (!noNvram) ? nat->realm[row_index].eapCount : 0;
+		valid_eap = eapcount-- ? TRUE : FALSE;
+		total_auth = valid_eap ? nat->realm[row_index].eap[iter_eap].authCount : 0;
+		selected_auth_id = 0;
+		websWrite(wp,"<tr>");
+		websWrite(wp,"<td><select id=\'eap_method_%d\' name=\'eap_method_%d\'>", iter_eap, iter_eap);
+
+		/* Print selected Eap Method pulldown */
+		for(index_eap = 0; index_eap < EAP_METHOD_COUNT; index_eap++)
+		{
+			websWrite(wp,"<option value=\'%d\' %s>%s</option>",
+				eap_methods[index_eap].eap_method_val,
+				( valid_eap ? (nat->realm[row_index].eap[iter_eap].eapMethod ==
+					(uint8)eap_methods[index_eap].eap_method_val ? "selected" : "") : "" ),
+				eap_methods[index_eap].eap_method_name);
+		}
+
+		websWrite(wp,"</select></td>");
+		websWrite(wp,"<td><select id=\'auth_id_%d\' name=\'auth_id_%d\' onChange=\'window.opener.onchange_authid(%d,%d);\'>",
+							iter_eap, iter_eap, iter_eap,1000);
+
+		/* Print selected Auth ID pulldown */
+		for(index_auth = 0; index_auth < AUTH_ID_COUNT; index_auth++)
+		{
+			idx = 0;
+			websWrite(wp,"<option value=\'%d\' %s>%s</option>",
+					auth_ids[index_auth].auth_id_code,
+					( total_auth ? (nat->realm[row_index].eap[iter_eap].auth[idx].id == (uint8)auth_ids[index_auth].auth_id_code ? "selected" : "") : "" ),
+					auth_ids[index_auth].auth_id_description);
+
+			if(nat->realm[row_index].eap[iter_eap].auth[idx].id == (uint8)auth_ids[index_auth].auth_id_code)
+				selected_auth_id = index_auth;
+		}
+		websWrite(wp,"</select></td>");
+
+		/* Print selected Auth Param pulldown */
+		websWrite(wp,"<td><select id=\'auth_param_%d\' name=\'auth_param_%d\'>", iter_eap, iter_eap);
+		for(index = auth_ids[selected_auth_id].auth_param_offset;
+			index < auth_ids[selected_auth_id].auth_param_offset + auth_ids[selected_auth_id].auth_param_count;
+			index++)
+		{
+			idx = 0;
+			websWrite(wp,"<option value=\'%d\' %s>%s</option>",
+				auth_params[index].auth_param_code,
+				( total_auth ? (auth_params[index].auth_param_code ==
+					(uint8)nat->realm[row_index].eap[iter_eap].auth[idx].value[0] ? "selected" : "") : "" ),
+				auth_params[index].auth_param_description);
+		}
+		total_auth--;
+		websWrite(wp,"</select></td>");
+		websWrite(wp,"</tr>");
+
+		/* Print remaining Auth ID and Auth Param */
+		for(iter_auth = 1; iter_auth < last; iter_auth++)
+		{
+			selected_auth_id = 0;
+			websWrite(wp,"<tr><td></td>");
+			valid_auth = total_auth ? TRUE : FALSE;
+
+			/* Print remaining Auth ID */
+			websWrite(wp,"<td><select id=\'auth_id_%d_%d\' name=\'auth_id_%d_%d\'onChange=\'window.opener.onchange_authid(%d,%d);\'>",
+				iter_eap, iter_auth, iter_eap, iter_auth, iter_eap, iter_auth);
+			for(index_auth = 0; index_auth < AUTH_ID_COUNT; index_auth++)
+			{
+				websWrite(wp,"<option value=\'%d\' %s>%s</option>",
+					auth_ids[index_auth].auth_id_code,
+					( valid_auth ? (nat->realm[row_index].eap[iter_eap].auth[iter_auth].id == (uint8)auth_ids[index_auth].auth_id_code ? "selected" : "") : "" ),
+					auth_ids[index_auth].auth_id_description);
+
+				if(nat->realm[row_index].eap[iter_eap].auth[iter_auth].id == (uint8)auth_ids[index_auth].auth_id_code)
+					selected_auth_id = index_auth;
+			}
+			websWrite(wp,"</select></td>");
+
+			/* Print remaining Auth Param */
+			websWrite(wp,"<td><select id=\'auth_param_%d_%d\' name=\'auth_param_%d_%d\'>", iter_eap, iter_auth, iter_eap, iter_auth);
+			for(index = auth_ids[selected_auth_id].auth_param_offset;
+				index < auth_ids[selected_auth_id].auth_param_offset + auth_ids[selected_auth_id].auth_param_count;
+				index++)
+				websWrite(wp,"<option value=\'%d\' %s>%s</option>",
+					auth_params[index].auth_param_code,
+					( valid_auth ? (auth_params[index].auth_param_code == (uint8)nat->realm[row_index].eap[iter_eap].auth[iter_auth].value[0] ? "selected" : "") : "" ),
+					auth_params[index].auth_param_description);
+			websWrite(wp,"</select></td>");
+			websWrite(wp,"</tr>");
+			total_auth--;
+		}
+	}
+
+	/* Print Save & Cancel Buttons */
+	websWrite(wp,"<tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr>");
+	websWrite(wp, "<tr><td></td><td></td><td><input type=button value=Save onClick=\'window.opener.onsave_eapauth();\'>");
+	websWrite(wp, "<input type=button value=Cancel onClick=\'window.opener.onclose_eapauth();\'></td><tr>");
+	websWrite(wp,"</table>");
+	websWrite(wp,"\");\n");
+
+EJ_PRINT_EAPAUTH_DONE:
+	if(nat)
+		free(nat);
+
+	return ret;
+}
+
+static const char*
+GetRealm(uint8 iEap_method)
+{
+	switch (iEap_method)
+	{
+	case REALM_EAP_TLS:
+		return "EAP-TLS";
+
+	case REALM_EAP_LEAP:
+		return "EAP-LEAP";
+
+	case REALM_EAP_SIM:
+		return "EAP-SIM";
+
+	case REALM_EAP_TTLS:
+		return "EAP-TTLS";
+
+	case REALM_EAP_AKA:
+		return "EAP-AKA";
+
+	case REALM_EAP_PEAP:
+		return "EAP-PEAP";
+
+	case REALM_EAP_FAST:
+		return "EAP-FAST";
+
+	case REALM_EAP_PSK:
+		return "EAP-PSK";
+
+	case REALM_EAP_AKAP:
+		return "EAP-AKAP";
+
+	case REALM_EAP_EXPANDED:
+		return "EAP-EXPANDED";
+
+	default :
+		break;
+	}
+
+	return "";
+}
+
+static const char*
+GetAuthID(uint8 iAuth_id, int *authparamtype)
+{
+	switch (iAuth_id)
+	{
+	case REALM_NON_EAP_INNER_AUTHENTICATION:
+		*authparamtype = BCM_DECODE_AUTH_PARAM_TYPE_1;
+		return "NonEAPInner";
+
+	case REALM_INNER_AUTHENTICATION_EAP:
+		*authparamtype = BCM_DECODE_AUTH_PARAM_TYPE_2;
+		return "InnerAuthEAP";
+
+	case REALM_CREDENTIAL:
+		*authparamtype = BCM_DECODE_AUTH_PARAM_TYPE_3;
+		return "Credential";
+
+	case REALM_TUNNELED_EAP_CREDENTIAL:
+		*authparamtype = BCM_DECODE_AUTH_PARAM_TYPE_3;
+		return "TunnledEAPCred";
+
+	default :
+		break;
+	}
+
+	*authparamtype = BCM_DECODE_AUTH_PARAM_TYPE_UNKNOWN;
+	return ""; 
+}
+
+static const char*
+GetAuthParam(int authparamtype, int iAuth_param)
+{
+	if (BCM_DECODE_AUTH_PARAM_TYPE_UNKNOWN == authparamtype)
+		return "";
+
+	switch (authparamtype)
+	{
+	case BCM_DECODE_AUTH_PARAM_TYPE_1 :
+		switch (iAuth_param)
+		{
+			case REALM_MSCHAPV2:
+				return "MSCHAPV2";
+
+			case REALM_MSCHAP:
+				return "MSCHAP";
+
+			case REALM_CHAP:
+				return "CHAP";
+
+			case REALM_PAP:
+				return "PAP";
+
+			default :
+				break;
+		}
+		break;
+
+	case BCM_DECODE_AUTH_PARAM_TYPE_2 :
+		switch (iAuth_param)
+		{
+			case REALM_EAP_LEAP:
+				return "LEAP";
+
+			case REALM_EAP_PEAP:
+				return "PEAP";
+
+			case REALM_EAP_TLS:
+				return "EAP-TLS";
+
+			case REALM_EAP_FAST:
+				return "EAP-FAST";
+
+			case REALM_EAP_SIM:
+				return "EAP-SIM";
+
+			case REALM_EAP_TTLS:
+				return "EAP-TTLS";
+
+			case REALM_EAP_AKA:
+				return "EAP-AKA";
+
+			default :
+				break;
+		}
+		break;
+
+	case BCM_DECODE_AUTH_PARAM_TYPE_3 :
+		switch (iAuth_param)
+		{
+			case REALM_SIM:
+				return "SIM";
+
+			case REALM_USIM:
+				return "USIM";
+
+			case REALM_NFC:
+				return "NFC";
+
+			case REALM_HARDWARE_TOKEN:
+				return "HARDTOKEN";
+
+			case REALM_SOFTOKEN:
+				return "SOFTTOKEN";
+
+			case REALM_CERTIFICATE:
+				return "CERTIFICATE";
+
+			case REALM_USERNAME_PASSWORD:
+				return "USERNAME_PASSWORD";
+
+			case REALM_SERVER_SIDE:
+				return "RESERVED";
+
+			case REALM_RESERVED_CRED:
+				return "ANNONYMOUS";
+
+			case REALM_VENDOR_SPECIFIC_CRED:
+				return "VENDOR_SPECIFIC";
+
+			default :
+				break;
+		}
+		break;
+
+	default :
+		break;
+
+	}
+	return "";
+}
+
+static int
+ej_print_wl_realmlist(int eid, webs_t wp, int argc, char **argv)
+{
+	int iter, last, ret = 0;
+	realm_list_t *nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF];
+	char *ptrv = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *realm, *realm_left, *realm_right;
+	char *eap, *eap_left, *eap_right;
+	char *auth, *auth_left, *auth_right;
+	char* realm_name, *realm_encode, *eap_method, *auth_id, *auth_param;
+	int iR = 0, iE = 0, iA = 0;
+	int iEap_method = 0, iAuth_id = 0, iAuth_param = 0;
+	uint8 auth_param_val[1];
+
+	nat = (realm_list_t*)malloc(sizeof(realm_list_t));
+	if(!nat)
+		return -1;
+
+	memset(nat, 0, sizeof *nat);
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		ret = -1;
+		goto EJ_PRINT_WL_REALMLIST_DONE;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL)) {
+		ret = -1;
+		goto EJ_PRINT_WL_REALMLIST_DONE;
+	}
+
+	ptrv = nvram_get(strcat_r(prefix, "realmlist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+	{
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+		realm = nvram_val;
+		realm_right = realm;
+
+		while (realm) {
+			iE = 0;
+			realm_left = strsep(&realm_right, "?");
+
+			eap = realm_left;
+			realm_name = strsep(&eap, "+");
+			realm_encode = strsep(&eap, "+");
+
+			/* Fill Realm Encoding */
+			nat->realm[iR].encoding
+				= (uint8)atoi(realm_encode);
+
+			/* Fill Realm Name and length */
+			nat->realm[iR].realmLen = strlen(realm_name);
+			strncpy_n((char*)nat->realm[iR].realm,
+				realm_name, BCM_DECODE_ANQP_MAX_REALM_LENGTH+1);
+
+			strncpy_n((char*)nat->realm[iR].eapInfo,
+				eap, BCM_DECODE_ANQP_MAX_REALM_LENGTH+1);
+			while (eap) {
+				iA = 0;
+				eap_right = eap;
+				eap_left = strsep(&eap_right, ";");
+
+				auth = eap_left;
+				eap_method = strsep(&auth, "=");
+				iEap_method = atoi(eap_method);
+
+				/* Fill EAP Method */
+				nat->realm[iR].eap[iE].eapMethod
+					= (uint8)iEap_method;
+
+				if(iE)
+				strncat((char*)nat->realm[iR].realmInfo, ";", min(1, REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+
+				const char *realmptr = GetRealm(iEap_method);
+
+				if (realmptr) {
+					strncat((char*)nat->realm[iR].realmInfo, realmptr, min(strlen(realmptr), REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+				}
+
+				strncat((char*)nat->realm[iR].realmInfo, "=", min(1, REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+				while (auth) {
+					auth_right = auth;
+					auth_left = strsep(&auth_right, "#");
+
+					auth_param = auth_left;
+					auth_id = strsep(&auth_param, ",");
+
+					iAuth_id = atoi(auth_id);
+					iAuth_param = atoi(auth_param);
+
+					/* Fill Auth ID */
+					nat->realm[iR].eap[iE].auth[iA].id
+						= (uint8)iAuth_id;
+
+					if(iA)
+					strncat((char*)nat->realm[iR].realmInfo, "#", min(1, REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+
+					int authparamtype = 0;
+					const char *authptr = GetAuthID(iAuth_id, &authparamtype);
+
+					if ( (authptr) &&
+					(BCM_DECODE_AUTH_PARAM_TYPE_UNKNOWN != authparamtype) ) {
+						strncat((char*)nat->realm[iR].realmInfo, authptr, min(strlen(authptr), REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+					}
+
+					strncat((char*)nat->realm[iR].realmInfo, ",", min(1, REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+
+					/* Fill Auth Param */
+					auth_param_val[0] = iAuth_param;
+					memcpy(nat->realm[iR].eap[iE].auth[iA].value,
+							auth_param_val, sizeof(auth_param_val));
+
+					const char *authparamval = GetAuthParam(authparamtype, iAuth_param);
+					if ( (authparamval) &&
+					(BCM_DECODE_AUTH_PARAM_TYPE_UNKNOWN != authparamtype) ) {
+						strncat((char*)nat->realm[iR].realmInfo, authparamval, min(strlen(authparamval), REALM_INFO_LENGTH-strlen((char*)nat->realm[iR].realmInfo)));
+					}
+					/* Fill Auth Len */
+					nat->realm[iR].eap[iE].auth[iA].len
+						= sizeof(auth_param_val);
+					auth = auth_right;
+					iA++;
+				}
+
+				/* Fill Auth Count */
+				nat->realm[iR].eap[iE].authCount = iA;
+				eap = eap_right;
+				iE++;
+			}
+
+			/* Fill Eap Count */
+			nat->realm[iR].eapCount = iE;
+			realm = realm_right;
+			iR++;
+		}
+
+		/* Fill Realm Count */
+		nat->realmCount = iR;
+	}
+	/* ------------------------------- */
+	/* Print Values */
+	for (; iter <= last; iter++) {
+
+		valid = (nat->realm[iter].realmLen > 0) && !noNvram ? TRUE : FALSE;
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set Realm List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_realmlist_%d_\" value=\"4\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print realmname */
+		ret += websWrite(wp, "<td><input id=\"wl_realmlist_%d_0\" name=\"wl_realmlist_%d_0\" value=\"%s\" size=\"32\" maxlength=\"255\"></td>", iter, iter, valid ? (char*)nat->realm[iter].realm : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print encode */
+		ret += websWrite(wp, "<td><select name=\"wl_realmlist_%d_1\"> \
+					<option value=\"0\" %s>RFC4282</option> \
+					<option value=\"1\" %s>UTF8</option> \
+					</select></td>", iter,
+					( valid ? (nat->realm[iter].encoding == REALM_ENCODING_RFC4282 ? "selected" : "") : "" ),
+					( valid ? (nat->realm[iter].encoding == REALM_ENCODING_UTF8 ? "selected" : "") : "" ) );
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print realminfo */
+		ret += websWrite(wp, "<td><input id=\"wl_realmlist_%d_2\" name=\"wl_realmlist_%d_2\" value=\"%s\" size=\"64\" maxlength=\"1024\" readonly ></td>",
+					iter, iter, valid ? (char*)nat->realm[iter].realmInfo : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print modify button */
+		ret += websWrite(wp, "<td><input name=\"wl_realmlist_%d_3\" type=button value=Modify onClick=\"onmodify_eapauth(%d);\"></td>",
+					iter, iter);
+		/* Print delete button */
+		ret += websWrite(wp, "<td><input name=\"wl_realmlist_%d_4\" type=button value=Delete onClick=\"ondelete_eapauth(%d);\"></td>",
+					iter, iter);
+
+		/* Hidden Control */
+		ret += websWrite(wp, "<td><input id=\"wl_realmlist_%d_5\" name=\"wl_realmlist_%d_5\" value=\"%s\" style=\"display:none;\"></td>",
+					iter, iter, valid ? (char*)nat->realm[iter].eapInfo : "");
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+EJ_PRINT_WL_REALMLIST_DONE:
+	if(nat)
+		free(nat);
+
+	return ret;
+}
+
+static void
+validate_wl_realmlist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_realmlist_%d_%d", longname: "Realm Name", argv: ARGV("0", "255") },
+		{ name: "wl_realmlist_%d_%d", longname: "Encoding Type", argv: ARGV("0", "1") },
+		{ name: "wl_realmlist_%d_%d", longname: "Realm Information", argv: ARGV("0", "1024") }
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[NVVAL_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+	char realmname[NAME_BUFF], encode[CODE_BUFF], realminfo[NVVAL_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_realmlist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(realmname, 0, sizeof(realmname));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+				strncpy_n(realmname, val, NAME_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(encode, 0, sizeof(encode));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			if (!strcmp(val, "0") || !strcmp(val, "1"))
+				strncpy_n(encode, val, CODE_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(realminfo, 0, sizeof(realminfo));
+		if ((val = websGetVar(wp, strcat_r(row_name, "5", col_name), NULL)) != NULL)
+				strncpy_n(realminfo, val, NVVAL_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(realmname) && !strlen(realminfo)) {
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, realmname, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Realm Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!valid_choice(wp, encode, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Encoding Type<br>",  fields[1].longname);
+			continue;
+		}
+		if (!valid_name(wp, realminfo, &fields[2])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Choose valid Realm Information using Modify Button<br>",  fields[2].longname);
+			continue;
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s+%s+%s", realmname, encode, realminfo);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, "?", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set("wl_realmlist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+static int
+ej_icon_change(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int index = 0, ret = 0;
+	int valid = 1;
+
+	bcm_decode_hspot_anqp_icon_metadata_t metadata;
+	memset(&metadata, 0, sizeof(metadata));
+
+	if (ejArgs(argc, argv, "%d", &index) < 1) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+	valid =  index == -1 ? 0 : 1;
+
+	/* Get the Image Filename using index and read Metadata */
+	if(valid)
+		GetIconMetadata(ICONPATH, imgfilearr[index].imgfilename, &metadata);
+
+	ret += websWrite(wp,"var width = new String(\"%d\"); \n", valid ? metadata.width : 0);
+	ret += websWrite(wp,"var height = new String(\"%d\"); \n", valid ? metadata.height : 0);
+	ret += websWrite(wp,"var langcode = new String(\"%s\"); \n", valid ? imgfilearr[index].lang : "");
+	ret += websWrite(wp,"var mimetype = new String(\"%s\"); \n", valid ? (char*)metadata.type : "");
+
+	return ret;
+}
+
+static int
+decode_osupNVRAMs(osu_provider_list_t *nat)
+{
+	bool noNvram = FALSE;
+
+	char nvval_frndlyname[NVVAL_BUFF], nvval_uri[NVVAL_BUFF];
+	char nvval_nai[NVVAL_BUFF], nvval_method[NVVAL_BUFF], nvval_icons[NVVAL_BUFF];
+	char  item_value[ITEM_BUFF];
+	char *tokenParse = NULL, *friendlyname = NULL, *osuuri = NULL, *osunai = NULL, *osumethod = NULL, *osuicons = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *provider = NULL, *provider_left = NULL, *provider_right = NULL;
+	char ptrFrndlyName[NVRAM_MAX_VAL_LEN];
+	int iP = 0, iD = 0, i = 0;
+	char *oper = NULL,  *lang = NULL;
+	uint8 osu_method[1];
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+	/* ---------------- OSU URI --------------------- */
+	memset(tmp, 0, sizeof(tmp));
+	osuuri = nvram_get(strcat_r(prefix, "osu_uri", tmp));
+
+	if (!osuuri || (strlen(osuuri)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_uri, 0, sizeof(nvval_uri));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_uri, osuuri, NVVAL_BUFF);
+		if (strlen(nvval_uri) > 0) {
+			tokenParse = NULL;
+			i = 0;
+			while ((i < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) &&
+				((tokenParse = strtok(i ? NULL : nvval_uri, ";")) != NULL)) {
+				strncpy_n((char*)nat->osuProvider[i].uri, tokenParse,
+					BCM_DECODE_HSPOT_ANQP_MAX_URI_LENGTH+1);
+				nat->osuProvider[i].uriLength = strlen(tokenParse);
+				i++;
+			}
+		}
+	}
+	/* ---------------- OSU URI --------------------- */
+
+	/* ---------------- OSU NAI --------------------- */
+	memset(tmp, 0, sizeof(tmp));
+	osunai = nvram_get(strcat_r(prefix, "osu_nai", tmp));
+
+	if (!osunai || (strlen(osunai)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_nai, 0, sizeof(nvval_nai));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_nai, osunai, NVVAL_BUFF);
+		if (strlen(nvval_nai) > 0) {
+			tokenParse = NULL;
+			i = 0;
+			while ((i < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) &&
+				((tokenParse = strtok(i ? NULL : nvval_nai, ";")) != NULL)) {
+				strncpy_n((char*)nat->osuProvider[i].nai, tokenParse,
+					BCM_DECODE_HSPOT_ANQP_MAX_NAI_LENGTH+1);
+				nat->osuProvider[i].naiLength = strlen(tokenParse);
+				i++;
+			}
+		}
+	}
+	/* ---------------- OSU NAI --------------------- */
+
+	/* ---------------- OSU Method --------------------- */
+	noNvram = FALSE;
+	memset(tmp, 0, sizeof(tmp));
+	osumethod = nvram_get(strcat_r(prefix, "osu_method", tmp));
+
+	if (!osumethod || (strlen(osumethod)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_method, 0, sizeof(nvval_method));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_method, osumethod, NVVAL_BUFF);
+		if (strlen(nvval_method) > 0) {
+			tokenParse = NULL;
+			i = 0;
+			while ((i < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) &&
+				((tokenParse = strtok(i ? NULL : nvval_method, ";")) != NULL)) {
+
+				osu_method[0] = (!strncasecmp(tokenParse, "0", 1)) ?
+					HSPOT_OSU_METHOD_OMA_DM : HSPOT_OSU_METHOD_SOAP_XML;
+				memcpy(nat->osuProvider[i].method,
+					osu_method, sizeof(osu_method));
+				nat->osuProvider[i].methodLength = sizeof(osu_method);
+				i++;
+			}
+		}
+	}
+	/* ---------------- OSU Method --------------------- */
+
+	/* ---------------- Friendly Name --------------------- */
+	memset(ptrFrndlyName, 0, sizeof(ptrFrndlyName));
+	noNvram = FALSE;
+	memset(tmp, 0, sizeof(tmp));
+	friendlyname = nvram_get(strcat_r(prefix, "osu_frndname", tmp));
+
+	if (!friendlyname || (strlen(friendlyname)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_frndlyname, 0, sizeof(nvval_frndlyname));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_frndlyname, friendlyname, NVVAL_BUFF);
+		if (strlen(nvval_frndlyname) > 0) {
+			provider = nvval_frndlyname;
+			provider_right = provider;
+
+			while ((iP < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) && provider)
+			{
+				tokenParse = NULL;
+				iD = 0;
+
+				provider_left = strsep(&provider_right, ";");
+				strncpy_n(ptrFrndlyName, provider_left, NVRAM_MAX_VAL_LEN);
+
+				strncpy_n((char*)nat->osuProvider[iP].nameInfo,
+					provider_left, FRIENDLY_NAME_INFO_LENGTH+1);
+
+				while ((iD < BCM_DECODE_HSPOT_ANQP_MAX_OPERATOR_NAME) &&
+					((tokenParse = strtok(iD ? NULL : ptrFrndlyName, "|")) != NULL)) {
+
+					strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+					lang = item_value;
+					oper = strsep(&lang, "!");
+
+					if (oper && lang)
+					{
+						strncpy_n(nat->osuProvider[iP].name.duple[iD].name,
+							oper, VENUE_NAME_SIZE+1);
+						nat->osuProvider[iP].name.duple[iD].nameLen = strlen(oper);
+						strncpy_n(nat->osuProvider[iP].name.duple[iD].lang, lang,
+							VENUE_LANGUAGE_CODE_SIZE+1);
+						nat->osuProvider[iP].name.duple[iD].langLen = strlen(lang);
+					}
+					iD++;
+				}
+				nat->osuProvider[iP].name.numName  = iD;
+				provider = provider_right;
+				iP++;
+			}
+		}
+	}
+	/* ---------------- Friendly Name --------------------- */
+
+	/*---------------------OSU Server Desc------------------*/
+	provider = NULL, provider_left = NULL, provider_right = NULL;
+	memset(ptrFrndlyName, 0, sizeof(ptrFrndlyName));
+	iP = 0, iD = 0;
+	oper = NULL,  lang = NULL;
+	noNvram = FALSE;
+	memset(tmp, 0, sizeof(tmp));
+	friendlyname = nvram_get(strcat_r(prefix, "osu_servdesc", tmp));
+
+	if (!friendlyname || (strlen(friendlyname)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_frndlyname, 0, sizeof(nvval_frndlyname));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_frndlyname, friendlyname, NVVAL_BUFF);
+		if (strlen(nvval_frndlyname) > 0) {
+			provider = nvval_frndlyname;
+			provider_right = provider;
+
+			while ((iP < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) && provider)
+			{
+				tokenParse = NULL;
+				iD = 0;
+
+				provider_left = strsep(&provider_right, ";");
+				strncpy_n(ptrFrndlyName, provider_left, NVRAM_MAX_VAL_LEN);
+				strncpy_n((char*)nat->osuProvider[iP].descInfo, provider_left, FRIENDLY_NAME_INFO_LENGTH+1);
+				while ((iD < BCM_DECODE_HSPOT_ANQP_MAX_OPERATOR_NAME) &&
+					((tokenParse = strtok(iD ? NULL : ptrFrndlyName, "|")) != NULL)) {
+
+					strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+					lang = item_value;
+					oper = strsep(&lang, "!");
+
+					if (oper && lang)
+					{
+						strncpy_n(nat->osuProvider[iP].desc.duple[iD].name,
+							oper, VENUE_NAME_SIZE+1);
+						nat->osuProvider[iP].desc.duple[iD].nameLen = strlen(oper);
+						strncpy_n(nat->osuProvider[iP].desc.duple[iD].lang, lang,
+							VENUE_LANGUAGE_CODE_SIZE+1);
+						nat->osuProvider[iP].desc.duple[iD].langLen = strlen(lang);
+					}
+					iD++;
+				}
+				nat->osuProvider[iP].desc.numName  = iD;
+				provider = provider_right;
+				iP++;
+			}
+		}
+	}
+	/*---------------------OSU Server Desc------------------*/
+
+	/* ---------------- OSU Icons --------------------- */
+	provider = NULL, provider_left = NULL, provider_right = NULL;
+	memset(ptrFrndlyName, 0, sizeof(ptrFrndlyName));
+	iP = 0, iD = 0;
+	oper = NULL,  lang = NULL;
+	noNvram = FALSE;
+	memset(tmp, 0, sizeof(tmp));
+	osuicons = nvram_get(strcat_r(prefix, "osu_icons", tmp));
+
+	if (!osuicons || (strlen(osuicons)<=0))
+		noNvram = TRUE;
+
+	memset(nvval_icons, 0, sizeof(nvval_icons));
+	if (!noNvram)
+	{
+		strncpy_n(nvval_icons, osuicons, NVVAL_BUFF);
+		if (strlen(nvval_icons) > 0) {
+			provider = nvval_icons;
+			provider_right = provider;
+
+			while ((iP < BCM_DECODE_HSPOT_ANQP_MAX_OSU_PROVIDER) && provider)
+			{
+				tokenParse = NULL;
+				iD = 0;
+
+				provider_left = strsep(&provider_right, ";");
+				strncpy_n(ptrFrndlyName, provider_left, NVRAM_MAX_VAL_LEN);
+				strncpy_n((char*)nat->osuProvider[iP].iconInfo, provider_left, FRIENDLY_NAME_INFO_LENGTH+1);
+				while ((iD < BCM_DECODE_HSPOT_ANQP_MAX_OPERATOR_NAME) &&
+					((tokenParse = strtok(iD ? NULL : ptrFrndlyName, "+")) != NULL)) {
+
+					strncpy_n(nat->osuProvider[iP].iconMetadata[iD].filename,
+						tokenParse, BCM_DECODE_HSPOT_ANQP_MAX_ICON_FILENAME_LENGTH+1);
+					nat->osuProvider[iP].iconMetadata[iD].filenameLength = strlen(tokenParse);
+					iD++;
+				}
+				nat->osuProvider[iP].iconMetadataCount = iD;
+				provider = provider_right;
+				iP++;
+			}
+		}
+	}
+	/* ---------------- OSU Icons --------------------- */
+	return 0;
+}
+
+static int
+ej_print_osup(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, ret = 0, i = 0, valid = 0, iter_strt = 0, iter_last = 0, index = -1, selectedIcon = 0;
+	bcm_decode_hspot_anqp_icon_metadata_t metadata;
+	bcm_decode_hspot_anqp_osu_provider_t *osu;
+	osu_provider_list_t *nat;
+
+	if (ejArgs(argc, argv, "%d%d%d", &index, &iter_strt, &iter_last) < 3) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	nat = (osu_provider_list_t*)malloc(sizeof(osu_provider_list_t));
+	if(!nat)
+		return -1;
+
+	memset(nat, 0, sizeof *nat);
+	osu = (bcm_decode_hspot_anqp_osu_provider_t*)malloc(sizeof(bcm_decode_hspot_anqp_osu_provider_t));
+	if(!osu)
+		return -1;
+
+	memset(osu, 0, sizeof *osu);
+	memset(&metadata, 0, sizeof(metadata));
+
+	/* Get Icon files from Icon directory */
+	GetIconFiles(ICONPATH, osu);
+
+	/* Parse OSU Provider NVRAMs */
+	decode_osupNVRAMs(nat);
+
+	/* Start Printing */
+	valid = (nat->osuProvider[index].uriLength && nat->osuProvider[index].methodLength &&
+				nat->osuProvider[index].name.duple[0].nameLen && nat->osuProvider[index].iconMetadata[0].filenameLength );
+
+	ret += websWrite(wp, "var osupdata = new String(\"");
+	ret += websWrite(wp,"<table id=\'osupdtlid\'>");
+	ret += websWrite(wp,"<thead>");
+	ret += websWrite(wp,"<tr> <th></th> <th>Name</th> <th>Lang</th></tr>");
+	ret += websWrite(wp,"</thead>");
+
+	/* Print OSU Friendly Names */
+	for(iter = 0; iter < iter_last; iter++)
+	{
+		ret += websWrite(wp,"<tr>");
+		if(!iter)
+			ret += websWrite(wp,"<td><p>OSU Friendly Name : <p></td>");
+		else
+			ret += websWrite(wp,"<td></td>");
+
+		/* Print Friendly Name */
+		ret += websWrite(wp,"<td><input id=\'fname_%d\' value = \'%s\' size=\'30\'>",iter,
+			  valid ? (char*)nat->osuProvider[index].name.duple[iter].name : "");
+		ret += websWrite(wp,"</td>");
+		/* Print Language Code */
+		ret += websWrite(wp,"<td><input id=\'lang_%d\' value = \'%s\' size=\'5\'>",iter,
+			  valid ? (char*)nat->osuProvider[index].name.duple[iter].lang : "");
+		ret += websWrite(wp,"</td>");
+		ret += websWrite(wp,"</tr>");
+	}
+
+	/* Print OSU Server URI */
+	ret += websWrite(wp,"<tr>");
+	ret += websWrite(wp,"<td>OSU Server URI : </td>");
+	ret += websWrite(wp,"<td><input id=\'%s\' value = \'%s\' size=\'30\'>", "osuserverid", valid ? (char*)nat->osuProvider[index].uri : "");
+	ret += websWrite(wp,"</td>");
+	ret += websWrite(wp,"</tr>");
+
+	/* Print OSU Method */
+	ret += websWrite(wp,"<tr></td>");
+	ret += websWrite(wp,"<td>OSU Method : </td>");
+	ret += websWrite(wp,"<td><select id='osumethodid'>");
+	ret += websWrite(wp,"<option value='0' %s>OMA-DM</option>", nat->osuProvider[index].method[0] ? "" : "selected");
+	ret += websWrite(wp,"<option value='1' %s>SOAP-XML</option>", nat->osuProvider[index].method[0] ? "selected" : "");
+	ret += websWrite(wp,"</select>");
+	ret += websWrite(wp,"</td>");
+	ret += websWrite(wp,"</tr>");
+
+	/* Print OSU NAI */
+	ret += websWrite(wp,"<tr>");
+	ret += websWrite(wp,"<td><p>OSU NAI : <p></td>");
+	ret += websWrite(wp,"<td><input id=\'osunai\' value = \'%s\' size=\'30\'>", valid ? (char*)nat->osuProvider[index].nai : "");
+	ret += websWrite(wp,"</td></tr>");
+
+	/* Print OSU Server Description */
+	for(iter = 0; iter < iter_last; iter++)
+	{
+		ret += websWrite(wp,"<tr>");
+		if(!iter)
+			ret += websWrite(wp,"<td><p>OSU Service Description : <p></td>");
+		else
+			ret += websWrite(wp,"<td></td>");
+
+		/* Print Friendly Name */
+		ret += websWrite(wp,"<td><input id=\'svrdesc_%d\' value = \'%s\' size=\'30\'>",iter,
+			  valid ? (char*)nat->osuProvider[index].desc.duple[iter].name : "");
+		ret += websWrite(wp,"</td>");
+		/* Print Language Code */
+		ret += websWrite(wp,"<td><input id=\'svrdesclang_%d\' value = \'%s\' size=\'5\'>",iter,
+			  valid ? (char*)nat->osuProvider[index].desc.duple[iter].lang : "");
+		ret += websWrite(wp,"</td>");
+		ret += websWrite(wp,"</tr>");
+	}
+	ret += websWrite(wp,"</table>");
+
+	/* Print OSU Server Icons */
+	ret += websWrite(wp,"<br/>");
+	ret += websWrite(wp,"<table>");
+	ret += websWrite(wp,"<tr></tr>");
+	ret += websWrite(wp,"<tr><th>Icons</th> <th></th><th>Width</th> <th></th> <th>Height</th> <th></th> <th>Lang</th> <th>Type</th></tr>");
+	for(iter = 0 ; iter <= iter_last; iter++)
+	{
+		selectedIcon = i = valid = 0;
+		ret += websWrite(wp,"<tr>");
+		ret += websWrite(wp,"<td><select id=\'iconsel_%d\' onChange=\'window.opener.onchange_icon(%d)\'>", iter, iter);
+
+		/* Print Icon pulldown - default value */
+		ret += websWrite(wp,"<option value=\'-1\'>Select</option>");
+
+		/* No Icon is selected */
+		if (!nat->osuProvider[index].iconMetadata[iter].filenameLength)
+		{
+			valid = 0;
+		}
+
+		/* Check which Icon is selected */
+		while (i < osu->iconMetadataCount)
+		{
+			valid = iter < nat->osuProvider[index].iconMetadataCount
+				? (!strncasecmp(osu->iconMetadata[i].filename, nat->osuProvider[index].iconMetadata[iter].filename,
+						strlen(osu->iconMetadata[i].filename)) ? 1 : 0) : 0;
+			/* Print Icon pulldown */
+			ret += websWrite(wp,"<option value=\'%d\' %s>%s</option>", i,
+				valid ? "selected" : "", osu->iconMetadata[i].filename);
+
+			/* Get Metadata of Selected Icon */
+			if(valid) {
+				GetIconMetadata(ICONPATH, osu->iconMetadata[i].filename, &metadata);
+				strncpy_n(metadata.lang, osu->iconMetadata[i].lang, VENUE_LANGUAGE_CODE_SIZE+1);
+				selectedIcon = i;
+			}
+			i++;
+		}
+
+		/* Print Icon Metadata */
+		ret += websWrite(wp,"</select>");
+		ret += websWrite(wp,"</td>");
+		/* Print Width */
+		ret += websWrite(wp,"<td></td><td width=20><input id=\'iwidth_%d\' value = \'%d\' size=\'8\' readonly>",iter,
+				 selectedIcon ? metadata.width : 0);
+		ret += websWrite(wp,"</td>");
+		/* Print Height */
+		ret += websWrite(wp,"<td></td><td width=20><input id=\'iheight_%d\' value = \'%d\' size=\'8\' readonly>",iter,
+				selectedIcon ? metadata.height : 0);
+		ret += websWrite(wp,"</td>");
+		/* Print Language Code */
+		ret += websWrite(wp,"<td></td><td><input id=\'ilangcode_%d\' value = \'%s\' size=\'8\' readonly>",iter,
+				selectedIcon ? metadata.lang : "");
+		ret += websWrite(wp,"</td>");
+		/* Print MIME Type */
+		ret += websWrite(wp,"<td><input id=\'itype_%d\' value = \'%s\' size=\'11\' readonly>",iter,
+				selectedIcon ? (char*)metadata.type : "");
+		ret += websWrite(wp,"</td></tr>");
+	}
+
+	/* Print Save & Cancel Buttons */
+	ret += websWrite(wp,"<tr height=\'5\'></tr>");
+	ret += websWrite(wp,"<tr><td colspan=\'5\' id=\'errmsg\'></td>");
+	ret += websWrite(wp, "<td></td><td></td><td><input type=button value=Save onClick=\'window.opener.onsave_osup();\'>");
+	ret += websWrite(wp, "<input type=button value=Cancel onClick=\'window.opener.onclose_osup();\'></td></tr>");
+	ret += websWrite(wp,"</table>");
+	ret += websWrite(wp,"\");\n");
+
+	if(nat)
+		free(nat);
+	if(osu)
+		free(osu);
+
+	return ret;
+}
+
+static int
+ej_print_wl_osuplist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	bool valid = FALSE;
+
+	/* Parse OSU Provider NVRAMs */
+	osu_provider_list_t *nat;
+	nat = (osu_provider_list_t*)malloc(sizeof(osu_provider_list_t));
+	if(!nat)
+		return -1;
+
+	memset(nat, 0, sizeof *nat);
+
+	decode_osupNVRAMs(nat);
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		ret = -1;
+		goto EJ_PRINT_WL_OSUPLIST_DONE;
+	}
+
+	/* Start Printing */
+	for (; iter <= last; iter++) {
+
+		valid = (nat->osuProvider[iter].uriLength && nat->osuProvider[iter].methodLength &&
+				nat->osuProvider[iter].name.duple[0].nameLen && nat->osuProvider[iter].iconMetadata[0].filenameLength );
+
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('OSU Provider # %d 's information.', LEFT);\"", iter+1);
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "Provider # %d : &nbsp;&nbsp;", iter+1);
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print Friendly Name */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_frndname_%d\" name=\"wl_osu_frndname_%d\" value=\"%s\" size=\"17\" maxlength=\"255\" readonly ></td>",
+					iter, iter, valid ? (char*)nat->osuProvider[iter].name.duple[0].name : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print Server URI */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_uri_%d\" name=\"wl_osu_uri_%d\" value=\"%s\" size=\"32\" maxlength=\"128\" readonly ></td>",
+					iter, iter, valid ? (char*)nat->osuProvider[iter].uri : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print OSU NAI */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_nai_%d\" name=\"wl_osu_nai_%d\" value=\"%s\" size=\"17\" maxlength=\"128\" readonly ></td>",
+					iter, iter, valid ? (char*)nat->osuProvider[iter].nai : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print OSU Method */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_method_%d\" name=\"wl_osu_method_%d\" value=\"%s\" size=\"10\" maxlength=\"255\" readonly ></td>",
+					iter, iter, valid ?  ( nat->osuProvider[iter].method[0] ? "SOAP XML" : "OMA-DM" ) : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print OSU Icon */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_icons_%d\" name=\"wl_osu_icons_%d\" value=\"%s\" size=\"15\" maxlength=\"255\" readonly ></td>",
+					iter, iter, valid ? (char*)nat->osuProvider[iter].iconMetadata[0].filename : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print Modify button */
+		ret += websWrite(wp, "<td><input name=\"wl_osumodify_%d\" type=button value=Modify onClick=\"onmodify_osup(%d);\"></td>",
+					iter, iter);
+
+		/* Print Delete button */
+		ret += websWrite(wp, "<td><input name=\"wl_osudelete_%d\" type=button value=Delete onClick=\"ondelete_osup(%d);\"></td>",
+					iter, iter);
+
+		/* Print Hidden Controls */
+		ret += websWrite(wp, "<td><input id=\"wl_osu_frndname_hid_%d\" name=\"wl_osu_frndname_hid_%d\" style=\"display:none;\" value=\'%s\'></td>", iter, iter,
+					valid ? (char*)nat->osuProvider[iter].nameInfo : ""); 
+
+		ret += websWrite(wp, "<td><input id=\"wl_osu_icons_hid_%d\" name=\"wl_osu_icons_hid_%d\" style=\"display:none;\" value=\'%s\'></td>", iter, iter,
+					valid ? (char*)nat->osuProvider[iter].iconInfo : "");
+
+		ret += websWrite(wp, "<td><input id=\"wl_osu_servdesc_%d\" name=\"wl_osu_servdesc_%d\" style=\"display:none;\" value=\'%s\'></td>", iter, iter,
+					valid ? (char*)nat->osuProvider[iter].descInfo : "");
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+EJ_PRINT_WL_OSUPLIST_DONE:
+	if(nat)
+		free(nat);
+
+	return ret;
+}
+
+static void
+validate_wl_osuplist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_osu_frndname_hid",	longname: "OSU Friendly name", argv: ARGV("0", "2048") },
+		{ name: "wl_osu_uri",		longname: "OSU URI", argv: ARGV("0", "512") },
+		{ name: "wl_osu_nai",		longname: "OSU NAI", argv: ARGV("0", "512") },
+		{ name: "wl_osu_method",	longname: "OSU Method", argv: ARGV("0", "10") },
+		{ name: "wl_osu_icons_hid",	longname: "OSU Icon", argv: ARGV("0", "255") },
+		{ name: "wl_osu_servdesc",	longname: "OSU Service Description", argv: ARGV("0", "2048") }
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[NVVAL_BUFF];
+	char row_name[NVNAME_BUFF], osu_method[CODE_BUFF];
+	char* val = NULL;
+	char *frndname, *nai, *method, *icons, *servdesc, *uri;
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	frndname = (char*)malloc(NVVAL_BUFF);
+	nai = (char*)malloc(NAME_BUFF);
+	method = (char*)malloc(CODE_BUFF);
+	icons = (char*)malloc(NAME_BUFF);
+	servdesc = (char*)malloc(NVVAL_BUFF);
+	uri = (char*)malloc(NAME_BUFF);
+
+	if(!frndname || !nai || !method || !icons || !servdesc || !uri)
+		goto VALIDATE_OSUPLIST_DONE;
+
+	count = atoi(value);
+	memset(nvram_val, 0, sizeof(nvram_val));
+	for (iter = 0; iter < count; iter++) {
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[0].name, iter);
+		memset(frndname, 0, NVVAL_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(frndname, val, NVVAL_BUFF);
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[1].name, iter);
+		memset(uri, 0, NAME_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(uri, val, NAME_BUFF);
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[2].name, iter);
+		memset(nai, 0, NAME_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(nai, val, NAME_BUFF);
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[3].name, iter);
+		memset(method, 0,CODE_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(method, val, CODE_BUFF);
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[4].name, iter);
+		memset(icons, 0, NAME_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(icons, val, NAME_BUFF);
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d", fields[5].name, iter);
+		memset(servdesc, 0, NVVAL_BUFF);
+		if ((val = websGetVar(wp, row_name, NULL)) != NULL)
+			strncpy_n(servdesc, val, NVVAL_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(frndname) && !strlen(uri) && !strlen(method) && !strlen(icons)) {
+			continue;
+		}
+
+		/* Fill in empty fields with default values or check for mendetory fields */
+		if (!strlen(frndname)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify OSU Friendly Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!strlen(uri)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify OSU URI<br>",  fields[1].longname);
+			continue;
+		}
+		if (!strlen(method)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify OSU Method<br>",  fields[3].longname);
+			continue;
+		}
+		if (!strlen(icons)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify OSU Icon<br>",  fields[4].longname);
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, frndname, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU Friendly Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!valid_name(wp, uri, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU URI<br>",  fields[1].longname);
+			continue;
+		}
+		if (!valid_name(wp, nai, &fields[2])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU NAI<br>",  fields[2].longname);
+			continue;
+		}
+		if (!valid_name(wp, method, &fields[3])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU Method<br>",  fields[3].longname);
+			continue;
+		}
+		if (!valid_name(wp, icons, &fields[4])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU Icon<br>",  fields[4].longname);
+			continue;
+		}
+		if (!valid_name(wp, servdesc, &fields[5])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OSU Service Description<br>",  fields[5].longname);
+			continue;
+		}
+
+		if(!strncasecmp(method, "OMA-DM", 6))
+			strncpy_n(osu_method,  "0" , CODE_BUFF);
+		else
+			strncpy_n(osu_method,  "1" , CODE_BUFF);
+
+		memset(item_value, 0, sizeof(item_value));
+
+		/* Do it */
+		if(!strncasecmp(v->name, "wl_osu_frndname", 15))
+			snprintf(item_value, sizeof(item_value), "%s", frndname);
+		else if(!strncasecmp(v->name, "wl_osu_uri", 10))
+			snprintf(item_value, sizeof(item_value), "%s", uri);
+		else if(!strncasecmp(v->name, "wl_osu_nai", 10))
+			snprintf(item_value, sizeof(item_value), "%s", nai);
+		else if(!strncasecmp(v->name, "wl_osu_method", 13))
+			snprintf(item_value, sizeof(item_value), "%s", osu_method);
+		else if(!strncasecmp(v->name, "wl_osu_icons", 12))
+			snprintf(item_value, sizeof(item_value), "%s", icons);
+		else if(!strncasecmp(v->name, "wl_osu_servdesc", 15))
+			snprintf(item_value, sizeof(item_value), "%s", servdesc);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, ";", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set(v->name, nvram_val);
+
+	ret_code = 0;
+
+VALIDATE_OSUPLIST_DONE:
+	if(frndname)
+		free(frndname);
+	if(nai)
+		free(nai);
+	if(method)
+		free(method);
+	if(icons)
+		free(icons);
+	if(servdesc)
+		free(servdesc);
+	if(uri)
+		free(uri);
+
+	return;
+}
+
+static int
+ej_print_wl_homeqlist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	nai_home_realm_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *homerealm, *encode;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "homeqlist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+	for (; iter <= last; iter++) {
+
+		valid = FALSE;
+		homerealm = encode = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, ";", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			/* Parse homerealm:encode */
+			encode = item_value;
+			homerealm = strsep(&encode, ":");
+
+			if (homerealm && encode)
+			{
+				strncpy_n(nat.name, homerealm, VENUE_NAME_SIZE+1);
+				nat.nameLen = strlen(homerealm);
+
+				if (!strncasecmp(encode, "rfc4282", 7))
+					nat.encoding = REALM_ENCODING_RFC4282;
+				else if (!strncasecmp(encode, "utf8", 4))
+					nat.encoding = REALM_ENCODING_UTF8;
+
+				valid = TRUE;
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set NAI Home Realm Query List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_homeqlist_%d_\" value=\"1\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print homerealm */
+		ret += websWrite(wp, "<td><input name=\"wl_homeqlist_%d_0\" value=\"%s\" size=\"32\" maxlength=\"255\"></td>", iter, valid ? nat.name : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print encode */
+		ret += websWrite(wp, "<td><select name=\"wl_homeqlist_%d_1\"> \
+								<option value=\"rfc4282\" %s>RFC4282</option> \
+								<option value=\"utf8\" %s>UTF8</option> \
+								</select></td>", iter,
+										( valid ? (nat.encoding == REALM_ENCODING_RFC4282 ? "selected" : "") : "" ),
+										( valid ? (nat.encoding == REALM_ENCODING_UTF8 ? "selected" : "") : "" ) );
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+	return ret;
+}
+
+static void
+validate_wl_homeqlist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_homeqlist_%d_%d", longname: "NAI Home Realm Query Name",argv: ARGV("0", "255") },
+		{ name: "wl_homeqlist_%d_%d", longname: "Encoding Type",			argv: ARGV("rfc4282", "utf8") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char homerealm[NAME_BUFF], encode[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_homeqlist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(homerealm, 0, sizeof(homerealm));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+				strncpy_n(homerealm, val, NAME_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(encode, 0, sizeof(encode));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			if (!strcmp(val, "rfc4282") || !strcmp(val, "utf8"))
+				strncpy_n(encode, val, CODE_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(homerealm)) {
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, homerealm, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid NAI Home Realm Query Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!valid_choice(wp, encode, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Encoding Type<br>",  fields[1].longname);
+			continue;
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s:%s", homerealm, encode);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, ";", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set("wl_homeqlist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+static int
+ej_print_wl_venuegrp_type(int eid, webs_t wp, int argc, char_t** argv)
+{
+	int index, vgcode, ret = 0;
+	char vgstr[CODE_BUFF];
+	char vtstr[CODE_BUFF];
+	char* vgcodestr = nvram_get("wl_venuegrp");
+	vgcode = atoi(vgcodestr);
+
+	ret += websWrite(wp, "<tr>");
+	ret += websWrite(wp, "<th width=\"310\" onMouseOver=\"return overlib('Set Venue Group to the BSS supported by the interface.', LEFT);\"");
+	ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+	ret += websWrite(wp, "Venue Group:&nbsp;&nbsp;");
+	ret += websWrite(wp, "</th>");
+	ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+	ret += websWrite(wp, "<td><select name=\"wl_venuegrp\" onChange = \"onchange_vanuegrp();\">\"");
+
+	for(index = 0; index < VENUE_GROUP_COUNT;index++){
+		memset(vgstr,0,sizeof(vgstr));
+		sprintf(vgstr, "%d", index);
+		ret += websWrite(wp,"<option value=\"%d\" %s>%s</option>",vanue_groups[index].vanue_group_code,(nvram_match("wl_venuegrp",vgstr))? "selected" : "",vanue_groups[index].vanue_group_description);
+	}
+	ret += websWrite(wp, "</select></td></tr>");
+
+
+	ret += websWrite(wp, "<tr>");
+	ret += websWrite(wp, "<th width=\"310\"");
+	ret += websWrite(wp, "onMouseOver=\"return overlib('Set Venue Type to the BSS supported by the interface.', LEFT);\"");
+	ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+	ret += websWrite(wp, "Venue Type:&nbsp;&nbsp;</th><td>&nbsp;&nbsp;</td>");
+	ret += websWrite(wp, "<td>");
+	ret += websWrite(wp ,"<select name=\"wl_venuetype\">");
+	for(index = vanue_groups[vgcode].vanue_type_offset;
+		index < vanue_groups[vgcode].vanue_type_offset + vanue_groups[vgcode].vanue_type_count;
+		index++){
+		memset(vtstr,0,sizeof(vtstr));
+		sprintf(vtstr, "%d", vanue_types[index].vanue_type_code);
+		ret += websWrite(wp,"<option value=\"%d\"%s>%s</option>",vanue_types[index].vanue_type_code,(nvram_match("wl_venuetype",vtstr) ? "selected" : ""),vanue_types[index].vanue_type_description);
+	}
+
+	ret += websWrite(wp, "</select></td></tr>");
+	return ret;
+}
+
+static
+int ej_vanuegrp_change(int eid, webs_t wp, int argc, char_t** argv)
+{
+	int vanueGroupCode, ret = 0, index;
+	if(ejArgs(argc,argv,"%d",&vanueGroupCode) < 1){
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		ret = -1;
+	}
+
+	websWrite(wp,"\t\t var groupTypes = new Array(");
+	for(index = vanue_groups[vanueGroupCode].vanue_type_offset;
+		index < vanue_groups[vanueGroupCode].vanue_type_offset + vanue_groups[vanueGroupCode].vanue_type_count;
+		index++){
+			websWrite(wp,"\"%s\"",vanue_types[index].vanue_type_description);
+			if(index < (vanue_groups[vanueGroupCode].vanue_type_offset + vanue_groups[vanueGroupCode].vanue_type_count - 1))
+				websWrite(wp, ", ");
+		}
+	websWrite(wp, ");\n");
+
+	websWrite(wp,"\t\t var groupTypesCode = new Array(");
+	for(index = vanue_groups[vanueGroupCode].vanue_type_offset;
+		index < vanue_groups[vanueGroupCode].vanue_type_offset + vanue_groups[vanueGroupCode].vanue_type_count;
+		index++){
+			websWrite(wp,"\"%d\"",vanue_types[index].vanue_type_code);
+			if(index < (vanue_groups[vanueGroupCode].vanue_type_offset + vanue_groups[vanueGroupCode].vanue_type_count - 1))
+				websWrite(wp, ", ");
+		}
+	websWrite(wp, ");\n");
+
+	return ret;
+}
+
+static int
+ej_print_wl_venuelist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	venue_name_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], ptrUTF8[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *venue, *lang;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "venuelist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	memset(ptrUTF8, 0, sizeof(ptrUTF8));
+	if (!noNvram)
+	{
+		strncpy_n(ptrUTF8, ptrv, NVVAL_BUFF);
+		HextoBytes((uchar*)nvram_val, NVVAL_BUFF,
+			(uchar*)ptrUTF8, NVVAL_BUFF);
+	}
+
+	for (; iter <= last; iter++) {
+
+		valid = FALSE;
+		venue = lang = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, "|", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			/* Parse venue!lang */
+			lang = item_value;
+			venue = strsep(&lang, "!");
+
+			if (venue && lang)
+			{
+				strncpy_n(nat.name, venue, VENUE_NAME_SIZE+1);
+				nat.nameLen = strlen(venue);
+				strncpy_n(nat.lang, lang, VENUE_LANGUAGE_CODE_SIZE+1);
+				nat.langLen = strlen(lang);
+				valid = TRUE;
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set Venue Name List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_venuelist_%d_\" value=\"2\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print oper */
+		ret += websWrite(wp, "<td><input name=\"wl_venuelist_%d_0\" value=\"%s\" size=\"64\" maxlength=\"255\"></td>", iter, valid ? nat.name : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print lang */
+		ret += websWrite(wp, "<td><input name=\"wl_venuelist_%d_1\" value=\"%s\" size=\"5\" maxlength=\"5\"></td>", iter, valid ? nat.lang : "");
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+	return ret;
+}
+
+
+static void
+validate_wl_venuelist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_venuelist_%d_%d", longname: "Venue Name", argv: ARGV("0", "255") },
+		{ name: "wl_venuelist_%d_%d", longname: "Language Code", argv: ARGV("0", "3") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], ptrUTF8[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char venue[NAME_BUFF], lang[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(ptrUTF8, 0, sizeof(ptrUTF8));
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_venuelist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(venue, 0, sizeof(venue));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+			strncpy_n(venue, val, NAME_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(lang, 0, sizeof(lang));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			strncpy_n(lang, val, CODE_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(venue) && !strlen(lang)) {
+			continue;
+		}
+
+		/* Fill in empty fields with default values or check for mendetory fields */
+		if (!strlen(venue) && (strlen(lang) > 0)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Venue Name<br>",  fields[0].longname);
+			continue;
+		}
+
+		if ((strlen(venue) > 0) && !strlen(lang)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Language Code <br>", fields[1].longname);
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, venue, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Venue Name<br>",  fields[0].longname);
+			continue;
+		}
+		if (!valid_name(wp, lang, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Language Code<br>",  fields[1].longname);
+			continue;
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s!%s", venue, lang);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, "|", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	BytestoHex((uchar*)nvram_val, NVVAL_BUFF,
+		(uchar*)ptrUTF8, NVVAL_BUFF);
+
+	nvram_set("wl_venuelist", ptrUTF8);
+
+	ret_code = 0;
+
+	return;
+}
+
+
+static int
+ej_print_wl_3gpplist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	plmn_name_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *mcc, *mnc;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "3gpplist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+	for (; iter <= last; iter++) {
+
+		valid = FALSE;
+		mcc = mnc = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, ";", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			/* Parse mcc:mnc */
+			mnc  = item_value;
+			mcc  = strsep(&mnc, ":");
+
+			if (mcc && mnc)
+			{
+				strncpy_n(nat.mcc, mcc, BCM_DECODE_ANQP_MCC_LENGTH+1);
+				strncpy_n(nat.mnc, mnc, BCM_DECODE_ANQP_MNC_LENGTH+1);
+				valid = TRUE;
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set 3GPP Cellular Network Information List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_3gpplist_%d_\" value=\"2\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print mcc */
+		ret += websWrite(wp, "<td><input name=\"wl_3gpplist_%d_0\" value=\"%s\" size=\"5\" maxlength=\"5\"></td>", iter, valid ? nat.mcc : "");
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print mnc */
+		ret += websWrite(wp, "<td><input name=\"wl_3gpplist_%d_1\" value=\"%s\" size=\"5\" maxlength=\"5\"></td>", iter, valid ? nat.mnc : "");
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+	return ret;
+}
+
+
+static void
+validate_wl_3gpplist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_3gpplist_%d_%d", longname: "Country Code", argv: ARGV("0", "3") },
+		{ name: "wl_3gpplist_%d_%d", longname: "Network Code", argv: ARGV("0", "3") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char mcc[CODE_BUFF], mnc[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_3gpplist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(mcc, 0, sizeof(mcc));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+			strncpy_n(mcc, val, CODE_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(mnc, 0, sizeof(mnc));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			strncpy_n(mnc, val, CODE_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(mcc) && !strlen(mnc)) {
+			continue;
+		}
+
+		/* Fill in empty fields with default values or check for mendetory fields */
+		if (!strlen(mcc) && (strlen(mnc) > 0)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Country Code <br>", fields[0].longname);
+			continue;
+		}
+
+		if ((strlen(mcc) > 0) && !strlen(mnc)) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: must specify a Network Code <br>", fields[1].longname);
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_name(wp, mcc, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Country Code<br>",  fields[0].longname);
+			continue;
+		}
+
+		if (!valid_name(wp, mnc, &fields[1])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Network Code<br>",  fields[1].longname);
+			continue;
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s:%s", mcc, mnc);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, ";", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set("wl_3gpplist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+
+static int
+ej_print_wl_ouilist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, data_len, ret = 0;
+	oui_name_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *oi;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "ouilist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+	for (; iter <= last; iter++) {
+
+		data_len = 0;
+		valid = FALSE;
+		oi = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		/* Parse oi */
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, ";", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			oi = item_value;
+
+			if (oi)
+			{
+				data_len = strlen(oi)/2;
+				if (data_len && (data_len <= BCM_DECODE_ANQP_MAX_OI_LENGTH))
+				{
+					get_hex_data((uchar *)oi, nat.oi, data_len);
+					nat.oiLen = data_len;
+					valid = TRUE;
+				}
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set Roaming Consortium List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_ouilist_%d_\" value=\"1\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print oi */
+		if (valid)
+			ret += websWrite(wp, "<td><input name=\"wl_ouilist_%d_0\" value=\"%s\" size=\"16\" maxlength=\"16\"></td>", iter, oi );
+		else
+			ret += websWrite(wp, "<td><input name=\"wl_ouilist_%d_0\" value=\"%s\" size=\"16\" maxlength=\"16\"></td>", iter, "" );
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+	return ret;
+}
+
+
+static void
+validate_wl_ouilist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_ouilist_%d_%d", longname: "OI Name", argv: ARGV("2", "14") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char oi[NAME_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_ouilist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(oi, 0, sizeof(oi));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+			strncpy_n(oi, val, NAME_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if (!strlen(oi)) {
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_hex(wp, oi, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid OI Name<br>",  fields[0].longname);
+			continue;
+		}
+
+		/* Do it */
+		if (strlen(nvram_val))
+			strncat(nvram_val, ";", min(1, NVVAL_BUFF-strlen(nvram_val)));
+		strncat(nvram_val, oi, min(strlen(oi), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set("wl_ouilist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+
+static int
+ej_print_wl_netauthlist(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0, showURL = 0;
+	net_auth_t nat;
+	bool valid = FALSE, noNvram = FALSE;
+
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char *ptrv = NULL, *tokenParse = NULL, *saveptr = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *nettype, *redirecturl;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "netauthlist", tmp));
+
+	if (!ptrv || (strlen(ptrv)<=0))
+		noNvram = TRUE;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+	if (!noNvram)
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+	for (; iter <= last; iter++) {
+
+		valid = FALSE;
+		showURL = 0;
+		nettype = redirecturl = NULL;
+		memset(item_value, 0, sizeof(item_value));
+		memset(&nat, 0, sizeof(nat));
+
+		if (!noNvram && ((tokenParse = strtok_r(iter ? NULL : nvram_val, "+", &saveptr)) != NULL))
+		{
+			strncpy_n(item_value, tokenParse, ITEM_BUFF);
+
+			/* Parse nettype:redirecturl */
+			redirecturl = item_value;
+			nettype = strsep(&redirecturl, "=");
+
+			if (nettype)
+			{
+				if (!strncasecmp(nettype, "accepttc", 8))
+					nat.type = NATI_ACCEPTANCE_OF_TERMS_CONDITIONS;
+				else if (!strncasecmp(nettype, "online", 6))
+					nat.type = NATI_ONLINE_ENROLLMENT_SUPPORTED;
+				else if (!strncasecmp(nettype, "httpred", 7))
+					nat.type = NATI_HTTP_HTTPS_REDIRECTION;
+				else if (!strncasecmp(nettype, "dnsred", 6))
+					nat.type = NATI_DNS_REDIRECTION;
+				else
+					nat.type = NATI_UNSPECIFIED;
+
+				if (((nat.type == NATI_HTTP_HTTPS_REDIRECTION) && redirecturl) ||
+					((nat.type == NATI_DNS_REDIRECTION) && redirecturl))
+				{
+					strncpy_n((char*)nat.url, redirecturl, BCM_DECODE_ANQP_MAX_URL_LENGTH+1);
+					nat.urlLen = strlen(redirecturl);
+					showURL = 1;
+				}
+				else
+				{
+					strncpy_n((char*)nat.url, "", BCM_DECODE_ANQP_MAX_URL_LENGTH+1);
+					nat.urlLen = 0;
+					showURL = 0;
+				}
+				valid = TRUE;
+			}
+		}
+
+		/* Start Printing */
+		ret += websWrite(wp, "<tr>");
+		ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+		ret += websWrite(wp, "onMouseOver=\"return overlib('Set Network Authentication Type List to the BSS supported by the interface.', LEFT);\"");
+		ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+		ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_netauthlist_%d_\" value=\"1\">", iter);
+		ret += websWrite(wp, " &nbsp;&nbsp;");
+		ret += websWrite(wp, "</th>");
+		ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+		/* Print nettype */
+		ret += websWrite(wp, "<td><select id=\"wl_netauthlist_%d_0\" name=\"wl_netauthlist_%d_0\" onChange=\"onchange_netauthtype(%d)\"> \
+					<option value=\"na\" %s>Not Configured</option> \
+					<option value=\"accepttc\" %s>Acceptance of Terms and Conditions</option> \
+					<option value=\"online\" %s>Online Enrollment</option> \
+					<option value=\"httpred\" %s>HTTP/HTTPS Redirection</option> \
+					<option value=\"dnsred\" %s>DNS Redirection</option> \
+					</select></td>", iter, iter, iter,
+					( valid ? (nat.type == (uint8)NATI_UNSPECIFIED						? "selected" : "") : "selected" ),
+					( valid ? (nat.type == (uint8)NATI_ACCEPTANCE_OF_TERMS_CONDITIONS	? "selected" : "") : "" ),
+					( valid ? (nat.type == (uint8)NATI_ONLINE_ENROLLMENT_SUPPORTED		? "selected" : "") : "" ),
+					( valid ? (nat.type == (uint8)NATI_HTTP_HTTPS_REDIRECTION			? "selected" : "") : "" ),
+					( valid ? (nat.type == (uint8)NATI_DNS_REDIRECTION					? "selected" : "") : "" ) );
+
+		ret += websWrite(wp, "<td></td>");
+
+		/* Print redirecturl */
+		ret += websWrite(wp, "<td><input id=\"wl_netauthlist_%d_1\"  name=\"wl_netauthlist_%d_1\" value=\"%s\" size=\"32\" maxlength=\"128\" %s ></td>",
+					iter, iter, valid ? (char*)nat.url : "", showURL ? "" : "readonly" );
+
+		ret += websWrite(wp, "</tr>");
+	}
+
+	return ret;
+}
+
+static void
+validate_wl_netauthlist(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_netauthlist_%d_%d", longname: "Network Authentication Type",	argv: ARGV("na", "accepttc", "online", "httpred", "dnsred") },
+		{ name: "wl_netauthlist_%d_%d", longname: "Redirection URL",				argv: ARGV("0", "128") },
+	};
+
+	int count, iter;
+	char nvram_val[NVVAL_BUFF], item_value[ITEM_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char redirecturl[NAME_BUFF], nettype[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+	count = atoi(value);
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	for (iter = 0; iter < count; iter++) {
+
+		memset(row_name, 0, sizeof(row_name));
+		snprintf(row_name, sizeof(row_name), "%s_%d_", "wl_netauthlist", iter);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(nettype, 0, sizeof(nettype));
+		if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+			if (!strcmp(val, "na") || !strcmp(val, "accepttc") || !strcmp(val, "online") || !strcmp(val, "httpred") || !strcmp(val, "dnsred"))
+				strncpy_n(nettype, val, CODE_BUFF);
+
+		memset(col_name, 0, sizeof(col_name));
+		memset(redirecturl, 0, sizeof(redirecturl));
+		if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+			strncpy_n(redirecturl, val, NAME_BUFF);
+
+		/* Delete entry if all fields are blank */
+		if ( !strcmp(nettype, "na")) {
+			continue;
+		}
+
+		/* Check individual fields */
+		if (!valid_choice(wp, nettype, &fields[0])) {
+			websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Network Authentication Type<br>",  fields[0].longname);
+			continue;
+		}
+		if (!strcmp(nettype, "httpred") || !strcmp(nettype, "dnsred"))
+		{
+			if (!valid_name(wp, redirecturl, &fields[1])) {
+				websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Redirection URL<br>",  fields[1].longname);
+				continue;
+			}
+		}
+
+		/* Do it */
+		memset(item_value, 0, sizeof(item_value));
+		snprintf(item_value, sizeof(item_value), "%s=%s", nettype, redirecturl);
+
+		if (strlen(nvram_val))
+			strncat(nvram_val, "+", min(1, NVVAL_BUFF-strlen(nvram_val)));
+
+		strncat(nvram_val, item_value, min(strlen(item_value), NVVAL_BUFF-strlen(nvram_val)));
+	}
+
+	nvram_set("wl_netauthlist", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+
+
+static int
+ej_print_wl_wanmetrics(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int iter, last, ret = 0;
+	wan_metrics_t nat;
+	bool valid = FALSE;
+
+	char nvram_val[NVVAL_BUFF];
+	char *ptrv = NULL;
+	char tmp[NVRAM_BUFSIZE], prefix[] = "wlXXXXXXXXXX_";
+
+	char *p_linkStatus, *p_symmetricLink, *p_atCapacity, *p_dlinkSpeed, *p_ulinkSpeed, *p_dlinkLoad, *p_ulinkLoad, *p_lmd;
+
+	if (ejArgs(argc, argv, "%d %d", &iter, &last) < 2) {
+		websError(wp, HTTP_ERR_PAGE_NOT_FOUND, "Insufficient args\n");
+		return -1;
+	}
+
+	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL))
+		return -1;
+
+	ptrv = nvram_get(strcat_r(prefix, "wanmetrics", tmp));
+
+	valid = FALSE;
+	p_linkStatus = p_symmetricLink = p_atCapacity = p_dlinkSpeed = p_ulinkSpeed = p_dlinkLoad = p_ulinkLoad = p_lmd = NULL;
+	memset(&nat, 0, sizeof(nat));
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	if(ptrv)
+	{
+		strncpy_n(nvram_val, ptrv, NVVAL_BUFF);
+
+		/* Parse p_linkStatus:p_symmetricLink:p_atCapacity=p_dlinkSpeed>p_ulinkSpeed=p_dlinkLoad>p_ulinkLoad=p_lmd */
+		p_dlinkSpeed = nvram_val;
+		p_linkStatus = strsep(&p_dlinkSpeed, "=");
+
+		p_dlinkLoad = p_dlinkSpeed;
+		p_dlinkSpeed = strsep(&p_dlinkLoad, "=");
+
+		p_lmd = p_dlinkLoad;
+		p_dlinkLoad = strsep(&p_lmd, "=");
+
+		/* Parse next 2 params >>	p_dlinkLoad>p_ulinkLoad */
+		p_ulinkLoad = p_dlinkLoad;
+		p_dlinkLoad = strsep(&p_ulinkLoad, ">");
+
+		/* Parse next 2 params >>	p_dlinkSpeed>p_ulinkSpeed */
+		p_ulinkSpeed = p_dlinkSpeed;
+		p_dlinkSpeed = strsep(&p_ulinkSpeed, ">");
+
+		/* Parse first 3 params >>  p_linkStatus:p_symmetricLink:p_atCapacity */
+		p_atCapacity	= p_linkStatus;
+		p_linkStatus	= strsep(&p_atCapacity, ":");
+		p_symmetricLink	= strsep(&p_atCapacity, ":");
+
+		if (p_linkStatus && p_symmetricLink && p_atCapacity && 
+				p_dlinkSpeed && p_ulinkSpeed && p_dlinkLoad && p_ulinkLoad && p_lmd)
+		{
+			nat.linkStatus		= atoi(p_linkStatus);
+			nat.symmetricLink	= atoi(p_symmetricLink);
+			nat.atCapacity		= atoi(p_atCapacity);
+			nat.dlinkSpeed		= atoi(p_dlinkSpeed);
+			nat.ulinkSpeed		= atoi(p_ulinkSpeed);
+			nat.dlinkLoad		= atoi(p_dlinkLoad);
+			nat.ulinkLoad		= atoi(p_ulinkLoad);
+			nat.lmd				= atoi(p_lmd);
+
+			valid = TRUE;
+		}
+	}
+
+	/* Start Printing */
+	ret += websWrite(wp, "<tr>");
+	ret += websWrite(wp, "<th width=\"310\" valign=\"top\" rowspan=\"1\"");
+	ret += websWrite(wp, "onMouseOver=\"return overlib('Set WAN Metrics to the BSS supported by the interface.', LEFT);\"");
+	ret += websWrite(wp, "onMouseOut=\"return nd();\">");
+	ret += websWrite(wp, "<input type=\"hidden\" name=\"wl_wanmetrics_\" value=\"5\">");
+	ret += websWrite(wp, " &nbsp;&nbsp;");
+	ret += websWrite(wp, "</th>");
+	ret += websWrite(wp, "<td>&nbsp;&nbsp;</td>");
+
+	/* Print linkStatus */
+	ret += websWrite(wp, "<td><select name=\"wl_wanmetrics_0\"> \
+							<option value=\"1\" %s>Link Up</option> \
+							<option value=\"2\" %s>Link Down</option> \
+							<option value=\"3\" %s>Link Test</option> \
+							</select></td>",
+									( valid ? (nat.linkStatus == HSPOT_WAN_LINK_UP   ? "selected" : "") : "" ),
+									( valid ? (nat.linkStatus == HSPOT_WAN_LINK_DOWN ? "selected" : "") : "" ),
+									( valid ? (nat.linkStatus == HSPOT_WAN_LINK_TEST ? "selected" : "") : "" ) );
+
+	ret += websWrite(wp, "<td>:</td>");
+
+	/* Print symmetricLink */
+	ret += websWrite(wp, "<td><select name=\"wl_wanmetrics_1\"> \
+							<option value=\"0\" %s>Not Symmetric Link</option> \
+							<option value=\"1\" %s>Symmetric Link</option> \
+							</select></td>",
+									( valid ? (nat.symmetricLink == HSPOT_WAN_NOT_SYMMETRIC_LINK	? "selected" : "") : "" ),
+									( valid ? (nat.symmetricLink == HSPOT_WAN_SYMMETRIC_LINK		? "selected" : "") : "" ) );
+
+	ret += websWrite(wp, "<td>:</td>");
+
+	/* Print atCapacity */
+	ret += websWrite(wp, "<td><select name=\"wl_wanmetrics_2\"> \
+							<option value=\"0\" %s>Not At Capacity</option> \
+							<option value=\"1\" %s>At Capacity</option> \
+							</select></td>",
+									( valid ? (nat.atCapacity == HSPOT_WAN_NOT_AT_CAPACITY  ? "selected" : "") : "" ),
+									( valid ? (nat.atCapacity == HSPOT_WAN_AT_CAPACITY		? "selected" : "") : "" ) );
+
+	ret += websWrite(wp, "<td>=</td>");
+
+	/* Print dlinkSpeed */
+	ret += websWrite(wp, "<td><input name=\"wl_wanmetrics_3\" value=\"%d\" size=\"6\" maxlength=\"6\"></td>", valid ? nat.dlinkSpeed : 0);
+
+	ret += websWrite(wp, "<td>></td>");
+
+	/* Print ulinkSpeed */
+	ret += websWrite(wp, "<td><input name=\"wl_wanmetrics_4\" value=\"%d\" size=\"6\" maxlength=\"6\"></td>", valid ? nat.ulinkSpeed : 0);
+
+	ret += websWrite(wp, "<td>=</td>");
+
+	/* Print dlinkLoad */
+	ret += websWrite(wp, "<td><input name=\"wl_wanmetrics_5\" value=\"%d\" size=\"6\" maxlength=\"6\"></td>", valid ? nat.dlinkLoad : 0);
+
+	ret += websWrite(wp, "<td>></td>");
+
+	/* Print ulinkLoad */
+	ret += websWrite(wp, "<td><input name=\"wl_wanmetrics_6\" value=\"%d\" size=\"6\" maxlength=\"6\"></td>", valid ? nat.ulinkLoad : 0);
+
+	ret += websWrite(wp, "<td>=</td>");
+
+	/* Print lmd */
+	ret += websWrite(wp, "<td><input name=\"wl_wanmetrics_7\" value=\"%d\" size=\"6\" maxlength=\"6\"></td>", valid ? nat.lmd : 0);
+
+	ret += websWrite(wp, "</tr>");
+
+	return ret;
+}
+
+static void
+validate_wl_wanmetrics(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	struct variable fields[] = {
+		{ name: "wl_wanmetrics_%d_", longname: "Link Status",		argv: ARGV("1", "2", "3") },
+		{ name: "wl_wanmetrics_%d_", longname: "Symmetric Link",	argv: ARGV("0", "1") },
+		{ name: "wl_wanmetrics_%d_", longname: "At Capacity",		argv: ARGV("0", "1") },
+		{ name: "wl_wanmetrics_%d_", longname: "DownLink Speed",	argv: ARGV("0", "65535") },
+		{ name: "wl_wanmetrics_%d_", longname: "UpLink Speed",		argv: ARGV("0", "65535") },
+		{ name: "wl_wanmetrics_%d_", longname: "DownLink Load",		argv: ARGV("0", "65535") },
+		{ name: "wl_wanmetrics_%d_", longname: "UpLink Load",		argv: ARGV("0", "65535") },
+		{ name: "wl_wanmetrics_%d_", longname: "LMD",				argv: ARGV("0", "65535") },
+	};
+
+	char nvram_val[NVVAL_BUFF];
+	char row_name[NVNAME_BUFF], col_name[NVNAME_BUFF];
+	char* val = NULL;
+
+	char p_linkStatus[CODE_BUFF], p_symmetricLink[CODE_BUFF], p_atCapacity[CODE_BUFF], p_dlinkSpeed[CODE_BUFF];
+	char p_ulinkSpeed[CODE_BUFF], p_dlinkLoad[CODE_BUFF], p_ulinkLoad[CODE_BUFF], p_lmd[CODE_BUFF];
+
+	assert(v);
+
+	ret_code = EINVAL;
+
+	if (!value) {
+		ret_code = 0;
+		return;
+	}
+
+	memset(row_name, 0, sizeof(row_name));
+	snprintf(row_name, sizeof(row_name), "%s_", "wl_wanmetrics");
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_linkStatus, 0, sizeof(p_linkStatus));
+	if ((val = websGetVar(wp, strcat_r(row_name, "0", col_name), NULL)) != NULL)
+		if (!strcmp(val, "1") || !strcmp(val, "2") || !strcmp(val, "3"))
+			strncpy_n(p_linkStatus, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_symmetricLink, 0, sizeof(p_symmetricLink));
+	if ((val = websGetVar(wp, strcat_r(row_name, "1", col_name), NULL)) != NULL)
+		if (!strcmp(val, "0") || !strcmp(val, "1"))
+			strncpy_n(p_symmetricLink, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_atCapacity, 0, sizeof(p_atCapacity));
+	if ((val = websGetVar(wp, strcat_r(row_name, "2", col_name), NULL)) != NULL)
+		if (!strcmp(val, "0") || !strcmp(val, "1"))
+			strncpy_n(p_atCapacity, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_dlinkSpeed, 0, sizeof(p_dlinkSpeed));
+	if ((val = websGetVar(wp, strcat_r(row_name, "3", col_name), NULL)) != NULL)
+			strncpy_n(p_dlinkSpeed, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_ulinkSpeed, 0, sizeof(p_ulinkSpeed));
+	if ((val = websGetVar(wp, strcat_r(row_name, "4", col_name), NULL)) != NULL)
+			strncpy_n(p_ulinkSpeed, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_dlinkLoad, 0, sizeof(p_dlinkLoad));
+	if ((val = websGetVar(wp, strcat_r(row_name, "5", col_name), NULL)) != NULL)
+			strncpy_n(p_dlinkLoad, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_ulinkLoad, 0, sizeof(p_ulinkLoad));
+	if ((val = websGetVar(wp, strcat_r(row_name, "6", col_name), NULL)) != NULL)
+			strncpy_n(p_ulinkLoad, val, CODE_BUFF);
+
+	memset(col_name, 0, sizeof(col_name));
+	memset(p_lmd, 0, sizeof(p_lmd));
+	if ((val = websGetVar(wp, strcat_r(row_name, "7", col_name), NULL)) != NULL)
+			strncpy_n(p_lmd, val, CODE_BUFF);
+
+	/* Delete entry if all fields are blank */
+	if (!strlen(p_linkStatus) && !strlen(p_symmetricLink) && !strlen(p_atCapacity) && !strlen(p_dlinkSpeed) &&
+			!strlen(p_ulinkSpeed) && !strlen(p_dlinkLoad) && !strlen(p_ulinkLoad) && !strlen(p_lmd)) {
+		return;
+	}
+
+	/* Check individual fields */
+	if (!valid_choice(wp, p_linkStatus,		&fields[0])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Link Status<br>",	fields[0].longname); return; }
+	if (!valid_choice(wp, p_symmetricLink,	&fields[1])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Symmetric Link<br>",	fields[1].longname); return; }
+	if (!valid_choice(wp, p_atCapacity,		&fields[2])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid At Capacity<br>",	fields[2].longname); return; }
+	if (!valid_range (wp, p_dlinkSpeed,		&fields[3])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Down Link Speed<br>",fields[3].longname); return; }
+	if (!valid_range (wp, p_ulinkSpeed,		&fields[4])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Up Link Speed<br>",	fields[4].longname); return; }
+	if (!valid_range (wp, p_dlinkLoad,		&fields[5])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Down Link Load<br>",	fields[5].longname); return; }
+	if (!valid_range (wp, p_ulinkLoad,		&fields[6])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid Up Link Load<br>", 	fields[6].longname); return; }
+	if (!valid_range (wp, p_lmd,			&fields[7])) { websBufferWrite(wp, "Invalid <b>%s</b>: Specify a valid LMD<br>",			fields[7].longname); return; }
+
+	/* Do it */
+	memset(nvram_val, 0, sizeof(nvram_val));
+	snprintf(nvram_val, sizeof(nvram_val), "%s:%s:%s=%s>%s=%s>%s=%s", p_linkStatus, p_symmetricLink, p_atCapacity, p_dlinkSpeed, p_ulinkSpeed, p_dlinkLoad, p_ulinkLoad, p_lmd);
+
+	nvram_set("wl_wanmetrics", nvram_val);
+
+	ret_code = 0;
+
+	return;
+}
+#endif /* __CONFIG_HSPOT__ */
+/* -------------------------------------------------------------------  */
 
 uint8 prio2ac[NUMPRIO] = {
 	AC_BE,	/* 0	BE	Best Effort */
@@ -10711,7 +14401,7 @@ wl_set_ampdu_rerty_limit(char *acname, int srl, int sfbl)
 			/* over-write retry[tid] and rr_retry[tid] value */
 			retry[tid] = srl;
 			rr_retry[tid] = sfbl;
-		}			
+		}
 	}
 
 	sprintf(tmp, "%d %d %d %d %d %d %d %d",
@@ -10819,6 +14509,44 @@ error:
 	websBufferWrite(wp, "<b><br>");
 }
 
+static void
+validate_dfs_prefchan(webs_t wp, char *value, struct variable *v, char *varname)
+{
+	char tmp[256];
+	char pref0[32], pref1[32], pref2[32], pref3[32], pref4[32], pref5[32];
+
+	if ((value = websGetVar(wp, strcat_r(v->name, "0", tmp), NULL)) != NULL)
+		sprintf(pref0, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref0, "%s", "0");
+	if ((value = websGetVar(wp, strcat_r(v->name, "1", tmp), NULL)) != NULL)
+		sprintf(pref1, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref1, "%s", "0");
+	if ((value = websGetVar(wp, strcat_r(v->name, "2", tmp), NULL)) != NULL)
+		sprintf(pref2, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref2, "%s", "0");
+	if ((value = websGetVar(wp, strcat_r(v->name, "3", tmp), NULL)) != NULL)
+		sprintf(pref3, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref3, "%s", "0");
+	if ((value = websGetVar(wp, strcat_r(v->name, "4", tmp), NULL)) != NULL)
+		sprintf(pref4, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref4, "%s", "0");
+	if ((value = websGetVar(wp, strcat_r(v->name, "5", tmp), NULL)) != NULL)
+		sprintf(pref5, "%s", !strcmp("N/A", value) ? "0" : value);
+	else
+		sprintf(pref5, "%s", "0");
+
+	sprintf(tmp, "%s %s %s %s %s %s", pref0, pref1, pref2, pref3, pref4, pref5);
+
+	nvram_set(v->name, tmp);
+	ret_code = 0;
+	return;
+}
+
 /* Hook to write wl_* default set through to wl%d_* variable set */
 static void
 wl_unit(webs_t wp, char *value, struct variable *v, char *varname)
@@ -10846,13 +14574,13 @@ wl_unit(webs_t wp, char *value, struct variable *v, char *varname)
 
 	snprintf(prefix,sizeof(prefix),"wl%s_",value);
 
-	/* Write through to selected variable set 
-	 * If the VIF_IGNORE flag is set, we still need to write if the interface is the 
-	 * physical device. 
+	/* Write through to selected variable set
+	 * If the VIF_IGNORE flag is set, we still need to write if the interface is the
+	 * physical device.
 	 */
 
 	for (; v >= variables && !strncmp(v->name, "wl_", 3); v--){
-		if (( v->ezc_flags & WEB_IGNORE) || ((v->ezc_flags & VIF_IGNORE) && (prefix[3] == '.'))) 
+		if (( v->ezc_flags & WEB_IGNORE) || ((v->ezc_flags & VIF_IGNORE) && (prefix[3] == '.')))
 			continue;
 		nvram_set(strcat_r(prefix, &v->name[3], tmp), nvram_safe_get(v->name));
 	}
@@ -11133,15 +14861,15 @@ wan_unit(webs_t wp, char *value, struct variable *v, char *varname)
  * NVRAM_IGNORE: Dont save/restore this var.
  * WEB_IGNORE: Don't validate or process this var during web validation.
  * VIF_IGNORE: Don't create from wlx.y interface. Shared within one phy. devive.
- * 
+ *
  *
  * Below is the definition of the structure
  *struct variable {
  *	char *name; <- name of variable
- * 	char *longname; <- display name
- * 	char *prefix; <- prefix for processing the multi-instance versions
+ *	char *longname; <- display name
+ *	char *prefix; <- prefix for processing the multi-instance versions
  *	void (*validate)(); <- Validation routine
- * 	char **argv; <- Optional argument vector for validation routine
+ *	char **argv; <- Optional argument vector for validation routine
  *	int nullok; <- value can be NULL
  *	int ezc_flags; <- control flags
  * };
@@ -11182,7 +14910,7 @@ static char vlan_prefix[]="vlan";
 static struct hsearch_data vtab;
 
 static char *wan_proto_argv[] = {
-	"dhcp", 
+	"dhcp",
 	"static",
 	"pppoe",
 "disabled"
@@ -11211,7 +14939,7 @@ struct variable variables[] = {
 	{ "qos_enable", "Qos enable",NULL, validate_choice, ARGV("0", "1"), FALSE, EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 	{ "qos_ack", "Prioritize ACK",NULL, validate_choice, ARGV("0", "1"), FALSE, EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 	{ "qos_icmp", "Prioritize ICMP",NULL, validate_choice, ARGV("0", "1"), FALSE, EZC_FLAGS_READ | EZC_FLAGS_WRITE },
-  	{ "qos_default", "Default Outbound Class", NULL, validate_choice, ARGV("0", "1", "2", "3", "4"), FALSE, 0},
+	{ "qos_default", "Default Outbound Class", NULL, validate_choice, ARGV("0", "1", "2", "3", "4"), FALSE, 0},
 	{ "qos_obw", "Outbound BW", NULL, validate_range, ARGV("0", "999999"), TRUE, 0 },
 	{ "qos_ibw", "Inbound BW", NULL, validate_range, ARGV("0", "999999"), TRUE, 0 },
 	{ "qos_orates", "Outbound BW", NULL, valid_qos_var, NULL, TRUE, 0 },
@@ -11219,9 +14947,11 @@ struct variable variables[] = {
 	{ "qos_orules", "Qos rules", NULL, valid_qos_var, NULL, TRUE, 0 },
 #endif /* BCMQOS */
 	{ "igmp_enable" , "Enable IGMP proxy", NULL, validate_choice, ARGV("1", "0"), FALSE, 0},
-#ifdef __CONFIG_HSPOT__
-	{ "hspotap_enable" , "Enable Hotspot 2.0", NULL, validate_choice, ARGV("0", "1"), FALSE, 0},
-#endif /* __CONFIG_HSPOT__ */
+	{ "bsd_role" , "BandSteer Daemon State", NULL, validate_choice, ARGV("3", "2", "1", "0"), FALSE, 0},
+	{ "bsd_helper", "BandSteer Helper IP Address", lan_prefix, validate_ipaddr, NULL, TRUE, NVRAM_MI| NVRAM_MP },
+	{ "bsd_hport", "BandSteer Helper Port", wl_prefix, validate_range, ARGV("0", "65535"), FALSE,NVRAM_MI |  EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "bsd_primary", "BandSteer Primary IP Address", lan_prefix, validate_ipaddr, NULL, TRUE, NVRAM_MI| NVRAM_MP },
+	{ "bsd_pport", "BandSteer Primary Port", wl_prefix, validate_range, ARGV("0", "65535"), FALSE,NVRAM_MI |  EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 	{ "trf_mgmt_port", "Traffic Port", NULL, validate_trf_mgmt_port, ARGV("0", XSTR(MAX_NVPARSE - 1)), FALSE, NVRAM_GENERIC_MULTI },
 	/* LAN settings */
 	{ "lan_ifname" "LAN Interface Name", lan_prefix, NULL, NULL, FALSE, NVRAM_MI|NVRAM_IGNORE },
@@ -11310,9 +15040,51 @@ struct variable variables[] = {
 	/* ALL wl_XXXX variables are per-interface  */
 	/* This group is per ssid */
 	{ "wl_bss_enabled", "BSS Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+
 #ifdef __CONFIG_HSPOT__
-	{ "wl_bss_hs2_enabled", "BSS Hotspot Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
-#endif  /* __CONFIG_HSPOT__ */
+	{ "wl_hsflag", "Passpoint Flags", wl_prefix, validate_range, ARGV("0", "65535"), FALSE, NVRAM_MI },
+	{ "wl_hs2en", "BSS Passpoint Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+	{ "wl_hs2cap", "Passpoint Capability", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+	{ "wl_opercls", "Operating Class", wl_prefix, validate_choice, ARGV("1", "2", "3"), FALSE, NVRAM_MI },
+	{ "wl_anonai", "Anonymous NAI", wl_prefix, validate_name, ARGV("0", "255"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_wanmetrics", "WAN Metrics", wl_prefix, validate_wl_wanmetrics, ARGV("0", "255"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_oplist", "Operator Friendly Name List", wl_prefix, validate_wl_oplist, ARGV("0", "1080"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_homeqlist", "NAI Home Realm Query List", wl_prefix, validate_wl_homeqlist, ARGV("0", "1080"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_ssid",  "OSU provider SSID", wl_prefix, validate_name, ARGV("0", "255"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_frndname", "OSU Friendly name", wl_prefix, validate_wl_osuplist, ARGV("0", "2048"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_uri", "OSU URI", wl_prefix, validate_wl_osuplist, ARGV("0", "1024"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_nai", "OSU NAI", wl_prefix, validate_wl_osuplist, ARGV("0", "1024"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_method", "OSU Icon", wl_prefix, validate_wl_osuplist, ARGV("0", "20"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_icons", "OSU Icon", wl_prefix, validate_wl_osuplist, ARGV("0", "255"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_osu_servdesc", "OSU Service Description", wl_prefix, validate_wl_osuplist, ARGV("0", "2048"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+
+	/* ---- Passpoint Flags  -----------------------------------  */
+	{ "wl_gascbdel", "GAS CB Delay", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+	{ "wl_4framegas", "4 Frame GAS", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+
+	/* ---- temporary -----------------------------------  */
+	{ "wl_osuicon_id", "OSU Provider's Icon ID", wl_prefix, validate_range, ARGV("1", "20"), FALSE,NVRAM_MI },
+	{ "wl_conn_id", "Connection Capability ID", wl_prefix, validate_range, ARGV("1", "20"), FALSE,NVRAM_MI },
+
+/* #endif  __CONFIG_HSPOT__ */
+/* #ifdef __CONFIG_802_11U__  */
+	{ "wl_u11en", "BSS 802.11u Interworking Status", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+	{ "wl_iwint", "Internet Access", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
+	{ "wl_iwnettype", "Acees Network Type", wl_prefix, validate_choice, ARGV("0", "1", "2", "3", "4", "5", "14", "15"), FALSE, NVRAM_MI },
+	{ "wl_hessid", "Interworking HESSID", wl_prefix, validate_hwaddr, NULL, TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_ipv4addr", "IPV4 Address Type Availability", wl_prefix, validate_choice, ARGV("0", "1", "2", "3", "4", "5", "6", "7"), FALSE, NVRAM_MI },
+	{ "wl_ipv6addr", "IPV6 Address Type Availability", wl_prefix, validate_choice, ARGV("0", "1", "2"), FALSE, NVRAM_MI },
+	{ "wl_netauthlist", "Network Authentication Type List", wl_prefix, validate_wl_netauthlist, ARGV("0", "600"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_venuegrp", "Venue Group", wl_prefix, validate_choice, ARGV("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"), FALSE, NVRAM_MI },
+	{ "wl_venuetype", "BSS Venue Type", wl_prefix, validate_choice, ARGV("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"), FALSE, NVRAM_MI },
+	{ "wl_venuelist", "Venue Name List", wl_prefix, validate_wl_venuelist, ARGV("0", "1080"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_ouilist", "Roaming Consortium List", wl_prefix, validate_wl_ouilist, ARGV("0", "128"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_3gpplist", "3GPP Cellular Network Information Name List", wl_prefix, validate_wl_3gpplist, ARGV("0", "128"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+	{ "wl_domainlist", "Domain Name List", wl_prefix, validate_names, ARGV("0", XSTR(MAX_NVPARSE - 1)), FALSE, NVRAM_GENERIC_MULTI },
+	{ "wl_realmlist", "NAI Realm List", wl_prefix, validate_wl_realmlist, ARGV("0", "4096"), TRUE,NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
+
+#endif  /* __CONFIG_802_11U__ */
+
 	{ "wl_ssid", "Network Name (ESSID)", wl_prefix, validate_ssid, ARGV("1", "32"), FALSE, NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 	{ "wl_bridge", "Bridge Details", wl_prefix, validate_bridge, ARGV("0", "1"), FALSE, NVRAM_MI | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 	{ "wl_closed", "Network Type", wl_prefix, validate_wl_closed, ARGV("0", "1"), FALSE,NVRAM_MI |  EZC_FLAGS_READ | EZC_FLAGS_WRITE },
@@ -11334,7 +15106,7 @@ struct variable variables[] = {
 	{ "wl_bss_opmode_cap_reqd", "Per-BSS operational capabilities required", wl_prefix, validate_choice, ARGV("0", "1", "2", "3"), FALSE, NVRAM_MI },
 /*
 */
-#ifdef 	__CONFIG_WFI__
+#ifdef __CONFIG_WFI__
 	{ "wl_wfi_enable", "Wifi Invite feature", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
 	{ "wl_wfi_pinmode", "WFI PIN mode", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
 #endif /* __CONFIG_WFI__ */
@@ -11344,12 +15116,12 @@ struct variable variables[] = {
 #ifdef TRAFFIC_MGMT_RSSI_POLICY
 	{ "wl_trf_mgmt_rssi_policy", "TRF MGMT RSSI Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
 #endif /* TRAFFIC_MGMT_RSSI_POLICY */
+	{ "wl_atf", "Airtime Fairness", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
 #ifdef __CONFIG_EMF__
 	{ "wl_wmf_ucigmp_query", "Unicast IGMP Query Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_wmf_mdata_sendup", "Sendup Multicast Data Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_wmf_psta_disable", "Sendup Multicast to PSTA disable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
 #endif /* __CONFIG_EMF__ */
-	{ "wl_pspretend_threshold", "Stalled Link Detection Threshold", wl_prefix, validate_range, ARGV("0", "32"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_pspretend_retry_limit", "PsPretend retry limit", wl_prefix, validate_range, ARGV("0", "32"), FALSE, NVRAM_MI | VIF_IGNORE },
 #ifdef __CONFIG_EXTACS__
 	{ "wl_acs_fcs_mode", "ACS Fast Channel Switch Enable", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
@@ -11361,7 +15133,7 @@ struct variable variables[] = {
 	{ "wl_acs_ci_scan_timer", "ACS CI Scan Interval", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_acs_ci_scan_timeout", "ACS CI Scan Timeout", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_acs_scan_entry_expire", "Scan Result Timeout", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
-	{ "wl_acs_tx_idle_cnt", "TX Idle Frame Count", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
+	{ "wl_acs_tx_idle_cnt", "TX Idle Frame Count", wl_prefix, validate_range, ARGV("0", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_acs_chan_dwell_time", "ACS Scan Dwell Time", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_acs_chan_flop_period", "ACS Chan Flop Period", wl_prefix, validate_range, ARGV("1", "4294967295"), FALSE, NVRAM_MI | VIF_IGNORE },
 
@@ -11370,6 +15142,7 @@ struct variable variables[] = {
 	{ "wl_intfer_txfail", "non-TCP TxFail threshold", wl_prefix, validate_range, ARGV("0", "65535"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_intfer_tcptxfail", "TCP TxFail threshold", wl_prefix, validate_range, ARGV("0", "65535"), FALSE, NVRAM_MI | VIF_IGNORE },
 #endif /* __CONFIG_EXTACS__ */
+	{ "wl_probresp_mf", "MAC filter based Probe Response", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI },
 	/* This group is per radio */
 	{ "wl_ure", "URE Mode",NULL, validate_ure, ARGV("0"), FALSE, NVRAM_MI | VIF_IGNORE },
 	{ "wl_vifs", "WL Virtual Interfaces", NULL, NULL, ARGV("0"), FALSE, NVRAM_MI | WEB_IGNORE },
@@ -11429,6 +15202,8 @@ struct variable variables[] = {
 	{ "wl_wme_txp_vi", "WME TXP VI", wl_prefix, validate_wl_wme_tx_params, NULL, TRUE, NVRAM_MI | VIF_IGNORE},
 	{ "wl_wme_txp_vo", "WME TXP VO", wl_prefix, validate_wl_wme_tx_params, NULL, TRUE, NVRAM_MI | VIF_IGNORE},
 	{ "wl_obss_coex", "Overlapping BSS Coexistence", wl_prefix, validate_choice, ARGV("0", "1"), TRUE, NVRAM_MI | VIF_IGNORE },
+	{ "wl_probresp_sw", "SW Probe Response", wl_prefix, validate_choice, ARGV("0", "1"), FALSE, NVRAM_MI | VIF_IGNORE },
+	{ "wl_vht_features", "VHT features", wl_prefix, validate_range, ARGV("0", "255"), FALSE, NVRAM_MI | VIF_IGNORE },
 	/* security parameters */
 	{ "wl_key", "Network Key Index", wl_prefix, validate_range, ARGV("1", "4"), FALSE,NVRAM_MI | EZC_FLAGS_WRITE },
 	{ "wl_key1", "Network Key 1", wl_prefix, validate_wl_key, NULL, TRUE, NVRAM_MI | NVRAM_ENCRYPT | EZC_FLAGS_WRITE},
@@ -11472,7 +15247,7 @@ struct variable variables[] = {
 	{ "wps_version2", "WPS version supported", NULL, validate_choice, ARGV("enabled", "disabled"), FALSE, 0 },
 	{ "wps_version2_num", "WPS version2 number", NULL, validate_wps2_range, ARGV("20", "99"), FALSE, 0 },
 	{ "wps_ie_frag", "WPS IE fragment threshold", NULL, validate_wps2_range, ARGV("72", "228"), FALSE, 0 },
-	{ "wps_eap_frag", "WPS EAP fragment threshold", NULL, validate_wps2_range, ARGV("100", "1398"), FALSE, 0 },	
+	{ "wps_eap_frag", "WPS EAP fragment threshold", NULL, validate_wps2_range, ARGV("100", "1398"), FALSE, 0 },
 	{ "wps_nattr", "New attribute", NULL, validate_name, ARGV("0", "127"), FALSE, 0 },
 	{ "wps_zpadding", "Do Zero Padding", NULL, validate_range, ARGV("0", "1"), FALSE, 0 },
 	{ "wps_mca", "Multiple Credential Attribute", NULL, validate_range, ARGV("0", "1"), FALSE, 0 },
@@ -11491,6 +15266,7 @@ struct variable variables[] = {
 #endif
 #if defined(__CONFIG_DLNA_DMS__)
 	{ "dlna_dms_enable", "DLNA Server",NULL, validate_choice, ARGV("0", "1"), FALSE, 0 },
+	{ "dlna_dms_dir", "DLNA Server Content Directory",NULL, validate_name, ARGV("0", "254"), FALSE, 0 },
 #endif
 #if defined(__CONFIG_SAMBA__)
 	{ "samba_mode", "Samba Mode",NULL, validate_range, ARGV("0", "2"), FALSE, 0 },
@@ -11509,12 +15285,14 @@ struct variable variables[] = {
 	{ "NGA_MID", "NGA MID", NULL, NULL, NULL, TRUE, WEB_IGNORE },
 #endif /* __CONFIG_NORTON__ */
 	{ "coma_sleep", "Coma Mode Sleep Time", NULL, NULL, NULL, TRUE, 0 },
+	{ "trf_mgmt_dwm", "Traffic Management DWM", NULL, validate_trf_mgmt_dwm, ARGV("0", XSTR(MAX_NVPARSE - 1)), FALSE, NVRAM_GENERIC_MULTI },
+	{ "wl_dfs_pref", "DFS Preferred chan", wl_prefix, validate_dfs_prefchan, NULL, FALSE, NVRAM_MI | VIF_IGNORE | EZC_FLAGS_READ | EZC_FLAGS_WRITE },
 };
 
 /* build hashtable of the monster v-block
 
    Inputs:
-   -tab: 	hash table  structure
+   -tab:	hash table  structure
    -vblock:	the monster V-block
    -num_items:	estimated size of hash table
 
@@ -11650,12 +15428,14 @@ get_var_handle(char *varname)
 	if (ep){
 		variable = (struct variable *)ep->data;
 		if (variable->ezc_flags & NVRAM_MI)
-	 			return  variable;
+				return  variable;
 	}
 
 	/* Is is a var_typeXX */
-	strncpy(tmp,varname,sizeof(tmp));
-	offset = strlen(varname) - 1 ;
+	strncpy(tmp,varname,sizeof(tmp) - 1);
+	tmp[sizeof(tmp) - 1] = '\0';
+
+	offset = strlen(tmp) - 1 ;
 	while(isdigit((int)tmp[offset]))
 			tmp[offset--] = '\0';
 	ep = NULL;
@@ -11665,7 +15445,7 @@ get_var_handle(char *varname)
 	if (ep){
 		variable = (struct variable *)ep->data;
 		if (variable->ezc_flags & NVRAM_GENERIC_MULTI)
-	 			return  variable;
+				return  variable;
 	}
 
 	return  NULL;
@@ -11705,9 +15485,9 @@ validate_lan_cgi(webs_t wp)
 */
 #ifdef __CONFIG_IPV6__
 		       "lan_ipv6_prefix",
-		       "lan_ipv6_dns", 
-		       "lan_ipv6_mode", 
-		       "lan_ipv6_6to4id", 
+		       "lan_ipv6_dns",
+		       "lan_ipv6_mode",
+		       "lan_ipv6_6to4id",
 #endif /* __CONFIG_IPV6__ */
 /*
 */
@@ -11839,7 +15619,7 @@ validate_lan_cgi(webs_t wp)
 				snprintf(err_msg,sizeof(err_msg),
 					"<br>Overlapping IP address ranges:<br>(RangeA=%s/%s) (RangeB=%s/%s)<br>",
 						lanA_ipaddr,lanA_netmask,lanB_ipaddr,lanB_netmask);
-	      			goto validate_lan_cgi_error;
+				goto validate_lan_cgi_error;
 			}
 
 			valueA = websGetVar(wp , lanA_proto , NULL);
@@ -11866,7 +15646,7 @@ validate_lan_cgi(webs_t wp)
 					snprintf(err_msg,sizeof(err_msg),
 						"<br>Overlapping DHCP start ranges<br>(RangeA=%s/%s) (RangeB=%s/%s)<br>",
 							dhcpA_start,lanA_netmask,dhcpB_start,lanB_netmask);
-	      					goto validate_lan_cgi_error;
+						goto validate_lan_cgi_error;
 				}
 
 				value =  websGetVar(wp, dhcpA_end , NULL);
@@ -11883,7 +15663,7 @@ validate_lan_cgi(webs_t wp)
 					snprintf(err_msg,sizeof(err_msg),
 						 "<br>Overlapping DHCP end ranges<br>(RangeA=%s/%s) (RangeB=%s/%s)<br>",
 							dhcpA_end,lanA_netmask,dhcpB_end,lanB_netmask);
-	      					goto validate_lan_cgi_error;
+						goto validate_lan_cgi_error;
 				}
 			}
 		}
@@ -12122,12 +15902,14 @@ write_to_wps(int fd, char *cmd)
 	to.sin_family = AF_INET;
 	to.sin_port = htons(WPS_UI_PORT);
 
-	n = sendto(fd, cmd, len, 0, (struct sockaddr *)&to,
-		sizeof(struct sockaddr_in));
-
-	/* Sleep 100 ms to make sure
-	   WPS have received socket */
-	USLEEP(100*1000);
+	if ((n = sendto(fd, cmd, len, 0, (struct sockaddr *)&to,
+		sizeof(struct sockaddr_in))) <0) {
+		perror("write_to_wps: sendto failed");
+	}
+	else {
+		/* Sleep 100 ms to make sure WPS have received socket */
+		USLEEP(100*1000);
+	}
 	return n;
 }
 
@@ -12170,14 +15952,14 @@ read_from_wps(int fd, char *databuf, int datalen)
 					0, (struct sockaddr *)&addr, &size);
 
 				if (recvBytes == -1) {
-					fprintf(stderr, 
+					fprintf(stderr,
 					"wps ui utility:recv failed, recvBytes = %d\n", recvBytes);
 					return -1;
 				}
 
 				return recvBytes;
 			}
-			
+
 			return 0;
 		}
 	}
@@ -12249,8 +16031,10 @@ all_found:
 		if (name) {
 			if (!strcmp(name, "wps_config_command"))
 				wps_config_command = atoi(value);
-			else if (!strcmp(name, "wps_uuid"))
-				strcpy(wps_uuid , value);
+			else if (!strcmp(name, "wps_uuid")) {
+				strncpy(wps_uuid , value, sizeof(wps_uuid) - 1);
+				wps_uuid[sizeof(wps_uuid) - 1] = '\0';
+			}
 			else if (!strcmp(name, "wps_method")) /* Add in PF #3 */
 				wps_method = atoi(value);
 			else if (!strcmp(name, "wps_autho_sta_mac")) /* Add in PF #3 */
@@ -12258,7 +16042,7 @@ all_found:
 			else if (!strcmp(name, "wps_ifname")) {
 				if (strlen(value) <=0)
 					continue;
-				if (osifname_to_nvifname(value, nvifname, sizeof(nvifname)) != 0) 
+				if (osifname_to_nvifname(value, nvifname, sizeof(nvifname)) != 0)
 					continue;
 
 				if (get_ifname_unit(nvifname, &unit, &subunit) == -1)
@@ -12290,8 +16074,9 @@ static int
 get_wps_env()
 {
 	int fd = -1;
-	char databuf[256];
+	char databuf[257];
 	int datalen = sizeof(databuf);
+	databuf[--datalen] = 0;
 
 	if (is_wps_enabled() == 0)
 		return -1;
@@ -12301,10 +16086,8 @@ get_wps_env()
 		return -1;
 	}
 
-	write_to_wps(fd, "GET");
-
 	/* Receive response */
-	if (read_from_wps(fd, databuf, datalen) > 0) {
+	if (write_to_wps(fd, "GET") >= 0 && read_from_wps(fd, databuf, datalen) > 0) {
 		parse_wps_env(databuf);
 	}
 	else {
@@ -12330,7 +16113,7 @@ set_wps_env(char *uibuf)
 	if ((wps_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
 		goto exit;
 	}
-	
+
 	/* send to WPS */
 	to.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	to.sin_family = AF_INET;
@@ -12539,7 +16322,7 @@ static int wps_get_credentials(webs_t wp, char *uibuf, int uilen)
 {
 	char *value;
 	int wps_akm = 0;
-	
+
 	/* credential setting */
 	if ((value = websGetVar(wp, "wps_ssid", NULL)))
 	{
@@ -12574,7 +16357,7 @@ static int wps_get_credentials(webs_t wp, char *uibuf, int uilen)
 		if (wps_akm) {
 			websWrite(wp, "Unable to get Encryption Type.");
 			return -1;
-		}	
+		}
 	}
 
 	/* WPA passphrase */
@@ -12589,7 +16372,7 @@ static int wps_get_credentials(webs_t wp, char *uibuf, int uilen)
 		}
 	}
 
-	return uilen;	
+	return uilen;
 }
 static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	  char_t *url, char_t *path, char_t *query)
@@ -12598,7 +16381,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	char *wps_ssid = NULL, *wps_akm = NULL, *wps_crypto = NULL, *wps_psk = NULL;
 	char tmp[256];
 	char nvifname[IFNAMSIZ], osifname[IFNAMSIZ];
-	char pin[9] = {0};		
+	char pin[9] = {0};
 	char uibuf[1024] = "SET ";
 	int uilen = 4;
 	bool b_wps_version2 = FALSE;
@@ -12607,6 +16390,11 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	int akm = 1;
 
 	action_mode = websGetVar(wp, "action", NULL);
+
+	if (action_mode == NULL) {
+		websError(wp, 400, "action mode is not specified\n");
+		return -1;
+	}
 
 	if (!make_wl_prefix(prefix, sizeof(prefix), 1, NULL)) {
 		websError(wp, 400, "unit number variable doesn't exist\n");
@@ -12619,7 +16407,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 
 		snprintf(tmp, sizeof(tmp), "%sssid", prefix);
 		nvram_set(tmp, nvram_default_get("wl_ssid"));
-		
+
 		snprintf(tmp, sizeof(tmp), "%sakm", prefix);
 		nvram_set(tmp, nvram_default_get("wl_akm"));
 
@@ -12671,7 +16459,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			} else if (len < 8 || len > 63) {
 				websWrite(wp, "Invalid <b>WPA passphase</b>: must be between 8 and 63 ASCII characters or 64 hexadecimal digits<br>");
 				return -1;
-			}			
+			}
 		}
 
 		action = RESTART;
@@ -12699,14 +16487,14 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		nvram_commit();
 		websWrite(wp, "done<br>");
 	}
-	/* WPS AP want to Add Enrollee */	
+	/* WPS AP want to Add Enrollee */
 	else if (!strcmp(action_mode, "Add Enrollee")) {
 
 		websWrite(wp, "validate variable...\n");
 		wps_action = WPS_UI_ACT_ADDENROLLEE;
 		websWrite(wp, "WPS is preparing to Add Enrollee...\n");
 		uilen += sprintf(uibuf + uilen, "wps_action=\"%d\" ", wps_action);
-		
+
 		uilen = wps_get_credentials(wp, uibuf, uilen);
 		if (uilen == -1)
 			return -1;
@@ -12753,15 +16541,16 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			uilen += sprintf(uibuf + uilen, "wps_method=\"%d\" ", wps_method);
 		}
 		websWrite(wp, "OK");
-	
+
 		nvram_set("wps_proc_status", "0");
-		strcpy(wps_unit, nvram_safe_get("wl_unit"));
-	
+		strncpy(wps_unit, nvram_safe_get("wl_unit"), sizeof(wps_unit));
+		wps_unit[sizeof(wps_unit)-1] = '\0';
+
 		uilen += sprintf(uibuf + uilen, "wps_config_command=\"%d\" ", WPS_UI_CMD_START);
-	
+
 		sprintf(nvifname, "wl%s", wps_unit);
-		nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
-	
+		(void)nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
+
 		uilen += sprintf(uibuf + uilen, "wps_ifname=\"%s\" ", osifname);
 		set_wps_env(uibuf);
 	}
@@ -12795,7 +16584,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 
 			if (!strcmp(value, "PIN"))
 				wps_method = WPS_UI_METHOD_PIN;
-			else if (!strcmp(value, "PBC")) 
+			else if (!strcmp(value, "PBC"))
 			{
 				wps_method = WPS_UI_METHOD_PBC;
 				strncpy(pin, "00000000", 8);
@@ -12811,15 +16600,15 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			}
 #endif
 			uilen += sprintf(uibuf + uilen, "wps_method=\"%d\" ", wps_method);
-			
+
 		} /*  WPS_UI_ACT_ENROLL */
-		
+
 		if (wps_action == WPS_UI_ACT_STA_CONFIGAP) {
 			uilen = wps_get_credentials(wp, uibuf, uilen);
 			if (uilen < 0)
 				return -1;
 		}
-		
+
 		if (wps_action == WPS_UI_ACT_STA_CONFIGAP ||
 		    wps_action == WPS_UI_ACT_STA_GETAPCONFIG) {
 			wps_method = WPS_UI_METHOD_PIN;
@@ -12880,15 +16669,16 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			uilen += sprintf(uibuf + uilen, "wps_enr_wsec=\"%d\" ", ap->wep);
 		}
 		websWrite(wp, "OK");
-	
+
 		nvram_set("wps_proc_status", "0");
-		strcpy(wps_unit, nvram_safe_get("wl_unit"));
+		strncpy(wps_unit, nvram_safe_get("wl_unit"), sizeof(wps_unit));
+		wps_unit[sizeof(wps_unit)-1] = '\0';
 
 		uilen += sprintf(uibuf + uilen, "wps_config_command=\"%d\" ", wps_config_command);
 
 		sprintf(nvifname, "wl%s", wps_unit);
-		nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
-	
+		(void)nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
+
 		uilen += sprintf(uibuf + uilen, "wps_ifname=\"%s\" ", osifname);
 		set_wps_env(uibuf);
 		nvram_commit();
@@ -12903,30 +16693,34 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 
 		websWrite(wp, "validate variable...\n");
 
-	 	/* WSC 2.0,  support WPS V2 or not */
+		/* WSC 2.0,  support WPS V2 or not */
 		if (strcmp(nvram_safe_get("wps_version2"), "enabled") == 0)
 			b_wps_version2 = TRUE;
-		value = websGetVar(wp, "wps_action", NULL);
+		if ((value = websGetVar(wp, "wps_action", NULL)) == NULL) {
+			websError(wp, 400, "wps_action does not exist\n");
+			return -1;
+		}
 		if (strcmp(value, "AddEnrollee") == 0)	{
 
 			/* Must in AddEnrollee in PBC method */
 			uilen += sprintf(uibuf + uilen, "wps_method=\"%d\" ", WPS_UI_METHOD_PBC);
-	
+
 			/* WSC 2.0, get authorized mac, get by wps process itself */
 			if (b_wps_version2 && strlen(wps_autho_sta_mac))
 				uilen += sprintf(uibuf + uilen, "wps_autho_sta_mac=\"%s\" ", wps_autho_sta_mac);
 			uilen += sprintf(uibuf + uilen, "wps_sta_pin=\"00000000\" "); /* PBC */
 			uilen += sprintf(uibuf + uilen, "wps_action=\"%d\" ", WPS_UI_ACT_ADDENROLLEE);
-	
+
 			websWrite(wp, "OK");
 			nvram_set("wps_proc_status", "0");
-			strcpy(wps_unit, nvram_safe_get("wl_unit"));
-	
+			strncpy(wps_unit, nvram_safe_get("wl_unit"), sizeof(wps_unit));
+			wps_unit[sizeof(wps_unit)-1] = '\0';
+
 			uilen += sprintf(uibuf + uilen, "wps_config_command=\"%d\" ", WPS_UI_CMD_START);
-	
+
 			sprintf(nvifname, "wl%s", wps_unit);
-			nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
-	
+			(void)nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
+
 			uilen += sprintf(uibuf + uilen, "wps_pbc_method=\"%d\" ", WPS_UI_PBC_SW);
 			uilen += sprintf(uibuf + uilen, "wps_ifname=\"%s\" ", osifname);
 		}
@@ -12935,13 +16729,14 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 
 			websWrite(wp, "OK");
 			nvram_set("wps_proc_status", "0");
-			strcpy(wps_unit, nvram_safe_get("wl_unit"));
+			strncpy(wps_unit, nvram_safe_get("wl_unit"), sizeof(wps_unit));
+			wps_unit[sizeof(wps_unit)-1] = '\0';
 
 			uilen += sprintf(uibuf + uilen, "wps_action=\"%d\" ", WPS_UI_ACT_ENROLL);
 			uilen += sprintf(uibuf + uilen, "wps_config_command=\"%d\" ", WPS_UI_CMD_START);
 
 			sprintf(nvifname, "wl%s", wps_unit);
-			nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
+			(void)nvifname_to_osifname(nvifname, osifname, sizeof(osifname));
 
 			uilen += sprintf(uibuf + uilen, "wps_pbc_method=\"%d\" ", WPS_UI_PBC_SW);
 			uilen += sprintf(uibuf + uilen, "wps_ifname=\"%s\" ", osifname);
@@ -13134,11 +16929,11 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 #endif /* __CONFIG_NFC__ */
 /*
 */
-#ifdef __CONFIG_WFI__ 
-	else if (!strcmp(action_mode, "Invite"))  
-	{	
+#ifdef __CONFIG_WFI__
+	else if (!strcmp(action_mode, "Invite"))
+	{
 		char *invite_name=NULL, *invite_mac=NULL, *invite_unit=NULL;
-		
+
 		action = NOTHING;
 		websWrite(wp, "Validating values...");
 
@@ -13146,22 +16941,22 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		invite_mac = websGetVar(wp, "invite_mac", "");
 		invite_unit = nvram_safe_get("wl_unit");
 		printf (" Inviting %s(%s) to %s ...\n", invite_mac, invite_name, invite_unit);
-		
+
 		websWrite(wp, "done<br>");
-		
+
 		websWrite(wp, "Committing values...");
 		websWrite(wp, "done<br>");
 
 		websWrite(wp, "Inviting the STA...<p>");
-		
+
 		/* Issue WFI Invite command */
 		{
 			int i;
 			char acComamnd[64];
-		
+
 			for (i = 0; i < 3; i++)  {
 				if (nvram_match(WPSM_WFI_CMD_NVNAME, ""))
-					break; 
+					break;
 				SLEEP (1);
 			}
 			sprintf(acComamnd, "invite %s %s%s", invite_unit, invite_mac, invite_name);
@@ -13176,57 +16971,57 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		}
 
 		/*
-		 * redirect the page to "cancelinvite.aps", 
-		 * to allow user cancel WFI or Enter PIN manually 
+		 * redirect the page to "cancelinvite.aps",
+		 * to allow user cancel WFI or Enter PIN manually
 		 */
 		websWrite(wp, "<script type=\"text/javascript\">\n");
 		websWrite(wp, "<!--\n");
 		websWrite(wp, "window.location = \"%s\"\n", "cancelinvite.asp");
 		websWrite(wp, "//-->\n");
-		websWrite(wp, "</script>\n");		
-			
+		websWrite(wp, "</script>\n");
+
 		websFooter(wp);
 		websDone(wp, 200);
-		return 1;	
+		return 1;
 	}
-	else if (!strcmp(action_mode, "Cancel"))  
+	else if (!strcmp(action_mode, "Cancel"))
 	{
 		printf ("Cancel invitation!\n");
 		/* Issue WFI command */
-		{ 
+		{
 			int i;
 
 			for (i = 0; i < 3; i++) {
 				if (nvram_match(WPSM_WFI_CMD_NVNAME, ""))
-					break; 
+					break;
 				SLEEP (1);
 			}
 			nvram_set(WPSM_WFI_CMD_NVNAME, "cancel");
 			for (i = 0; i < 3; i++) {
 				SLEEP(1);
-				if (nvram_match(WPSM_WFI_CMD_NVNAME, "")) 
+				if (nvram_match(WPSM_WFI_CMD_NVNAME, ""))
 					break;
 			}
 		}
-		
+
 		action = NOTHING;
-		
+
 		websWrite(wp, "<p>Action is canceled <p>\n");
 		websWrite(wp, "<script type=\"text/javascript\">\n");
 		websWrite(wp, "<!--\n");
 		websWrite(wp, "window.location = \"%s\"\n", "invite.asp");
 		websWrite(wp, "//-->\n");
 		websWrite(wp, "</script>\n");
-		
+
 		websFooter(wp);
-		websDone(wp, 200); 
+		websDone(wp, 200);
 		return 1;
 	}
-	else if (!strcmp(action_mode, "Check"))  
+	else if (!strcmp(action_mode, "Check"))
 	{
 		char *wfi_count=NULL, *wfi_error=NULL;
 		int count, error_code=0, flag= -1;
-			
+
 		wfi_count = websGetVar(wp, "count", "");
 		if (wfi_count) {
 			count = atoi(wfi_count);
@@ -13236,7 +17031,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 				if (nvram_match("wfi_status", "0")){ /* Invite Done */
 					wfi_error = nvram_get("wfi_error");
 					if (wfi_error && *wfi_error){
-						error_code = atoi(wfi_error);	
+						error_code = atoi(wfi_error);
 						printf(" get error_code = %d\n", error_code);
 						switch (error_code){
 						case 0 :
@@ -13273,7 +17068,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 				/* Successful */
 				printf("Invite successful.\n");
 				websWrite(wp, " Invite successful.\n");
-			} 
+			}
 			else if (flag == 1){
 				/* Time out */
 				printf("Time out...\n");
@@ -13285,14 +17080,14 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			}
 			else if (flag == 3){
 				websWrite(wp, " Cancelled.\n");
-			} 
+			}
 			else
 				websWrite(wp, " WPS Failed.\n");
 			websWrite(wp, (char_t *) apply_footer, "invite.asp");
 			websFooter(wp);
 			websDone(wp, 200);
 
-			return 1;	
+			return 1;
 		}
 		else {
 			/* Still in progress, redirect the page to "cancelinvite.aps", to allow user cancel WFI */
@@ -13302,7 +17097,7 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 			websWrite(wp, "window.location = \"%s\"\n", "cancelinvite.asp");
 			websWrite(wp, "//-->\n");
 			websWrite(wp, "</script>\n");
-		
+
 			websFooter(wp);
 			websDone(wp, 200);
 			return 1;
@@ -13310,15 +17105,15 @@ static int wps_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	}
 	else if (!strcmp(action_mode, "Enter")) {
 		char *wps_sta_pin=NULL;
-			
+
 		wps_sta_pin = websGetVar(wp, "wps_sta_pin", "");
-		
+
 		nvram_set("wps_sta_pin", wps_sta_pin);
 		nvram_set("wfi_manual_pin", "1");
-		
+
 		//todo : Set PIN for WFI
 		//
-		
+
 		action = NOTHING;
 	}
 #endif /* __CONFIG_WFI__ */
@@ -13372,6 +17167,10 @@ apply_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 	else if (!strncmp(value, "Restore", 7)) {
 		websWrite(wp, "Restoring defaults...");
 		nvram_set("restore_defaults", "1");
+		/* Unset FA overridden */
+		if (FA_ON(atoi(nvram_safe_get("ctf_fa_mode"))))
+			nvram_unset("ctf_fa_mode");
+
 		nvram_commit();
 		websWrite(wp, "done<br>");
 		action = REBOOT;
@@ -13408,13 +17207,13 @@ apply_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		char *os_name = nvram_safe_get("os_name");
 		char *os_server = websGetVar(wp, "os_server", nvram_safe_get("os_server"));
 		char *os_version = websGetVar(wp, "os_version", "current");
-		char url[PATH_MAX];
+		char upgrade_url[PATH_MAX];
 		if (!*os_version)
 			os_version = "current";
-		snprintf(url, sizeof(url), "%s/%s/%s/%s.trx",
+		snprintf(upgrade_url, sizeof(upgrade_url), "%s/%s/%s/%s.trx",
 			 os_server, os_name, os_version, os_name);
-		websWrite(wp, "Retrieving %s...", url);
-		if (sys_upgrade(url, NULL, NULL)) {
+		websWrite(wp, "Retrieving %s...", upgrade_url);
+		if (sys_upgrade(upgrade_url, NULL, NULL)) {
 			websWrite(wp, "error<br>");
 			goto footer;
 		} else {
@@ -13609,7 +17408,7 @@ copy_wl_index_to_unindex(webs_t wp, char_t *urlPrefix, char_t *webDir,
 			snprintf(vif,sizeof(vif),"%s.%s",value,wl_bssid);
 			value = vif;
 		}
-		strncpy(unit_str,value,sizeof(unit_str));
+		strncpy(unit_str,value,sizeof(unit_str) - 1);
 	}
 #ifdef __CONFIG_WPS__
 	else if (!strcmp(path, "wps.asp")) {
@@ -13619,6 +17418,7 @@ copy_wl_index_to_unindex(webs_t wp, char_t *urlPrefix, char_t *webDir,
 #endif /* __CONFIG_WPS__ */
 	else {
 		char ifnames[256];
+
 		snprintf(ifnames, sizeof(ifnames), "%s %s %s %s",
 			nvram_safe_get("lan_ifnames"),
 			nvram_safe_get("lan1_ifnames"),
@@ -13636,7 +17436,7 @@ copy_wl_index_to_unindex(webs_t wp, char_t *urlPrefix, char_t *webDir,
 				continue;
 			if (wl_probe(os_name) == 0 &&
 			    wl_ioctl(os_name, WLC_GET_INSTANCE, &unit, sizeof(unit)) == 0){
-			    	snprintf(unit_str,sizeof(unit_str),"%d",unit);
+				snprintf(unit_str,sizeof(unit_str),"%d",unit);
 				break;
 			}
 		}
@@ -13652,7 +17452,7 @@ copy_wl_index_to_unindex(webs_t wp, char_t *urlPrefix, char_t *webDir,
 			}
 			if (!strncmp(v->name, "wl_", 3)) {
 				(void)strcat_r(prefix, &v->name[3], tmp);
-				/* 
+				/*
 				 * tmp holds fully qualified name (wl0.1_....)
 				 * First try nvram; if NULL, try default; ? : is gcc-specific
 				 */
@@ -13779,6 +17579,15 @@ initHandlers(void)
 	websAspDefine("filter_client", ej_filter_client);
 	websAspDefine("filter_url", ej_filter_url);
 	websAspDefine("forward_port", ej_forward_port);
+	websAspDefine("print_wl_netauthlist", ej_print_wl_netauthlist);
+	websAspDefine("print_wl_realmlist", ej_print_wl_realmlist);
+	websAspDefine("print_wl_venuelist", ej_print_wl_venuelist);
+	websAspDefine("print_wl_ouilist", ej_print_wl_ouilist);
+	websAspDefine("print_wl_3gpplist", ej_print_wl_3gpplist);
+	websAspDefine("print_wl_wanmetrics",ej_print_wl_wanmetrics);
+	websAspDefine("print_wl_oplist", ej_print_wl_oplist);
+	websAspDefine("print_wl_homeqlist", ej_print_wl_homeqlist);
+	websAspDefine("print_wl_osuplist", ej_print_wl_osuplist);
 	websAspDefine("static_route", ej_static_route);
 	websAspDefine("localtime", ej_localtime);
 	websAspDefine("dumplog", ej_dumplog);
@@ -13969,7 +17778,7 @@ static char hex2nible(char c)
 }
 
 /**************************************************
- * Function name : static void BcmPostParse(char *url, FILE *stream, int len, 
+ * Function name : static void BcmPostParse(char *url, FILE *stream, int len,
  *                     char *boundary)
  * Created by    : Toni Homedes i Saun
  * Date created  : 06-10-2010
@@ -13980,9 +17789,9 @@ static char hex2nible(char c)
 /** \brief Parses post arguments in application/x-www-form-urlencoded form
  *
  *  The arguments are added to the file global BcmPostArgs variable.
- *   
+ *
  *  The CGI function is responsible for frring this dictionnary
- *    
+ *
  *  \param[in] url      unused
  *  \param[in] stream   socket to read from
  *  \param[in] len      len of args
@@ -13997,14 +17806,14 @@ static void BcmPostParse(char *url, FILE *stream, int len, char *boundary)
   int value_pos = 0;
 
   bzero(line, sizeof line);
-  
+
   /* CheckBoxes say nothing when not checked */
   DictSet(BcmPostArgs, "plc_cfg_root", "");
-  
+
   while(len && !feof(stream))
   {
     int c;
-    
+
     c = fgetc(stream), --len;
 
     if ('%' == c && len >= 2) /* percent encoded char follows */
@@ -14029,14 +17838,14 @@ static void BcmPostParse(char *url, FILE *stream, int len, char *boundary)
       DictSet(BcmPostArgs, line + 1, value_pos ? line + value_pos : "");
       memset(line, '\0', sizeof line);
       value_pos = i = 0;
-      
+
       if (!len || EOF == c)
         return;
     }
     else if ('=' == c)
     {
-      c = '\0'; 
-      value_pos = i + 1; 
+      c = '\0';
+      value_pos = i + 1;
     }
     else if ('+' == c)
     {
@@ -14128,8 +17937,8 @@ osversion_get(const char *name)
 
 	assert(name);
 
- 	snprintf(ret_string,sizeof(ret_string),"%d.%d",
-  			ROUTER_MAJOR_VERSION, ROUTER_MINOR_VERSION);
+	snprintf(ret_string,sizeof(ret_string),"%d.%d",
+			ROUTER_MAJOR_VERSION, ROUTER_MINOR_VERSION);
 
 
 	return ret_string;
@@ -14244,7 +18053,7 @@ do_nvramul_post(char *url, FILE *stream, int len, char *boundary)
 	/* loop thru the header lines until we get the blank line
 	   that signifies the start of file contents */
 	while (len > 0){
-	 	if (!fgets(buf, MIN(len + 1, sizeof(buf)), stream))
+		if (!fgets(buf, MIN(len + 1, sizeof(buf)), stream))
 			return;
 		/* Remove LF that fgets()drags in */
 		len=remove_crlf(buf,len);
@@ -14267,18 +18076,18 @@ do_nvramul_post(char *url, FILE *stream, int len, char *boundary)
 
 	if ( (sscanf(buf,tmp,&numlines) != 1) || !len ){
 		strncpy(posterr_msg,"Invalid NVRAM header<br>",ERR_MSG_SIZE);
-	 	return ;
+		return ;
 	}
 
 	if (numlines == 0) {
 		strncpy(posterr_msg, "Invalid NVRAM header<br>", ERR_MSG_SIZE);
-	 	return;
+		return;
 	}
 
 	tmpbuf = (struct pb *) malloc( sizeof(struct pb));
 	if (!tmpbuf){
 		strncpy(posterr_msg,"Memory allocation error<br>",ERR_MSG_SIZE);
-	 	return;
+		return;
 	}
 
 	memset(tmpbuf,0,sizeof(struct pb));
@@ -14299,7 +18108,7 @@ do_nvramul_post(char *url, FILE *stream, int len, char *boundary)
 	for (index = 2 ; (len > 0) &&  (index < numlines); index++){
 		char filebuf[NVRAM_MAX_STRINGSIZE];
 
-	 	if (!fgets(filebuf, MIN(len + 1,NVRAM_MAX_STRINGSIZE), stream))
+		if (!fgets(filebuf, MIN(len + 1,NVRAM_MAX_STRINGSIZE), stream))
 			goto do_nvramul_post_cleanup0;
 
 		offset = add_string(&tmpbuf->buf[offset],filebuf,offset,
@@ -14307,7 +18116,7 @@ do_nvramul_post(char *url, FILE *stream, int len, char *boundary)
 		if (offset < 0){
 			snprintf(posterr_msg,ERR_MSG_SIZE,
 				"Error processing NVRAM variable:%s<br>",filebuf);
-	 		goto do_nvramul_post_cleanup0;
+			goto do_nvramul_post_cleanup0;
 		}
 		len = len - strlen(filebuf);
 
@@ -14323,7 +18132,7 @@ do_nvramul_post(char *url, FILE *stream, int len, char *boundary)
 
 	if ( !len && (index < numlines) ){
 		strncpy(posterr_msg,"NVRAM file incomplete<br>",ERR_MSG_SIZE);
-	 	goto do_nvramul_post_cleanup0;
+		goto do_nvramul_post_cleanup0;
 	}
 
 	/* Save and decode checksum from file */
@@ -14726,7 +18535,8 @@ do_nvramdl_cgi(char *url, FILE *stream)
 
 	for(name = buf; *name; name += strlen(name) + 1){
 		var_val =tmp;
-		strncpy(tmp,name,sizeof(tmp));
+		strncpy(tmp,name,sizeof(tmp) - 1);
+		tmp[sizeof(tmp) - 1] = '\0';
 		var_name=strsep(&var_val,"=");
 		retval = save_nvram_var(var_name,var_val,tmp_buf,
 					sizeof(tmp_buf),(char *)key,NVRAM_FILEKEYSIZE);
@@ -14773,7 +18583,8 @@ do_nvramdl_cgi(char *url, FILE *stream)
 		goto do_nvramdl_cgi_error;
 	}
 
-	strncpy(tmp1,ptr,NVRAM_MAX_STRINGSIZE);
+	strncpy(tmp1, ptr, sizeof(tmp1) - 1);
+	tmp1[sizeof(tmp1) - 1] = '\0';
 
 	snprintf(post_buf->header[NVRAM_CHECKSUM_LINENUM],NVRAM_MAX_STRINGSIZE,"%s=%s\n",
 					nvram_file_header[NVRAM_CHECKSUM_LINENUM],tmp1);
@@ -14835,7 +18646,7 @@ struct _head_info
 
 struct _packet_reset_srv
 {
-	struct _head_info head; 
+	struct _head_info head;
 	unsigned char data[4096];
 };
 
@@ -14850,7 +18661,7 @@ struct _packet_reset_srv
 #define PEM_STRING_X509_USER	"USER CERTIFICATE"
 #define PEM_STRING_X509_BEGIN	"-----BEGIN "
 #define PEM_STRING_X509_END	"-----END "
-#define PEM_STRING_X509 	"CERTIFICATE"		/* define in include/bcmcrypto/pme.h */
+#define PEM_STRING_X509		"CERTIFICATE"		/* define in include/bcmcrypto/pme.h */
 #define PEM_STRING_PKCS8INF	"PRIVATE KEY"		/* define in include/bcmcrypto/pme.h */
 #define PEM_STRING_ECPRIVATEKEY "EC PRIVATE KEY"	/* define in include/bcmcrypto/pme.h */
 
@@ -14896,7 +18707,7 @@ as_communicate(char *req, int req_len, char *rsp, int *rsp_len)
 
 	if (FD_ISSET(fd, &fds)) {
 		memset(rsp, 0, *rsp_len);
-	
+
 		*rsp_len = recv(fd, rsp, *rsp_len, 0);
 		if (*rsp_len == 0) {
 			cprintf("receive no data\n");
@@ -14994,8 +18805,8 @@ ej_as_cer_display(int eid, webs_t wp, int argc, char_t **argv)
 		else {
 			websWrite(wp, "<td></td>");
 		}
-		
-		websWrite(wp, "</tr>");	
+
+		websWrite(wp, "</tr>");
 	}
 
 	ret = 0;
@@ -15237,7 +19048,7 @@ get_multipart(FILE *stream, int len, char *name, char *outfile, char *outbuf,
 					memcpy(outbuf, buf, strlen(buf));
 			}
 			len -= strlen(buf);
-			break;			
+			break;
 		}
 		len -= strlen(buf);
 	}
@@ -15275,7 +19086,7 @@ get_multipart(FILE *stream, int len, char *name, char *outfile, char *outbuf,
 		if (strstr(buf, end_sign)) {
 			last_line = 1;
 			len = remove_crlf(buf, len);
-			
+
 		} else
 			len -= strlen(buf);
 
@@ -15311,7 +19122,7 @@ static char*
 search_pem_str(char *in, char *name)
 {
 	char *p = NULL;
-	
+
 	p = strstr(in, name);
 	return p;
 }
@@ -15324,8 +19135,8 @@ PEM_read_x509(char **data, int *datal, char *name, char *fcontent, int flen)
 	char *bdata = NULL;
 	char *edata = NULL;
 	int ret = 0;
-	
-	do {	
+
+	do {
 		bdata = search_pem_str(p, name);
 		if ((bdata == NULL) || (bdata >end)) {
 			ret = -1;
@@ -15338,7 +19149,7 @@ PEM_read_x509(char **data, int *datal, char *name, char *fcontent, int flen)
 			break;
 		};
 		bdata += 5;
-		
+
 		edata = search_pem_str(bdata, PEM_STRING_X509_END);
 		if ((edata == NULL) || (edata >end)) {
 			ret = -2;
@@ -15375,17 +19186,17 @@ PEM_write(char **in, char *data,  int datal, const char *name)
 
 	/*cp -----BEGIN ASU(USER) CERTIFICATE-----*/
 	cp_cert_flag(&p, PEM_STRING_X509_BEGIN, name);
-	
+
 	/*cp -----cert content-----*/
 	memcpy(p, data, datal);
 	p += datal;
-	
+
 	/*cp -----END ASU(USER) CERTIFICATE-----*/
 	cp_cert_flag(&p, PEM_STRING_X509_END, name);
 
 	/*cp LF+CR */
 	p[0] = MSEP_CR; p[1] = MSEP_LF; p +=2;
-	
+
 	*in = p;
 }
 
@@ -15494,7 +19305,7 @@ process_wapi_info(struct _packet_reset_srv *recv_from_WAI)
 	int ret = 0;
 	unsigned short CMD = 0;
 	unsigned char check_result = 0;
-	
+
 	wapi_ntoh_data(recv_from_WAI);
 	if (recv_from_WAI->head.ver != VERSIONNOW) {
 		cprintf("Version error in data from , The Ver is %d\n", recv_from_WAI->head.ver );
@@ -15504,7 +19315,7 @@ process_wapi_info(struct _packet_reset_srv *recv_from_WAI)
 
 	if (recv_from_WAI->head.data_len != 2) {
 		cprintf("data_len error in data from , The Ver is %d\n", recv_from_WAI->head.data_len );
-		ret = -1;	
+		ret = -1;
 		goto process_wapi_info_error;
 	}
 
@@ -15517,7 +19328,7 @@ process_wapi_info(struct _packet_reset_srv *recv_from_WAI)
 			if (check_result != 0) {
 				ret = -1;
 			}
-			break;		
+			break;
 		default:
 			ret = -1;
 			break;
@@ -15542,7 +19353,7 @@ save_certificate(const char *fname, char *fcontent, int flen)
 
 	if (fwrite(fcontent, flen, 1, f) != 1)
 		ret = 2;
-	
+
 	fclose(f);
 
 	confmtd_backup();
@@ -15578,7 +19389,7 @@ do_cert_ul_post(char *url, FILE *stream, int len, char *boundary)
 		CERT_START_SIGN, CERT_END_SIGN, (START_SIGN_IS_DATA | END_SIGN_IS_DATA));
 	if (len == 0 || len == -1) {
 		strncpy(posterr_msg, "Invalid AS certificate file<br>", ERR_MSG_SIZE);
-	 	return;
+		return;
 	}
 
 	/* get user_cerfile */
@@ -15827,7 +19638,7 @@ encrypt_var(char *varname,char *ptext, int ptext_len, char *ctext, int *ctext_le
 	if (aes_wrap(keylen,(unsigned char *)key,newlen,(unsigned char *)buf,
 	             (unsigned char *)ctext)){
 		if (buf) free(buf);
-	 	return NULL;
+		return NULL;
 	};
 
 	if (buf) free(buf);
@@ -15881,6 +19692,473 @@ do_security_asp(char *url, FILE *stream)
 	init_cgi(NULL);
 }
 
+#ifdef __CONFIG_HSPOT__
+static void
+do_passpoint_asp(char *url, FILE *stream)
+{
+	char *path=NULL, *query=NULL;
+
+	assert(stream);
+	assert(url);
+
+	/* Parse path */
+	query = url;
+	path = strsep(&query, "?") ? : url;
+
+	copy_wl_index_to_unindex(stream, NULL, NULL, 0, url, path, query);
+
+	/* Reset CGI */
+	init_cgi(NULL);
+}
+#endif /* __CONFIG_HSPOT__ */
+
+#ifdef __CONFIG_VISUALIZATION__
+/* Visualization WebUI handling starts here */
+
+#define print_error(str)
+
+/* Closes the socket given the file descriptor */
+static void
+close_socket(int *sockfd)
+{
+	if (*sockfd == INVALID_SOCKET)
+		return;
+
+	close(*sockfd);
+	*sockfd = INVALID_SOCKET;
+}
+
+/* Gets the address */
+static void
+*get_in_addr(struct sockaddr *sa)
+{
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*)sa)->sin_addr);
+	}
+}
+
+/* Sends the buffer to server */
+static int
+send_data(int sockfd, char *data, unsigned int len)
+{
+	int	nret = 0;
+	int	totalsize = len, totalsent = 0;
+
+	while (totalsent < totalsize) {
+		fd_set WriteFDs, ExceptFDs;
+		struct timeval tv;
+
+		FD_ZERO(&WriteFDs);
+		FD_ZERO(&ExceptFDs);
+
+		if(sockfd == INVALID_SOCKET)
+			return INVALID_SOCKET;
+
+		FD_SET(sockfd, &WriteFDs);
+
+		tv.tv_sec = VIS_SOCKET_WAIT_TIMEOUT;
+		tv.tv_usec = 0;
+		if (select(sockfd+1, NULL, &WriteFDs, &ExceptFDs, &tv) > 0) {
+			if (FD_ISSET(sockfd, &WriteFDs))
+				;
+			else
+				return INVALID_SOCKET;
+		}
+
+		nret = send(sockfd, &(data[totalsent]), len, 0);
+		if (nret < 0) {
+			print_error("send data");
+			return INVALID_SOCKET;
+		}
+		totalsent += nret;
+		len -= nret;
+		nret = 0;
+	}
+
+	return totalsent;
+}
+
+/* Adds the 4 bytes length and then data to a buffer and sends it to
+ * server
+ */
+static int
+add_length_and_send_data(int sockfd, char *data, unsigned int len)
+{
+	int	ret = 0;
+	char	*sdata = NULL;
+	int	totlen = VIS_LEN_FIELD_SZ + len;
+
+	sdata = (char*)malloc(sizeof(char) * (totlen));
+	if (sdata == NULL) {
+		fprintf(stderr, "Failed to allocate sdata buffer\n");
+		return -1;
+	}
+
+	memcpy(sdata, &totlen, VIS_LEN_FIELD_SZ);
+
+	memcpy(sdata+VIS_LEN_FIELD_SZ, data, len);
+
+	ret = send_data(sockfd, sdata, totlen);
+
+	free(sdata);
+
+	return ret;
+}
+
+/* Recieves the 'size' number of data */
+static int
+recv_data(int sockfd, unsigned char *read_buf, uint32 size)
+{
+	uint32		nbytes, totalread = 0;
+	fd_set		ReadFDs, ExceptFDs;
+	struct timeval	tv;
+
+	FD_ZERO(&ReadFDs);
+	FD_ZERO(&ExceptFDs);
+	FD_SET(sockfd, &ReadFDs);
+	FD_SET(sockfd, &ExceptFDs);
+	tv.tv_sec = VIS_SOCKET_WAIT_TIMEOUT;
+	tv.tv_usec = 0;
+
+	while(totalread < size ) {
+		if (select(sockfd+1, &ReadFDs, NULL, &ExceptFDs, &tv) > 0) {
+			if (FD_ISSET(sockfd, &ReadFDs)) {
+			}
+			else {
+				return INVALID_SOCKET;
+			}
+		}
+		nbytes = read(sockfd, &(read_buf[totalread]), size);
+
+		if(nbytes <= 0) {
+			print_error("Read Error");
+			return INVALID_SOCKET;
+		}
+
+		totalread += nbytes;
+	}
+
+	read_buf[nbytes] = '\0';
+
+	return nbytes;
+}
+
+/* Recieves the data from server
+ * return value contains the number of bytes read or -1 for error
+ * free the buffer after reading the data
+ */
+static int
+on_receive(int sockfd, unsigned char **data)
+{
+	uint32		sz, size;
+	unsigned char	szbuff[5];
+	unsigned char	*read_buf;
+
+	sz = recv_data(sockfd, szbuff, VIS_LEN_FIELD_SZ);
+	if (sz <= 0) {
+		return INVALID_SOCKET;
+	}
+
+	if (sz >= VIS_LEN_FIELD_SZ) {
+		size = 0;
+		memcpy(&size, szbuff, VIS_LEN_FIELD_SZ);
+	}
+
+	read_buf = (unsigned char *)malloc(sizeof(unsigned char) * ((size-VIS_LEN_FIELD_SZ) + 1));
+	if (read_buf == NULL) {
+		fprintf(stderr, "Failed to allocate read_buf buffer\n");
+		return -1;
+	}
+
+	sz = recv_data(sockfd, read_buf, (size-VIS_LEN_FIELD_SZ));
+	if (sz <= 0) {
+		if (read_buf != NULL) {
+			free(read_buf);
+			read_buf = NULL;
+		}
+		return INVALID_SOCKET;
+	}
+
+	*data = read_buf;
+
+	return sz;
+}
+
+/* Connects to server given the port and address */
+static int
+connect_to_server(uint32 nport, char *straddrs)
+{
+	int			res, valopt, sockfd;
+	long			arg;
+	socklen_t		lon;
+	fd_set			readfds;
+	struct timeval		tv;
+	struct hostent		*host;
+	struct sockaddr_in	server_addr;
+
+	sockfd = INVALID_SOCKET;
+
+	if ((sockfd = socket(PF_INET,SOCK_STREAM,0)) == -1) {
+		print_error("socket creation");
+		return INVALID_SOCKET;
+	}
+
+	if ((host = gethostbyname(straddrs)) == NULL) {
+		print_error("gethostbyname");
+		return INVALID_SOCKET;
+	}
+
+	arg = fcntl(sockfd, F_GETFL, NULL);
+	arg |= O_NONBLOCK;
+	fcntl(sockfd, F_SETFL, arg);
+
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(nport);
+	server_addr.sin_addr = *((struct in_addr*)host -> h_addr);
+	res = connect(sockfd,(struct sockaddr*)&server_addr,
+			sizeof(struct sockaddr)) ;
+
+	if (res <0) {
+		if (errno == EINPROGRESS) {
+			tv.tv_sec = 30;
+			tv.tv_usec = 0;
+			FD_ZERO(&readfds);
+			FD_SET(sockfd,&readfds);
+			if (select(sockfd+1, NULL, &readfds, NULL, &tv) > 0) {
+				lon = sizeof(int);
+				getsockopt(sockfd, SOL_SOCKET, SO_ERROR,
+						(void*)(&valopt), &lon);
+				if (valopt) {
+					//fprintf(stderr, "Error in connection() %d - %s\n",
+							//valopt, strerror(valopt));
+					return INVALID_SOCKET;
+				}
+			}
+		else {
+				//fprintf(stderr, "Timeout or error() %d - %s\n",
+						//valopt, strerror(valopt));
+				return INVALID_SOCKET;
+			}
+		}
+		else {
+			//fprintf(stderr, "Error connecting %d - %s\n",
+					//errno, strerror(errno));
+			return INVALID_SOCKET;
+		}
+	}
+
+	return sockfd;
+}
+
+unsigned char *rdata = NULL;
+
+/* Sends the XML data to server */
+static int
+send_ui_frontend_data(char *xmldata)
+{
+	int	sz = 0;
+	int	sockfd = INVALID_SOCKET;
+	int	ret = 0;
+
+	sockfd = connect_to_server(VISUALIZATION_SERVER_PORT, VISUALIZATION_SERVER_ADDRESS);
+	if (sockfd != INVALID_SOCKET) {
+		ret = add_length_and_send_data(sockfd, xmldata, strlen(xmldata));
+		if (ret != INVALID_SOCKET) {
+			rdata = NULL;
+			int rsz = 0;
+			rsz = on_receive(sockfd, &rdata);
+			if (rsz <= 0) {
+				fprintf(stdout, "Failed to recieve data\n");
+			}
+		}
+		else {
+			fprintf(stdout, "Failed to send Login Request\n");
+		}
+	}
+	else {
+		fprintf(stdout, "Failed to Connect to server : %s Port : %d\n",
+			VISUALIZATION_SERVER_ADDRESS, VISUALIZATION_SERVER_PORT);
+	}
+
+	close_socket(&sockfd);
+
+	return ret;
+}
+
+/* Write json answer to stream */
+static void
+do_json_get(char *url, FILE *stream)
+{
+	if (rdata != NULL)
+		fputs(rdata, stream);
+
+	if (rdata != NULL) {
+		free(rdata);
+		rdata = NULL;
+	}
+}
+
+/* Read query from stream in json format treate it and create answer string
+ * The query is a list of commands and treated by 'do_json_command'
+ */
+static void
+create_xml_string(const char *querystring, char *xmlstring)
+{
+	char *pch;
+	char request[50] = {0};
+	char dutmac[30] = {0};
+	char stamac[30] = {0};
+	char band[5] = {0};
+	char configxml[VIS_MAX_XML_LEN] = {0};
+	char graphxml[VIS_MAX_XML_LEN] = {0};
+	char dcon_ip[25] = {0};
+	int isenabled = 0;
+
+	sprintf(configxml, "<Config>");
+	sprintf(graphxml, "<EnabledGraphs>");
+
+
+	pch = strtok(querystring, "?=&");
+	while(pch != NULL) {
+		int i;
+		enum vis_enum_req_args id = VIS_UNKNOWN;
+
+		for (i = 0; i < (sizeof(vis_req_args_list)/sizeof(vis_req_args)); i++) {
+			if (strstr(pch, vis_req_args_list[i].req_name) != NULL) {
+				pch = strtok(NULL, "?=&");
+				if (pch == NULL)
+					break;
+				id = vis_req_args_list[i].id;
+				break;
+			}
+		}
+		switch(id) {
+			case VIS_REQUEST: /* Get the request name */
+				sprintf(request, "%s", pch);
+				break;
+			case VIS_DUTMAC: /* Get the DUTMAC */
+				sprintf(dutmac, "%s", pch);
+				break;
+			case VIS_STAMAC: /* Get the STAMAC */
+				sprintf(stamac, "%s", pch);
+				break;
+			case VIS_FREQBAND: /* Get the FreqBand */
+				snprintf(band, 2, "%s", pch);
+				break;
+			case VIS_INTERVAL: /* Get Interval for config settings */
+				strcat(configxml, "<SampleInterval>");
+				strcat(configxml, pch);
+				strcat(configxml, "</SampleInterval>");
+				break;
+			case VIS_DURATION: /* Get Duration for config settings */
+				strcat(configxml, "<SampleDuration>");
+				strcat(configxml, pch);
+				strcat(configxml, "</SampleDuration>");
+				break;
+			case VIS_FREQUENCY: /* Get Frequency for config settings */
+				strcat(configxml, "<StartSampleColl>");
+				strcat(configxml, pch);
+				strcat(configxml, "</StartSampleColl>");
+				break;
+			case VIS_DBSIZE: /* Get Max database size for config settings */
+				strcat(configxml, "<dbsize>");
+				strcat(configxml, pch);
+				strcat(configxml, "</dbsize>");
+				break;
+			case VIS_STARTSTOP: /* Tells to stop or start the data collection*/
+				strcat(configxml, "<startstop>");
+				strcat(configxml, pch);
+				strcat(configxml, "</startstop>");
+				break;
+			case VIS_TOTAL: /* Get total graph names for config settings */
+				strcat(graphxml, "<Total>");
+				strcat(graphxml, pch);
+				strcat(graphxml, "</Total>");
+				break;
+			case VIS_GRAPHNAME: /* Get graphname for config settings */
+				strcat(graphxml, "<graphname>");
+				strcat(graphxml, pch);
+				strcat(graphxml, "</graphname>");
+				break;
+			case VIS_DCONIP: /* Server IP for remote debug */
+				strcat(dcon_ip, pch);
+				break;
+			case VIS_ISREMOTE_ENABLE: /* Flag for remote debugging enabled */
+				isenabled = atoi(pch);
+				break;
+		}
+		pch = strtok(NULL, "?=&");
+	}
+
+	if (strcmp(request, "RemoteSettings") == 0) {
+		char *dcon_ip = nvram_get("vis_dcon_ipaddr");
+		if (dcon_ip == NULL)
+			return;
+		char *value = nvram_get("vis_do_remote_dcon");
+		if (value)
+			isenabled = atoi(value);
+		rdata = (char*)malloc(sizeof(char) * 100);
+		memset(rdata, 0x00, 100);
+		sprintf(rdata, "{\"IsEnabled\":%d,\"ServerIP\":\"%s\"}",
+			isenabled, dcon_ip);
+		return;
+	} else if (strcmp(request, "SetRemoteDebug") == 0) {
+		char tmpbuf[5] = {0};
+
+		nvram_set("vis_dcon_ipaddr", dcon_ip);
+		sprintf(tmpbuf, "%d", isenabled);
+		nvram_set("vis_do_remote_dcon", tmpbuf);
+		nvram_commit();
+		sys_restart();
+		return;
+	}
+	strcat(graphxml, "</EnabledGraphs>");
+	strcat(configxml, graphxml);
+	strcat(configxml, "</Config>");
+
+	sprintf(xmlstring,"<?xml version=\"1.0\" encoding=\"utf-8\"?><PacketVersion Name=\"1\"><PacketHeader><PacketType>1</PacketType><From>2</From>");
+	strcat(xmlstring, "<ReqRespType>");
+	strcat(xmlstring, request);
+	strcat(xmlstring, "</ReqRespType>");
+	strcat(xmlstring, "<FreqBand>");
+	strcat(xmlstring, band);
+	strcat(xmlstring, "</FreqBand></PacketHeader>");
+	strcat(xmlstring, configxml);
+	strcat(xmlstring, "<DUT><MAC>");
+	strcat(xmlstring, dutmac);
+	strcat(xmlstring, "</MAC><STAMAC>");
+	strcat(xmlstring, stamac);
+	strcat(xmlstring, "</STAMAC></DUT>");
+	strcat(xmlstring, "</PacketVersion>");
+}
+
+/* Read query from stream in json format treate it and create answer string
+ * The query is a list of commands and treated by 'do_json_command'
+ */
+static void
+do_json_set(const char *url, FILE *stream, int len, const char *boundary)
+{
+	size_t	l;
+	char	*buf;
+	char	xmlstring[VIS_MAX_XML_LEN] = {0};
+
+	buf = (char*)malloc(len + 1);
+	l = fread(buf, 1, len, stream);
+	buf[l] = 0;
+
+	/* create the xml string out of the query string */
+	create_xml_string(url,xmlstring);
+
+	/* send this xml string to the backend via socket */
+	if (strlen(xmlstring) > 0)
+		send_ui_frontend_data(xmlstring);
+
+#ifdef DEBUG
+	dprintf("cmd-> %s", buf);
+#endif /* #ifdef DEBUG */
+	free (buf);
+}
+#endif /* __CONFIG_VISUALIZATION__ */
 #ifdef __CONFIG_WPS__
 static void
 do_wps_asp(char *url, FILE *stream)
@@ -15998,7 +20276,13 @@ struct mime_handler mime_handlers[] = {
 #endif	/* __CONFIG_NAT__ */
 	{ "radio.asp", "text/html", no_cache, do_apply_post, do_wireless_asp, do_auth },
 	{ "ssid.asp", "text/html", no_cache, do_apply_post, do_wireless_asp, do_auth },
+#ifdef __CONFIG_HSPOT__
+	{"passpoint.asp", "text/html", no_cache, do_apply_post, do_passpoint_asp, do_auth},
+#endif
 	{ "security.asp", "text/html", no_cache, do_apply_post, do_security_asp, do_auth },
+#ifdef __CONFIG_VISUALIZATION__
+	{ "json.cgi*", "application/json", no_cache, do_json_set, do_json_get, do_auth },
+#endif	/* __CONFIG_VISUALIZATION__ */
 #ifdef __CONFIG_WPS__
 	{ "wps.asp", "text/html", no_cache, do_apply_post, do_wps_asp, do_auth },
 #endif /* __CONFIG_WPS__ */
@@ -16043,6 +20327,25 @@ struct ej_handler ej_handlers[] = {
 	{ "nvram_inlist", ej_nvram_inlist },
 	{ "nvram_invinlist", ej_nvram_invinlist },
 	{ "nvram_indexmatch", ej_nvram_indexmatch },
+#ifdef __CONFIG_HSPOT__
+	{ "print_wl_wanmetrics", ej_print_wl_wanmetrics },
+	{ "print_wl_oplist", ej_print_wl_oplist },
+	{ "print_wl_homeqlist", ej_print_wl_homeqlist },
+	{ "print_wl_osuplist", ej_print_wl_osuplist},
+	{ "print_osup", ej_print_osup},
+	{ "icon_change", ej_icon_change},
+//#endif /* __CONFIG_HSPOT__ */
+//#ifdef __CONFIG_802_11U__
+	{ "print_wl_netauthlist", ej_print_wl_netauthlist },
+	{ "print_wl_realmlist", ej_print_wl_realmlist},
+	{ "print_eapauth", ej_print_eapauth},
+	{ "authid_change", ej_authid_change},
+	{ "print_wl_venuegrp_type", ej_print_wl_venuegrp_type},
+	{ "vanuegrp_change", ej_vanuegrp_change},
+	{ "print_wl_venuelist", ej_print_wl_venuelist },
+	{ "print_wl_ouilist", ej_print_wl_ouilist },
+	{ "print_wl_3gpplist", ej_print_wl_3gpplist },
+#endif /* __CONFIG_802_11U__*/
 #ifdef __CONFIG_NAT__
 	{ "wan_list", ej_wan_list },
 	{ "wan_iflist", ej_wan_iflist },
@@ -16130,10 +20433,10 @@ struct ej_handler ej_handlers[] = {
 #endif
 /*
 */
-#ifdef __CONFIG_WFI__	
+#ifdef __CONFIG_WFI__
 	{ "wl_invite_list", ej_wl_invite_list },
 	{ "wl_wfi_mode", ej_wl_wfi_mode },
-#endif	/*  __CONFIG_WFI__ */	
+#endif	/*  __CONFIG_WFI__ */
 /*
 */
 #ifdef PLC
@@ -16154,6 +20457,7 @@ struct ej_handler ej_handlers[] = {
 	{ "trf_mgmt_rssi_policy_display", ej_trf_mgmt_rssi_policy_display },
 #endif /* TRAFFIC_MGMT_RSSI_POLICY */
 	{ "wl_txbf_capable", ej_wl_txbf_capable },
+	{ "trf_mgmt_dwm_display", ej_trf_mgmt_dwm_display },
 	{ NULL, NULL }
 };
 
@@ -16169,7 +20473,7 @@ country_name_t country_names[] = {
 {"AFGHANISTAN",		 "AF"},
 {"ALBANIA",		 "AL"},
 {"ALGERIA",		 "DZ"},
-{"AMERICAN SAMOA", 	 "AS"},
+{"AMERICAN SAMOA",	 "AS"},
 {"ANDORRA",		 "AD"},
 {"ANGOLA",		 "AO"},
 {"ANGUILLA",		 "AI"},
@@ -16199,7 +20503,7 @@ country_name_t country_names[] = {
 {"BOTSWANA",		 "BW"},
 {"BOUVET ISLAND",	 "BV"},
 {"BRAZIL",		 "BR"},
-{"BRITISH INDIAN OCEAN TERRITORY", 	"IO"},
+{"BRITISH INDIAN OCEAN TERRITORY", "IO"},
 {"BRUNEI DARUSSALAM",	 "BN"},
 {"BULGARIA",		 "BG"},
 {"BURKINA FASO",	 "BF"},
@@ -16232,7 +20536,7 @@ country_name_t country_names[] = {
 {"DIEGO GARCIA",	 "Z1"},
 {"DJIBOUTI",		 "DJ"},
 {"DOMINICA",		 "DM"},
-{"DOMINICAN REPUBLIC", 	 "DO"},
+{"DOMINICAN REPUBLIC",	 "DO"},
 {"ECUADOR",		 "EC"},
 {"EGYPT",		 "EG"},
 {"EL SALVADOR",		 "SV"},
@@ -16267,7 +20571,7 @@ country_name_t country_names[] = {
 {"GUYANA",		 "GY"},
 {"HAITI",		 "HT"},
 {"HEARD ISLAND AND MCDONALD ISLANDS",	"HM"},
-{"HOLY SEE (VATICAN CITY STATE)", 	"VA"},
+{"HOLY SEE (VATICAN CITY STATE)",	"VA"},
 {"HONDURAS",		 "HN"},
 {"HONG KONG",		 "HK"},
 {"HOWLAND ISLAND",		 "Z2"},
@@ -16303,7 +20607,7 @@ country_name_t country_names[] = {
 {"KOREA, REPUBLIC OF",	 "KR"},
 {"KUWAIT",		 "KW"},
 {"KYRGYZSTAN",		 "KG"},
-{"LAO PEOPLE'S DEMOCRATIC REPUBLIC", 	"LA"},
+{"LAO PEOPLE'S DEMOCRATIC REPUBLIC",	"LA"},
 {"LATVIA",		 "LV"},
 {"LEBANON",		 "LB"},
 {"LESOTHO",		 "LS"},
@@ -16327,8 +20631,8 @@ country_name_t country_names[] = {
 {"MAURITIUS",		 "MU"},
 {"MAYOTTE",		 "YT"},
 {"MEXICO",		 "MX"},
-{"MICRONESIA, FEDERATED STATES OF", 	"FM"},
-{"MIDWAY ISLANDS", 	"Z2"},
+{"MICRONESIA, FEDERATED STATES OF",	"FM"},
+{"MIDWAY ISLANDS",	"Z2"},
 {"MOLDOVA, REPUBLIC OF", "MD"},
 {"MONACO",		 "MC"},
 {"MONGOLIA",		 "MN"},
@@ -16353,8 +20657,8 @@ country_name_t country_names[] = {
 {"OMAN",		 "OM"},
 {"PAKISTAN",		 "PK"},
 {"PALAU",		 "PW"},
-{"PALESTINIAN TERRITORY, OCCUPIED", 	"PS"},
-{"PALMYRA ATOLL", 	"Z2"},
+{"PALESTINIAN TERRITORY, OCCUPIED",	"PS"},
+{"PALMYRA ATOLL",	"Z2"},
 {"PANAMA",		 "PA"},
 {"PAPUA NEW GUINEA",	 "PG"},
 {"PARAGUAY",		 "PY"},
@@ -16374,9 +20678,9 @@ country_name_t country_names[] = {
 {"SAINT HELENA",	 "SH"},
 {"SAINT KITTS AND NEVIS","KN"},
 {"SAINT LUCIA",		 "LC"},
-{"SAINT PIERRE AND MIQUELON",	 	"PM"},
-{"SAINT VINCENT AND THE GRENADINES", 	"VC"},
-{"SAIPAN", 	"Z1"},
+{"SAINT PIERRE AND MIQUELON",		"PM"},
+{"SAINT VINCENT AND THE GRENADINES",	"VC"},
+{"SAIPAN",	"Z1"},
 {"SAMOA",		 "WS"},
 {"SAN MARINO",		 "SM"},
 {"SAO TOME AND PRINCIPE","ST"},
@@ -16400,7 +20704,7 @@ country_name_t country_names[] = {
 {"SWEDEN",		 "SE"},
 {"SWITZERLAND",		 "CH"},
 {"SYRIAN ARAB REPUBLIC", "SY"},
-{"TAIWAN, PROVINCE OF CHINA", 		"TW"},
+{"TAIWAN, PROVINCE OF CHINA",		"TW"},
 {"TAJIKISTAN",		 "TJ"},
 {"TANZANIA, UNITED REPUBLIC OF",	"TZ"},
 {"THAILAND",		 "TH"},
@@ -16429,14 +20733,14 @@ country_name_t country_names[] = {
 {"VIET NAM",		 "VN"},
 {"VIRGIN ISLANDS, BRITISH", "VG"},
 {"VIRGIN ISLANDS, U.S.", "VI"},
-{"WAKE ISLAND", 	 "Z1"},
+{"WAKE ISLAND",		 "Z1"},
 {"WALLIS AND FUTUNA",	 "WF"},
-{"WESTERN SAHARA", 	 "EH"},
+{"WESTERN SAHARA",	 "EH"},
 {"YEMEN",		 "YE"},
 {"YUGOSLAVIA",		 "YU"},
 {"ZAMBIA",		 "ZM"},
 {"ZIMBABWE",		 "ZW"},
-{"ALL",		 	 "ALL"},
+{"ALL",			 "ALL"},
 {"RADAR CHANNELS",	 "RDR"},
 {"XA (EUROPE / APAC 2005)",      "XA"},
 {"XB (NORTH AND SOUTH AMERICA AND TAIWAN)",      "XB"},
@@ -16452,5 +20756,5 @@ country_name_t country_names[] = {
 {"XU (EUROPEAN LOCALE 0dBi ANTENNA IN 2.4GHz)",  "XU"},
 {"XV (WORLDWIDE SAFE MODE LOCALE (PASSIVE Ch12-14))",    "XV"},
 {"XT (SINGLE SKU fOR PC-OEMs)",  "XT"},
-{NULL, 			 NULL}
+{NULL,			 NULL}
 };

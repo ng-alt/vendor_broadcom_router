@@ -91,7 +91,7 @@ console_init()
 	int fd;
 
 	/* Clean up */
-	ioctl(0, TIOCNOTTY, 0);
+	(void)ioctl(0, TIOCNOTTY, 0);
 	close(0);
 	close(1);
 	close(2);
@@ -106,7 +106,7 @@ console_init()
 	dup2(fd, 1);
 	dup2(fd, 2);
 
-	ioctl(0, TIOCSCTTY, 1);
+	(void)ioctl(0, TIOCSCTTY, 1);
 	tcsetpgrp(0, getpgrp());
 	set_term(0);
 

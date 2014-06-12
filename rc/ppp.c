@@ -85,9 +85,10 @@ ipup_main(int argc, char **argv)
 		nvram_set(strcat_r(prefix, "gateway", tmp), value);
 	strcpy(buf, "");
 	if (getenv("DNS1"))
-		sprintf(buf, "%s", getenv("DNS1"));
+		snprintf(buf, sizeof(buf), "%s", getenv("DNS1"));
 	if (getenv("DNS2"))
-		sprintf(buf + strlen(buf), "%s%s", strlen(buf) ? " " : "", getenv("DNS2"));
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "%s%s",
+			strlen(buf) ? " " : "", getenv("DNS2"));
 	nvram_set(strcat_r(prefix, "dns", tmp), buf);
 
 	wan_up(wan_ifname);

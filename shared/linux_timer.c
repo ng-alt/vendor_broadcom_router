@@ -44,6 +44,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+#include <typedefs.h>
+
 /* define TIMER_PROFILE to enable code which guages how accurate the timer functions are.
  * For each expiring timer the code will print the expected time interval and the actual time
  * interval.
@@ -750,6 +752,7 @@ int bcm_timer_module_init(int timer_entries, bcm_timer_module_id *module_id)
 */
 int bcm_timer_module_cleanup(bcm_timer_module_id module_id)
 {
+	UNUSED_PARAMETER(module_id);
 	module_id = 0;
 	return 0;
 }
@@ -766,7 +769,7 @@ int bcm_timer_module_enable(bcm_timer_module_id module_id, int enable)
 
 int bcm_timer_create(bcm_timer_module_id module_id, bcm_timer_id *timer_id)
 {
-	module_id = 0;
+	UNUSED_PARAMETER(module_id);
 	return timer_create(CLOCK_REALTIME, NULL, (timer_t *)timer_id);
 }
 

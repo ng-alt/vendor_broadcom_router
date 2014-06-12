@@ -1,7 +1,7 @@
 /*
  * Router rc control script
  *
- * Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+ * Copyright (C) 2014, Broadcom Corporation. All Rights Reserved.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: rc.c 353863 2012-08-29 03:22:47Z $
+ * $Id: rc.c 475804 2014-05-07 00:08:35Z $
  */
 
 #include <stdio.h>
@@ -55,6 +55,8 @@
 #include <wlutils.h>
 #include <ezc.h>
 #include <pmon.h>
+#include <bcmconfig.h>
+#include <etioctl.h>
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 #include <wapi_utils.h>
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */
@@ -78,12 +80,17 @@ static void auto_bridge(void);
 extern void load_emf(void);
 #endif /* __CONFIG_EMF__ */
 
+#ifdef __CONFIG_DHDAP__
+#define MAX_FW_PATH	512
+#endif /* __CONFIG_DHDAP__ */
+
 static void restore_defaults(void);
 static void sysinit(void);
 static void rc_signal(int sig);
 /* Foxconn added start, Wins, 05/16/2011, @RU_IPTV */
 #if defined(CONFIG_RUSSIA_IPTV)
 static int is_russia_specific_support (void);
+static int is_china_specific_support (void); /* Foxconn add, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 05/16/2011, @RU_IPTV */
 
@@ -126,13 +133,18 @@ static void convert_wlan_params(void)
     /* Added for dual band WPS req. for WNDR3400 */
 #define MAX_SSID_LEN    32
     char wl0_ssid[64], wl1_ssid[64];
-
+#if defined(R8000)
+    char wl2_ssid[64];
+#endif
     /* first check how we arrived here?
      * 1. or by "add WPS client" in unconfigured state.
      * 2. by external register configure us, 
      */
     strcpy(wl0_ssid, nvram_safe_get("wl0_ssid"));
     strcpy(wl1_ssid, nvram_safe_get("wl1_ssid"));
+#if defined(R8000)
+    strcpy(wl2_ssid, nvram_safe_get("wl2_ssid"));
+#endif
     /* Foxconn modified, Tony W.Y. Wang, 03/24/2010 @WPS random ssid setting */
     if (!nvram_match("wps_start", "none") || nvram_match("wps_pbc_conn_success", "1"))
     {
@@ -143,6 +155,10 @@ static void convert_wlan_params(void)
          */
 #define RANDOM_SSID_2G  "NTGR-2.4G_"
 #define RANDOM_SSID_5G  "NTGR-5G_"
+
+#if defined(R8000)
+#define RANDOM_SSID_5G_2  "NTGR-5G-2_"
+#endif
 
         /* Foxconn modified start pling 05/23/2012 */
         /* Fix a issue where 2.4G radio is disabled, 
@@ -155,6 +171,11 @@ static void convert_wlan_params(void)
             sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G, 
                     &wl0_ssid[strlen(RANDOM_SSID_2G)]);
             nvram_set("wl1_ssid", wl1_ssid);
+#if defined(R8000)
+            sprintf(wl2_ssid, "%s%s", RANDOM_SSID_5G_2, 
+                    &wl0_ssid[strlen(RANDOM_SSID_2G)]);
+            nvram_set("wl2_ssid", wl2_ssid);
+#endif            
         }
         else
         if (strncmp(wl1_ssid, RANDOM_SSID_5G, strlen(RANDOM_SSID_5G)) == 0 && !nvram_match("wl1_radio","0"))
@@ -164,6 +185,11 @@ static void convert_wlan_params(void)
             sprintf(wl0_ssid, "%s%s", RANDOM_SSID_2G, 
                     &wl1_ssid[strlen(RANDOM_SSID_5G)]);
             nvram_set("wl0_ssid", wl0_ssid);
+#if defined(R8000)
+            sprintf(wl2_ssid, "%s%s", RANDOM_SSID_5G_2, 
+                    &wl1_ssid[strlen(RANDOM_SSID_5G)]);
+            nvram_set("wl2_ssid", wl2_ssid);
+#endif            
         
             /* Foxconn added start pling 05/23/2012 */
             /* Fix a issue where 2.4G radio is disabled, 
@@ -173,6 +199,28 @@ static void convert_wlan_params(void)
                 nvram_set("wl0_wpa_psk", nvram_get("wl1_wpa_psk"));
             /* Foxconn added end pling 05/23/2012 */
         }
+#if defined(R8000)
+        else
+        if (strncmp(wl2_ssid, RANDOM_SSID_5G_2, strlen(RANDOM_SSID_5G_2)) == 0 && !nvram_match("wl2_radio","0"))
+        {
+            printf("Random ssid 5G_2\n");
+            /* Set correct ssid for 2.4G */
+            sprintf(wl0_ssid, "%s%s", RANDOM_SSID_2G, 
+                    &wl2_ssid[strlen(RANDOM_SSID_5G_2)]);
+            nvram_set("wl0_ssid", wl0_ssid);
+            sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G, 
+                    &wl2_ssid[strlen(RANDOM_SSID_5G_2)]);
+            nvram_set("wl1_ssid", wl1_ssid);
+        
+            /* Foxconn added start pling 05/23/2012 */
+            /* Fix a issue where 2.4G radio is disabled, 
+             * router uses incorrect random ssid/passphrase.
+             */
+            if (nvram_match("wl0_radio","0"))
+                nvram_set("wl0_wpa_psk", nvram_get("wl2_wpa_psk"));
+            /* Foxconn added end pling 05/23/2012 */
+        }
+#endif
         nvram_unset("wps_pbc_conn_success");
     }
     else
@@ -182,6 +230,7 @@ static void convert_wlan_params(void)
          * 1. UPnP,
          * 2. 2.4GHz radio
          * 3. 5GHz radio
+         * 4. 5GHz radio 2
          */
         if (nvram_match("wps_is_upnp", "1"))
         {
@@ -197,6 +246,9 @@ static void convert_wlan_params(void)
             /* Case 2: 2.4GHz radio */
             /* Need to add "-5G" to the SSID of the 5GHz band */
             char ssid_suffix[] = "-5G";
+#if (defined R8000)
+            char ssid_suffix_2[] = "-5G-2";
+#endif
             if (MAX_SSID_LEN - strlen(wl0_ssid) >= strlen(ssid_suffix))
             {
                 printf("2.4G Wireless External registrar 1!\n");
@@ -212,10 +264,34 @@ static void convert_wlan_params(void)
                 strcpy(wl1_ssid, wl0_ssid);
                 strcpy(&wl1_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
             }
+#if defined(R8000)
+            if (MAX_SSID_LEN - strlen(wl0_ssid) >= strlen(ssid_suffix_2))
+            {
+                printf("2.4G Wireless External registrar 1!\n");
+                /* SSID is not long, so append suffix to wl1_ssid */
+                sprintf(wl2_ssid, "%s%s", wl0_ssid, ssid_suffix_2);
+            }
+            else
+            {
+                printf("2.4G Wireless External registrar 2!\n");
+                /* SSID is too long, so replace last few chars of ssid
+                 * with suffix
+                 */
+                strcpy(wl2_ssid, wl0_ssid);
+                strcpy(&wl2_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
+            }
+#endif
             if (strlen(wl1_ssid) > MAX_SSID_LEN)
                 printf("Error wl1_ssid too long (%d)!\n", strlen(wl1_ssid));
 
+#if defined(R8000)
+           if (strlen(wl2_ssid) > MAX_SSID_LEN)
+                printf("Error wl2_ssid too long (%d)!\n", strlen(wl2_ssid));
+#endif
             nvram_set("wl1_ssid", wl1_ssid);
+#if defined(R8000)
+            nvram_set("wl2_ssid", wl2_ssid);
+#endif
         }
         else
         if (nvram_match("wps_currentRFband", "2"))
@@ -223,6 +299,7 @@ static void convert_wlan_params(void)
             /* Case 3: 5GHz radio */
             /* Need to add "-2.4G" to the SSID of the 2.4GHz band */
             char ssid_suffix[] = "-2.4G";
+            char ssid_suffix_2[] = "-5G-2";
 
             if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix))
             {
@@ -240,8 +317,75 @@ static void convert_wlan_params(void)
                 strcpy(wl0_ssid, wl1_ssid);
                 strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
             }
+#if (defined R8000)
+            if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix_2))
+            {
+                printf("5G Wireless External registrar 1!\n");
+                /* SSID is not long, so append suffix to wl1_ssid */
+                sprintf(wl2_ssid, "%s%s", wl1_ssid, ssid_suffix_2);
+            }
+            else
+            {
+                printf("5G Wireless External registrar 2!\n");
+                /* Replace last few chars ssid with suffix */
+                /* SSID is too long, so replace last few chars of ssid
+                 * with suffix
+                 */
+                strcpy(wl2_ssid, wl1_ssid);
+                strcpy(&wl2_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
+            }
+#endif
             nvram_set("wl0_ssid", wl0_ssid);
+#if (defined R8000)
+            nvram_set("wl2_ssid", wl2_ssid);
+#endif            
         }
+#if (defined R8000)
+        else
+        if (nvram_match("wps_currentRFband", "3"))
+        {
+            /* Case 4: 5GHz radio 2 */
+            /* Need to add "-2.4G" to the SSID of the 2.4GHz band */
+            char ssid_suffix[] = "-2.4G";
+            char ssid_suffix_2[] = "-5G-2";
+
+            if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix))
+            {
+                printf("5G Wireless External registrar 1!\n");
+                /* SSID is not long, so append suffix to wl1_ssid */
+                sprintf(wl0_ssid, "%s%s", wl2_ssid, ssid_suffix);
+            }
+            else
+            {
+                printf("5G Wireless External registrar 2!\n");
+                /* Replace last few chars ssid with suffix */
+                /* SSID is too long, so replace last few chars of ssid
+                 * with suffix
+                 */
+                strcpy(wl0_ssid, wl1_ssid);
+                strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
+            }
+
+            if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix_2))
+            {
+                printf("5G Wireless External registrar 1!\n");
+                /* SSID is not long, so append suffix to wl1_ssid */
+                sprintf(wl1_ssid, "%s%s", wl2_ssid, ssid_suffix_2);
+            }
+            else
+            {
+                printf("5G Wireless External registrar 2!\n");
+                /* Replace last few chars ssid with suffix */
+                /* SSID is too long, so replace last few chars of ssid
+                 * with suffix
+                 */
+                strcpy(wl1_ssid, wl2_ssid);
+                strcpy(&wl1_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
+            }
+            nvram_set("wl0_ssid", wl0_ssid);
+            nvram_set("wl1_ssid", wl1_ssid);
+        }
+#endif
         else
             printf("Error! unknown external register!\n");
     }
@@ -347,7 +491,7 @@ static void convert_wlan_params(void)
             acosNvramConfig_set("wl0_gmode", "1");
 
             /* Set bandwidth to 20MHz */
-#if ( !(defined BCM4718) && !(defined BCM4716) && !(defined R6300v2) && !defined(R6250) && !defined(R6200v2) && !defined(R7000))
+#if ( !(defined BCM4718) && !(defined BCM4716) && !(defined R6300v2) && !defined(R6250) && !defined(R6200v2) && !defined(R7000) && !defined(R8000))
             acosNvramConfig_set("wl_nbw", "20");
             acosNvramConfig_set("wl0_nbw", "20");
 #endif
@@ -461,6 +605,10 @@ static void convert_wlan_params(void)
     /* Foxconn add start, Tony W.Y. Wang, 11/23/2009 */
     nvram_set("wlg_ssid", nvram_safe_get("wl1_ssid"));
     nvram_set("wlg_temp_ssid", nvram_safe_get("wl1_ssid"));
+#if defined(R8000)
+    nvram_set("wlh_ssid", nvram_safe_get("wl2_ssid"));
+    nvram_set("wlh_temp_ssid", nvram_safe_get("wl2_ssid"));
+#endif
 
     if ( (strncmp(nvram_safe_get("wl1_akm"), "psk2", 4) == 0) || 
     	( strncmp(nvram_safe_get("wl1_akm"), "psk psk2", 7) == 0 ))
@@ -557,7 +705,7 @@ static void convert_wlan_params(void)
             acosNvramConfig_set("wl1_gmode", "1");
 
             /* Set bandwidth to 20MHz */
-#if ( !(defined BCM4718) && !(defined BCM4716) && !(defined R6300v2) && !defined(R6250) && !defined(R6200v2) && !defined(R7000))
+#if ( !(defined BCM4718) && !(defined BCM4716) && !(defined R6300v2) && !defined(R6250) && !defined(R6200v2) && !defined(R7000) && !defined(R8000)) 
             acosNvramConfig_set("wl1_nbw", "20");
 #endif
         
@@ -664,6 +812,202 @@ static void convert_wlan_params(void)
         nvram_set("wlg_temp_secu_type", "None");
         nvram_set("wlg_passphrase", "");
     }
+
+#if (defined R8000)
+    if ( (strncmp(nvram_safe_get("wl2_akm"), "psk2", 4) == 0) || 
+    	( strncmp(nvram_safe_get("wl2_akm"), "psk psk2", 7) == 0 ))
+    {
+        nvram_set("wlh_secu_type", "WPA2-PSK");
+        nvram_set("wlh_temp_secu_type", "WPA2-PSK");
+        nvram_set("wl2_akm", "psk2");
+        nvram_set("wlh_passphrase", nvram_safe_get("wl2_wpa_psk"));
+
+
+        /* If router changes from 'unconfigured' to 'configured' state by
+         * adding a WPS client, the wsc_randomssid and wsc_randomkey will
+         * be set. In this case, router should use mixedmode security.
+         */
+
+        /* Foxconn added start pling 06/15/2010 */
+        if (nvram_match("wl2_crypto", "tkip"))
+        {
+            /* DTM fix: 
+             * Registrar may set to WPA2-PSK TKIP mode.
+             * In this case, don't try to modify the
+             * security type.
+            */
+            nvram_unset("wps_mixedmode");
+        }
+        else
+        /* Foxconn added end pling 06/15/2010 */
+        if (!nvram_match("wps_randomssid", "") ||
+            !nvram_match("wps_randomkey", ""))
+        {
+            nvram_set("wlh_secu_type", "WPA2-PSK");
+            nvram_set("wlh_temp_secu_type", "WPA2-PSK");
+
+            nvram_set("wl2_akm", "psk2");
+            nvram_set("wl2_crypto", "aes");
+
+            nvram_unset("wps_mixedmode");
+            //nvram_set("wps_randomssid", "");
+            //nvram_set("wps_randomkey", "");
+            config_flag = 1;
+
+        }
+        else
+        {
+            /* Foxconn added start pling 02/25/2007 */
+            /* Disable WDS if it is already enabled */
+            if (nvram_match("wlg_wds_enable", "1"))
+            {
+                nvram_set("wlh_wds_enable",  "0");
+                nvram_set("wl2_wds", "");
+                nvram_set("wl2_mode", "ap");
+            }
+            /* Foxconn added end pling 02/25/2007 */
+        }
+    }
+    else if ( strncmp(nvram_safe_get("wl2_akm"), "psk", 3) == 0 )
+    {
+        nvram_set("wlh_secu_type", "WPA-PSK");
+        nvram_set("wlh_temp_secu_type", "WPA-PSK");
+        nvram_set("wlh_passphrase", nvram_safe_get("wl2_wpa_psk"));
+
+        /* If router changes from 'unconfigured' to 'configured' state by
+         * adding a WPS client, the wsc_randomssid and wsc_randomkey will
+         * be set. In this case, router should use mixedmode security.
+         */
+
+        /* Foxconn added start pling 06/15/2010 */
+        if (nvram_match("wl2_crypto", "aes"))
+        {
+            /* DTM fix: 
+             * Registrar may set to WPA-PSK AES mode.
+             * In this case, don't try to modify the
+             * security type.
+            */
+            nvram_unset("wps_mixedmode");
+        }
+        else
+        /* Foxconn added end pling 06/15/2010 */
+        if (!nvram_match("wps_randomssid", "") ||
+            !nvram_match("wps_randomkey", ""))
+        {
+            /* Foxconn add start, Tony W.Y. Wang, 11/30/2009 */
+            /* WiFi TKIP changes for WNDR3400*/
+            /*
+            When external registrar configures our router as WPA-PSK [TKIP], security, 
+            we auto change the wireless mode to Up to 54Mbps. This should only apply to
+            router when router is in "WPS Unconfigured" state.
+            */
+            nvram_set("wlh_mode",  "g and b");
+
+            /* Disable 11n support, copied from bcm_wlan_util.c */
+            acosNvramConfig_set("wl2_nmode", "0");
+
+            acosNvramConfig_set("wl2_gmode", "1");
+
+            /* Set bandwidth to 20MHz */
+            acosNvramConfig_set("wl2_nbw", "20");
+        
+            acosNvramConfig_set("wl2_nbw_cap", "0");
+
+            /* Disable extension channel */
+            acosNvramConfig_set("wl2_nctrlsb", "none");
+
+            /* Now set the security */
+            nvram_set("wlh_secu_type", "WPA-PSK");
+            nvram_set("wlh_temp_secu_type", "WPA-PSK");
+
+            nvram_set("wlh_akm", "psk ");
+            nvram_set("wlh_crypto", "tkip");
+
+            nvram_set("wps_mixedmode", "1");
+            //nvram_set("wps_randomssid", "");
+            //nvram_set("wps_randomkey", "");
+            config_flag = 1;
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wlg_wds_enable", "1"))
+            {
+                nvram_set("wlg_wds_enable",  "0");
+                nvram_set("wl2_wds", "");
+                nvram_set("wl2_mode", "ap");
+            }
+        }
+    }
+    else if ( strncmp(nvram_safe_get("wl2_wep"), "enabled", 7) == 0 )
+    {
+        int key_len=0;
+        if ( strncmp(nvram_safe_get("wl2_auth"), "1", 1) == 0 ) /*shared mode*/
+        {
+            nvram_set("wlh_auth_type", "sharedkey");
+            nvram_set("wlh_temp_auth_type", "sharedkey");
+        }
+        else
+        {
+            nvram_set("wlh_auth_type", "opensystem");
+            nvram_set("wlh_temp_auth_type", "opensystem");
+        }
+        
+        nvram_set("wlh_secu_type", "WEP");
+        nvram_set("wlh_temp_secu_type", "WEP");
+        nvram_set("wlh_defaKey", "0");
+        nvram_set("wlh_temp_defaKey", "0");
+        /* Foxconn add start by aspen Bai, 02/24/2009 */
+        /*
+        nvram_set("wla_key1", nvram_safe_get("wl_key1"));
+        nvram_set("wla_temp_key1", nvram_safe_get("wl_key1"));
+        
+        printf("wla_wep_length: %d\n", strlen(nvram_safe_get("wl_key1")));
+        
+        key_len = atoi(nvram_safe_get("wl_key1"));
+        */
+        nvram_set("wlh_key1", nvram_safe_get("wl2_key1"));
+        nvram_set("wlh_temp_key1", nvram_safe_get("wl2_key1"));
+        
+        printf("wlh_wep_length: %d\n", strlen(nvram_safe_get("wl2_key1")));
+        
+        key_len = strlen(nvram_safe_get("wl2_key1"));
+        /* Foxconn add end by aspen Bai, 02/24/2009 */
+        if (key_len==5 || key_len==10)
+        {
+            nvram_set("wlh_wep_length", "1");
+        }
+        else
+        {
+            nvram_set("wlh_wep_length", "2");
+        }
+        /* Foxconn add start by aspen Bai, 02/24/2009 */
+        if (key_len==5 || key_len==13)
+        {
+            char HexKeyArray[32];
+            char key[32], tmp[32];
+            int i;
+            
+            strcpy(key, nvram_safe_get("wl2_key1"));
+            memset(HexKeyArray, 0, sizeof(HexKeyArray));
+            for (i=0; i<key_len; i++)
+            {
+                sprintf(tmp, "%02X", (unsigned char)key[i]);
+                strcat(HexKeyArray, tmp);
+            }
+            printf("ASCII WEP key (%s) convert -> HEX WEP key (%s)\n", key, HexKeyArray);
+            
+            nvram_set("wlh_key1", HexKeyArray);
+            nvram_set("wlh_temp_key1", HexKeyArray);
+        }
+        /* Foxconn add end by aspen Bai, 02/24/2009 */
+    }
+    else
+    {
+        nvram_set("wlh_secu_type", "None");
+        nvram_set("wlh_temp_secu_type", "None");
+        nvram_set("wlh_passphrase", "");
+    }
+#endif
     
     if (config_flag == 1)
     {
@@ -671,6 +1015,9 @@ static void convert_wlan_params(void)
         //nvram_set("wps_randomkey", "");
         nvram_set("wl0_wps_config_state", "1");
         nvram_set("wl1_wps_config_state", "1");
+#if defined(R8000)
+        nvram_set("wl2_wps_config_state", "1");
+#endif        
     }
     /* Foxconn add end, Tony W.Y. Wang, 11/23/2009 */
     nvram_set("allow_registrar_config", "0");  /* Foxconn added pling, 05/16/2007 */
@@ -766,13 +1113,24 @@ static int config_iptv_params(void)
         strcat(vlan1_ports, "0 ");
     /* Foxconn modified end pling 04/03/2012 */
 #endif
+
+#ifdef __CONFIG_GMAC3__
+    if(nvram_match("gmac3_enable", "1"))
+        strcat(vlan1_ports, "5 7 8*");
+    else
+        strcat(vlan1_ports, "5*");
+#else
     strcat(vlan1_ports, "5*");
+#endif    
     nvram_set("vlan1ports", vlan1_ports);
 
     /* build vlan3 for IGMP snooping on IPTV ports */
     if (strlen(vlan_iptv_ports))
     {
-        strcat(vlan_iptv_ports, "5");
+        if(nvram_match("gmac3_enable", "1"))
+            strcat(vlan_iptv_ports, "8");
+        else
+            strcat(vlan_iptv_ports, "5");
         nvram_set("vlan3ports", vlan_iptv_ports);
         nvram_set("vlan3hwname", nvram_safe_get("vlan2hwname"));
     }
@@ -793,10 +1151,17 @@ static int config_iptv_params(void)
 #endif
 
         /* always build vlan2 and br1 and enable vlan tag output for all vlan */
-#if ( defined(R7000))
+#ifdef __CONFIG_GMAC3__
+        if(nvram_match("gmac3_enable", "1"))
+            nvram_set("vlan2ports", "4 8");
+        else
+            nvram_set("vlan2ports", "4 5");
+#else
+#if defined(R7000)
         nvram_set("vlan2ports", "0 5");
 #else
         nvram_set("vlan2ports", "4 5");
+#endif        
 #endif
         /* build vlan3 for IGMP snooping on IPTV ports */
         if (strlen(vlan_iptv_ports))
@@ -812,10 +1177,19 @@ static int config_iptv_params(void)
         else
             strcat(lan_ifnames, "eth2 ");
 
-        
+#if defined(R8000)        
+        if (iptv_bridge_intf & IPTV_WLAN3)
+            strcat(wan_ifnames, "eth3 ");
+        else
+            strcat(lan_ifnames, "eth3 ");
+#endif
 
         //nvram_set("lan_ifnames", lan_ifnames);
+#ifdef __CONFIG_GMAC3__
         strcpy(br0_ifnames,lan_ifnames);
+#else
+        strcpy(br0_ifnames,lan_ifnames);
+#endif        
         nvram_set("wan_ifnames", wan_ifnames);
         nvram_set("lan1_ifnames", wan_ifnames);
 
@@ -827,7 +1201,16 @@ static int config_iptv_params(void)
         
         //nvram_set("lan_ifnames", "vlan1 eth1 eth2 wl0.1");
         /*modified by dennis start, 05/03/2012,fixed guest network cannot reconnect issue*/
+#ifdef __CONFIG_GMAC3__
+        if(nvram_match("gmac3_enable", "1"))
+            strcpy(br0_ifnames,"vlan1");       
+        else
+            strcpy(br0_ifnames,"vlan1 eth1 eth2 eth3");       
+#elif defined(R8000)
+        strcpy(br0_ifnames,"vlan1 eth1 eth2 eth3");       
+#else
         strcpy(br0_ifnames,"vlan1 eth1 eth2");       
+#endif
         /*modified by dennis end, 05/03/2012,fixed guest network cannot reconnect issue*/
         nvram_set("lan1_ifnames", "");
         nvram_set("lan1_ifname", "");
@@ -836,18 +1219,52 @@ static int config_iptv_params(void)
         /* foxconn Bob modified start 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
         if (nvram_match("emf_enable", "1") || nvram_match("enable_ap_mode", "1") ) {
         /* foxconn Bob modified end 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
-#if ( defined(R7000))
+#ifdef __CONFIG_GMAC3__
+            if(nvram_match("gmac3_enable", "1"))
+                nvram_set("vlan2ports", "4 8u");
+            else
+                nvram_set("vlan2ports", "4 5u");
+            	    
+#elif defined(R7000)
             nvram_set("vlan2ports", "0 5");
 #else
             nvram_set("vlan2ports", "4 5");
 #endif
-            nvram_set("wan_ifnames", "vlan2 ");
-            nvram_set("wan_ifname", "vlan2");
+            nvram_set("wan_ifnames", "eth0");
+            nvram_set("wan_ifname", "eth0");
         }
         else
 #endif
         {
-#if ( defined(R7000))
+#ifdef __CONFIG_GMAC3__
+
+            if(nvram_match("gmac3_enable", "1"))
+            {
+                if (nvram_match("enable_ap_mode", "1")) {
+                    nvram_set("vlan2ports", "4 8");
+                    nvram_set("wan_ifnames", "vlan2 ");
+                    nvram_set("wan_ifname", "vlan2");
+                }
+                else {
+                    nvram_set("vlan2ports", "4 8u");
+                    nvram_set("wan_ifnames", "eth0 ");
+                    nvram_set("wan_ifname", "eth0");
+                }
+            }
+            else
+            {
+                if (nvram_match("enable_ap_mode", "1")) {
+                    nvram_set("vlan2ports", "4 5");
+                    nvram_set("wan_ifnames", "vlan2 ");
+                    nvram_set("wan_ifname", "vlan2");
+                }
+                else {
+                    nvram_set("vlan2ports", "4 5u");
+                    nvram_set("wan_ifnames", "eth0 ");
+                    nvram_set("wan_ifname", "eth0");
+                }
+            }
+#elif defined(R7000)
 /* foxconn revise start ken chen @ 08/23/2013, to fix IGMP report duplicated in AP mode*/
             if (nvram_match("enable_ap_mode", "1")) {
                 nvram_set("vlan2ports", "0 5");
@@ -856,6 +1273,17 @@ static int config_iptv_params(void)
             }
             else {
                 nvram_set("vlan2ports", "0 5u");
+                nvram_set("wan_ifnames", "eth0 ");
+                nvram_set("wan_ifname", "eth0");
+            }
+#elif defined(R8000)
+            if (nvram_match("enable_ap_mode", "1")) {
+                nvram_set("vlan2ports", "4 5");
+                nvram_set("wan_ifnames", "vlan2 ");
+                nvram_set("wan_ifname", "vlan2");
+            }
+            else {
+                nvram_set("vlan2ports", "4 5u");
                 nvram_set("wan_ifnames", "eth0 ");
                 nvram_set("wan_ifname", "eth0");
             }
@@ -887,7 +1315,25 @@ static int config_iptv_params(void)
              strcat(br0_ifnames, if_name);
          }
      }
+
+#if defined(R8000)
+     for(i = MIN_BSSID_NUM; i <= MAX_BSSID_NUM; i++){
+         sprintf(wl_param, "%s_%d", "wlh_sec_profile_enable", i);        
+         if(nvram_match(wl_param, "1")){
+             sprintf(if_name, "wl2.%d", i-1);
+             strcat(br0_ifnames, " ");
+             strcat(br0_ifnames, if_name);
+         }
+     }
+#endif
+#ifdef __CONFIG_GMAC3__
+     if(nvram_match("iptv_enabled", "1"))
+         nvram_set("lan_ifnames", br0_ifnames);
+     else
+         nvram_set("lan_ifnames", "vlan1 eth1 eth2 eth3 wl0.1 wl1.1 wl2.1");
+#else
      nvram_set("lan_ifnames", br0_ifnames);
+#endif     
     /*added by dennis start, 05/03/2012,fixed guest network cannot reconnect issue*/
 	/* Foxconn added start pling 08/17/2012 */
     /* Fix: When IPTV is enabled, WAN interface is "br1".
@@ -965,16 +1411,18 @@ static int config_switch_reg(void)
         system("et robowr 0x02 0x03 0x02");  /* Foxconn Bob added for 4708 */
 #endif        
         /* CRC bypass and auto generation */
-        system("et robowr 0x34 0x06 0x11");
+//        system("et robowr 0x34 0x06 0x11");
 #if (defined __CONFIG_IGMP_SNOOPING__)
         if (nvram_match("emf_enable", "1"))
         {
+#if 0
             /* Set IMP port default tag id */
             system("et robowr 0x34 0x20 0x02");
             /* Enable IPMC bypass V fwdmap */
             system("et robowr 0x34 0x01 0x2E");
             /* Set Multiport address enable */
             system("et robowr 0x04 0x0E 0x0AAA");
+#endif
         }
 #endif
         /* Turn on the flags for kernel space (et/emf/igs) handling */
@@ -982,6 +1430,7 @@ static int config_switch_reg(void)
     }
     else
     {
+#if 0
         system("et robowr 0x00 0x08 0x00");
         system("et robowr 0x00 0x0B 0x06");
         system("et robowr 0x02 0x00 0x00");
@@ -1001,6 +1450,7 @@ static int config_switch_reg(void)
             system("et robowr 0xFFFF 0xFE 0x02");
         else
             system("et robowr 0xFFFF 0xFE 0x00");
+#endif
     }
 
     return 0;
@@ -1013,10 +1463,23 @@ static void config_switch(void)
     /* BCM5325 & BCM53115 switch request to change these vars
      * to output ethernet port tag/id in packets.
      */
+    struct nvram_tuple generic_gmac3[] = {
+        { "wan_ifname", "eth0", 0 },
+        { "wan_ifnames", "eth0 ", 0 },
+#if defined(R7000)
+        { "vlan1ports", "1 2 3 4 5*", 0 },
+        { "vlan2ports", "0 5u", 0 },
+#else
+        { "vlan1ports", "0 1 2 3 5 7 8*", 0 },
+        { "vlan2ports", "4 8u", 0 },
+#endif
+        { 0, 0, 0 }
+    };
+
     struct nvram_tuple generic[] = {
         { "wan_ifname", "eth0", 0 },
         { "wan_ifnames", "eth0 ", 0 },
-#if ( defined(R7000))
+#if defined(R7000)
         { "vlan1ports", "1 2 3 4 5*", 0 },
         { "vlan2ports", "0 5u", 0 },
 #else
@@ -1026,10 +1489,23 @@ static void config_switch(void)
         { 0, 0, 0 }
     };
 
+    struct nvram_tuple vlan_gmac3[] = {
+        { "wan_ifname", "vlan2", 0 },
+        { "wan_ifnames", "vlan2 ", 0 },
+#if defined(R7000)
+        { "vlan1ports", "1 2 3 4 5*", 0 },
+        { "vlan2ports", "0 5", 0 },
+#else
+        { "vlan1ports", "0 1 2 3 5 7 8*", 0 },
+        { "vlan2ports", "4 8", 0 },
+#endif
+        { 0, 0, 0 }
+    };
+
     struct nvram_tuple vlan[] = {
         { "wan_ifname", "vlan2", 0 },
         { "wan_ifnames", "vlan2 ", 0 },
-#if ( defined(R7000))
+#if defined(R7000)
         { "vlan1ports", "1 2 3 4 5*", 0 },
         { "vlan2ports", "0 5", 0 },
 #else
@@ -1039,12 +1515,20 @@ static void config_switch(void)
         { 0, 0, 0 }
     };
 
-    struct nvram_tuple *u = generic;
+    struct nvram_tuple *u;
     int commit = 0;
 
+    if(nvram_match("gmac3_enable", "1"))
+        u = generic_gmac3;
+    else
+        u = generic;
+    	
     /* foxconn Bob modified start 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
     if (nvram_match("emf_enable", "1") || nvram_match("enable_ap_mode", "1") ) {
-        u = vlan;
+        if(nvram_match("gmac3_enable", "1"))
+            u = vlan_gmac3;
+        else
+            u = vlan;
     }
     /* foxconn Bob modified end 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
 
@@ -1054,6 +1538,9 @@ static void config_switch(void)
         || nvram_match("wlg_repeater", "1")
 #endif
         ) {
+    if(nvram_match("gmac3_enable", "1"))
+        u = generic_gmac3;
+    else
         u = generic;
     }
 
@@ -1100,7 +1587,7 @@ static int should_stop_wps(void)
 static int is_secure_wl(void)
 {
     /* for ACR5500 , there is only on WiFi LED for WPS */
-#if defined(R6300v2) || defined(R6250) || defined(R6200v2) || defined(R7000)
+#if defined(R6300v2) || defined(R6250) || defined(R6200v2) || defined(R7000) || defined(R8000)
 
     if ((acosNvramConfig_match("wla_wlanstate","Disable") || acosNvramConfig_match("wifi_on_off", "0"))
         && (acosNvramConfig_match("wlg_wlanstate","Disable") || acosNvramConfig_match("wifi_on_off", "0")) )
@@ -1157,6 +1644,41 @@ static int is_russia_specific_support (void)
 
     return result;
 }
+/* Foxconn add start, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+static int is_china_specific_support (void)
+{
+    int result = 0;
+    char sku_name[8];
+
+    /* Router Spec v2.0:                                                        *
+     *   Case 1: WW specific firmware.                                          *
+     *   Case 2: single firmware & region code is PR.                           *
+     *   Case 3: WW firmware & GUI language is Chinise.                         *
+     *   Case 4: single firmware & region code is WW & GUI language is Chinise. *
+     * Currently, new built firmware will be single firmware.                   */
+    strcpy(sku_name, nvram_get("sku_name"));
+    if (!strcmp(sku_name, "PR"))
+    {
+        /* Case 2: single firmware & region code is PR. */
+        /* Region is PR (0x0004) */
+        result = 1;
+    }
+    else if (!strcmp(sku_name, "WW"))
+    {
+        /* Region is WW (0x0002) */
+        char gui_region[16];
+        strcpy(gui_region, nvram_get("gui_region"));
+        if (!strcmp(gui_region, "Chinese"))
+        {
+            /* Case 4: single firmware & region code is WW & GUI language is Chinise */
+            /* GUI language is Chinise */
+            result = 1;
+        }
+    }
+
+    return result;
+}
+/* Foxconn add end, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 04/20/2011 @RU_IPTV */
 
@@ -1681,7 +2203,330 @@ upgrade_defaults(void)
 	}
 }
 
+#ifdef LINUX_2_6_36
+/* Override the "0 5u" to "0 5" to backward compatible with old image */
 static void
+fa_override_vlan2ports()
+{
+	char port[] = "XXXX", *nvalue;
+	char *next, *cur, *ports, *u;
+	int len;
+
+	ports = nvram_get("vlan2ports");
+	nvalue = malloc(strlen(ports) + 2);
+	if (!nvalue) {
+		cprintf("Memory allocate failed!\n");
+		return;
+	}
+	memset(nvalue, 0, strlen(ports) + 2);
+
+	/* search last port include 'u' */
+	for (cur = ports; cur; cur = next) {
+		/* tokenize the port list */
+		while (*cur == ' ')
+			cur ++;
+		next = strstr(cur, " ");
+		len = next ? next - cur : strlen(cur);
+		if (!len)
+			break;
+		if (len > sizeof(port) - 1)
+			len = sizeof(port) - 1;
+		strncpy(port, cur, len);
+		port[len] = 0;
+
+		/* prepare new value */
+		if ((u = strchr(port, 'u')))
+			*u = '\0';
+		strcat(nvalue, port);
+		strcat(nvalue, " ");
+	}
+
+	/* Remove last " " */
+	len = strlen(nvalue);
+	if (len) {
+		nvalue[len-1] = '\0';
+		nvram_set("vlan2ports", nvalue);
+	}
+	free(nvalue);
+}
+
+#define GMAC3_ENVRAM_BACKUP(name)				\
+do {								\
+	char *var, bvar[NVRAM_MAX_PARAM_LEN];			\
+	if ((var = nvram_get(name)) != NULL) {			\
+		snprintf(bvar, sizeof(bvar), "old_%s", name);	\
+		nvram_set(bvar, var);				\
+	}							\
+} while (0)
+/* Override GAMC3 nvram */
+static void
+gmac3_override_nvram()
+{
+	char var[32], *lists, *next;
+	char newlists[NVRAM_MAX_PARAM_LEN];
+
+	/* back up old embedded nvram */
+	GMAC3_ENVRAM_BACKUP("et0macaddr");
+	GMAC3_ENVRAM_BACKUP("et1macaddr");
+	GMAC3_ENVRAM_BACKUP("et2macaddr");
+	GMAC3_ENVRAM_BACKUP("et0mdcport");
+	GMAC3_ENVRAM_BACKUP("et1mdcport");
+	GMAC3_ENVRAM_BACKUP("et2mdcport");
+	GMAC3_ENVRAM_BACKUP("et0phyaddr");
+	GMAC3_ENVRAM_BACKUP("et1phyaddr");
+	GMAC3_ENVRAM_BACKUP("et2phyaddr");
+	GMAC3_ENVRAM_BACKUP("vlan1ports");
+	GMAC3_ENVRAM_BACKUP("vlan2ports");
+	GMAC3_ENVRAM_BACKUP("vlan1hwname");
+	GMAC3_ENVRAM_BACKUP("vlan2hwname");
+	GMAC3_ENVRAM_BACKUP("wandevs");
+
+	/* change mac, mdcport, phyaddr */
+	nvram_set("et2macaddr", nvram_get("et0macaddr"));
+	nvram_set("et2mdcport", nvram_get("et0mdcport"));
+	nvram_set("et2phyaddr", nvram_get("et0phyaddr"));
+	nvram_set("et1mdcport", nvram_get("et0mdcport"));
+	nvram_set("et1phyaddr", nvram_get("et0phyaddr"));
+	nvram_set("et0macaddr", "00:00:00:00:00:00");
+	nvram_set("et1macaddr", "00:00:00:00:00:00");
+
+	/* change vlan ports */
+	if (!(lists = nvram_get("vlan1ports"))) {
+		cprintf("Default vlan1ports is not specified, override GMAC3 defaults...\n");
+		nvram_set("vlan1ports", "0 1 2 3 5 7 8*");
+	} else {
+		strncpy(newlists, lists, sizeof(newlists));
+		newlists[sizeof(newlists)-1] = '\0';
+
+		/* search first port include '*' or 'u' and remove it */
+		foreach(var, lists, next) {
+			if (strchr(var, '*') || strchr(var, 'u')) {
+				remove_from_list(var, newlists, sizeof(newlists));
+				break;
+			}
+		}
+
+		/* add port 5, 7 and 8* */
+		add_to_list("5", newlists, sizeof(newlists));
+		add_to_list("7", newlists, sizeof(newlists));
+		add_to_list("8*", newlists, sizeof(newlists));
+		nvram_set("vlan1ports", newlists);
+	}
+
+	if (!(lists = nvram_get("vlan2ports"))) {
+		cprintf("Default vlan2ports is not specified, override GMAC3 defaults...\n");
+		nvram_set("vlan1ports", "4 8u");
+	} else {
+		strncpy(newlists, lists, sizeof(newlists));
+		newlists[sizeof(newlists)-1] = '\0';
+
+		/* search first port include '*' or 'u' and remove it */
+		foreach(var, lists, next) {
+			if (strchr(var, '*') || strchr(var, 'u')) {
+				remove_from_list(var, newlists, sizeof(newlists));
+				break;
+			}
+		}
+
+		/* add port 8u */
+		add_to_list("8u", newlists, sizeof(newlists));
+		nvram_set("vlan2ports", newlists);
+	}
+
+	/* change wandevs vlan hw name */
+	nvram_set("wandevs", "et2");
+	nvram_set("vlan1hwname", "et2");
+	nvram_set("vlan2hwname", "et2");
+
+	/* landevs should be have wl1 wl2 */
+
+	/* set fwd_wlandevs from lan_ifnames */
+	if (!(lists = nvram_get("lan_ifnames"))) {
+		/* should not be happened */
+		cprintf("lan_ifnames is not exist, override GMAC3 defaults...\n");
+		nvram_set("fwd_wlandevs", "eth1 eth2 eth3");
+	} else {
+		strncpy(newlists, lists, sizeof(newlists));
+
+		/* remove ifname if it's not a wireless interrface */
+		foreach(var, lists, next) {
+			if (wl_probe(var)) {
+				remove_from_list(var, newlists, sizeof(newlists));
+				continue;
+			}
+		}
+		nvram_set("fwd_wlandevs", newlists);
+	}
+
+	/* set fwddevs */
+	nvram_set("fwddevs", "fwd0 fwd1");
+}
+
+#define GMAC3_ENVRAM_RESTORE(name)				\
+do {								\
+	char *var, bvar[NVRAM_MAX_PARAM_LEN];			\
+	snprintf(bvar, sizeof(bvar), "old_%s", name);		\
+	if ((var = nvram_get(bvar))) {				\
+		nvram_set(name, var);				\
+		nvram_unset(bvar);				\
+	}							\
+	else {							\
+		nvram_unset(name);				\
+	}							\
+} while (0)
+
+static void
+gmac3_restore_nvram()
+{
+	/* back up old embedded nvram */
+	GMAC3_ENVRAM_RESTORE("et0macaddr");
+	GMAC3_ENVRAM_RESTORE("et1macaddr");
+	GMAC3_ENVRAM_RESTORE("et2macaddr");
+	GMAC3_ENVRAM_RESTORE("et0mdcport");
+	GMAC3_ENVRAM_RESTORE("et1mdcport");
+	GMAC3_ENVRAM_RESTORE("et2mdcport");
+	GMAC3_ENVRAM_RESTORE("et0phyaddr");
+	GMAC3_ENVRAM_RESTORE("et1phyaddr");
+	GMAC3_ENVRAM_RESTORE("et2phyaddr");
+	GMAC3_ENVRAM_RESTORE("vlan1ports");
+	GMAC3_ENVRAM_RESTORE("vlan2ports");
+	GMAC3_ENVRAM_RESTORE("vlan1hwname");
+	GMAC3_ENVRAM_RESTORE("vlan2hwname");
+	GMAC3_ENVRAM_RESTORE("wandevs");
+
+	nvram_unset("fwd_wlandevs");
+	nvram_unset("fwddevs");
+}
+
+static void
+gmac3_restore_defaults()
+{
+	/* nvram variables will be changed when gmac3_enable */
+	if (!strcmp(nvram_safe_get("wandevs"), "et2") &&
+	    nvram_get("fwd_wlandevs") && nvram_get("fwddevs")) {
+		gmac3_restore_nvram();
+
+		/* Handle the case of user disable GMAC3 and do restore defaults. */
+		if (nvram_invmatch("gmac3_enable", "1"))
+			nvram_set("gmac3_reboot", "1");
+	}
+}
+
+static void
+gmac3_nvram_adjust()
+{
+	int fa_mode;
+	bool reboot = FALSE;
+	bool gmac3_enable, gmac3_configured = FALSE;
+
+	/* gmac3_enable nvram control everything */
+	gmac3_enable = nvram_match("gmac3_enable", "1") ? TRUE : FALSE;
+
+	/* nvram variables will be changed when gmac3_enable */
+	if (!strcmp(nvram_safe_get("wandevs"), "et2") &&
+	    nvram_get("fwd_wlandevs") &&
+	    nvram_get("fwddevs"))
+		gmac3_configured = TRUE;
+
+	fa_mode = atoi(nvram_safe_get("ctf_fa_mode"));
+	if (fa_mode == CTF_FA_NORMAL || fa_mode == CTF_FA_BYPASS) {
+		cprintf("GMAC3 based forwarding not compatible with ETFA - AuX port...\n");
+		return;
+	}
+
+	if (et_capable(NULL, "gmac3")) {
+		if (gmac3_enable) {
+			cprintf("\nGMAC3 on.\n");
+
+			if (gmac3_configured)
+				return;
+
+			/* The vlan2ports will be change to "0 8u" dynamically by
+			 * robo_fa_imp_port_upd. Keep nvram vlan2ports unchange.
+			 */
+			gmac3_override_nvram();
+
+			cprintf("Override GMAC3 nvram...\n");
+			reboot = TRUE;
+		} else {
+			cprintf("\nGMAC3 off.\n");
+			if (gmac3_configured) {
+				gmac3_restore_nvram();
+				reboot = TRUE;
+			}
+		}
+	} else {
+		cprintf("GMAC3 not supported...\n");
+
+		if (gmac3_enable) {
+			nvram_unset("gmac3_enable");
+			reboot = TRUE;
+		}
+
+		/* GMAC3 is not capable */
+		if (!gmac3_configured) {
+			gmac3_restore_nvram();
+			reboot = TRUE;
+		}
+	}
+
+	if (nvram_get("gmac3_reboot")) {
+		nvram_unset("gmac3_reboot");
+      nvram_commit();
+		reboot = TRUE;
+	}
+
+	if (reboot) {
+		nvram_commit();
+		cprintf("GMAC3 nvram overridden, rebooting...\n");
+		kill(1, SIGTERM);
+	}
+}
+#endif /* LINUX_2_6_36 */
+
+#ifdef __CONFIG_FAILSAFE_UPGRADE_SUPPORT__
+static void
+failsafe_nvram_adjust(void)
+{
+	FILE *fp;
+	char dev[PATH_MAX];
+	bool found = FALSE, need_commit = FALSE;
+	int i, partialboots;
+
+	partialboots = atoi(nvram_safe_get(PARTIALBOOTS));
+	if (partialboots != 0) {
+		nvram_set(PARTIALBOOTS, "0");
+		need_commit = TRUE;
+	}
+
+	if (nvram_get(BOOTPARTITION) != NULL) {
+		/* get mtdblock device */
+		if (!(fp = fopen("/proc/mtd", "r"))) {
+			cprintf("Can't open /proc/mtd\n");
+		} else {
+			while (fgets(dev, sizeof(dev), fp)) {
+				if (sscanf(dev, "mtd%d:", &i) && strstr(dev, LINUX_SECOND)) {
+					found = TRUE;
+					break;
+				}
+			}
+			fclose(fp);
+
+			/* The BOOTPARTITON was set, but linux2 partition can't be created.
+			 * So unset BOOTPARTITION.
+			 */
+			if (found == FALSE) {
+				cprintf("Unset bootpartition due to no linux2 partition found.\n");
+				nvram_unset(BOOTPARTITION);
+				need_commit = TRUE;
+			}
+		}
+	}
+
+	if (need_commit == TRUE)
+		nvram_commit();
+}
+#endif /* __CONFIG_FAILSAFE_UPGRADE_SUPPORT__ */
 restore_defaults(void)
 {
 #if 0 /* foxconn wklin removed start, 10/22/2008 */
@@ -1780,6 +2625,10 @@ restore_defaults(void)
 
 		virtual_radio_restore_defaults();
 	}
+#ifdef LINUX_2_6_36
+		/* Delete dynamically generated variables */
+//		gmac3_restore_defaults();
+#endif
 
 #if 0 /* foxconn removed start, wklin, 10/22/2008, we don't need this */
 	/* 
@@ -1974,9 +2823,13 @@ sysinit(void)
 		if ((fd = open("/dev/console", O_RDWR)) < 0) {
 			if (memcmp(lx_rel, "2.6.36", 6) == 0) {
 				mount("devfs", "/dev", "devtmpfs", MS_MGC_VAL, NULL);
-			} else {
+			}
+			else {
 				mount("devfs", "/dev", "tmpfs", MS_MGC_VAL, NULL);
-				mknod("/dev/console", S_IRWXU|S_IFCHR, makedev(5, 1));
+				if (mknod("/dev/console", S_IRWXU|S_IFCHR, makedev(5, 1)) < 0 &&
+					errno != EEXIST) {
+					perror("filesystem node /dev/console not created");
+				}
 			}
 		}
 		else {
@@ -1994,22 +2847,23 @@ sysinit(void)
 	mount("ramfs", "/tmp", "ramfs", MS_MGC_VAL, NULL);
 
 	/* /var */
-	mkdir("/tmp/var", 0777);
-	mkdir("/var/lock", 0777);
-	mkdir("/var/log", 0777);
-	mkdir("/var/run", 0777);
-	mkdir("/var/tmp", 0777);
-	mkdir("/tmp/media", 0777);
+	if (mkdir("/tmp/var", 0777) < 0 && errno != EEXIST) perror("/tmp/var not created");
+	if (mkdir("/var/lock", 0777) < 0 && errno != EEXIST) perror("/var/lock not created");
+	if (mkdir("/var/log", 0777) < 0 && errno != EEXIST) perror("/var/log not created");
+	if (mkdir("/var/run", 0777) < 0 && errno != EEXIST) perror("/var/run not created");
+	if (mkdir("/var/tmp", 0777) < 0 && errno != EEXIST) perror("/var/tmp not created");
+	if (mkdir("/tmp/media", 0777) < 0 && errno != EEXIST) perror("/tmp/media not created");
 	/* Foxconn added start by Kathy, 10/14/2013 @ Facebook WiFi */
     mkdir("/tmp/fbwifi", 0777);
 	/* Foxconn added end by Kathy, 10/14/2013 @ Facebook WiFi */
 
 #ifdef __CONFIG_UTELNETD__
 	/* If kernel enable unix908 pty then we have to make following things. */
-	mkdir("/dev/pts", 0777);
+	if (mkdir("/dev/pts", 0777) < 0 && errno != EEXIST) perror("/dev/pts not created");
 	if (mount("devpts", "/dev/pts", "devpts", MS_MGC_VAL, NULL) == 0) {
 		/* pty master */
-		mknod("/dev/ptmx", S_IRWXU|S_IFCHR, makedev(5, 2));
+		if (mknod("/dev/ptmx", S_IRWXU|S_IFCHR, makedev(5, 2)) < 0 && errno != EEXIST)
+			perror("filesystem node /dev/ptmx not created");
 	} else {
 		rmdir("/dev/pts");
 	}
@@ -2017,11 +2871,21 @@ sysinit(void)
 
 #ifdef __CONFIG_SAMBA__
 	/* Add Samba Stuff */
-	mkdir("/tmp/samba", 0777);
-	mkdir("/tmp/samba/lib", 0777);
-	mkdir("/tmp/samba/private", 0777);
-	mkdir("/tmp/samba/var", 0777);
-	mkdir("/tmp/samba/var/locks", 0777);
+	if (mkdir("/tmp/samba", 0777) < 0 && errno != EEXIST) {
+		perror("/tmp/samba not created");
+	}
+	if (mkdir("/tmp/samba/lib", 0777) < 0 && errno != EEXIST) {
+		perror("/tmp/samba/lib not created");
+	}
+	if (mkdir("/tmp/samba/private", 0777) < 0 && errno != EEXIST) {
+		perror("/tmp/samba/private not created");
+	}
+	if (mkdir("/tmp/samba/var", 0777) < 0 && errno != EEXIST) {
+		perror("/tmp/samba/var not created");
+	}
+	if (mkdir("/tmp/samba/var/locks", 0777) < 0 && errno != EEXIST) {
+		perror("/tmp/samba/var/locks not created");
+	}
 
 #if defined(LINUX_2_6_36)
 	/* To improve SAMBA upload performance */
@@ -2030,14 +2894,14 @@ sysinit(void)
 #endif
 
 #ifdef BCMQOS
-	mkdir("/tmp/qos", 0777);
+	if (mkdir("/tmp/qos", 0777) < 0 && errno != EEXIST) perror("/tmp/qos not created");
 #endif
 	/* Setup console */
 	if (console_init())
 		noconsole = 1;
 
 #ifdef LINUX26
-	mkdir("/dev/shm", 0777);
+	if (mkdir("/dev/shm", 0777) < 0 && errno != EEXIST) perror("/dev/shm not created");
 	eval("/sbin/hotplug2", "--coldplug");
 #endif /* LINUX26 */
 
@@ -2066,6 +2930,7 @@ sysinit(void)
          * done before read_bd */
         nvram_unset("wl0_vifs");
         nvram_unset("wl1_vifs");
+        nvram_unset("wl2_vifs");
         /* Foxconn added end pling 02/11/2011 */
 
         /*Foxconn lawrence added start, 2013/03/06, Restore wifi_on_off button for default*/
@@ -2132,8 +2997,59 @@ sysinit(void)
 		/* Load kernel modules. Make sure dpsta is loaded before wl
 		 * due to symbol dependency.
 		 */
+#ifdef __CONFIG_GMAC3__
+    
+
+    if(!nvram_get("gmac3_enable"))
+        nvram_set("gmac3_enable", "1");
+    	
+
+    if((strlen(nvram_get("gmac3_enable"))==0) || (strcmp(nvram_get("gmac3_enable"),"1")==0))
+    {
+        nvram_set("wandevs", "et2");
+        nvram_set("et0macaddr", "00:00:00:00:00:00");
+        nvram_set("et0mdcport", "0");
+        nvram_set("et0phyaddr", "30");
+
+
+        nvram_set("et1macaddr", "00:00:00:00:00:00");
+        nvram_set("et1mdcport", "0");
+        nvram_set("et1phyaddr", "30");
+        nvram_set("et2macaddr", acosNvramConfig_get("lan_hwaddr"));
+        nvram_set("et2mdcport", "0");
+        nvram_set("et2phyaddr", "30");
+
+        nvram_set("vlan1hwname", "et2");
+        nvram_set("vlan2hwname", "et2");
+
+        nvram_set("landevs", "vlan1 wl0 wl1 wl2 wl0.1 wl1.1 wl2.1");
+        nvram_set("fwd_cpumap", "d:x:2:169:1 d:l:5:169:1 d:u:5:163:0");
+        nvram_set("fwd_wlandevs", "eth1 eth2 eth3");
+        nvram_set("fwddevs", "fwd0 fwd1");
+    }
+    else
+    {
+        nvram_set("wandevs", "et0");
+        nvram_set("et0macaddr", acosNvramConfig_get("lan_hwaddr"));
+        nvram_set("et0mdcport", "0");
+        nvram_set("et0phyaddr", "30");
+        nvram_unset("et1macaddr");
+        nvram_unset("et2macaddr");
+      	nvram_unset("fwd_wlandevs");
+
+  	    nvram_unset("fwddevs");
+        nvram_set("vlan1hwname", "et0");
+        nvram_set("vlan2hwname", "et0");
+
+    }	
+    nvram_set("lan_ifname", "br0");
+
+
+#endif
+
 #ifdef __CONFIG_IGMP_SNOOPING__
 		config_switch();
+//				config_iptv_params();
 #endif
 		/* Foxconn added end pling 09/02/2010 */
 
@@ -2142,21 +3058,17 @@ sysinit(void)
         nvram_unset("wl0_rxchain_pwrsave_enable");
         nvram_unset("wl1_rxchain_pwrsave_enable");
         /* foxconn added end by Bob 12/12/2013, BRCM suggest not to enable rxchain power save */
-        
-        /* foxconn added start by Bob 03/10/2014, BRCM's workaround for bridge mode connect fail issue. */
-        /* Reduce transmit power at 5G band, HT20,  OFDM MCS 0,1,2 Reduce from 21.5db to 20 db. */
-        nvram_set("pci/2/1/mcsbw205ghpo", "0xBA768888");
-        /* foxconn added end by Bob 03/10/2014, BRCM's workaround for bridge mode connect fail issue. */
-        
-        
-                
+
 		//modules = nvram_get("kernel_mods") ? : "et bcm57xx wl";
 		/*Foxconn modify start by Hank for insert dpsta 08/27/2012*/
 		/*Foxconn modify start by Hank for insert proxyarp 10/05/2012*/
-		modules = nvram_get("kernel_mods") ? : "proxyarp et dpsta wl"; /* foxconn wklin modified, 10/22/2008 */
+#if defined(__CONFIG_DHDAP__)
+		modules = nvram_get("kernel_mods") ? : "et dpsta dhd";
+#else
+		modules = nvram_get("kernel_mods") ? : "et dpsta wl"; /* foxconn wklin modified, 10/22/2008 */
 		/*Foxconn modify end by Hank for insert proxyarp 10/05/2012*/
 		/*Foxconn modify end by Hank for insert dpsta 08/27/2012*/
-
+#endif
 		foreach(module, modules, next){
             /*Foxconn, [MJ] for GPIO debugging. */
 #ifdef WIFI_DISABLE
@@ -2165,6 +3077,32 @@ sysinit(void)
             }else
                 cprintf("we don't insert wl.ko.\n");
 #else
+#ifdef __CONFIG_DHDAP__
+			/* For DHD, additional module params have to be passed. */
+			if ((strcmp(module, "dhd") == 0) || (strcmp(module, "wl") == 0)) {
+				int	i = 0, maxwl_eth = 0, maxunit = -1;
+				int	unit = -1;
+				char ifname[16] = {0};
+				char instance_base[128];
+
+				/* Search for existing wl devices and the max unit number used */
+				for (i = 1; i <= DEV_NUMIFS; i++) {
+					snprintf(ifname, sizeof(ifname), "eth%d", i);
+					if (!wl_probe(ifname)) {
+						if (!wl_ioctl(ifname, WLC_GET_INSTANCE, &unit,
+							sizeof(unit))) {
+							maxwl_eth = i;
+							maxunit = (unit > maxunit) ? unit : maxunit;
+						}
+					}
+				}
+				snprintf(instance_base, sizeof(instance_base), "instance_base=%d",
+					maxunit + 1);
+
+				eval("insmod", module, instance_base);
+			} else
+#endif /* __CONFIG_DHDAP__ */
+
             eval("insmod", module);
 #endif
         }
@@ -2265,19 +3203,42 @@ sysinit(void)
 		foreach(module, modules, next)
 			eval("insmod", module);
 		mknod("/dev/dsp", S_IRWXU|S_IFCHR, makedev(14, 3));
-		mkdir("/dev/snd", 0777);
+		if (mkdir("/dev/snd", 0777) < 0 && errno != EEXIST) perror("/dev/snd not created");
 		mknod("/dev/snd/controlC0", S_IRWXU|S_IFCHR, makedev(116, 0));
 		mknod("/dev/snd/pcmC0D0c", S_IRWXU|S_IFCHR, makedev(116, 24));
 		mknod("/dev/snd/pcmC0D0p", S_IRWXU|S_IFCHR, makedev(116, 16));
 		mknod("/dev/snd/timer", S_IRWXU|S_IFCHR, makedev(116, 33));
 #endif
+#if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
+		if (nvram_match("broadstream_iqos_enable", "1")) {
+			struct stat file_stat;
+
+			if (stat("/usr/sbin/qosd", &file_stat) == 0) {
+				if (mkdir("/tmp/trend", 0777) < 0 && errno != EEXIST)
+					perror("/tmp/trend not created");
+				else {
+					eval("cp", "/usr/sbin/bwdpi-rule-agent", "/tmp/trend");
+					eval("cp", "/usr/sbin/rule.trf", "/tmp/trend");
+					eval("cp", "/usr/sbin/setup.sh", "/tmp/trend");
+					eval("cp", "/usr/sbin/qosd", "/tmp/trend");
+					eval("cp", "/usr/sbin/qosd.conf", "/tmp/trend");
+					eval("cp", "/usr/sbin/qosd-setup.sh", "/tmp/trend");
+					eval("cp", "/usr/sbin/idpfw", "/tmp/trend");
+				}
+			}
+		}
+#endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 	}
 	/*Foxconn add start by Hank for enable WAN LED amber 12/07/2012*/
 	/*Foxconn add start by Hank for disable WAN LED blinking 12/07/2012*/
-#if defined(R7000)
+#if defined(R7000) || defined(R8000)
 	system("/usr/sbin/et robowr 0x0 0x10 0x3000");
 	system("/usr/sbin/et robowr 0x0 0x12 0x78");    
-	system("/usr/sbin/et robowr 0x0 0x14 0x01");    /* force port 0 to use LED function 1 */
+#if defined(R8000)
+	system("/usr/sbin/et robowr 0x0 0x14 0x10");    /* force port 0 to use LED function 1 */
+#else
+	system("/usr/sbin/et robowr 0x0 0x14 0x01");    /* force port 4 to use LED function 1 */
+#endif
 #else
 	system("/usr/sbin/et robowr 0x0 0x10 0x0022");
 #endif
@@ -2288,10 +3249,56 @@ sysinit(void)
 		int fd;
 		if ((fd = open("/proc/irq/163/smp_affinity", O_RDWR)) >= 0) {
 			close(fd);
-			if (!nvram_match("txworkq", "1")) {
-				system("echo 2 > /proc/irq/163/smp_affinity");
-				system("echo 2 > /proc/irq/169/smp_affinity");
+
+			if (nvram_match("gmac3_enable", "1")) {
+				char *fwd_cpumap;
+
+				/* Place network interface vlan1/eth0 on CPU hosting 5G upper */
+				fwd_cpumap = nvram_get("fwd_cpumap");
+
+				if (fwd_cpumap == NULL) {
+					/* BCM4709acdcrh: Network interface GMAC on Core#1
+					 *    [5G+2G:163 on Core#0] and [5G:169 on Core#1].
+					 *    Bind et2:vlan1:eth0:181 to Core#1
+					 */
+					system("echo 2 > /proc/irq/181/smp_affinity");
+
+				} else {
+
+					char cpumap[32], *next;
+
+					foreach(cpumap, fwd_cpumap, next) {
+						char mode, chan;
+						int band, irq, cpu;
+
+						/* Format: mode:chan:band#:irq#:cpu# */
+						if (sscanf(cpumap, "%c:%c:%d:%d:%d",
+						           &mode, &chan, &band, &irq, &cpu) != 5) {
+							break;
+						}
+						if (cpu > 1) {
+							break;
+						}
+						/* Find the single 5G upper */
+						if ((chan == 'u') || (chan == 'U')) {
+							char command[128];
+							snprintf(command, sizeof(command),
+							    "echo %d > /proc/irq/181/smp_affinity",
+							    1 << cpu);
+							system(command);
+							break;
+						}
+					}
+				}
+
+			} else { /* ! gmac3_enable */
+
+				if (!nvram_match("txworkq", "1")) {
+					system("echo 2 > /proc/irq/163/smp_affinity");
+					system("echo 2 > /proc/irq/169/smp_affinity");
+				}
 			}
+
 			system("echo 2 > /proc/irq/112/smp_affinity");
 		}
 	}
@@ -2463,6 +3470,92 @@ do_timer(void)
 	return 0;
 }
 
+/* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+#ifdef ARP_PROTECTION
+static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE], int maxNumToken)
+{
+    char temp[16*1024];    
+    char *field;
+    int numToken=0, i, j;
+    char *ppLast = NULL;
+
+    /* Check for empty string */
+    if (str == NULL || str[0] == '\0')
+        return 0;
+   
+    /* Now get the tokens */
+    strcpy(temp, str);
+    
+    for (i=0; i<maxNumToken; i++)
+    {
+        if (i == 0)
+            field = strtok_r(temp, delimiter, &ppLast);
+        else 
+            field = strtok_r(NULL, delimiter, &ppLast);
+
+        /* Foxconn modified start, Wins, 06/27/2010 */
+        //if (field == NULL || field[0] == '\0')
+        if (field == NULL || (field != NULL && field[0] == '\0'))
+        /* Foxconn modified end, Wins, 06/27/2010 */
+        {
+            for (j=i; j<maxNumToken; j++)
+                token[j][0] = '\0';
+            break;
+        }
+
+        numToken++;
+        strcpy(token[i], field);
+    }
+
+    return numToken;
+}
+
+static int getReservedAddr(char reservedMacAddr[][C_MAX_TOKEN_SIZE], char reservedIpAddr[][C_MAX_TOKEN_SIZE])
+/* Foxconn modified end, zacker, 10/31/2008, @lan_setup_change */
+{
+    int numReservedMac=0, numReservedIp=0;
+    char *var;
+    
+    /* Read MAC and IP address tokens */
+    if ( (var = acosNvramConfig_get("dhcp_resrv_mac")) != NULL )
+    {
+        numReservedMac = getTokens(var, " ", reservedMacAddr, C_MAX_RESERVED_IP);
+    }
+    
+    if ( (var=acosNvramConfig_get("dhcp_resrv_ip")) != NULL )
+    {
+        numReservedIp = getTokens(var, " ", reservedIpAddr, C_MAX_RESERVED_IP);
+    }
+    
+    if (numReservedMac != numReservedIp)
+    {
+        printf("getReservedAddr: reserved mac and ip not match\n");
+    }
+    
+    return (numReservedMac<numReservedIp ? numReservedMac:numReservedIp);
+}
+
+static void config_arp_table(void)
+{
+    if(acosNvramConfig_match("arp_enable","enable"))
+    {
+        int i;
+        char resrvMacAddr[C_MAX_RESERVED_IP][C_MAX_TOKEN_SIZE];
+        char resrvIpAddr[C_MAX_RESERVED_IP][C_MAX_TOKEN_SIZE];
+        int numResrvAddr = getReservedAddr(resrvMacAddr, resrvIpAddr);
+        char arp_cmd[64];
+        for (i=0; i<numResrvAddr; i++)
+        {
+            sprintf(arp_cmd,"arp -s %s %s",resrvIpAddr[i],resrvMacAddr[i]);
+            printf("%s\n",arp_cmd);
+            system(arp_cmd);
+        }
+    }
+    
+    return 0;
+}
+#endif
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 /* Main loop */
 static void
 main_loop(void)
@@ -2478,6 +3571,11 @@ main_loop(void)
 
     /* foxconn wklin added start, 10/22/2008 */
 	sysinit();
+
+	/* Foxconn added start pling 03/20/2014 */
+	/* Router Spec Rev 12: disable/enable ethernet interface when dhcp server start */
+	eval("landown");
+	/* Foxconn added end pling 03/20/2014 */
 
 	/* Add loopback */
 	config_loopback();
@@ -2509,7 +3607,7 @@ main_loop(void)
     nvram_set("radvd_lan_new_ipaddr_length", "");
     /* Foxconn Perry added end, 2011/05/13, for IPv6 router advertisment prefix information */
     
-#if defined(R7000)
+#if defined(R7000) || defined(R8000)
     if (nvram_match("internal_antenna", "1"))
     {
         system("gpio 10 1");
@@ -2534,14 +3632,20 @@ main_loop(void)
 
     /* Foxconn added start, Wins, 04/20/2011, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (!is_russia_specific_support())
+/* Foxconn modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+    if ((!is_russia_specific_support()) && (!is_china_specific_support()))
     {
         nvram_set(NVRAM_IPTV_ENABLED, "0");
         nvram_set(NVRAM_IPTV_INTF, "0x00");
     }
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn added end, Wins, 04/20/2011, @RU_IPTV */
-
+/* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+    if ((!is_russia_specific_support()) && (!is_china_specific_support()))
+    {
+//        nvram_set(NVRAM_ARP_ENABLED, "disable");
+    }
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
     /* Foxconn add start, Max Ding, 02/26/2010 */
 #ifdef RESTART_ALL_PROCESSES
     nvram_unset("restart_all_processes");
@@ -2594,6 +3698,11 @@ main_loop(void)
     eval("read_bd");
     /* Foxconn added end pling 06/20/2006 */
 #endif /* 0 */
+#ifdef LINUX_2_6_36
+	/* Ajuest FA NVRAM variables */
+	/* Ajuest GMAC3 NVRAM variables */
+//	gmac3_nvram_adjust();
+#endif
     
 #ifdef __CONFIG_NAT__
 	/* Auto Bridge if neccessary */
@@ -2633,6 +3742,7 @@ main_loop(void)
 			stop_bcmupnp();
 			stop_wlan();
 				stop_bsd();
+
 			/*Foxconn add start by Hank 06/14/2012*/
 			/*Enable 2.4G auto channel detect, kill acsd for stop change channel*/
 			if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
@@ -2650,7 +3760,10 @@ main_loop(void)
                 nvram_set("wl_wps_reg", "enabled");
                 nvram_set("wl0_wps_reg", "enabled");
 #if (defined INCLUDE_DUAL_BAND)
-                nvram_set("wl0_wps_reg", "enabled");
+                nvram_set("wl1_wps_reg", "enabled");
+#if defined(R8000)
+                nvram_set("wl2_wps_reg", "enabled");
+#endif
 #endif
                 /* Foxconn modify start, Max Ding, 08/28/2010 for NEW_BCM_WPS */
                 /* New NVRAM to BSP 5.22.83.0, 'wlx_wps_config_state' not used anymore. */
@@ -2662,6 +3775,9 @@ main_loop(void)
                     nvram_set("wl0_wps_config_state", "0");
 #if (defined INCLUDE_DUAL_BAND)
                     nvram_set("wl1_wps_config_state", "0");
+#if defined(R8000)
+                    nvram_set("wl2_wps_config_state", "0");
+#endif
 #endif
                 }
                 else
@@ -2670,6 +3786,9 @@ main_loop(void)
                     nvram_set("wl0_wps_config_state", "1");
 #if (defined INCLUDE_DUAL_BAND)
                     nvram_set("wl1_wps_config_state", "1");
+#if defined(R8000)
+                    nvram_set("wl2_wps_config_state", "1");
+#endif                    
 #endif
                 }
                 /* Foxconn modify end, Max Ding, 08/28/2010 */
@@ -2696,6 +3815,8 @@ main_loop(void)
             start_eapd();           /* Foxconn modify by aspen Bai, 10/08/2008 */
             start_nas();            /* Foxconn modify by aspen Bai, 08/01/2008 */
             start_wps();            /* Foxconn modify by aspen Bai, 08/01/2008 */
+            if(nvram_match("enable_sta_mode","0"))
+				start_acsd();
             sleep(2);               /* Wait for WSC to start */
             /* Foxconn add start by aspen Bai, 09/10/2008 */
             /* Must call it when start wireless */
@@ -2718,12 +3839,14 @@ main_loop(void)
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
 			/*Foxconn add end by Antony 06/16/2013*/
+			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlg_wlanstate", "Enable")&& nvram_match("wlh_wlanstate", "Enable"))
+				start_bsd();
+
 
 			/*Foxconn add start by Hank 06/14/2012*/
 			/*Enable 2.4G auto channel detect, call acsd to start change channel*/
 			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
-			if(nvram_match("enable_sta_mode","0"))
-				start_acsd();
+			
 			/*Foxconn add end by Hank 06/14/2012*/
             nvram_commit();         /* Save WCN obtained parameters */
 
@@ -2798,9 +3921,23 @@ main_loop(void)
 #endif /* CONFIG_RUSSIA_IPTV */
 
 #if (defined INCLUDE_QOS) || (defined __CONFIG_IGMP_SNOOPING__)
-			config_switch_reg();
+            if (!nvram_match("gmac3_enable", "1"))
+			    config_switch_reg();
 #endif
 			/* foxconn added end, zacker, 01/13/2012, @iptv_igmp */
+#if defined(R8000)
+		if ( nvram_match("wla_region", "5") || nvram_match("wla_region", "16"))
+		    nvram_set("dual_5g_band","0");
+		else
+		    nvram_set("dual_5g_band","1");
+		    
+		if(nvram_match("sku_name","PR"))
+		{
+		    nvram_set("dual_5g_band","0");
+		    nvram_set("wla_region","16");
+		}
+			
+#endif
 		/*foxconn added start, water, 12/21/09*/
 #ifdef RESTART_ALL_PROCESSES
 		if ( nvram_match("restart_all_processes", "1") )
@@ -2890,16 +4027,12 @@ main_loop(void)
             start_eapd();
             start_nas();
             start_wps();
+            if(nvram_match("enable_sta_mode","0") )
+				start_acsd();
             sleep(2);
             start_wl();
-			/*Foxconn add start by Hank 06/14/2012*/
-			/*Enable 2.4G auto channel detect, call acsd to start change channel*/
 
-			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
-			if(nvram_match("enable_sta_mode","0"))
-				start_acsd();
-			/*Foxconn add end by Hank 06/14/2012*/
-    
+   
       if((strcmp(nvram_safe_get("wla_ssid"),nvram_safe_get("wlg_ssid") )!=0))
           nvram_set("enable_band_steering", "0");      	
 
@@ -2914,6 +4047,9 @@ main_loop(void)
 
 
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
+				start_bsd();
+
+			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
             /* Now start ACOS services */
             eval("acos_init");
@@ -3094,16 +4230,14 @@ main_loop(void)
             start_eapd();
             start_nas();
             start_wps();
+            if(nvram_match("enable_sta_mode","0") )
+				start_acsd();
             sleep(2);           /* Wait for WSC to start */
             start_wl();
-			/*Foxconn add start by Hank 06/14/2012*/
-			/*Enable 2.4G auto channel detect, call acsd to start change channel*/
-			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
-			if(nvram_match("enable_sta_mode","0"))
-				start_acsd();
-			/*Foxconn add end by Hank 06/14/2012*/
-
-			/*Foxconn add start by Antony 06/16/2013 Start the bandsteering*/
+#ifdef ARP_PROTECTION
+            config_arp_table();
+#endif 
+		/*Foxconn add start by Antony 06/16/2013 Start the bandsteering*/
     
       if((strcmp(nvram_safe_get("wla_ssid"),nvram_safe_get("wlg_ssid") )!=0))
           nvram_set("enable_band_steering", "0");      	
@@ -3119,6 +4253,10 @@ main_loop(void)
 
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
+
+			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
+				start_bsd();
+				
 			/*Foxconn add end by Antony 06/16/2013*/
 
             /* Start wsc if it is in 'unconfiged' state */
@@ -3267,7 +4405,7 @@ main(int argc, char **argv)
 			return EINVAL;
 		}
 	}
-
+	
 
 	/* write [path] [device] */
 	else if (strstr(base, "write")) {

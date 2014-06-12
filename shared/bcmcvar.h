@@ -112,7 +112,7 @@ typedef struct UPLOAD_CONSTRAINTS upload_constraints;
 #define NVRAM_MAX_NETIF		8	/* Maximum number of suppoters NVRAM interfaces
 					 * (wan,vlan,wl) of each type
 					 */
-#define NVRAM_MAX_STRINGSIZE	256
+#define NVRAM_MAX_STRINGSIZE	512
 
 #define NVRAM_CHECKSUM_FILLER	"NVRAMTemporaryChecksumFiller"
 #define NVRAM_CHECKSUM_LINENUM	1 	/* Line number where checksum is located starting from

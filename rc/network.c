@@ -169,7 +169,7 @@ set_et_qos_mode(void)
 		    (strncmp(info.driver, "bcm57", 5) != 0))
 			continue;
 		ifr.ifr_data = (caddr_t)&qos;
-		ioctl(s, SIOCSETCQOS, &ifr);
+		(void) ioctl(s, SIOCSETCQOS, &ifr);
 	}
 
 	close(s);
@@ -190,7 +190,12 @@ soc_req(const char *name, int action, struct ifreq *ifr)
 		perror("socket");
 		return -1;
 	}
-	strncpy(ifr->ifr_name, name, IFNAMSIZ);
+	if (strlen(name) >= sizeof(ifr->ifr_name)) {
+		fprintf(stderr, "soc_req: ifr name is too long\n");
+		close(s);
+		return -1;
+	}
+	strncpy(ifr->ifr_name, name, sizeof(ifr->ifr_name));
 	rv = ioctl(s, action, ifr);
 	close(s);
 
@@ -253,7 +258,8 @@ wl_vif_hwaddr_set(const char *name)
 	char *ea;
 	char hwaddr[20];
 	struct ifreq ifr;
-
+	int retry = 0;
+	unsigned char comp_mac_address[ETHER_ADDR_LEN];
 	snprintf(hwaddr, sizeof(hwaddr), "%s_hwaddr", name);
 	ea = nvram_get(hwaddr);
 	if (ea == NULL) {
@@ -264,8 +270,24 @@ wl_vif_hwaddr_set(const char *name)
 	fprintf(stderr, "NET: Setting %s hw addr to %s\n", name, ea);
 	ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
 	ether_atoe(ea, (unsigned char *)ifr.ifr_hwaddr.sa_data);
+	ether_atoe(ea, comp_mac_address);
 	if ((rc = soc_req(name, SIOCSIFHWADDR, &ifr)) < 0) {
 		fprintf(stderr, "NET: Error setting hw for %s; returned %d\n", name, rc);
+	}
+	memset(&ifr, 0, sizeof(ifr));
+	while (retry < 100) { /* maximum 100 millisecond waiting */
+		usleep(1000); /* 1 ms sleep */
+		if ((rc = soc_req(name, SIOCGIFHWADDR, &ifr)) < 0) {
+			fprintf(stderr, "NET: Error Getting hw for %s; returned %d\n", name, rc);
+		}
+		if (memcmp(comp_mac_address, (unsigned char *)ifr.ifr_hwaddr.sa_data,
+			ETHER_ADDR_LEN) == 0) {
+			break;
+		}
+		retry++;
+	}
+	if (retry >= 100) {
+		fprintf(stderr, "Unable to check if mac was set properly for  %s\n", name);
 	}
 }
 
@@ -304,9 +326,6 @@ emf_uffp_update(char *lan_ifname, char *lan_port_ifname, bool add)
 	foreach(word, nvram_safe_get("emf_uffp_entry"), next) {
 		ifname = word;
 
-		if (ifname == 0)
-			continue;
-
 		/* Add/Delete UFFP entry for the interface */
 		if (strcmp(lan_port_ifname, ifname) == 0) {
 			eval("emf", ((add) ? "add" : "del"),
@@ -326,9 +345,6 @@ emf_rtport_update(char *lan_ifname, char *lan_port_ifname, bool add)
 	/* Add/Delete RTPORT entries corresponding to new interface */
 	foreach(word, nvram_safe_get("emf_rtport_entry"), next) {
 		ifname = word;
-
-		if (ifname == 0)
-			continue;
 
 		/* Add/Delete RTPORT entry for the interface */
 		if (strcmp(lan_port_ifname, ifname) == 0) {
@@ -367,8 +383,6 @@ start_emf(char *lan_ifname)
 	/* Add the UFFP entries */
 	foreach(word, nvram_safe_get("emf_uffp_entry"), next) {
 		ifname = word;
-		if (ifname == 0)
-			continue;
 
 		/* Add UFFP entry for the interface */
 		eval("emf", "add", "uffp", lan_ifname, ifname);
@@ -377,8 +391,6 @@ start_emf(char *lan_ifname)
 	/* Add the RTPORT entries */
 	foreach(word, nvram_safe_get("emf_rtport_entry"), next) {
 		ifname = word;
-		if (ifname == 0)
-			continue;
 
 		/* Add RTPORT entry for the interface */
 		eval("emf", "add", "rtport", lan_ifname, ifname);
@@ -429,6 +441,7 @@ dpsta_ioctl(char *name, void *buf, int len)
 	}
 
 	strncpy(ifr.ifr_name, name, IFNAMSIZ);
+	ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
 	ifr.ifr_data = (caddr_t)buf;
 	if ((ret = ioctl(s, SIOCDEVPRIVATE, &ifr)) < 0)
 		perror(ifr.ifr_name);
@@ -451,6 +464,145 @@ l2bridge_no_ipaddr(const char *br_ifname)
 	return (nvram_match(l2bridge, "1") ? TRUE : FALSE);
 }
 
+static void
+setup_lan(char *name, char *lan_ifname, char *hwaddr, int *dpsta, int ifidx)
+{
+	int s = 0;
+	char tmp[100];
+	char buf[255], *ptr;
+	struct ifreq ifr;
+
+	/* Bring up interface.Ignore any bogus/unknown
+	 * Interfaces on the NVRAM list
+	 */
+
+	if (ifconfig(name, IFUP | IFF_ALLMULTI, NULL, NULL)) {
+		perror("ifconfig");
+		return;
+	}
+	else {
+		/* Set the logical bridge address to that of the first interface */
+		if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0) {
+			perror("socket");
+			return;
+		}
+		strncpy(ifr.ifr_name, name, sizeof(ifr.ifr_name)-1);
+		ifr.ifr_name[sizeof(ifr.ifr_name)-1] = '\0';
+		if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0) {
+			if (memcmp(hwaddr, "\0\0\0\0\0\0", ETHER_ADDR_LEN) == 0) {
+				memcpy(hwaddr, ifr.ifr_hwaddr.sa_data, ETHER_ADDR_LEN);
+			}
+		}
+		close(s);
+
+		/* if not a wl i/f then simply add it tot he bridge */
+		if (eval("wlconf", name, "up")) {
+			if (eval("brctl", "addif", lan_ifname, name)) {
+				perror("brctl");
+				return;
+			}
+			else {
+				snprintf(tmp, sizeof(tmp), "br%x_ifnames", ifidx);
+				ptr = nvram_get(tmp);
+				if (ptr)
+					snprintf(buf, sizeof(buf), "%s %s", ptr, name);
+				else
+					snprintf(buf, sizeof(buf), "%s", name);
+				nvram_set(tmp, buf);
+			}
+#ifdef __CONFIG_EMF___
+			if (nvram_match("emf_enable", "1"))
+				eval("emf", "add", "iface", lan_ifname, name);
+#endif /* __CONFIG_EMF__ */
+		}
+		else {
+			char mode[] = "wlXXXXXXXXXX_mode";
+			int unit = -1;
+
+			/* get the instance number of the wl i/f */
+			wl_ioctl(name, WLC_GET_INSTANCE, &unit, sizeof(unit));
+
+			snprintf(mode, sizeof(mode), "wl%d_mode", unit);
+
+			/* WET specific configurations */
+			if (nvram_match(mode, "wet")) {
+				/* Receive all multicast frames in WET mode */
+				ifconfig(name, IFUP | IFF_ALLMULTI, NULL, NULL);
+
+				/* Enable host DHCP relay */
+				if (nvram_match("lan_dhcp", "1"))
+					wl_iovar_set(name, "wet_host_mac", ifr.ifr_hwaddr.sa_data,
+					ETHER_ADDR_LEN);
+			}
+			/* Dont attach the man wl i/f in wds */
+			if ((strncmp(name, "wl", 2) != 0) && (nvram_match(mode, "wds"))) {
+				/* Save this interface name in unbridged_ifnames
+				* This behaviour is consistent with BEARS release
+				*/
+				ptr = nvram_get("unbridged_ifnames");
+				if (ptr)
+					snprintf(buf, sizeof(buf), "%s %s", ptr, name);
+				else
+					snprintf(buf, sizeof(buf), "%s", name);
+				nvram_set("unbridged_ifnames", buf);
+				return;
+			}
+
+			/* Dont add main wl i/f when proxy sta is
+			* enabled in both bands. Instead add the
+			* dpsta interface.
+			*/
+			if (strstr(nvram_safe_get("dpsta_ifnames"), name)) {
+				strcpy(name, !(*dpsta) ? "dpsta" : "");
+				(*dpsta)++;
+
+				/* Assign hw address */
+				if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) >= 0) {
+					strncpy(ifr.ifr_name, "dpsta", IFNAMSIZ);
+					if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0 &&
+						memcmp(ifr.ifr_hwaddr.sa_data, "\0\0\0\0\0\0",
+						ETHER_ADDR_LEN) == 0) {
+							ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
+							memcpy(ifr.ifr_hwaddr.sa_data, hwaddr,
+								ETHER_ADDR_LEN);
+							if (ioctl(s, SIOCSIFHWADDR, &ifr)) {
+								close(s);
+								return;
+							}
+					}
+					close(s);
+				}
+			}
+
+			/* In 3GMAC mode, skip wl interfaces that avail of hw switching.
+			 *
+			 * Do not add these wl interfaces to the LAN bridge as they avail of
+			 * HW switching. Misses in the HW switch's ARL will be forwarded via vlan1
+			 * to br0 (i.e. via the network GMAC#2).
+			 */
+			if (nvram_match("gmac3_enable", "1") &&
+			    find_in_list(nvram_get("fwd_wlandevs"), name))
+				goto gmac3_no_swbr;
+
+			eval("brctl", "addif", lan_ifname, name);
+gmac3_no_swbr:
+
+#ifdef __CONFIG_EMF__
+			if (nvram_match("emf_enable", "1"))
+				eval("emf", "add", "iface", lan_ifname, name);
+#endif /* __CONFIG_EMF__ */
+
+			snprintf(tmp, sizeof(tmp), "br%x_ifnames", ifidx);
+			ptr = nvram_get(tmp);
+			if (ptr)
+				snprintf(buf, sizeof(buf), "%s %s", ptr, name);
+			else
+				strncpy(buf, name, sizeof(buf));
+
+			nvram_set(tmp, buf);
+		}
+	}
+}
 void
 start_lan(void)
 {
@@ -567,6 +719,16 @@ start_lan(void)
 		eval("wlconf", nvram_get("wan0_ifname"), "up");
 	}
 
+#ifdef __CONFIG_GMAC3__
+	if (nvram_match("gmac3_enable", "1")) {
+		foreach(name, nvram_safe_get("fwddevs"), next) {
+			/* Bring up gmac forwarder interface */
+			ifconfig(name, 0, NULL, NULL);
+			ifconfig(name, IFUP|IFF_ALLMULTI|IFF_PROMISC, NULL, NULL);
+		}
+	}
+#endif /* __CONFIG_GMAC3__ */
+
 
 	/* Bring up bridged interfaces */
 	for (i = 0; i < MAX_NO_BRIDGE; i++) {
@@ -670,6 +832,10 @@ start_lan(void)
 					}
 					close(s);
 
+			if (nvram_match("gmac3_enable", "1") &&
+			    find_in_list(nvram_get("fwd_wlandevs"), name))
+				goto gmac3_no_swbr;
+
 					/* If not a wl i/f then simply add it to the bridge */
 					if (eval("wlconf", name, "up")) {
 						if (eval("brctl", "addif", lan_ifname, name))
@@ -745,6 +911,7 @@ start_lan(void)
 						}
 					
 						eval("brctl", "addif", lan_ifname, name);
+gmac3_no_swbr:
 #ifdef __CONFIG_EMF__
 						if (nvram_match("emf_enable", "1"))
 							eval("emf", "add", "iface", lan_ifname, name);
@@ -767,6 +934,7 @@ start_lan(void)
 			if (memcmp(hwaddr, "\0\0\0\0\0\0", ETHER_ADDR_LEN) &&
 			    (s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) >= 0) {
 				strncpy(ifr.ifr_name, lan_ifname, IFNAMSIZ);
+				ifr.ifr_name[IFNAMSIZ-1] = '\0';
 				ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
 				memcpy(ifr.ifr_hwaddr.sa_data, hwaddr, ETHER_ADDR_LEN);
 				ioctl(s, SIOCSIFHWADDR, &ifr);
@@ -787,8 +955,10 @@ start_lan(void)
 		if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) >= 0) {
 			char eabuf[32];
 			strncpy(ifr.ifr_name, lan_ifname, IFNAMSIZ);
+			ifr.ifr_name[IFNAMSIZ-1] = '\0';
 			if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0)
-				nvram_set(lan_hwaddr, ether_etoa((unsigned char *)ifr.ifr_hwaddr.sa_data, eabuf));
+				nvram_set(lan_hwaddr,
+				ether_etoa((unsigned char *)ifr.ifr_hwaddr.sa_data, eabuf));
 			close(s);
 		}
 
@@ -995,6 +1165,26 @@ start_lan(void)
 #endif /* __CONFIG_EMF__ */
 	} /* For loop */
 
+	/* Configure dpsta module */
+	if (dpsta) {
+		int32 i = 0;
+
+		/* Enable and set the policy to in-band and cross-band
+		 * forwarding policy.
+		 */
+		info.enable = 1;
+		info.policy = atoi(nvram_safe_get("dpsta_policy"));
+		info.lan_uif = atoi(nvram_safe_get("dpsta_lan_uif"));
+		foreach(name, nvram_safe_get("dpsta_ifnames"), next) {
+			strcpy((char *)info.upstream_if[i], name);
+			i++;
+		}
+		dpsta_ioctl("dpsta", &info, sizeof(dpsta_enable_info_t));
+
+		/* Bring up dpsta interface */
+		ifconfig("dpsta", IFUP, NULL, NULL);
+	}
+
 
 	/* Set initial QoS mode for LAN ports. */
 	set_et_qos_mode();
@@ -1060,6 +1250,16 @@ stop_lan(void)
 		ifconfig(name, 0, NULL, NULL);
 	}
 
+#ifdef __CONFIG_GMAC3__
+	if (nvram_match("gmac3_enable", "1")) {
+		foreach(name, nvram_safe_get("fwddevs"), next) {
+			/* Bring down interface */
+			ifconfig(name, 0, NULL, NULL);
+		}
+
+	}
+#endif /* __CONFIG_GMAC3__ */
+
 	for (i = 0; i < MAX_NO_BRIDGE; i++) {
 		if (!i) {
 			lan_ifname = nvram_safe_get("br0_ifname");
@@ -1092,7 +1292,18 @@ stop_lan(void)
 				}
 				eval("wlconf", name, "down");
 				ifconfig(name, 0, NULL, NULL);
+
+				/* List of primary WLAN interfaces that avail of HW switching. */
+				/* In 3GMAC mode, each wl interfaces in "fwd_wlandevs" don't
+				 * attach to the bridge.
+				 */
+				if (nvram_match("gmac3_enable", "1") &&
+				    find_in_list(nvram_get("fwd_wlandevs"), name))
+					goto gmac3_no_swbr;
+
 				eval("brctl", "delif", lan_ifname, name);
+gmac3_no_swbr:
+
 #ifdef __CONFIG_EMF__
 				/* Remove ifface from emf */
 				if (nvram_match("emf_enable", "1"))
@@ -1154,9 +1365,10 @@ start_wl(void)
 		eval("wlconf", nvram_get("wan0_ifname"), "start");
 	}
 
- 	/* Bring up bridged interfaces */
-	for(i=0; i < MAX_NO_BRIDGE; i++) {
-		if(!i) {
+
+	/* Bring up bridged interfaces */
+	for (i = 0; i < MAX_NO_BRIDGE; i++) {
+		if (!i) {
             /* Foxconn modified start pling 11/26/2009 */
             /* Use char array to keep the nvram value instead of
              *  using pointers. 
@@ -1207,14 +1419,23 @@ start_wl(void)
     if(nvram_match("enable_sta_mode","1")){
         system("wl roam_trigger -100");
         system("wl -i eth2 roam_trigger -100");
+#if defined(R8000)
+        system("wl -i eth3 roam_trigger -100");
+#endif
 		/*Foxconn add start by Hank 06/27/2012*/
 		/*Fix can not see ssdp packet in bridge mode*/
 		system("ifconfig eth1 allmulti");
 		system("ifconfig eth2 allmulti");
+#if defined(R8000)
+		system("ifconfig eth3 allmulti");
+#endif
 		/*Foxconn add end by Hank 06/27/2012*/
     }else{
         system("wl roam_trigger 0");
         system("wl -i eth2 roam_trigger 0");
+#if defined(R8000)
+        system("wl -i eth3 roam_trigger 0");
+#endif
     }
 #endif
     /*Foxconn add end by Hank 03/07/2012*/
@@ -1223,32 +1444,53 @@ start_wl(void)
 	region=atoi(nvram_get("wla_region"));
     system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
     system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
+#if defined(R8000)
+    system("wl -i eth3 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
+#endif
     if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
     {
 	    system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#if defined(R8000)
+	    system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#endif
     }
 	else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
     {
         system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#if defined(R8000)
+        system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#endif
     }
     else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
     {
         system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#if defined(R8000)
+        system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+#endif
     }
     
     system("wl -i eth1 pspretend_threshold 4");
     
     system("wl -i eth1 mfp_enable 0");
     system("wl -i eth2 mfp_enable 0");
+#if defined(R8000)
+    system("wl -i eth3 mfp_enable 0");
+#endif
 
     if (nvram_match("enable_atf", "1"))
     {
 //      system("wl -i eth2 shmem 0x80 2");
       eval("wl", "-i", "eth2", "frameburst", "1");
+#if defined(R8000)
+      eval("wl", "-i", "eth3", "frameburst", "1");
+#endif
 	  }
 	  else
 	  {
       eval("wl", "-i", "eth2", "frameburst", "1");
+#if defined(R8000)
+      eval("wl", "-i", "eth3", "frameburst", "1");
+#endif
 	  }
       eval("wl", "assert_type", "1");
 
@@ -1257,11 +1499,17 @@ start_wl(void)
     {
         system("wl -i eth1 allmulti 1");
         system("wl -i eth2 allmulti 1");
+#if defined(R8000)
+        system("wl -i eth3 allmulti 1");
+#endif
     }
     else
     {
         system("wl -i eth1 allmulti 0");
         system("wl -i eth2 allmulti 0");
+#if defined(R8000)
+        system("wl -i eth3 allmulti 0");
+#endif
     }
     /* Fxoconn added end by Antony 02/26/2014  */
 
@@ -1269,12 +1517,24 @@ start_wl(void)
     if (nvram_match("wla_region", "14"))
     {
         system("wl -i eth2 txpwr1 -o -d 14");
+#if defined(R8000)
+        system("wl -i eth3 txpwr1 -o -d 14");
+#endif
     }
     else
     {
         system("wl -i eth2 txpwr1 -1");
+#if defined(R8000)
+        system("wl -i eth3 txpwr1 -1");
+#endif
     }
     /*Foxconn add start by Antony end 09/13/2013 */
+    
+#if defined(R8000)
+    system("wl -i eth1 interference 7");
+    system("wl -i eth2 interference 0");
+    system("wl -i eth3 interference 0");
+#endif
       
 }
 
@@ -1347,7 +1607,11 @@ start_wan(void)
 	start_firewall();
 
 	/* Create links */
-	mkdir("/tmp/ppp", 0777);
+	if ((mkdir("/tmp/ppp", 0777) < 0) && (errno != EEXIST)) {
+		perror("Could not create /tmp/ppp directory.");
+		fprintf(stderr, "%s:%d: Aborting...\n", __FUNCTION__, __LINE__);
+		abort();
+	}
 	symlink("/sbin/rc", "/tmp/ppp/ip-up");
 	symlink("/sbin/rc", "/tmp/ppp/ip-down");
 
@@ -1371,12 +1635,17 @@ start_wan(void)
 			continue;
 		}
 
+		/* Checking for size of wan_ifname */
+		if (strlen(wan_ifname) > (sizeof(ifr.ifr_name) - 1))
+			continue;
+
 		dprintf("%s %s\n", wan_ifname, wan_proto);
 
 		/* Set i/f hardware address before bringing it up */
 		if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0)
 			continue;
-		strncpy(ifr.ifr_name, wan_ifname, IFNAMSIZ);
+		strncpy(ifr.ifr_name, wan_ifname, sizeof(ifr.ifr_name));
+		ifr.ifr_name[sizeof(ifr.ifr_name) - 1] = '\0';
 
 		/* Configure i/f only once, specially for wl i/f shared by multiple connections */
 		if (ioctl(s, SIOCGIFFLAGS, &ifr)) {
@@ -1396,10 +1665,14 @@ start_wan(void)
 					continue;
 				}
 				nvram_set(strcat_r(prefix, "hwaddr", tmp),
-					  ether_etoa((unsigned char *)ifr.ifr_hwaddr.sa_data, eabuf));
+					ether_etoa((unsigned char *)ifr.ifr_hwaddr.sa_data,
+					eabuf));
 			} else {
 				ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
-				ioctl(s, SIOCSIFHWADDR, &ifr);
+				if (ioctl(s, SIOCSIFHWADDR, &ifr)) {
+					close(s);
+					continue;
+				}
 			}
 
 			/* Bring up i/f */
@@ -1477,13 +1750,15 @@ start_wan(void)
 				/* Set temporary IP address */
 				if (ioctl(s, SIOCGIFADDR, &ifr))
 					perror(wan_ifname);
-				nvram_set(strcat_r(prefix, "ipaddr", tmp), inet_ntoa(sin_addr(&ifr.ifr_addr)));
+				nvram_set(strcat_r(prefix, "ipaddr", tmp),
+				inet_ntoa(sin_addr(&ifr.ifr_addr)));
 				nvram_set(strcat_r(prefix, "netmask", tmp), "255.255.255.255");
 
 				/* Set temporary P-t-P address */
 				if (ioctl(s, SIOCGIFDSTADDR, &ifr))
 					perror(wan_ifname);
-				nvram_set(strcat_r(prefix, "gateway", tmp), inet_ntoa(sin_addr(&ifr.ifr_dstaddr)));
+				nvram_set(strcat_r(prefix, "gateway", tmp),
+				inet_ntoa(sin_addr(&ifr.ifr_dstaddr)));
 
 				close(s);
 
@@ -1657,8 +1932,10 @@ del_ns(char *wan_ifname)
 	fclose(fp2);
 	/* Use updated file as resolv.conf */
 	unlink("/tmp/resolv.conf");
-	rename("/tmp/resolv.tmp", "/tmp/resolv.conf");
-
+	if (rename("/tmp/resolv.tmp", "/tmp/resolv.conf") != 0) {
+		perror("rename fails /tmp/resolv.conf");
+		return errno;
+	}
 	/* notify dnsmasq */
 	snprintf(tmp, sizeof(tmp), "-%d", SIGHUP);
 	eval("killall", tmp, "dnsmasq");
@@ -2079,6 +2356,13 @@ void stop_wlan(void)
 	ifconfig(wlif, 0, NULL, NULL);
 	eval("brctl", "delif", lan_ifname, wlif);
 
+#if defined(R8000)
+    strcpy(wlif, nvram_safe_get("wl2_ifname"));
+    /* Foxconn modified end pling 12/02/2009 */
+	eval("wlconf", wlif, "down");
+	ifconfig(wlif, 0, NULL, NULL);
+	eval("brctl", "delif", lan_ifname, wlif);
+#endif
     /* Foxconn added start pling 06/06/2007 */
 //#ifdef BUILD_TWC
 /* Foxconn add start by aspen Bai, 11/13/2008 */
@@ -2101,6 +2385,15 @@ void stop_wlan(void)
             ifconfig(if_name_5g, 0, NULL, NULL);
     	    eval("brctl", "delif", lan_ifname, if_name_5g);
         }
+#if defined(R8000)
+        for (bssid_num=1; bssid_num<=3; bssid_num++)
+        {
+            char if_name_5g[16];
+            sprintf(if_name_5g, "wl2.%d", bssid_num);
+            ifconfig(if_name_5g, 0, NULL, NULL);
+    	    eval("brctl", "delif", lan_ifname, if_name_5g);
+        }
+#endif        
     }	
 #endif
     /* Foxconn added end pling 06/06/2007 */
@@ -2121,8 +2414,15 @@ void start_wlan(void)
     strcpy(wlif, nvram_safe_get("wl0_ifname"));
     /* Foxconn modified end pling 11/26/2009 */
     char wl1_ifname[32];
+#if defined(R8000)
+    char wl2_ifname[32];
+#endif
 
     strcpy(wl1_ifname, nvram_safe_get("wl1_ifname"));
+
+#if defined(R8000)
+    strcpy(wl2_ifname, nvram_safe_get("wl2_ifname"));
+#endif
 
     /* Foxconn added start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2131,6 +2431,30 @@ void start_wlan(void)
     int ru_iptv_en = 0;
     int wlan1_en = 0;
     int wlan2_en = 0;
+#if defined(R8000)
+    int wlan3_en = 0;
+#endif
+    char mac[6];
+    char *mac_ptr;
+    char guest_mac[6];
+    
+    mac_ptr=nvram_get("0:macaddr");
+    sscanf(mac_ptr,"%02x:%02x:%02x:%02x:%02x:%02x",&mac[0],&mac[1],&mac[2],&mac[3],&mac[4],&mac[5]);
+    mac[0] |= 0x2;
+    sprintf(guest_mac,"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+    nvram_set("wl0.1_hwaddr",guest_mac);
+
+    mac_ptr=nvram_get("1:macaddr");
+    sscanf(mac_ptr,"%02x:%02x:%02x:%02x:%02x:%02x",&mac[0],&mac[1],&mac[2],&mac[3],&mac[4],&mac[5]);
+    mac[0] |= 0x2;
+    sprintf(guest_mac,"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+    nvram_set("wl1.1_hwaddr",guest_mac);
+    mac_ptr=nvram_get("2:macaddr");
+    sscanf(mac_ptr,"%02x:%02x:%02x:%02x:%02x:%02x",&mac[0],&mac[1],&mac[2],&mac[3],&mac[4],&mac[5]);
+    mac[0] |= 0x2;
+    sprintf(guest_mac,"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+    nvram_set("wl2.1_hwaddr",guest_mac);
+
     if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
     {
         strcpy(iptv_intf, nvram_get(NVRAM_IPTV_INTF));
@@ -2143,11 +2467,18 @@ void start_wlan(void)
         if (iptv_intf_val & IPTV_WLAN2)
         /* Foxconn modified end pling 04/20/2012 */
             wlan2_en = 1;
+
+#if defined(R8000)
+        if (iptv_intf_val & IPTV_WLAN3)
+            wlan3_en = 1;
+#endif
+
         ru_iptv_en = 1;
     }
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn added end, Wins, 05/07/11, @RU_IPTV */
     eval("wlconf", wlif, "up");
+    eval("wlconf", wlif, "start");
     ifconfig(wlif, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2159,7 +2490,9 @@ void start_wlan(void)
     else
     {
         eval("brctl", "delif", "br1", wlif);        /* pling added 04/03/2012 */
-	    eval("brctl", "addif", lan_ifname, wlif);
+        if(nvram_match("gmac3_enable", "0"))
+      	    eval("brctl", "addif", lan_ifname, wlif);
+	    
     }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wlif);
@@ -2168,6 +2501,7 @@ void start_wlan(void)
 
 
     eval("wlconf", wl1_ifname, "up");
+    eval("wlconf", wl1_ifname, "start");
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2179,12 +2513,36 @@ void start_wlan(void)
     else
     {
         eval("brctl", "delif", "br1", wl1_ifname);  /* pling added 04/03/2012 */
-        eval("brctl", "addif", lan_ifname, wl1_ifname);
+        if(nvram_match("gmac3_enable", "0"))
+            eval("brctl", "addif", lan_ifname, wl1_ifname);
     }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl1_ifname);
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
+
+#if defined(R8000)
+    eval("wlconf", wl2_ifname, "up");
+    eval("wlconf", wl2_ifname, "start");
+    ifconfig(wl2_ifname, IFUP, NULL, NULL);
+    /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
+#ifdef CONFIG_RUSSIA_IPTV
+    if (wlan3_en)
+    {
+        eval("brctl", "delif", lan_ifname, wl2_ifname);/* pling added 04/03/2012 */
+	    eval("brctl", "addif", "br1", wl2_ifname);
+    }
+    else
+    {
+        eval("brctl", "delif", "br1", wl2_ifname);  /* pling added 04/03/2012 */
+        if(nvram_match("gmac3_enable", "0"))
+            eval("brctl", "addif", lan_ifname, wl2_ifname);
+    }
+#else /* CONFIG_RUSSIA_IPTV */
+	eval("brctl", "addif", lan_ifname, wl2_ifname);
+#endif /* CONFIG_RUSSIA_IPTV */
+    /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
+#endif
 
     /* Foxocnn added start pling 03/30/2010 */
     /* For WiFi test case 4.2.41 */
@@ -2233,6 +2591,21 @@ void start_wlan(void)
 	            eval("brctl", "addif", lan_ifname, if_name_5g);
             }
         }
+#if defined(R8000)
+        for (bssid_num=1; bssid_num<=3; bssid_num++)
+        {
+            char param_name_5g[32]; // Foxconn modified pling 10/06/2010, 16->32
+            char if_name_5g[16];
+            sprintf(param_name_5g, "wl2.%d_bss_enabled", bssid_num);
+            sprintf(if_name_5g, "wl2.%d", bssid_num);
+            if (nvram_match(param_name_5g, "1"))
+            {
+                wl_vif_hwaddr_set(if_name_5g);
+                ifconfig(if_name_5g, IFUP, NULL, NULL);
+	            eval("brctl", "addif", lan_ifname, if_name_5g);
+            }
+        }
+#endif        
     }
 #endif
     /* Foxconn added end pling 06/06/2007 */
@@ -2240,6 +2613,9 @@ void start_wlan(void)
     /* Foxconn, add by MJ., for wifi cert. */
     //if(!nvram_match("wifi_test", "1"))
         eval("wl", "-i", wl1_ifname, "obss_coex", "0"); /* foxconn added, zacker, 01/05/2011 */
+#if defined(R8000)
+        eval("wl", "-i", wl2_ifname, "obss_coex", "0"); /* foxconn added, zacker, 01/05/2011 */
+#endif
 
     /* foxconn added start, zacker, 11/01/2010 */
     {

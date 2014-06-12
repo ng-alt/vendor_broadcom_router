@@ -73,13 +73,14 @@ add_forward(netconf_nat_t *nat, int dir, int target)
 }
 
 
-#if defined(LINUX_2_6_36) && defined(__CONFIG_SAMBA__)
+#if defined(__CONFIG_SAMBA__)
 static void
 add_conntrack(void)
 {
 	char ifname[IFNAMSIZ];
 
-	strncpy(ifname, nvram_safe_get("lan_ifname"), IFNAMSIZ);
+	strncpy(ifname, nvram_safe_get("lan_ifname"), sizeof(ifname) - 1);
+	ifname[sizeof(ifname) - 1] = '\0';
 
 	/* Add rules to disable conntrack on SMB ports to reduce CPU loading
 	 * for SAMBA storage application
@@ -122,7 +123,9 @@ start_firewall(void)
 	FILE *fp;
 	char name[NAME_MAX];
 	netconf_filter_t filter;
+#if !defined(AUTOFW_PORT_DEPRECATED)
 	netconf_app_t app;
+#endif /* !AUTOFW_PORT_DEPRECATED */
 	int i, index;
 	char var[256], *next;
 	int log_level, log_drop, log_accept;
@@ -198,7 +201,8 @@ start_firewall(void)
 	/* Filter by MAC address */
 	if (!nvram_match("filter_macmode", "disabled")) {
 		memset(&filter, 0, sizeof(filter));
-		strncpy(filter.match.in.name, nvram_safe_get("lan_ifname"), IFNAMSIZ);
+		strncpy(filter.match.in.name, nvram_safe_get("lan_ifname"),
+			sizeof(filter.match.in.name) - 1);
 		if (nvram_match("filter_macmode", "allow")) {
 			/* Allow new connections from
 			 * the LAN side only from the specified addresses
@@ -256,7 +260,8 @@ start_firewall(void)
 		/* Allow new connections from the LAN side */
 		memset(&filter, 0, sizeof(filter));
 		filter.match.state = NETCONF_NEW;
-		strncpy(filter.match.in.name, nvram_safe_get(lan_ifname), IFNAMSIZ);
+		strncpy(filter.match.in.name, nvram_safe_get(lan_ifname),
+			sizeof(filter.match.in.name) - 1);
 		inet_aton(nvram_safe_get(lan_ipaddr), (struct in_addr *)&filter.match.src.ipaddr);
 		inet_aton(nvram_safe_get(lan_netmask), (struct in_addr *)&filter.match.src.netmask);
 		filter.match.src.ipaddr.s_addr &= filter.match.src.netmask.s_addr;
@@ -274,7 +279,8 @@ start_firewall(void)
 			memset(&filter, 0, sizeof(filter));
 			filter.match.state = NETCONF_NEW;
 			filter.match.ipproto = IPPROTO_UDP;
-			strncpy(filter.match.in.name, nvram_safe_get(lan_ifname), IFNAMSIZ);
+			strncpy(filter.match.in.name, nvram_safe_get(lan_ifname),
+				sizeof(filter.match.in.name) - 1);
 			filter.match.src.netmask.s_addr = htonl(INADDR_BROADCAST);
 			filter.match.src.ipaddr.s_addr = htonl(INADDR_ANY);
 			filter.match.dst.netmask.s_addr = htonl(INADDR_BROADCAST);
@@ -312,12 +318,7 @@ start_firewall(void)
 	}
 	/* Create restriction filters among bridges */
 	for (i = 1; i < MAX_NO_BRIDGE; i++) {
-		if (!i) {
-			snprintf(lan_ifname, sizeof(lan_ifname), "lan_ifname");
-		}
-		else {
-			snprintf(lan_ifname, sizeof(lan_ifname), "lan%x_ifname", i);
-		}
+		snprintf(lan_ifname, sizeof(lan_ifname), "lan%x_ifname", i);
 		if (!strcmp(nvram_safe_get(lan_ifname), ""))
 			continue;
 
@@ -338,7 +339,8 @@ start_firewall(void)
 			filter.match.dst.ipaddr.s_addr = ip_addrs[index].address.s_addr;
 			filter.match.dst.ipaddr.s_addr &= ip_addrs[index].mask.s_addr;
 			filter.match.dst.netmask.s_addr = ip_addrs[index].mask.s_addr;
-			strncpy(filter.match.in.name, nvram_safe_get(lan_ifname), IFNAMSIZ);
+			strncpy(filter.match.in.name, nvram_safe_get(lan_ifname),
+				sizeof(filter.match.in.name) - 1);
 			filter.target = log_drop;
 			add_filter(&filter, NETCONF_IN);
 			add_filter(&filter, NETCONF_FORWARD);
@@ -382,7 +384,10 @@ start_firewall(void)
 	add_filter(&filter, NETCONF_IN);
 	add_filter(&filter, NETCONF_FORWARD);
 
-#if defined(LINUX_2_6_36) && defined(__CONFIG_SAMBA__)
+	free(ip_addrs);
+	ip_addrs = NULL;
+
+#if defined(__CONFIG_SAMBA__)
 	add_conntrack();
 #endif /* LINUX_2_6_36 && __CONFIG_SAMBA__ */
 
@@ -423,7 +428,7 @@ start_firewall2(char *wan_ifname)
 	if (nvram_match("fw_disable", "1")) {
 		memset(&filter, 0, sizeof(filter));
 		filter.match.state = NETCONF_NEW;
-		strncpy(filter.match.in.name, wan_ifname, IFNAMSIZ);
+		strncpy(filter.match.in.name, wan_ifname, sizeof(filter.match.in.name) -1);
 		filter.target = log_accept;
 		add_filter(&filter, NETCONF_IN);
 		add_filter(&filter, NETCONF_FORWARD);
@@ -445,7 +450,7 @@ start_firewall2(char *wan_ifname)
 		inet_aton(nvram_safe_get(lan_ipaddr), &nat.match.src.ipaddr);
 		inet_aton(nvram_safe_get(lan_netmask), &nat.match.src.netmask);
 		nat.match.src.ipaddr.s_addr &= nat.match.src.netmask.s_addr;
-		strncpy(nat.match.out.name, wan_ifname, IFNAMSIZ);
+		strncpy(nat.match.out.name, wan_ifname, sizeof(nat.match.out.name) - 1);
 		nat.target = NETCONF_MASQ;
 		if (nvram_match("nat_type", "cone"))
 			nat.type = NETCONF_CONE_NAT;
@@ -460,7 +465,7 @@ start_firewall2(char *wan_ifname)
 		nat.match.src.ports[1] = htons(0xffff);
 		nat.match.dst.ports[0] = htons(atoi(nvram_safe_get("http_wanport")));
 		nat.match.dst.ports[1] = htons(atoi(nvram_safe_get("http_wanport")));
-		strncpy(nat.match.in.name, wan_ifname, IFNAMSIZ);
+		strncpy(nat.match.in.name, wan_ifname, sizeof(nat.match.in.name) - 1);
 
 		/* Set up DNAT to LAN */
 		nat.target = NETCONF_DNAT;
@@ -477,7 +482,7 @@ start_firewall2(char *wan_ifname)
 		memset(&nat, 0, sizeof(nat));
 		if (get_forward_port(i, &nat) && !(nat.match.flags & NETCONF_DISABLED)) {
 			/* Set interface name (match packets entering WAN interface) */
-			strncpy(nat.match.in.name, wan_ifname, IFNAMSIZ);
+			strncpy(nat.match.in.name, wan_ifname, sizeof(nat.match.in.name) - 1);
 			add_forward(&nat, NETCONF_FORWARD, log_accept);
 		}
 	}
@@ -488,7 +493,7 @@ start_firewall2(char *wan_ifname)
 		memset(&nat, 0, sizeof(nat));
 		nat.match.src.ports[1] = htons(0xffff);
 		nat.match.dst.ports[1] = htons(0xffff);
-		strncpy(nat.match.in.name, wan_ifname, IFNAMSIZ);
+		strncpy(nat.match.in.name, wan_ifname, sizeof(nat.match.in.name) - 1);
 
 		/* Set up DNAT to LAN */
 		nat.target = NETCONF_DNAT;
@@ -529,7 +534,7 @@ add_ipv6_filter(char *wan_ifname)
 	memset(&filter, 0, sizeof(filter));
 	filter.match.state = NETCONF_NEW;
 	filter.match.ipproto = IPPROTO_IPV6;
-	strncpy(filter.match.in.name, wan_ifname, IFNAMSIZ);
+	strncpy(filter.match.in.name, wan_ifname, sizeof(filter.match.in.name) - 1);
 	filter.match.src.netmask.s_addr = htonl(INADDR_BROADCAST);
 	filter.match.src.ipaddr.s_addr = htonl(INADDR_ANY);
 	filter.match.dst.netmask.s_addr = htonl(INADDR_BROADCAST);
