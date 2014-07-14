@@ -2,7 +2,7 @@
 <html>
 <head>
 <%11%>
-<%2010%>
+<%2011%>
 <title>NETGEAR Router <%12%></title> 
 <link rel="stylesheet" href="<%13%>">
 <link rel="stylesheet" href="css/scrollbar.css">
@@ -102,41 +102,41 @@ function checkData()
         if(cf.conntime_monthly_limit.value.length > 0)
         {
             if(isNumeric(cf.conntime_monthly_limit,99999))
-                msg+="<%2026%>";
+                msg+="<%2027%>";
         }
         else
-            msg+="<%2026%>";
+            msg+="<%2027%>";
     }
     else
     {
         if(cf.volume_monthly_limit.value.length > 0)
         {
             if(isNumeric(cf.volume_monthly_limit,999999))
-                msg+="<%2026%>";
+                msg+="<%2027%>";
         }
         else
-            msg+="<%2026%>";
+            msg+="<%2027%>";
         
         if(cf.round_up_volume.value.length > 0)
         {
             if(isNumeric(cf.round_up_volume,999999))
-                msg+="<%2027%>";
+                msg+="<%2028%>";
             else
             {
                 if((parseInt(cf.volume_monthly_limit.value) <= parseInt(cf.round_up_volume.value))
                     && ((parseInt(cf.volume_monthly_limit.value) != 0)
                         || (parseInt(cf.round_up_volume.value) != 0)))
-                    msg+="<%2028%>";
+                    msg+="<%2029%>";
             }
         }
         else
-            msg+="<%2027%>";
+            msg+="<%2028%>";
     }
     
     if(cf.waterMark.value.length > 0)
     {
         if(isNumeric(cf.waterMark,999999))
-            msg+="<%2029%>";
+            msg+="<%2030%>";
         else
         {
             if (cf.tm_type[1].checked)
@@ -144,37 +144,37 @@ function checkData()
                 if((parseInt(cf.conntime_monthly_limit.value)*60 <= parseInt(cf.waterMark.value))
                     && ((parseInt(cf.conntime_monthly_limit.value) != 0)
                         || (parseInt(cf.waterMark.value) != 0)))
-                    msg+="<%2030%>";
+                    msg+="<%2031%>";
             }
             else
             {
                 if((parseInt(cf.volume_monthly_limit.value) <= parseInt(cf.waterMark.value))
                     && ((parseInt(cf.volume_monthly_limit.value) != 0)
                         || (parseInt(cf.waterMark.value) != 0)))
-                    msg+="<%2030%>";
+                    msg+="<%2031%>";
             }
         }
     }
     else
-        msg+="<%2029%>";
+        msg+="<%2030%>";
     
-<%2031%>
+<%2032%>
     if(cf.hour.value.length > 0)
     {
         if(isNumeric(cf.hour,12))
-            msg+="<%2032%>";
-    }
-    else
-        msg+="<%2032%>";
-    
-    if(cf.min.value.length > 0)
-    {
-        if(isNumeric(cf.min,59))
             msg+="<%2033%>";
     }
     else
         msg+="<%2033%>";
-<%2034%>
+    
+    if(cf.min.value.length > 0)
+    {
+        if(isNumeric(cf.min,59))
+            msg+="<%2034%>";
+    }
+    else
+        msg+="<%2034%>";
+<%2035%>
     
     if (msg.length > 1)
     {
@@ -200,9 +200,9 @@ function checkData()
         cf.traffic_on.value = 0;
 
     cf.dayofmonth.value = cf.day.options[cf.day.selectedIndex].value;
-<%2031%>
+<%2032%>
     cf.ampm_sel.value = cf.ampm.options[cf.ampm.selectedIndex].value;
-<%2034%>
+<%2035%>
 
     if(cf.checkLed.checked)
         cf.led_on.value = 1;
@@ -308,27 +308,27 @@ function setGray()
             cf.conntime_monthly_limit.disabled = true;
         }
         
-<%2031%>
+<%2032%>
         cf.hour.disabled = false;
         cf.min.disabled = false;
-<%2034%>
+<%2035%>
         cf.day.disabled = false;
-<%2031%>
+<%2032%>
         cf.ampm.disabled = false;
-<%2034%>
+<%2035%>
         {
 
 var removeButton;
 cf.restartCounter.disabled = false;
 removeButton=document.getElementsByName("restartCounter");
-removeButton[0].outerHTML='<button type="submit" value="<%2035%>" name="restartCounter" class="button-rule" onClick="buttonClick(this,\'<%2035%>\');return showConfirmedPage();"><span class="roundleft_button">&nbsp;&nbsp; <%2035%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="submit" value="<%2036%>" name="restartCounter" class="button-rule" onClick="buttonClick(this,\'<%2036%>\');return showConfirmedPage();"><span class="roundleft_button">&nbsp;&nbsp; <%2036%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='pointer';
 }
 
         cf.waterMark.disabled = false;
         cf.checkLed.disabled = false;
         cf.checkBlock.disabled = false;
-<%1442%>
+<%1443%>
          {
 		var removeButton;
 		cf.lastMonth.disabled = false;
@@ -336,7 +336,7 @@ removeButton[0].style.cursor='pointer';
 		removeButton[0].outerHTML='<button type="button" value="last Month" name="lastMonth" class="button-rule" onclick="buttonClick(this,\'lastMonth\');return showlastMonth();"><span class="roundleft_button">&nbsp;&nbsp; Last Month</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;</span></button>';
 		removeButton[0].style.cursor='pointer';
 		}
-<%1443%>
+<%1444%>
         {
 
 var removeButton;
@@ -351,7 +351,7 @@ removeButton[0].style.cursor='pointer';
 var removeButton;
 cf.trafficStatus.disabled = false;
 removeButton=document.getElementsByName("trafficStatus");
-removeButton[0].outerHTML='<button type="button" value="<%2036%>" name="trafficStatus" class="button-rule" onClick="buttonClick(this,\'<%2036%>\');return openStatusWindow();"><span class="roundleft_button">&nbsp;&nbsp;<%2036%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="button" value="<%2037%>" name="trafficStatus" class="button-rule" onClick="buttonClick(this,\'<%2037%>\');return openStatusWindow();"><span class="roundleft_button">&nbsp;&nbsp;<%2037%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='pointer';
 }
 
@@ -364,27 +364,27 @@ removeButton[0].style.cursor='pointer';
         cf.volume_monthly_limit.disabled = true;
         cf.round_up_volume.disabled = true;
         cf.conntime_monthly_limit.disabled = true;
-<%2031%>
+<%2032%>
         cf.hour.disabled = true;
         cf.min.disabled = true;
-<%2034%>
+<%2035%>
         cf.day.disabled = true;
-<%2031%>
+<%2032%>
         cf.ampm.disabled = true;
-<%2034%>
+<%2035%>
         {
 
 var removeButton;
 cf.restartCounter.disabled = true;
 removeButton=document.getElementsByName("restartCounter");
-removeButton[0].outerHTML='<button type="submit" disabled value="<%2035%>" name="restartCounter" class="button-grey" onClick="buttonClick(this,\'<%2035%>\');return showConfirmedPage();"><span class="roundleft_grey">&nbsp;&nbsp; <%2035%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="submit" disabled value="<%2036%>" name="restartCounter" class="button-grey" onClick="buttonClick(this,\'<%2036%>\');return showConfirmedPage();"><span class="roundleft_grey">&nbsp;&nbsp; <%2036%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='default';
 }
 
         cf.waterMark.disabled = true;
         cf.checkLed.disabled = true;
         cf.checkBlock.disabled = true;
-<%1442%>
+<%1443%>
         {
 		var removeButton;
 		cf.lastMonth.disabled = true;
@@ -392,7 +392,7 @@ removeButton[0].style.cursor='default';
 		removeButton[0].outerHTML='<button type="button" disabled value="Last Month" name="lastMonth" class="button-grey" onclick="buttonClick(this,\'lastMonth\');return showlastMonth();"><span class="roundleft_grey">&nbsp;&nbsp; Last Month</span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;</span></button>';
 		removeButton[0].style.cursor='default';
 		}
-<%1443%>
+<%1444%>
         {
 
 var removeButton;
@@ -407,7 +407,7 @@ removeButton[0].style.cursor='default';
 var removeButton;
 cf.trafficStatus.disabled = true;
 removeButton=document.getElementsByName("trafficStatus");
-removeButton[0].outerHTML='<button type="button" disabled value="<%2036%>" name="trafficStatus" class="button-grey"  onClick="buttonClick(this,\'<%2036%>\');return openStatusWindow()"><span class="roundleft_grey">&nbsp;&nbsp;<%2036%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="button" disabled value="<%2037%>" name="trafficStatus" class="button-grey"  onClick="buttonClick(this,\'<%2037%>\');return openStatusWindow()"><span class="roundleft_grey">&nbsp;&nbsp;<%2037%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='default';
 }
 
@@ -446,12 +446,12 @@ function loadSettings()
     else
         cf.day.selectedIndex = parseInt(cf.dayofmonth.value) - 1;
         
-<%2031%>
+<%2032%>
     if(parseInt(cf.ampm_sel.value) == 0)
         cf.ampm.selectedIndex = 0;
     else
         cf.ampm.selectedIndex = 1;
-<%2034%>
+<%2035%>
     
     if (cf.led_on.value == "1")
         cf.checkLed.checked = true;
@@ -535,16 +535,16 @@ function openStatusWindow()
 
 function showConfirmedPage()
 {
-    if (!confirm("<%2037%>"))
+    if (!confirm("<%2038%>"))
         return false;
     return true;
 }
-<%1442%>
+<%1443%>
 function showlastMonth() {
 		        var cf = document.getElementById('traffic_chart');
 		        cf.src="last_month_traffic.htm"
 }
-<%1443%>
+<%1444%>
 //-->
 </script>
 </head>
@@ -570,84 +570,84 @@ function showlastMonth() {
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'internet')" tabindex="-1"><b><%2038%></b> </a></td>
+	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'internet')" tabindex="-1"><b><%2039%></b> </a></td>
 </tr>
 
 <tr>
-	<td colspan="2"><input type="checkbox" name="checkTraffic" value="Enable" onclick = "javascript:setGray();" > <%2039%></td>
+	<td colspan="2"><input type="checkbox" name="checkTraffic" value="Enable" onclick = "javascript:setGray();" > <%2040%></td>
 </tr>
 <tr>
-	<td nowrap colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="radio" name="tm_type" value="tvolume" onclick="setCrtl()" > <%2040%> <select name="traff_dir" size="1" onChange="setCrtl()"><option><%2041%></option><option><%2042%></option><option ><%2043%></option></select>  </td>
+	<td nowrap colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="radio" name="tm_type" value="tvolume" onclick="setCrtl()" > <%2041%> <select name="traff_dir" size="1" onChange="setCrtl()"><option><%2042%></option><option><%2043%></option><option ><%2044%></option></select>  </td>
 </tr>
 <tr>
-	<td width="90%"><img src="spacer.gif" width="43" height="12" border="0"><%2044%></td>
-	<td width="10%" align="right"><input type="text" name="volume_monthly_limit" value="<%2022%>" size="6" maxlength="6" > (<%2013%>)</td>
+	<td width="90%"><img src="spacer.gif" width="43" height="12" border="0"><%2045%></td>
+	<td width="10%" align="right"><input type="text" name="volume_monthly_limit" value="<%2023%>" size="6" maxlength="6" > (<%2014%>)</td>
 </tr>
 <tr>
-	<td nowrap width="90%"><img src="spacer.gif" width="43" height="12" border="0"><%2045%></td>
-	<td width="10%" align="right"><input type="text" name="round_up_volume" value="<%2046%>" size="6" maxlength="6" > (<%2013%>)</td>
+	<td nowrap width="90%"><img src="spacer.gif" width="43" height="12" border="0"><%2046%></td>
+	<td width="10%" align="right"><input type="text" name="round_up_volume" value="<%2047%>" size="6" maxlength="6" > (<%2014%>)</td>
 </tr>
 <tr>
-	<td nowrap colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="radio" name="tm_type" value="conntime" onclick="setCrtl()" > <%2047%></td>
+	<td nowrap colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="radio" name="tm_type" value="conntime" onclick="setCrtl()" > <%2048%></td>
 </tr>
 <tr>
-	<td width="50%"><img src="spacer.gif" width="43" height="12" border="0"><%2044%></td>
-	<td width="50%" align="right"><input type="text" name="conntime_monthly_limit" value="<%2023%>" size="5" maxlength="5" > (<%2016%>)</td>
+	<td width="50%"><img src="spacer.gif" width="43" height="12" border="0"><%2045%></td>
+	<td width="50%" align="right"><input type="text" name="conntime_monthly_limit" value="<%2024%>" size="5" maxlength="5" > (<%2017%>)</td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'counter')" tabindex="-1"><b><%2048%></b> </a></td>
+	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'counter')" tabindex="-1"><b><%2049%></b> </a></td>
 </tr>
 		<tr>
 		<td nowrap colspan="2">
-		<%2049%>
+		<%2050%>
 
-<%2050%>
-		<input type="text" class="num" name="hour" size=2 maxlength=2 value="<%2051%>" >:<input type="text" class="num" name="min" size=2 maxlength=2 value="<%2052%>" >
-       <select name="ampm"><option value=0><%2053%></option><option value=1><%2054%></option></select> <%2055%> 
-<%2056%>
-	   <select name="day"><option value=1><%2057%></option><option value=2><%2058%></option><option value=3><%2059%></option><option value=4><%2060%></option><option value=5><%2061%></option><option value=6><%2062%></option><option value=7><%2063%></option><option value=8><%2064%></option><option value=9><%2065%></option><option value=10><%2066%></option><option value=11><%2067%></option><option value=12><%2068%></option><option value=13><%2069%></option><option value=14><%2070%></option><option value=15><%2071%></option><option value=16><%2072%></option><option value=17><%2073%></option><option value=18><%2074%></option><option value=19><%2075%></option><option value=20><%2076%></option><option value=21><%2077%></option><option value=22><%2078%></option><option value=23><%2079%></option><option value=24><%2080%></option><option value=25><%2081%></option><option value=26><%2082%></option><option value=27><%2083%></option><option value=28><%2084%></option><option value=31><%2085%></option></select> <%2086%>
+<%2051%>
+		<input type="text" class="num" name="hour" size=2 maxlength=2 value="<%2052%>" >:<input type="text" class="num" name="min" size=2 maxlength=2 value="<%2053%>" >
+       <select name="ampm"><option value=0><%2054%></option><option value=1><%2055%></option></select> <%2056%> 
+<%2057%>
+	   <select name="day"><option value=1><%2058%></option><option value=2><%2059%></option><option value=3><%2060%></option><option value=4><%2061%></option><option value=5><%2062%></option><option value=6><%2063%></option><option value=7><%2064%></option><option value=8><%2065%></option><option value=9><%2066%></option><option value=10><%2067%></option><option value=11><%2068%></option><option value=12><%2069%></option><option value=13><%2070%></option><option value=14><%2071%></option><option value=15><%2072%></option><option value=16><%2073%></option><option value=17><%2074%></option><option value=18><%2075%></option><option value=19><%2076%></option><option value=20><%2077%></option><option value=21><%2078%></option><option value=22><%2079%></option><option value=23><%2080%></option><option value=24><%2081%></option><option value=25><%2082%></option><option value=26><%2083%></option><option value=27><%2084%></option><option value=28><%2085%></option><option value=31><%2086%></option></select> <%2087%>
         </td>
 	</tr>
 
 	<tr>
-	  <td colspan="2" align="right">&nbsp;&nbsp;&nbsp;<button type="submit" value="<%2035%>" name="restartCounter" class="button-rule" onclick="buttonClick(this,'<%2035%>');return showConfirmedPage();"><span class="roundleft_button">&nbsp;&nbsp; <%2035%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+	  <td colspan="2" align="right">&nbsp;&nbsp;&nbsp;<button type="submit" value="<%2036%>" name="restartCounter" class="button-rule" onclick="buttonClick(this,'<%2036%>');return showConfirmedPage();"><span class="roundleft_button">&nbsp;&nbsp; <%2036%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 	</tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
    <tr>
-	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'reached')" tabindex="-1"><b><%2087%></b> </a></td>
+	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'reached')" tabindex="-1"><b><%2088%></b> </a></td>
 		</tr>
 		<tr>
-			<td colspan="2"> <%2088%> </td>
+			<td colspan="2"> <%2089%> </td>
 		</tr>
 		<tr>	
-			<td nowrap colspan="2"><img src="spacer.gif" width="24" height="12" border="0"><input type="text" name="waterMark" value="<%2024%>" size="6" maxlength="6" > <%2089%></td>
+			<td nowrap colspan="2"><img src="spacer.gif" width="24" height="12" border="0"><input type="text" name="waterMark" value="<%2025%>" size="6" maxlength="6" > <%2090%></td>
 		</tr>
 		<tr>
-			<td colspan="2" > <%2090%> </td>
+			<td colspan="2" > <%2091%> </td>
 		</tr>
 		<tr>
-			<td colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="checkbox" name="checkLed" > <%2091%> </td>
+			<td colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="checkbox" name="checkLed" > <%2092%> </td>
 		</tr>
 		<tr>
-			<td colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="checkbox" name="checkBlock" > <%2092%></td>
+			<td colspan="2"><img src="spacer.gif" width="20" height="12" border="0"><input type="checkbox" name="checkBlock" > <%2093%></td>
 		</tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
-<%2050%>
+<%2051%>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'statistics')" tabindex="-1"><b><%2093%></b></a></td>
+	<td colspan="2"><a href="javascript:loadhelp('traffic_meter', 'statistics')" tabindex="-1"><b><%2094%></b></a></td>
 </tr>
 
     <tr>
-        <td colspan="2"> <%2094%>: <%2095%></td>
+        <td colspan="2"> <%2095%>: <%2096%></td>
     </tr>
     <tr>
-        <td colspan="2"> <%2096%>: <%2097%></td>
+        <td colspan="2"> <%2097%>: <%2098%></td>
     </tr>
     <tr>
-        <td colspan="2"> <%2098%>: <%2099%></td>
+        <td colspan="2"> <%2099%>: <%2100%></td>
     </tr>
     <tr></tr>
 
@@ -660,18 +660,18 @@ function showlastMonth() {
     <td width="15%" style='width:15.88%;border:inset 1.0pt;border-bottom:none;
     mso-border-top-alt:inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;
     mso-border-right-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%1564%></span></p>
+        <p align=center><span class="thead"><%1565%></span></p>
     </td>
     <td width="23%" style='width:23.2%;border:inset 1.0pt;border-bottom:
     none;mso-border-top-alt:inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;
     mso-border-right-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead" <%2100%>><%458%></span></p>
+        <p align=center><span class="thead" <%2101%>><%458%></span></p>
     </td>
     <td width="60%" nowrap colspan=3 style='width:60.92%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;
     padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2101%></span></p>
+        <p align=center><span class="thead"><%2102%></span></p>
     </td>
    </tr>
    <tr>
@@ -683,185 +683,185 @@ function showlastMonth() {
     <td width="23%" nowrap style='width:23.2%;border:inset 1.0pt;border-top:
     none;mso-border-left-alt:inset windowtext .75pt;mso-border-bottom-alt:inset windowtext .75pt;
     mso-border-right-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead" <%2100%>><%2102%></span></p>
+        <p align=center><span class="thead" <%2101%>><%2103%></span></p>
     </td>
     <td width="17%" nowrap style='width:17.28%;border:none;border-left:inset 1.0pt;border-bottom:inset 1.0pt;
     mso-border-bottom-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2103%></span></p>
+        <p align=center><span class="thead"><%2104%></span></p>
     </td>
     <td width="20%" style='width:20.9%;border:none;border-bottom:inset 1.0pt;
     mso-border-bottom-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2104%></span></p>
+        <p align=center><span class="thead"><%2105%></span></p>
     </td>
     <td width="17%" style='width:17.74%;border:none;border-bottom:inset 1.0pt;border-right:inset 1.0pt;
     mso-border-bottom-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2105%></span></p>
+        <p align=center><span class="thead"><%2106%></span></p>
     </td>
    </tr>
    <tr>
     <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2106%></span></p>
+        <p align=center><span class="thead"><%2107%></span></p>
     </td>
     <td width="23%" style='width:23.2%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class=ttext1 <%2100%>><%2107%></span></p>
+        <p align=center><span class=ttext1 <%2101%>><%2108%></span></p>
     </td>
     <td width="17%" style='width:17.28%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><%2108%></p>
-    </td>
-    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
         <p align=center><%2109%></p>
     </td>
+    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center><%2110%></p>
+    </td>
     <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><%2110%></p>
+        <p align=center><%2111%></p>
     </td>
    </tr>
    <tr>
     <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2111%></span></p>
+        <p align=center><span class="thead"><%2112%></span></p>
     </td>
     <td width="23%" style='width:23.2%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class=ttext1 <%2100%>><%2112%></span></p>
+        <p align=center><span class=ttext1 <%2101%>><%2113%></span></p>
     </td>
     <td width="17%" style='width:17.28%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><%2113%></p>
-    </td>
-    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
         <p align=center><%2114%></p>
     </td>
-    <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
+    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
         <p align=center><%2115%></p>
     </td>
-   </tr>
-   <tr>
-    <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2116%></span></p>
-    </td>
-    <td width="23%" style='width:23.2%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class=ttext1 <%2100%>><%2117%></span></p>
-    </td>
-    <td width="17%" style='width:17.28%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2118%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2119%></p>
-    </td>
-    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
-    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
-    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2120%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2121%></p>
-    </td>
     <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2122%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2123%></p>
+        <p align=center><%2116%></p>
     </td>
    </tr>
    <tr>
     <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2124%></span></p>
+        <p align=center><span class="thead"><%2117%></span></p>
     </td>
     <td width="23%" style='width:23.2%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class=ttext1 <%2100%>><%2125%></span></p>
+        <p align=center><span class=ttext1 <%2101%>><%2118%></span></p>
     </td>
     <td width="17%" style='width:17.28%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2126%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2127%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2119%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2120%></p>
     </td>
     <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2128%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2129%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2121%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2122%></p>
     </td>
     <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2130%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2131%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2123%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2124%></p>
+    </td>
+   </tr>
+   <tr>
+    <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center><span class="thead"><%2125%></span></p>
+    </td>
+    <td width="23%" style='width:23.2%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center><span class=ttext1 <%2101%>><%2126%></span></p>
+    </td>
+    <td width="17%" style='width:17.28%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2127%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2128%></p>
+    </td>
+    <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:none;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2129%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2130%></p>
+    </td>
+    <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
+    border-left:inset 1.0pt;border-bottom:none;border-right:inset 1.0pt;mso-border-top-alt:
+    inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2131%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2132%></p>
     </td>
    </tr>
    <tr>
     <td width="15%" style='width:15.88%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:inset 1.0pt;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class="thead"><%2132%></span></p>
+        <p align=center><span class="thead"><%2133%></span></p>
     </td>
     <td width="23%"  style='width:23.2%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:inset 1.0pt;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center><span class=ttext1 <%2100%>><%2133%></span></p>
+        <p align=center><span class=ttext1 <%2101%>><%2134%></span></p>
     </td>
 
     <td width="17%"  style='width:17.28%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:inset 1.0pt;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2134%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2135%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2135%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2136%></p>
     </td>
     <td width="20%" style='width:20.9%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:inset 1.0pt;border-right:none;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2136%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2137%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2137%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2138%></p>
     </td>
     <td width="17%" style='width:17.74%;border-top:inset 1.0pt;
     border-left:inset 1.0pt;border-bottom:inset 1.0pt;border-right:inset 1.0pt;mso-border-top-alt:
     inset windowtext .75pt;mso-border-left-alt:inset windowtext .75pt;padding:0cm 0cm 0cm 0cm'>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2138%> / </p>
-        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2139%></p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2139%> / </p>
+        <p align=center style='margin:.01cm;margin-bottom:.01cm'><%2140%></p>
     </td>
    </tr>
   </table>
 
   </td>
  </tr>
-<%2056%>
+<%2057%>
 
 
-<%1458%>
+<%1459%>
 <tr>
     <td width="100%"><iframe id="traffic_chart" frameborder="no" border="no"  marginwidth="0" marginheight="0" src="this_month_traffic.htm" framBorder="0"  scrolling="no" width="500" height="400"></iframe></td>
 </tr>
-<%1465%>
+<%1466%>
 <tr>
 	<td colspan="2" align="center">
-<%1458%>
+<%1459%>
 	&nbsp;&nbsp;&nbsp;<button type="button" value="Last Month" name="lastMonth" class="button-rule" onclick="buttonClick(this,'lastMonth');return showlastMonth();"><span class="roundleft_button">&nbsp;&nbsp; Last Month</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;</span></button>
-<%1465%>
+<%1466%>
 	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%688%>" name="refresh" class="button-rule" onclick="buttonClick(this,'<%688%>'); return true;" ><span class="roundleft_button">&nbsp;&nbsp; <%688%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="button" value="<%2036%>" name="trafficStatus" class="button-rule" onclick="buttonClick(this,'<%2036%>');return openStatusWindow();"><span class="roundleft_button">&nbsp;&nbsp; <%2036%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="button" value="<%2037%>" name="trafficStatus" class="button-rule" onclick="buttonClick(this,'<%2037%>');return openStatusWindow();"><span class="roundleft_button">&nbsp;&nbsp; <%2037%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td>
 </tr>
 
@@ -882,18 +882,18 @@ function showlastMonth() {
 
 
 
-<input name=traffic_supported type=hidden value= "<%2140%>">
+<input name=traffic_supported type=hidden value= "<%2141%>">
 <input name=wan_proto type=hidden value= "<%446%>">
-<input name=traffic_on type=hidden value= "<%2019%>">
-<input name=contrl_type type=hidden value= "<%2020%>">
-<input name=contrl_dir type=hidden value= "<%2021%>">
-<%2050%>
-<input name=ampm_sel type=hidden value= "<%2141%>">
-<%2056%>
-<input name=dayofmonth type="hidden" value="<%2142%>">
-<input name=led_on type=hidden value= "<%2143%>">
+<input name=traffic_on type=hidden value= "<%2020%>">
+<input name=contrl_type type=hidden value= "<%2021%>">
+<input name=contrl_dir type=hidden value= "<%2022%>">
+<%2051%>
+<input name=ampm_sel type=hidden value= "<%2142%>">
+<%2057%>
+<input name=dayofmonth type="hidden" value="<%2143%>">
+<input name=led_on type=hidden value= "<%2144%>">
 <input name=block_on type=hidden value= "<%1160%>">
-<input name=dorefresh type=hidden value= "<%2144%>">
+<input name=dorefresh type=hidden value= "<%2145%>">
 <a name="helpframe-anchor"></a>
 </form>
 
