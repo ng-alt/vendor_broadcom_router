@@ -312,6 +312,16 @@ start_vlan(void)
 		for (j = 0; j < VLAN_NUMPRIS; j ++) {
 			snprintf(prio, sizeof(prio), "%d", j);
 			eval("vconfig", "set_ingress_map", vlan_id, prio, prio);
+#ifdef VLAN_SUPPORT
+        /*setup egress vlan priority*/
+        if(nvram_match("enable_vlan","enable"))
+        {
+            char vlan_prio[16];
+            snprintf(vlan_prio,sizeof(vlan_prio),"%s_prio",vlan_id);
+            if(nvram_get(vlan_prio))
+                eval("vconfig", "set_egress_map",vlan_id, prio, nvram_get(vlan_prio));
+        }
+#endif
 		}
 	}
 
@@ -320,7 +330,7 @@ start_vlan(void)
 	if (nvram_match("ipv6ready", "1"))
 	{
 	    char cmd[32];
-	    sprintf(cmd, "ifconfig vlan1 hw ether %s", nvram_get("lan_hwaddr"));
+	    sprintf(cmd, "ifconfig %s hw ether %s",nvram_get("lan_interface"), nvram_get("lan_hwaddr"));
 	    system(cmd);
 	}
 #endif

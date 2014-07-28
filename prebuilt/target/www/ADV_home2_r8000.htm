@@ -52,19 +52,19 @@ var DodIndex = 1;
         }); 
 
         $('#wireless_setup').click(function(ev){ 
-            parent.loadPage2("<%305%>");
+            parent.loadPage2("<%307%>");
         }); 
         
         $('#wireless_setup_5G').click(function(ev){ 
-            parent.loadPage2("<%305%>");
+            parent.loadPage2("<%307%>");
         });         
 
-<%2933%>	
+<%2934%>	
         
         $('#wireless_setup_5G_2').click(function(ev){ 
-            parent.loadPage2("<%305%>");
+            parent.loadPage2("<%307%>");
         });         
-<%2934%>	
+<%2935%>	
         
         $('#guest_setup').click(function(ev){ 
             parent.loadPage2("WLG_wireless_dual_band_2_r8000.htm");
@@ -74,11 +74,11 @@ var DodIndex = 1;
             parent.loadPage2("WLG_wireless_dual_band_2_r8000.htm");
         });   
   
-<%2933%>	
+<%2934%>	
         $('#guest_setup_5G_2').click(function(ev){ 
             parent.loadPage2("WLG_wireless_dual_band_2_r8000.htm");
         });   
-<%2934%>	
+<%2935%>	
 
         $('#LAN_setup').click(function(ev){ 
             parent.loadPage2("WLG_ap_dual_band.htm");
@@ -133,14 +133,14 @@ var DodIndex = 1;
                $('#box-header-table6').removeClass("box-header-table");  
         }   		
 
-<%2933%>	
+<%2934%>	
         if($('.header-text7').text().length>=36 | $('.header-text8').text().length>=36){
                $('#box-header-table7').addClass("box-header-table-large");
                $('#box-header-table8').addClass("box-header-table-large");
                $('#box-header-table7').removeClass("box-header-table");
                $('#box-header-table8').removeClass("box-header-table");  
         }   		
-<%2934%>	
+<%2935%>	
 		       
     });
 
@@ -186,10 +186,10 @@ function adjustPageLayout()
         var table_height4 = $('#page-table4')[0].clientHeight+"px";
         var table_height5 = $('#page-table5')[0].clientHeight+"px";
         var table_height6 = $('#page-table6')[0].clientHeight+"px";		
-<%2933%>	
+<%2934%>	
         var table_height7 = $('#page-table7')[0].clientHeight+"px";
         var table_height8 = $('#page-table8')[0].clientHeight+"px";		
-<%2934%>	
+<%2935%>	
     
         if($('#page-table1')[0].clientHeight >=  $('#page-table2')[0].clientHeight)
             $('#page-table2').css("height",table_height1);
@@ -206,12 +206,12 @@ function adjustPageLayout()
         else
             $('#page-table5').css("height",table_height6);
 
-<%2933%>	
+<%2934%>	
         if($('#page-table7')[0].clientHeight >=  $('#page-table8')[0].clientHeight)
             $('#page-table8').css("height",table_height7);
         else
             $('#page-table7').css("height",table_height8);
-<%2934%>	
+<%2935%>	
 
 }
 
@@ -241,19 +241,19 @@ function advButtonClick(index){
     }
     else if(index==2)
     {
-        if(confirm("<%2875%>"))
+        if(confirm("<%2876%>"))
         {
             document.forms[0].buttonSelect.value="2";
             document.forms[0].submit(document.forms[0]);
         }
     }
-<%1443%>
+<%1444%>
 	else if(index==3)
 	{
 	    document.forms[0].buttonSelect.value="3";
 	    document.forms[0].submit(document.forms[0]);
 	}
-<%1444%>
+<%1445%>
 }
 
 function openStatWindow() {
@@ -271,11 +271,11 @@ function openStatusWindow()
             winoptions = "width=400,height=460,status=yes,resizable=yes";
     else if (conn == "pppoe")
     {
-		<%514%>
-        if ("<%2876%><%2877%>" == "1")
+		<%516%>
+        if ("<%2877%><%2878%>" == "1")
                 winoptions = "width=400,height=600,status=yes,resizable=yes";
         else
-		<%515%>
+		<%517%>
                     winoptions = "width=400,height=360,status=yes,resizable=yes";
     }
     else
@@ -312,8 +312,8 @@ function loadSettings()
         var statusButton;
         cf.Status.disabled = 'true';
         statusButton=document.getElementsByName("Status");
-        //statusButton.outerHTML='<button type="submit" disabled value="<%2261%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%2261%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%2261%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
-        statusButton.outerHTML='<button type="button" disabled class="button-grey" style="float:left" onClick="advButtonClick(1);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();" name="Status"><%780%></button>';
+        //statusButton.outerHTML='<button type="submit" disabled value="<%2262%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%2262%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%2262%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        statusButton.outerHTML='<button type="button" disabled class="button-grey" style="float:left" onClick="advButtonClick(1);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();" name="Status"><%782%></button>';
         //removeButton[0].style.cursor='default';
     }
 */
@@ -339,7 +339,7 @@ function loadSettings()
 								<td style="width:17px">
 								  <img src="img/good-icon.gif" style="padding-left:10px;padding-top:3px"/>
 								</td>
-								<td class="box-header-text header-text1"><%2878%></td>
+								<td class="box-header-text header-text1"><%2879%></td>
 							  </tr>
 							</table>
                                                         </div>
@@ -350,37 +350,37 @@ function loadSettings()
 											<td colspan="2" class="basic-table-seperate-border"></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" width="25%" ><%1859%></td>
-											<td class="basic-text-content" width="75%"> <%2467%> </td>
+											<td class="basic-text-menu" width="25%" ><%1860%></td>
+											<td class="basic-text-content" width="75%"> <%2468%> </td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border" ><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2879%></td>
-											<td class="basic-text-content" > <%2468%></td>
+											<td class="basic-text-menu" ><%2880%></td>
+											<td class="basic-text-content" > <%2469%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2469%></td>
-											<td class="basic-text-content" > <%2470%></td>
+											<td class="basic-text-menu" ><%2470%></td>
+											<td class="basic-text-content" > <%2471%></td>
 										</tr>
-										<%1459%>
+										<%1460%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr>
 										    <td>
-                                             <a class="basic-text-menu" align="left" ><%2880%></a>
+                                             <a class="basic-text-menu" align="left" ><%2881%></a>
 											 <a href="#"><img align=right src="adv_refresh.bmp" onClick="advButtonClick(3);" border=0></a>
 											</td>
 											<td>
 											 <table border="0" bordercolor=#000000 width="88%" id="table8" style="border-collapse: collapse">
-											    <td bgcolor="<%2881%>" style="border-left-style:solid; border-left-width:1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2882%>%"></td>
-											    <div style="margin-left: 50px; margin-top: 5px; position: absolute;"><%2882%>%</div>
-												<td style="border-left-style:none; border-left-width:medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2883%>%"></td>
+											    <td bgcolor="<%2882%>" style="border-left-style:solid; border-left-width:1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2883%>%"></td>
+											    <div style="margin-left: 50px; margin-top: 5px; position: absolute;"><%2883%>%</div>
+												<td style="border-left-style:none; border-left-width:medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2884%>%"></td>
 											 </table>
                                             </td>
 										</tr>
@@ -390,67 +390,67 @@ function loadSettings()
 										<tr class="basic-text">
 										<td>
 											<table border="0">
-											<td style="font-weight:600;font-size:11.5px;color:#444444;" nowrap="">&nbsp;&nbsp;&nbsp;<%2884%></td>
+											<td style="font-weight:600;font-size:11.5px;color:#444444;" nowrap="">&nbsp;&nbsp;&nbsp;<%2885%></td>
 											<td style="font-weight:600;font-size:11px;color:#444444;">
-											<%2885%><%2886%><br><%2887%><%2888%>
+											<%2886%><%2887%><br><%2888%><%2889%>
 											</td>
 											<td><a href="#"><img align=right src="adv_refresh.bmp" onClick="advButtonClick(3);" border=0></a></td>
 											</table>
 										</td>
 										<td>
 											<table border="0" bordercolor=#000000 width="88%" id="table8" style="border-collapse: collapse">
-											   <td bgcolor="<%2889%>" style="border-left-style:solid; border-left-width:1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2890%>%"></td>
-											   <div style="margin-left: 50px; margin-top: 5px; position: absolute;"><%2890%>%</div>
-											   <td style="border-left-style:none; border-left-width:medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2891%>%"></td>
+											   <td bgcolor="<%2890%>" style="border-left-style:solid; border-left-width:1px; border-right-style:none; border-right-width:medium; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2891%>%"></td>
+											   <div style="margin-left: 50px; margin-top: 5px; position: absolute;"><%2891%>%</div>
+											   <td style="border-left-style:none; border-left-width:medium; border-right-style:solid; border-right-width:1px; border-top-style:solid; border-top-width:1px; border-bottom-style:solid; border-bottom-width:1px" height="22px" width="<%2892%>%"></td>
 											</table>
                                         </td>
 										</tr>
-										<%1466%>
-                                        <%1287%>
+										<%1467%>
+                                        <%1289%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-subTitle" ><%2892%></td>
+											<td class="basic-text-subTitle" ><%2893%></td>
 											<td class="basic-text-content" > </td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%691%> </td>
-											<td class="basic-text-content" > <%2476%> </td>
+											<td class="basic-text-menu" ><%693%> </td>
+											<td class="basic-text-content" > <%2477%> </td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%489%> </td>
-											<td class="basic-text-content" ><%295%> </td>
+											<td class="basic-text-menu" ><%491%> </td>
+											<td class="basic-text-content" ><%297%> </td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2648%> </td>
-											<td class="basic-text-content" ><%2893%> </td>
+											<td class="basic-text-menu" ><%2649%> </td>
+											<td class="basic-text-content" ><%2894%> </td>
 										</tr>
-                                        <%1294%>
+                                        <%1296%>
 										<!--
 										<tr class="basic-text">
 											<td class="basic-text-menu" >Last Checked for Upgrade</td>
 											<td class="basic-text-content" >3/31/2010 14:55</td>
 										</tr>
 										-->  
-                                        <%1295%>
+                                        <%1297%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2894%></td>
-											<td class="basic-text-content" ><%2895%></td>
+											<td class="basic-text-menu" ><%2895%></td>
+											<td class="basic-text-content" ><%2896%></td>
 										</tr>
-                                        <%1298%>
+                                        <%1300%>
 										<tr >
 											<td class="basic-text-menu-bottom">&nbsp;</td>
 											<td class="basic-text-content-bottom"></td>
@@ -461,7 +461,7 @@ function loadSettings()
 											<tr>
 											<td width="25%"></td>
 											<td  width="50%" class="page-table-button-left" align="center" onClick="advButtonClick(2);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();">
-													 <span id="reboot"><%2896%></span>	
+													 <span id="reboot"><%2897%></span>	
 											</td>
 											<td width="25%"></td>
 											</tr>
@@ -483,14 +483,14 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2897%>
+										<%2898%>
 									</td>
-                                    <%1287%>
-									<td class="box-header-text header-text2" style="cursor:pointer;" id="INT_setup"><%2898%></td>
-                                    <%1294%>
-                                    <%1295%>
-                                    <td class="box-header-text header-text2" style="cursor:pointer;" id="LAN_setup"><%2892%></td>
-                                    <%1298%>
+                                    <%1289%>
+									<td class="box-header-text header-text2" style="cursor:pointer;" id="INT_setup"><%2899%></td>
+                                    <%1296%>
+                                    <%1297%>
+                                    <td class="box-header-text header-text2" style="cursor:pointer;" id="LAN_setup"><%2893%></td>
+                                    <%1300%>
 								</tr>
 							</table>
                                                         </div>
@@ -504,76 +504,76 @@ function loadSettings()
 
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" width="25%" ><%691%> </td>
-                                            <%1287%>
-											<td class="basic-text-content" width="75%"><%507%></td>
-                                            <%1294%>
-                                            <%1295%>
-											<td class="basic-text-content" width="75%"><%2476%></td>
-                                            <%1298%>
+											<td class="basic-text-menu" width="25%" ><%693%> </td>
+                                            <%1289%>
+											<td class="basic-text-content" width="75%"><%509%></td>
+                                            <%1296%>
+                                            <%1297%>
+											<td class="basic-text-content" width="75%"><%2477%></td>
+                                            <%1300%>
 										</tr>
-                                        <%1295%>
+                                        <%1297%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2648%> </td>
-											<td class="basic-text-content" ><%2893%> </td>
+											<td class="basic-text-menu" ><%2649%> </td>
+											<td class="basic-text-content" ><%2894%> </td>
 										</tr>    
-                                        <%1298%>            
+                                        <%1300%>            
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%489%> </td>
-                                            <%1287%>
-											<td class="basic-text-content" ><%981%></td>
-                                            <%1294%>
-                                            <%1295%>       
-                                            <td class="basic-text-content" ><%1299%></td>
-                                            <%1298%>
+											<td class="basic-text-menu" ><%491%> </td>
+                                            <%1289%>
+											<td class="basic-text-content" ><%983%></td>
+                                            <%1296%>
+                                            <%1297%>       
+                                            <td class="basic-text-content" ><%1301%></td>
+                                            <%1300%>
 										</tr>
-                                        <%1287%>
+                                        <%1289%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2899%> </td>
-											<td class="basic-text-content" ><%2900%></td>
-										</tr>
-                                        <%1294%>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%490%> </td>
-                                            <%1287%>
+											<td class="basic-text-menu" ><%2900%> </td>
 											<td class="basic-text-content" ><%2901%></td>
-                                            <%1294%>
-                                            <%1295%>  
-                                            <td class="basic-text-content" ><%1300%></td>
-                                            <%1298%>
 										</tr>
-                                        <%1295%>
+                                        <%1296%>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%577%> </td>
-											<td class="basic-text-content" ><%1302%> </td>
+											<td class="basic-text-menu" ><%492%> </td>
+                                            <%1289%>
+											<td class="basic-text-content" ><%2902%></td>
+                                            <%1296%>
+                                            <%1297%>  
+                                            <td class="basic-text-content" ><%1302%></td>
+                                            <%1300%>
+										</tr>
+                                        <%1297%>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%579%> </td>
+											<td class="basic-text-content" ><%1304%> </td>
 										</tr>    
-                                        <%1298%>                                           
+                                        <%1300%>                                           
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2478%> </td>
-                                            <%1287%>
-											<td class="basic-text-content" ><%1306%></td>
-                                            <%1294%>
-                                            <%1295%>                                              
-											<td class="basic-text-content" ><%1307%><br><%1308%></td>
-                                            <%1298%>
+											<td class="basic-text-menu" ><%2479%> </td>
+                                            <%1289%>
+											<td class="basic-text-content" ><%1308%></td>
+                                            <%1296%>
+                                            <%1297%>                                              
+											<td class="basic-text-content" ><%1309%><br><%1310%></td>
+                                            <%1300%>
 										</tr>		
 			
 
@@ -585,10 +585,10 @@ function loadSettings()
 											<td colspan="2" class="basic-table-seperate-border" style="background-color:#FFFFFF;">
 											<table ><tr>
 											 <td colspan="1" class="page-table-button-right" align="center"   onClick="advButtonClick(0);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();">
-												 <span id="statistics"><%1214%></span>									 
+												 <span id="statistics"><%1216%></span>									 
 											</td>
 											 <td colspan="1" class="page-table-button-right" align="center"  onClick="advButtonClick(1);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();">
-												 <span id="status" name="Status"><%780%></span>									 
+												 <span id="status" name="Status"><%782%></span>									 
 											</td>
 											</tr>
 											</table></td>
@@ -623,9 +623,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2902%>
+										<%2903%>
 									</td>
-									<td class="box-header-text header-text3" style="cursor:pointer;" id="wireless_setup"><%392%> (2.4GHz)</td>
+									<td class="box-header-text header-text3" style="cursor:pointer;" id="wireless_setup"><%394%> (2.4GHz)</td>
 								</tr>
 							</table>
                                                         </div>
@@ -638,22 +638,15 @@ function loadSettings()
 										</tr>
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" > <%2471%>  </td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%69%></td>
-											<td class="basic-text-content" > <%2903%> </td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
 											<td class="basic-text-menu" ><%118%></td>
-											<td class="basic-text-content" > <%2904%></td>
+											<td class="basic-text-content" > <%2472%>  </td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%71%></td>
+											<td class="basic-text-content" > <%2904%> </td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
@@ -664,25 +657,32 @@ function loadSettings()
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%122%></td>
+											<td class="basic-text-content" > <%2906%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>										
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
-											<td class="basic-text-content" ><%2907%></td>
+											<td class="basic-text-menu" ><%2907%></td>
+											<td class="basic-text-content" ><%2908%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
-											<td class="basic-text-content" ><%2909%></td>
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2910%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
                                                                        
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2910%></td>
-											<td class="basic-text-content" ><%2911%></td>
+											<td class="basic-text-menu" ><%2911%></td>
+											<td class="basic-text-content" ><%2912%></td>
 										</tr>		
                                         <tr >
 											<td class="basic-text-menu-bottom">&nbsp;</td>
@@ -704,9 +704,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2919%>
+										<%2920%>
 									</td>
-									<td class="box-header-text  header-text4" style="cursor:pointer;" id="guest_setup"><%339%> (2.4 GHz)</td>
+									<td class="box-header-text  header-text4" style="cursor:pointer;" id="guest_setup"><%341%> (2.4 GHz)</td>
 								</tr>
 							</table>
                                                         </div>
@@ -719,30 +719,30 @@ function loadSettings()
 										</tr>
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" ><%2920%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
+											<td class="basic-text-menu" ><%118%></td>
 											<td class="basic-text-content" ><%2921%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
+											<td class="basic-text-menu" ><%2907%></td>
 											<td class="basic-text-content" ><%2922%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2923%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
                                           
                                                                                 <tr class="basic-text">
-											<td class="basic-text-menu" ><%1678%></td>
-											<td class="basic-text-content" ><%2923%></td>
+											<td class="basic-text-menu" ><%1679%></td>
+											<td class="basic-text-content" ><%2924%></td>
 										</tr>
                                         <tr >
 											<td class="basic-text-menu-bottom">&nbsp;</td>
@@ -777,9 +777,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2912%>
+										<%2913%>
 									</td>
-									<td class="box-header-text  header-text5" style="cursor:pointer;" id="wireless_setup_5G"><%392%> (5GHz)</td>
+									<td class="box-header-text  header-text5" style="cursor:pointer;" id="wireless_setup_5G"><%394%> (5GHz)</td>
 								</tr>
 							</table>
               </div>
@@ -792,21 +792,14 @@ function loadSettings()
 										</tr>
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" ><%2475%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%69%></td>
-											<td class="basic-text-content" ><%2913%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
 											<td class="basic-text-menu" ><%118%></td>
+											<td class="basic-text-content" ><%2476%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%71%></td>
 											<td class="basic-text-content" ><%2914%></td>
 										</tr>
 										<tr>
@@ -818,17 +811,24 @@ function loadSettings()
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%122%></td>
+											<td class="basic-text-content" ><%2916%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>										
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
-											<td class="basic-text-content" ><%2916%></td>
+											<td class="basic-text-menu" ><%2907%></td>
+											<td class="basic-text-content" ><%2917%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
-											<td class="basic-text-content" ><%2917%></td>
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2918%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
@@ -836,8 +836,8 @@ function loadSettings()
                                                                
 										<tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2910%></td>
-											<td class="basic-text-content" ><%2918%></td>
+											<td class="basic-text-menu" ><%2911%></td>
+											<td class="basic-text-content" ><%2919%></td>
 										</tr>
                                         <tr >
 											<td class="basic-text-menu-bottom">&nbsp;</td>
@@ -856,9 +856,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2924%>
+										<%2925%>
 									</td>
-									<td class="box-header-text  header-text6" style="cursor:pointer;" id="guest_setup_5G"><%339%> (5 GHz)</td>
+									<td class="box-header-text  header-text6" style="cursor:pointer;" id="guest_setup_5G"><%341%> (5 GHz)</td>
 								</tr>
 							</table>
                                                         </div>
@@ -871,30 +871,30 @@ function loadSettings()
 										</tr>
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" ><%2925%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
+											<td class="basic-text-menu" ><%118%></td>
 											<td class="basic-text-content" ><%2926%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
+											<td class="basic-text-menu" ><%2907%></td>
 											<td class="basic-text-content" ><%2927%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2928%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
                                                            
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%1678%></td>
-											<td class="basic-text-content" ><%2928%></td>
+											<td class="basic-text-menu" ><%1679%></td>
+											<td class="basic-text-content" ><%2929%></td>
 										</tr>	
 										<tr>
 											<td class="basic-text-menu" >&nbsp;</td>
@@ -919,7 +919,7 @@ function loadSettings()
 			<tr>
 				<td style="height:2px"></td>
 			</tr>			
-<%2935%>	
+<%2936%>	
 
 			<tr>
 				<td>
@@ -932,9 +932,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2936%>
+										<%2937%>
 									</td>
-									<td class="box-header-text  header-text7" style="cursor:pointer;" id="wireless_setup_5G_2"><%392%> (5GHz) Second Radio</td>
+									<td class="box-header-text  header-text7" style="cursor:pointer;" id="wireless_setup_5G_2"><%394%> (5GHz) Second Radio</td>
 								</tr>
 							</table>
                                                         </div>
@@ -942,44 +942,13 @@ function loadSettings()
 							<table style="width:305px;background-color:#FFFFFF;margin-left:5px;border-collapse:collapse;border-right:3px solid #D0D0D0">
 								<tr align="left" valign="bottom"><td>
 									<table id="page-table7" class="page-table" style="background-color:#FFFFFF;width:300px;height:150px">
-<%2937%>
+<%2938%>
 										<tr style="height:6px;background-color:#FFFFFF">
 											<td colspan="2" class="basic-table-seperate-border"></td>
 										</tr>
 
 										<tr class="basic-text">
 											<td class="basic-text-menu" >Smart Connect</td>
-											<td class="basic-text-content" ><%2938%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%118%></td>
-											<td class="basic-text-content" ><%2939%></td>
-										</tr>
-<%2940%>
-<%2941%>
-										<tr style="height:6px;background-color:#FFFFFF">
-											<td colspan="2" class="basic-table-seperate-border"></td>
-										</tr>
-
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" ><%2942%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%69%></td>
-											<td class="basic-text-content" ><%2943%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%118%></td>
 											<td class="basic-text-content" ><%2939%></td>
 										</tr>
 										<tr>
@@ -987,21 +956,52 @@ function loadSettings()
 										</tr>
 										<tr class="basic-text">
 											<td class="basic-text-menu" ><%120%></td>
+											<td class="basic-text-content" ><%2940%></td>
+										</tr>
+<%2941%>
+<%2942%>
+										<tr style="height:6px;background-color:#FFFFFF">
+											<td colspan="2" class="basic-table-seperate-border"></td>
+										</tr>
+
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%118%></td>
+											<td class="basic-text-content" ><%2943%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%71%></td>
 											<td class="basic-text-content" ><%2944%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%120%></td>
+											<td class="basic-text-content" ><%2940%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%122%></td>
+											<td class="basic-text-content" ><%2945%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>										
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
-											<td class="basic-text-content" ><%2945%></td>
+											<td class="basic-text-menu" ><%2907%></td>
+											<td class="basic-text-content" ><%2946%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
-											<td class="basic-text-content" ><%2946%></td>
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2947%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
@@ -1009,10 +1009,10 @@ function loadSettings()
                                                                
 										<tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2910%></td>
-											<td class="basic-text-content" ><%2947%></td>
+											<td class="basic-text-menu" ><%2911%></td>
+											<td class="basic-text-content" ><%2948%></td>
 										</tr>
-<%2948%>
+<%2949%>
                                         <tr >
 											<td class="basic-text-menu-bottom">&nbsp;</td>
 											<td class="basic-text-content-bottom"></td>
@@ -1030,9 +1030,9 @@ function loadSettings()
 
 								<tr class="box-header">
 									<td style="width:17px">
-										<%2949%>
+										<%2950%>
 									</td>
-									<td class="box-header-text  header-text8" style="cursor:pointer;" id="guest_setup_5G_2"><%339%> (5 GHz)</td>
+									<td class="box-header-text  header-text8" style="cursor:pointer;" id="guest_setup_5G_2"><%341%> (5 GHz)</td>
 								</tr>
 							</table>
                                                         </div>
@@ -1045,30 +1045,30 @@ function loadSettings()
 										</tr>
 
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%116%></td>
-											<td class="basic-text-content" ><%2950%></td>
-										</tr>
-										<tr>
-											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
-										</tr>
-										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2906%></td>
+											<td class="basic-text-menu" ><%118%></td>
 											<td class="basic-text-content" ><%2951%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%2908%></td>
+											<td class="basic-text-menu" ><%2907%></td>
 											<td class="basic-text-content" ><%2952%></td>
+										</tr>
+										<tr>
+											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
+										</tr>
+										<tr class="basic-text">
+											<td class="basic-text-menu" ><%2909%></td>
+											<td class="basic-text-content" ><%2953%></td>
 										</tr>
 										<tr>
 											<td colspan="2" class="basic-table-seperate-border"><div class="basic-table-seperate"></div></td>
 										</tr>
                                                            
 										<tr class="basic-text">
-											<td class="basic-text-menu" ><%1678%></td>
-											<td class="basic-text-content" ><%2953%></td>
+											<td class="basic-text-menu" ><%1679%></td>
+											<td class="basic-text-content" ><%2954%></td>
 										</tr>	
 										<tr>
 											<td class="basic-text-menu" >&nbsp;</td>
@@ -1093,13 +1093,13 @@ function loadSettings()
 			<tr>
 				<td style="height:2px"></td>
 			</tr>
-<%2954%>	
+<%2955%>	
 
 		</table>
 		</div>
 		<input type="hidden" value="1" name="buttonSelect"/>
-		<input type="hidden" name="wantype" value="<%446%>">
-		<input type="hidden" name="enable_apmode" value="<%425%>">
+		<input type="hidden" name="wantype" value="<%448%>">
+		<input type="hidden" name="enable_apmode" value="<%427%>">
 	</form>  
     <form>
         <input type="hidden" name="curlang" value="<%9%>">  

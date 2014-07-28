@@ -28,7 +28,7 @@ var initRegion;
 var changeMsg = "<%15%>";
 var notShown = true; // only shown region change message once
 var initialized = false;
-var device_id="<%1524%>";
+var device_id="<%1525%>";
   
     $(document).ready(function()
     {	
@@ -161,13 +161,13 @@ function chgCh(from)
         {
             if(cf.security_type[2].checked)
             {
-                alert("<%27%>");
+                alert("<%29%>");
                 cf.opmode.selectedIndex = 0;
                 return true;
             }
             if(cf.security_type[4].checked)
             {
-                alert("<%30%>");
+                alert("<%32%>");
                 cf.opmode.selectedIndex = 0;
                 return true;
             }
@@ -217,15 +217,15 @@ function setOpMode()
         if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
             cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1525%>";
+        	cf.opmode.options[0].text = "<%1526%>";
         	cf.opmode.options[0].value = "g and b";
         }
         else
         {
             cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1525%>";
-        	cf.opmode.options[1].text = "<%1526%>";
-        	cf.opmode.options[2].text = "<%1527%>";
+        	cf.opmode.options[0].text = "<%1526%>";
+        	cf.opmode.options[1].text = "<%1527%>";
+        	cf.opmode.options[2].text = "<%1528%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -237,15 +237,15 @@ function setOpMode()
         if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
             cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1525%>";
+        	cf.opmode.options[0].text = "<%1526%>";
         	cf.opmode.options[0].value = "g and b";
         }
         else
         {
             cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1525%>";
-        	cf.opmode.options[1].text = "<%1526%>";
-        	cf.opmode.options[2].text = "<%1527%>";
+        	cf.opmode.options[0].text = "<%1526%>";
+        	cf.opmode.options[1].text = "<%1527%>";
+        	cf.opmode.options[2].text = "<%1528%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -257,16 +257,16 @@ function setOpMode()
     	if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
         	cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1525%>";
+        	cf.opmode.options[0].text = "<%1526%>";
         	cf.opmode.options[0].value = "g and b";                     
         	//cf.opmode.selectedIndex = currentMode;                      
         }                          
         else
         {
         	cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1525%>";
-        	cf.opmode.options[1].text = "<%1528%>";
-        	cf.opmode.options[2].text = "<%1529%>";
+        	cf.opmode.options[0].text = "<%1526%>";
+        	cf.opmode.options[1].text = "<%1529%>";
+        	cf.opmode.options[2].text = "<%1530%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -289,7 +289,7 @@ function setChannel()
 	else
 		cf.w_channel.options.length = FinishChannel[index] - StartChannel[index] + 2;
 
-	cf.w_channel.options[0].text = "<%119%>";
+	cf.w_channel.options[0].text = "<%121%>";
 	cf.w_channel.options[0].value = 0;
 
 	for (var i = StartChannel[index]; i <= FinishChannel[index]; i++) {
@@ -307,7 +307,7 @@ function checkRegion()
     if(cf.WRegion.selectedIndex == 0)
     {
         cf.WRegion.focus();
-        return alertR("<%23%>");
+        return alertR("<%25%>");
     }
     if (notShown)
         notShown = false;
@@ -325,7 +325,7 @@ function wpapskCheck()
     var cf = document.forms[0];
     if (cf.opmode.selectedIndex != 0 && device_id != "WGR614")
     {
-        alert("<%27%>");
+        alert("<%29%>");
         cf.opmode.selectedIndex = 0;
     	buttonFilter();
 document.forms[0].submit();
@@ -339,7 +339,7 @@ function autopskCheck()
     var cf = document.forms[0];
     if (cf.opmode.selectedIndex != 0 && device_id != "WGR614")
     {
-        alert("<%30%>");
+        alert("<%32%>");
         buttonFilter();
 document.forms[0].submit();
     }
@@ -355,20 +355,20 @@ function checkData()
 
     if (cf.ssid.value == "")
     {
-        alert("<%34%>");
+        alert("<%36%>");
         return false;
     }
     
     if (cf.ssid.value.match( /[^\x20-\x7E]/ ))
     {
-        alert("<%35%>");
+        alert("<%37%>");
         cf.ssid.focus();
         return false;
     }
     
     if (cf.wds_enable.value == "1" && cf.w_channel[0].selected)
     {
-        alert("<%36%>");
+        alert("<%38%>");
         cf.w_channel.focus();
         return false;
     }
@@ -388,26 +388,26 @@ function showWpsAlert()
 {
     var cf = document.forms[0];
     if(cf.show_wps_alert.value == "1")
-        alert("<%56%>");
+        alert("<%58%>");
 }
 // -->
 </script>
 </head>
 <body  onload="change_size();initScrn();showWpsAlert();" class="page-body"  onResize="change_size();" >
-<img class="cover-image" src="<%57%>">
-<img class="body-image" src="<%58%>">
+<img class="cover-image" src="<%59%>">
+<img class="body-image" src="<%60%>">
 <div id="full-page-container">
 
 <form id="target"  method="POST" action="wireless.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-  <img class="subtop-image" src="<%59%>">
-<div class="subhead2"> <%392%></div>
+  <img class="subtop-image" src="<%61%>">
+<div class="subhead2"> <%394%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%61%>"  onclick="buttonClick(this,'<%61%>');return checkData();" type="SUBMIT" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%62%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="<%63%>" onclick="buttonClick(this,'<%63%>');"  type="SUBMIT" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%64%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%63%>"  onclick="buttonClick(this,'<%63%>');return checkData();" type="SUBMIT" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%64%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%65%>" onclick="buttonClick(this,'<%65%>');"  type="SUBMIT" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%66%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -415,88 +415,88 @@ function showWpsAlert()
     
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%1468%></b> </a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%1469%></b> </a></td></tr>
     <tr>
       <td colspan="2">
-        <input type="checkbox"  <%1532%> name="ssid_bc" value="ssid_bc"> <%115%> </td></tr>
-    <%110%>
+        <input type="checkbox"  <%1533%> name="ssid_bc" value="ssid_bc"> <%117%> </td></tr>
+    <%112%>
     <tr>
       <td nowrap colspan="2">
-        <input type="checkbox"  <%1533%> name="enable_isolation" value="enable_isolation"> <%112%> </td></tr>
-    <%113%>
+        <input type="checkbox"  <%1534%> name="enable_isolation" value="enable_isolation"> <%114%> </td></tr>
+    <%115%>
     <tr>
-      <td width="50%" align="left"><%116%>:</td>
+      <td width="50%" align="left"><%118%>:</td>
       <td width="50%">
-        <input type="text" name="ssid" value="<%1363%>" size="20" maxlength="32"></td></tr>
+        <input type="text" name="ssid" value="<%1365%>" size="20" maxlength="32"></td></tr>
     <tr>
-      <td nowrap><%69%>:</td>
+      <td nowrap><%71%>:</td>
       <td align="left">
-      <%221%>
+      <%223%>
 	<select name="WRegion" size="1" onchange="chgCh(1)">
-		<option <%71%> value="0">--- <%72%> ---</option>
-		<option <%244%> value="1"><%100%></option>
-		<option <%73%> value="2"><%74%></option>
-		<option <%75%> value="3"><%76%></option>
-		<option <%245%> value="5"><%101%></option>
-		<option <%246%> value="6"><%102%></option>
-		<option <%247%> value="7"><%103%></option>
-		<option <%83%> value="8"><%84%></option>
-		<option <%87%> value="9"><%88%></option>
-		<option <%248%> value="12"><%104%></option>
-		<option <%93%> value="10"><%94%></option>
-		<option <%97%> value="11"><%106%></option>
+		<option <%73%> value="0">--- <%74%> ---</option>
+		<option <%246%> value="1"><%102%></option>
+		<option <%75%> value="2"><%76%></option>
+		<option <%77%> value="3"><%78%></option>
+		<option <%247%> value="5"><%103%></option>
+		<option <%248%> value="6"><%104%></option>
+		<option <%249%> value="7"><%105%></option>
+		<option <%85%> value="8"><%86%></option>
+		<option <%89%> value="9"><%90%></option>
+		<option <%250%> value="12"><%106%></option>
+		<option <%95%> value="10"><%96%></option>
+		<option <%99%> value="11"><%108%></option>
 	</select></td></tr>
-      <%222%>
-      <%107%>
+      <%224%>
+      <%109%>
       <tr><td colspan="2" >
          <select name="WRegion" size="1" onchange="chgCh(1)" disabled >
-		<option value="0">--- <%72%> ---</option>
-		<option value="1"><%100%></option> 
-		<option value="2"><%74%></option> 
-		<option value="3">><%76%></option>
-		<option value="5"><%101%></option> 
-		<option value="6"><%102%></option> 
-		<option value="7"><%103%></option> 
-		<option value="8"><%84%></option> 
-		<option value="9"><%88%></option> 
-		<option value="12"><%104%></option>
-		<option value="10"><%94%></option>
-		<option selected value="11"><%106%></option>
+		<option value="0">--- <%74%> ---</option>
+		<option value="1"><%102%></option> 
+		<option value="2"><%76%></option> 
+		<option value="3">><%78%></option>
+		<option value="5"><%103%></option> 
+		<option value="6"><%104%></option> 
+		<option value="7"><%105%></option> 
+		<option value="8"><%86%></option> 
+		<option value="9"><%90%></option> 
+		<option value="12"><%106%></option>
+		<option value="10"><%96%></option>
+		<option selected value="11"><%108%></option>
 	</select></td></tr>
-      <%108%>
-    <tr>
-      <td nowrap><%118%>:</td>
-      <td nowrap>
-          <select name="w_channel" size=1><option selected><%119%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+      <%110%>
     <tr>
       <td nowrap><%120%>:</td>
-      <td nowrap><select name="opmode" onchange="chgCh(2);"><%1534%></select></td></tr>
+      <td nowrap>
+          <select name="w_channel" size=1><option selected><%121%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+    <tr>
+      <td nowrap><%122%>:</td>
+      <td nowrap><select name="opmode" onchange="chgCh(2);"><%1535%></select></td></tr>
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%122%></b></a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%124%></b></a></td></tr>
       
 <tr><td colspan="2">
 <table cellpadding="0" cellspacing="3" width="100%">
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="Disable" checked ><%123%><td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="Disable" checked ><%125%><td></tr>
     <tr>
     <td colspan="2">
         <div id="wep_radio_2G" style="display: block;">
-            <input type="radio" name="security_type" value="WEP" onClick="buttonFilter();this.form.submit();" ><%124%>
+            <input type="radio" name="security_type" value="WEP" onClick="buttonFilter();this.form.submit();" ><%126%>
         </div>
     </td>
     </tr>
     <tr>
     <td colspan="2">
         <div id="wpa_radio_2G" style="display: block;">
-        <input type="radio" name="security_type" value="WPA-PSK" <%125%> onClick="wpapskCheck();" ><%126%>
+        <input type="radio" name="security_type" value="WPA-PSK" <%127%> onClick="wpapskCheck();" ><%128%>
         </div>
     </td>
     </tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%125%> onClick="buttonFilter();this.form.submit();" ><%127%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%127%> onClick="buttonFilter();this.form.submit();" ><%129%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%125%> onClick="autopskCheck();" ><%128%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%127%> onClick="autopskCheck();" ><%130%></td></tr>
 </table>
 </td></tr>
     
@@ -508,21 +508,21 @@ function showWpsAlert()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%194%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
       </div>
 
 
 
-  <input type="hidden" name="initChannel" value="<%1536%>">
-  <input type="hidden" name="tempSetting" value="<%196%>">
-  <input type="hidden" name="tempRegion" value="<%197%>">
-  <input type="hidden" name="wds_enable" value="<%198%>">  
+  <input type="hidden" name="initChannel" value="<%1537%>">
+  <input type="hidden" name="tempSetting" value="<%198%>">
+  <input type="hidden" name="tempRegion" value="<%199%>">
+  <input type="hidden" name="wds_enable" value="<%200%>">  
   <input type="hidden" name="only_mode" value="0">
-  <input type="hidden" name="show_wps_alert" value="<%201%>">
-  <input type="hidden" name="security_type_2G" value="<%1539%>">
+  <input type="hidden" name="show_wps_alert" value="<%203%>">
+  <input type="hidden" name="security_type_2G" value="<%1540%>">
 <a name="helpframe-anchor"></a>
 </form>
 

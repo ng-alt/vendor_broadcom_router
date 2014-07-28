@@ -701,12 +701,27 @@ start_lan(void)
 	symlink("/sbin/rc", "/tmp/ldhclnt");
 
 
+#ifdef VLAN_SUPPORT
+	nvram_unset("unbridged_ifnames");
+    /*unset some bridge nvram*/
+    char br_ifname_tag[16] = "";
+    char br_ifnames_tag[64] = "";
+    
+    for(i=0; i<7; i++)
+    {
+        sprintf(br_ifname_tag,"br%d_ifname",i);
+        sprintf(br_ifnames_tag,"br%d_ifnames",i);
+        nvram_unset(br_ifname_tag);
+        nvram_unset(br_ifnames_tag);
+    }
+#else
 	nvram_unset("br0_ifname");
 	nvram_unset("br1_ifname");
 	nvram_unset("unbridged_ifnames");
 	nvram_unset("br0_ifnames");
 	nvram_unset("br1_ifnames");
-
+#endif
+/*Foxconn modified end, edward zhang, 2013/07/03*/
 #if defined(__CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__)
 	nvram_unset("acs_ifnames");
 #endif /* defined(_CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__ */
@@ -1492,7 +1507,6 @@ start_wl(void)
       eval("wl", "-i", "eth3", "frameburst", "1");
 #endif
 	  }
-      eval("wl", "assert_type", "1");
 
     /* Foxconn added start by Antony 02/26/2014 The wifi driver could receive/transmit all multicast packets */      
     if(nvram_match("enable_sta_mode","1"))
@@ -2427,7 +2441,11 @@ void start_wlan(void)
     /* Foxconn added start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
     char iptv_intf[32];
+#if defined(R8000)
+    unsigned int iptv_intf_val = 0x00;
+#else
     unsigned char iptv_intf_val = 0x00;
+#endif
     int ru_iptv_en = 0;
     int wlan1_en = 0;
     int wlan2_en = 0;
@@ -2458,7 +2476,11 @@ void start_wlan(void)
     if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
     {
         strcpy(iptv_intf, nvram_get(NVRAM_IPTV_INTF));
+#if defined(R8000)
+        sscanf(iptv_intf, "0x%04X", &iptv_intf_val);
+#else
         sscanf(iptv_intf, "0x%02X", &iptv_intf_val);
+#endif
         if (iptv_intf_val & IPTV_WLAN1)
             wlan1_en = 1;
         /* Foxconn modified start pling 04/20/2012 */
@@ -2482,17 +2504,21 @@ void start_wlan(void)
     ifconfig(wlif, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (wlan1_en)
+    if(!nvram_match("enable_vlan", "enable"))
     {
-        eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
-	    eval("brctl", "addif", "br1", wlif);
-    }
-    else
-    {
-        eval("brctl", "delif", "br1", wlif);        /* pling added 04/03/2012 */
-        if(nvram_match("gmac3_enable", "0"))
-      	    eval("brctl", "addif", lan_ifname, wlif);
-	    
+        if (wlan1_en)
+        {
+            eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
+            eval("brctl", "addif", "br1", wlif);
+        }
+        else
+        {
+            eval("brctl", "delif", "br1", wlif);        /* pling added 04/03/2012 */
+            if(nvram_match("gmac3_enable", "0"))
+            {
+          	    eval("brctl", "addif", lan_ifname, wlif);
+          	}	    
+        }
     }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wlif);
@@ -2505,16 +2531,21 @@ void start_wlan(void)
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (wlan2_en)
+    if(!nvram_match("enable_vlan", "enable"))
     {
-        eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
-	    eval("brctl", "addif", "br1", wl1_ifname);
-    }
-    else
-    {
-        eval("brctl", "delif", "br1", wl1_ifname);  /* pling added 04/03/2012 */
-        if(nvram_match("gmac3_enable", "0"))
-            eval("brctl", "addif", lan_ifname, wl1_ifname);
+        if (wlan2_en)
+        {
+            eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
+            eval("brctl", "addif", "br1", wl1_ifname);
+        }
+        else
+        {
+            eval("brctl", "delif", "br1", wl1_ifname);  /* pling added 04/03/2012 */
+            if(nvram_match("gmac3_enable", "0"))
+            {
+                eval("brctl", "addif", lan_ifname, wl1_ifname);
+            }
+        }
     }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl1_ifname);
@@ -2527,16 +2558,21 @@ void start_wlan(void)
     ifconfig(wl2_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (wlan3_en)
+    if(!nvram_match("enable_vlan", "enable"))
     {
-        eval("brctl", "delif", lan_ifname, wl2_ifname);/* pling added 04/03/2012 */
-	    eval("brctl", "addif", "br1", wl2_ifname);
-    }
-    else
-    {
-        eval("brctl", "delif", "br1", wl2_ifname);  /* pling added 04/03/2012 */
-        if(nvram_match("gmac3_enable", "0"))
-            eval("brctl", "addif", lan_ifname, wl2_ifname);
+        if (wlan3_en)
+        {
+            eval("brctl", "delif", lan_ifname, wl2_ifname);/* pling added 04/03/2012 */
+            eval("brctl", "addif", "br1", wl2_ifname);
+        }
+        else
+        {
+            eval("brctl", "delif", "br1", wl2_ifname);  /* pling added 04/03/2012 */
+            if(nvram_match("gmac3_enable", "0"))
+            {
+                eval("brctl", "addif", lan_ifname, wl2_ifname);
+            }
+        }
     }
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl2_ifname);

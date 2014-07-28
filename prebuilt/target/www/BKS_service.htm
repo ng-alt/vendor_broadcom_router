@@ -97,7 +97,7 @@ function chgSel(index)
  return true;
 }
 
-<%589%>
+<%591%>
 function chSession(newsession)
 {
     if(newsession == 2)
@@ -105,51 +105,51 @@ function chSession(newsession)
     else if(newsession == 1)
         location.href = "BKS_service.htm";		
 }
-<%590%>
+<%592%>
 
 
 //-->
 </script> 
 </head>
 <body  onload="change_size();" class="page-body"  onResize="change_size();" >
-<img class="cover-image" src="<%57%>">
-<img class="body-image" src="<%58%>">
+<img class="cover-image" src="<%59%>">
+<img class="body-image" src="<%60%>">
 <div id="full-page-container">
 
 <form id="target"  name="frmService" method="POST" action="fw_serv.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-	<img class="subtop-image" src="<%59%>">
-<div class="subhead2"> <%377%></div>
+	<img class="subtop-image" src="<%61%>">
+<div class="subhead2"> <%379%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%61%>"  onclick="buttonClick(this,'<%61%>');"  type="submit" name="apply" class="button-apply" > <span class="roundleft_apply" ><%62%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="<%63%>" onclick="buttonClick(this,'<%63%>');"  type="reset" name="cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%64%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%63%>"  onclick="buttonClick(this,'<%63%>');"  type="submit" name="apply" class="button-apply" > <span class="roundleft_apply" ><%64%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%65%>" onclick="buttonClick(this,'<%65%>');"  type="reset" name="cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%66%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
         <tr> <td colspan="2">
-<%591%>			
-    			<input checked type="radio" name=pppoesession value=session1 onClick="chSession(1);"><%592%>
-    			<input type="radio" name=pppoesession value=session2 onClick="chSession(2);"><%593%><br>
-<%594%>			
+<%593%>			
+    			<input checked type="radio" name=pppoesession value=session1 onClick="chSession(1);"><%594%>
+    			<input type="radio" name=pppoesession value=session2 onClick="chSession(2);"><%595%><br>
+<%596%>			
             </td>
         </tr>	
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
  <TR>
- <TD align="left" colspan="2"><a href="javascript:loadhelp('BKS_service','block')" tabindex="-1"><b><%617%></b></a><br>
- <input type="radio" <%618%> name="skeyword" value="never"><%598%><br> 
- <input type="radio" <%619%> name="skeyword" value="perschedule"><%600%><br>
- <input type="radio" <%620%> name="skeyword" value="always"><%602%>
+ <TD align="left" colspan="2"><a href="javascript:loadhelp('BKS_service','block')" tabindex="-1"><b><%619%></b></a><br>
+ <input type="radio" <%620%> name="skeyword" value="never"><%600%><br> 
+ <input type="radio" <%621%> name="skeyword" value="perschedule"><%602%><br>
+ <input type="radio" <%622%> name="skeyword" value="always"><%604%>
  </TD>
  </TR>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
 	<td colspan="2">
-		<a href="javascript:loadhelp('BKS_service','table')" tabindex="-1"><b><%621%></b></a></td>
+		<a href="javascript:loadhelp('BKS_service','table')" tabindex="-1"><b><%623%></b></a></td>
 </tr>
 	<tr>
 	<td colspan="2">
@@ -157,20 +157,20 @@ function chSession(newsession)
 		<tr>
 			<td nowrap align="center" width="6%">&nbsp;	 	</td>
 			<td nowrap align="center" width="6%"><span class="thead"># </span>	</td>
-			<td nowrap align="center"><span class="thead"><%622%></span></td>
-			<td nowrap align="center"><span class="thead"><%623%></span></td>
 			<td nowrap align="center"><span class="thead"><%624%></span></td>
+			<td nowrap align="center"><span class="thead"><%625%></span></td>
+			<td nowrap align="center"><span class="thead"><%626%></span></td>
 		</tr>
-		<%625%>
+		<%627%>
         </table>
 	</td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
 <td colspan="2" align="center">
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%626%>" name="Add" class="button-rule" onclick="buttonClick(this,'<%626%>');" ><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%626%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%627%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%627%>');" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%627%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%628%>" name="Delete" class="button-rule" onclick="buttonClick(this,'<%628%>');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%628%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%628%>" name="Add" class="button-rule" onclick="buttonClick(this,'<%628%>');" ><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%628%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%629%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%629%>');" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%629%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%630%>" name="Delete" class="button-rule" onclick="buttonClick(this,'<%630%>');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%630%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
@@ -180,10 +180,10 @@ function chSession(newsession)
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%194%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
       </div>
 
 

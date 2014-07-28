@@ -45,19 +45,19 @@ function checkData()
 	var r, re, fail;
 	var usb_folder_string = cf.usb_folder.value;
 	fail = 1;
-	<%2340%>
+	<%2341%>
 	if(fail == 1)
-	    msg+= "<%2321%>\n";
+	    msg+= "<%2322%>\n";
 	
 	if (cf.usb_folder.value == "")
-		 msg+= "<%2322%>\n";
+		 msg+= "<%2323%>\n";
 	if ( (cf.usb_folder.value.match( /[\x2E-\x2E]/ )) )
 	   {
-			alert("<%2321%>\n");
+			alert("<%2322%>\n");
 			return false;
 	   }	 
 	if (cf.share_name.value == "")
-		msg+= "<%2323%>\n";
+		msg+= "<%2324%>\n";
 	
     if (   (cf.share_name.value.match( /[\x22-\x22]/ ))
         || (cf.share_name.value.match( /[\x3A-\x3A]/ ))
@@ -72,9 +72,9 @@ function checkData()
        )
     {
 		cf.share_name.focus();
-		msg+= "<%2324%>.\n";
+		msg+= "<%2325%>.\n";
 	}
-	<%2325%>
+	<%2326%>
 	if (msg.length > 1)
 	{
 		alert(msg);
@@ -87,7 +87,7 @@ function checkData()
     isAllAdmin = cf.isAllAdminFolder.value;    
     if ( cf.no_dlna.value != 1 ) {
        if((isAllAdmin >= 0) && (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 1) )
-          alert("<%2285%>");        
+          alert("<%2286%>");        
     }    
     
     pageRefresh();
@@ -118,18 +118,18 @@ function chgWt()
 <form id="target"  name="frmService" method="post" action="usb_device.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <script language="javascript" type="text/javascript">
-var NotExistFolder = "<%2326%>";
+var NotExistFolder = "<%2327%>";
 if (NotExistFolder == "1")
 {
     opener.document.location.href = "USB_adv.htm";
     window.close();
 }
 else if (NotExistFolder == "2")
-    alert("<%2321%>\n");
+    alert("<%2322%>\n");
 </script>
 <table border="0" cellpadding="0" cellspacing="3" width="100%">
 <tr>
-    <td><h1><%2341%></h1></td>
+    <td><h1><%2342%></h1></td>
 </tr>
 <tr>
  <td>
@@ -140,44 +140,44 @@ else if (NotExistFolder == "2")
 <table border="1" cellpadding="2" cellspacing="0" width="100%">
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2327%></span></td>
+<p align="left"><span class="thead"><%2328%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
-<p align="left"><%2342%></td>
+<p align="left"><%2343%></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2343%></span></td>
+<p align="left"><span class="thead"><%2344%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<p align="left"><%2344%></td>
+<p align="left"><%2345%></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2329%></span></td>
+<p align="left"><span class="thead"><%2330%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<input name="usb_folder" value="<%2345%>" style="float: left">
-&nbsp;&nbsp;&nbsp;<button type="button" value="<%434%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%434%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%434%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+<input name="usb_folder" value="<%2346%>" style="float: left">
+&nbsp;&nbsp;&nbsp;<button type="button" value="<%436%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%436%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%436%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2272%></span></td>
+<p align="left"><span class="thead"><%2273%></span></td>
 <td align="left" nowrap="nowrap" width="60%"> 
-<input name="share_name" value="<%2346%>" size="21" maxlength="20" style="float: left"></td>
+<input name="share_name" value="<%2347%>" size="21" maxlength="20" style="float: left"></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2332%></span></td>
+<p align="left"><span class="thead"><%2333%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="read_access" onchange="chgRd()" size="1">
-        <option value=0><%2333%></option>
-        <option value=1 <%2334%> ><%2335%></option>
+        <option value=0><%2334%></option>
+        <option value=1 <%2335%> ><%2336%></option>
     </select></td>
 </tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2336%></span></td>
+<p align="left"><span class="thead"><%2337%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="write_access" onchange="chgWt()" size="1">
-        <option value=0><%2333%></option>
-        <option value=1 <%2337%> ><%2335%></option>
+        <option value=0><%2334%></option>
+        <option value=1 <%2338%> ><%2336%></option>
     </select></td>
 </tr>
 </table>
@@ -188,7 +188,7 @@ else if (NotExistFolder == "2")
 		</tr>
 	</table>
  <table border="0" cellpadding="0" cellspacing="3" width="100%">
-<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%61%>" name="Apply" class="button-rule" onclick="buttonClick(this,'<%61%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp; <%61%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%63%>" name="Apply" class="button-rule" onclick="buttonClick(this,'<%63%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp; <%63%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 </table>
@@ -200,14 +200,14 @@ else if (NotExistFolder == "2")
 </tr>
 </table>  
  <table border="0" cellpadding="0" cellspacing="3" width="100%">
-<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%455%>" name="Close" class="button-rule" onclick="buttonClick(this,'<%455%>');window.close();"><span class="roundleft_button">&nbsp;&nbsp; <%455%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%457%>" name="Close" class="button-rule" onclick="buttonClick(this,'<%457%>');window.close();"><span class="roundleft_button">&nbsp;&nbsp; <%457%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 </table>
 </table>
 <INPUT name=mode type=hidden value="edit">
 <INPUT name=fromPage type=hidden value="2">
-<INPUT name=isAllAdminFolder type=hidden value="<%2339%>">
-<input name="no_dlna" type="hidden" value="<%2318%>">
+<INPUT name=isAllAdminFolder type=hidden value="<%2340%>">
+<input name="no_dlna" type="hidden" value="<%2319%>">
 </form>
 </body></html>

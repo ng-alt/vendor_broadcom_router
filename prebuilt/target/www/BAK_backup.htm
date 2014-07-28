@@ -95,10 +95,10 @@ function check_restore()
 {
 	if(document.forms[0].mtenRestoreCfg.value.length == 0)
 	{
-		alert("<%429%>");
+		alert("<%431%>");
 		return false;
 	}
-	if(confirm("<%430%>"))
+	if(confirm("<%432%>"))
 		return true;
 	else
 		return false;
@@ -107,14 +107,14 @@ function check_restore()
 </script> 
 </head>
 <body  onload="change_size();" class="page-body"  onResize="change_size();" >
-<img class="cover-image" src="<%57%>">
-<img class="body-image" src="<%58%>">
+<img class="cover-image" src="<%59%>">
+<img class="body-image" src="<%60%>">
 <div id="full-page-container">
 
 <form id="target"  method="POST" action="backup.cgi" ENCTYPE="multipart/form-data">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-<img class="subtop-image" src="<%59%>">
-<div class="subhead2"> <%387%></div>
+<img class="subtop-image" src="<%61%>">
+<div class="subhead2"> <%389%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 
@@ -122,38 +122,38 @@ function check_restore()
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('BAK_backup','save')" tabindex="-1"><b><%431%></b></a></td>
+	<td colspan="2"><a href="javascript:loadhelp('BAK_backup','save')" tabindex="-1"><b><%433%></b></a></td>
 </tr>
 <tr>
 
 	<td colspan="2" align="center">
-	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%432%>" name="Backup" class="button-rule" onclick="buttonClick(this,'<%432%>');window.location.href = 'NETGEAR_<%12%>.cfg';"><span class="roundleft_button">&nbsp;&nbsp; <%432%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button> 
+	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%434%>" name="Backup" class="button-rule" onclick="buttonClick(this,'<%434%>');window.location.href = 'NETGEAR_<%12%>.cfg';"><span class="roundleft_button">&nbsp;&nbsp; <%434%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button> 
 	</td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('BAK_backup','restore')" tabindex="-1"><b><%433%></b></a></td>
+	<td colspan="2"><a href="javascript:loadhelp('BAK_backup','restore')" tabindex="-1"><b><%435%></b></a></td>
 </tr>
 <tr>
 	<td colspan="2" align="left">
 
 	<input type="file" name="mtenRestoreCfg" id="file" size="20" maxlength="1024" style="position:absolute;opacity:0;filter:alpha(opacity=0);" onchange="this.form.upfile.value=this.value.substr(this.value.lastIndexOf('\\')+1);" contentEditable=false onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;">
 	<input type="text" name="upfile" size="20" maxlength="1024" readonly >
-	&nbsp;&nbsp;&nbsp;<button type="button" value="browse"  class="button-rule" onclick="buttonClick(this,'browse');this.form.file.click();"><span class="roundleft_button">&nbsp;&nbsp; <%434%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>	
+	&nbsp;&nbsp;&nbsp;<button type="button" value="browse"  class="button-rule" onclick="buttonClick(this,'browse');this.form.file.click();"><span class="roundleft_button">&nbsp;&nbsp; <%436%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>	
 	</td>
 </tr>
 <tr>
-	<td colspan="2" align="center">&nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%435%>" name="mtenRestore" class="button-rule" onClick="buttonClick(this,'<%435%>');if(!check_restore()) return false;"><span class="roundleft_button">&nbsp;&nbsp; <%435%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+	<td colspan="2" align="center">&nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%437%>" name="mtenRestore" class="button-rule" onClick="buttonClick(this,'<%437%>');if(!check_restore()) return false;"><span class="roundleft_button">&nbsp;&nbsp; <%437%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 
 <tr>
-	<td nowrap colspan="2"><a href="javascript:loadhelp('BAK_backup','revert')" tabindex="-1"><b><%436%></b></a></td>
+	<td nowrap colspan="2"><a href="javascript:loadhelp('BAK_backup','revert')" tabindex="-1"><b><%438%></b></a></td>
 
 </tr>
 <tr>
-	<td colspan="2" align="center">&nbsp;&nbsp;&nbsp;<button type="button" value="<%437%>" name="defaults" class="button-rule" onClick="buttonClick(this,'<%437%>');location.href='BAK_cfm.htm'"><span class="roundleft_button">&nbsp;&nbsp; <%437%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+	<td colspan="2" align="center">&nbsp;&nbsp;&nbsp;<button type="button" value="<%439%>" name="defaults" class="button-rule" onClick="buttonClick(this,'<%439%>');location.href='BAK_cfm.htm'"><span class="roundleft_button">&nbsp;&nbsp; <%439%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 </table></td></tr>
@@ -165,10 +165,10 @@ function check_restore()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%194%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
       </div>
 
 

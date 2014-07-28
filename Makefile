@@ -347,6 +347,7 @@ export CFLAGS += -DSTA_MODE
 export CFLAGS += -DPPP_RU_DESIGN
 export CFLAGS += -DEXT_ACS
 export CFLAGS += -DARP_PROTECTION
+export CFLAGS += -DVLAN_SUPPORT
 endif
 
 ifeq ($(FW_TYPE),NA)

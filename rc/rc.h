@@ -28,10 +28,21 @@
 
 #define MAX_NO_BRIDGE 1     /* Foxconn modified pling 05/16/2007, 2->1 */
 
+#ifdef VLAN_SUPPORT
+#define C_MAX_TOKEN_SIZE        128
+#define C_MAX_VLAN_RULE     10
+typedef struct vlan_rule_t{
+    char vlan_name[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE];
+    char vlan_id[6];
+    char vlan_prio[4];
+    char vlan_ports[10];
+    char enable_rule[4];
+}vlan_rule;
+#endif
 /* foxconn modified start, zacker, 01/13/2012, @iptv_igmp */
 #if defined(CONFIG_RUSSIA_IPTV)
 #undef MAX_NO_BRIDGE
-#define MAX_NO_BRIDGE 2
+#define MAX_NO_BRIDGE 10		/*Foxconn modified, edward zhang, 2013/07/03, change 2->10 for vlan support*/
 
 #define NVRAM_IPTV_INTF         "iptv_interfaces"
 #define NVRAM_IPTV_ENABLED      "iptv_enabled"
