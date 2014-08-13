@@ -770,8 +770,11 @@ function detectOS()
     if (isUnix) return "Unix";  
     var isLinux = (String(navigator.platform).indexOf("Linux") > -1);  
     if (isLinux) return "Linux";  
-    if (isWin) {  
-    return "Win";  
+    if (isWin) {
+        if(sUserAgent.indexOf("Windows Phone")!=-1){
+            return "WinPhone";  
+        }
+            return "Win";  
     }  
     return "None";  
 }

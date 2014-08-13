@@ -95,31 +95,31 @@ function checkData()
 {
     var cf = document.forms[0];
     var msg = "";
-<%2862%>
+<%2871%>
     var vlan_id = parseInt(cf.vlan_id.value,10);
     var vlan_prio = parseInt(cf.vlan_prio.value,10);
-<%2863%>
+<%2872%>
     var vlan_rule=cf.vlan_rule_name.value.split(" ");
     var i = 0, conflict, reply;
 
 
     if (cf.vlan_name.value == "" || (cf.vlan_name.value.match( /[^\x21-\x7E]/ )))
     {
-        msg+="<%2864%>\n";
+        msg+="<%2873%>\n";
         alert(msg);
         return false;
     }
-<%2862%>
+<%2871%>
     if ((!_isNumeric(cf.vlan_id.value)) || isNaN(vlan_id) || vlan_id > 4094 || vlan_id < 1) {
-        alert("<%2865%>");
+        alert("<%2874%>");
         return false;
     }
         
     if ((!_isNumeric(cf.vlan_prio.value)) || isNaN(vlan_prio) || vlan_prio > 7 || vlan_prio < 0) {
-        alert("<%2866%>");
+        alert("<%2875%>");
         return false;
     }
-<%2863%>
+<%2872%>
     while(typeof vlan_rule[i] != "undefined")
     {
         if (vlan_rule[i]==cf.vlan_name.value)
@@ -137,7 +137,7 @@ function checkData()
         i++;
     }
     if (conflict) {
-        alert("<%2867%>"+cf.vlan_name.value+"<%2868%>");
+        alert("<%2876%>"+cf.vlan_name.value+"<%2877%>");
         return false;
     }
     
@@ -148,13 +148,13 @@ function checkData()
     {
         if(cf.vlan_ports_0.checked && cf.vlan_ports_1.checked && cf.vlan_ports_2.checked && cf.vlan_ports_3.checked && cf.vlan_ports_4.checked && cf.vlan_ports_5.checked && cf.vlan_ports_6.checked && cf.vlan_ports_7.checked )
         {
-            alert("<%2869%>");
+            alert("<%2878%>");
             return false;
         }
     }
     else
     {
-        alert("<%2870%>");
+        alert("<%2879%>");
         return false;
     }
     
@@ -166,19 +166,19 @@ function checkData()
 function loadSettings()
 {
     var cf = document.forms[0];
-    cf.vlan_name.value = "<%2878%>";
+    cf.vlan_name.value = "<%2887%>";
     
     if(cf.vlan_name.value == "Internet")
     {
         document.getElementById("vlan_name").readOnly = true
         document.getElementById("vlan_support_lan").style.display = "none";
     }
-<%2862%>
-    cf.vlan_id.value = "<%2879%>";
-    cf.vlan_prio.value = "<%2880%>";
-<%2863%>
+<%2871%>
+    cf.vlan_id.value = "<%2888%>";
+    cf.vlan_prio.value = "<%2889%>";
+<%2872%>
     
-    var vlan_ports= "<%2881%>";
+    var vlan_ports= "<%2890%>";
     
     if (vlan_ports & 0x1)
         cf.vlan_ports_0.checked = true;
@@ -197,12 +197,12 @@ function loadSettings()
     if (vlan_ports & 0x80)
         cf.vlan_ports_7.checked = true; 
 
-<%1273%>
+<%1275%>
     if (vlan_ports & 0x100)
         cf.vlan_ports_8.checked = true;
     if (vlan_ports & 0x200)
         cf.vlan_ports_9.checked = true; 
-<%1282%>
+<%1284%>
 
 }
 
@@ -210,20 +210,20 @@ function loadSettings()
 </script> 
 </head>
 <body  onload="change_size();loadSettings();" class="page-body"  onResize="change_size();" >
-<img class="cover-image" src="<%57%>">
-<img class="body-image" src="<%58%>">
+<img class="cover-image" src="<%60%>">
+<img class="body-image" src="<%61%>">
 <div id="full-page-container">
 
 <form id="target"  method="POST" action="vlan_rule.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-    <img class="subtop-image" src="<%59%>">
-<div class="subhead2"> <%2882%></div>
+    <img class="subtop-image" src="<%62%>">
+<div class="subhead2"> <%2891%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%61%>"  onClick="buttonClick(this,'<%61%>');if(!checkData()) return false;" type="SUBMIT" name="apply" class="button-apply" > <span class="roundleft_apply" ><%62%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="<%63%>" onClick="buttonClick(this,'<%63%>');location.href='VLAN_IPTV.htm'" type="Button" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%64%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%64%>"  onClick="buttonClick(this,'<%64%>');if(!checkData()) return false;" type="SUBMIT" name="apply" class="button-apply" > <span class="roundleft_apply" ><%65%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%66%>" onClick="buttonClick(this,'<%66%>');location.href='VLAN_IPTV.htm'" type="Button" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%67%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -235,25 +235,25 @@ function loadSettings()
 <table border="0"   width="100%">
 
 <tr>
-    <td nowrap><%2851%></td>
+    <td nowrap><%2860%></td>
     <td width="50%" align="left" ><input type="text" id = "vlan_name" name="vlan_name" value="" size="15" maxlength="10"></td>
 </tr>
-<%2872%>
+<%2881%>
 <tr>
-    <td nowrap><%2855%></td>
+    <td nowrap><%2864%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_id" value="" class="num" size="10" maxlength="4">
-    <%2873%>
+    <%2882%>
     </td>
 </tr>
 <tr>
-    <td nowrap><%2856%></td>
+    <td nowrap><%2865%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_prio" value="" class="num" size="10" maxlength="1">
-    <%2874%>
+    <%2883%>
     </td>
 </tr>
-<%2875%>
+<%2884%>
 <tr><td>&nbsp;</td></tr>
 <tr id="vlan_support_lan" style="display: block;">
     <td nowrap>
@@ -264,16 +264,16 @@ function loadSettings()
     <td nowrap>
     <input type="checkbox" name="vlan_ports_4">WiFi-2.4G
     <input type="checkbox" name="vlan_ports_5">WiFi-5G
-<%2876%>
+<%2885%>
     <input type="checkbox" name="vlan_ports_6">Guest-2.4G
     <input type="checkbox" name="vlan_ports_7">Guest-5G</td>
-<%2877%>
-<%1273%>
+<%2886%>
+<%1275%>
     <input type="checkbox" name="vlan_ports_6">WiFi-5G-2
     <input type="checkbox" name="vlan_ports_7">Guest-2.4G
     <input type="checkbox" name="vlan_ports_8">Guest-5G
     <input type="checkbox" name="vlan_ports_9">Guest-5G-2</td>
-<%1282%>
+<%1284%>
 
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -286,17 +286,17 @@ function loadSettings()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%194%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
       </div>
 
 
 
-<input type="hidden" name="vlan_rule_name" value="<%2859%>">
-<input type="hidden" name="orig_vlan_name" value="<%2878%>">
-<INPUT name="vlan_enable" type="hidden" value= "<%2858%>">
+<input type="hidden" name="vlan_rule_name" value="<%2868%>">
+<input type="hidden" name="orig_vlan_name" value="<%2887%>">
+<INPUT name="vlan_enable" type="hidden" value= "<%2867%>">
 <INPUT name="vlan_mode" type="hidden" value="edit">
 
 <a name="helpframe-anchor"></a>
