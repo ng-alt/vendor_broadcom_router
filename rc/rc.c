@@ -1053,10 +1053,13 @@ static void save_wlan_time(void)
 #ifdef CONFIG_RUSSIA_IPTV
 static int config_iptv_params(void)
 {
+#ifdef VLAN_SUPPORT
+    unsigned int enabled_vlan_ports = 0x00;
 #if defined(R8000)
     unsigned int iptv_bridge_intf = 0x00;
 #else
     unsigned char iptv_bridge_intf = 0x00;
+#endif
 #endif
     char vlan1_ports[16] = "";
     char vlan_iptv_ports[16] = "";
@@ -1074,26 +1077,40 @@ static int config_iptv_params(void)
     char clean_vlan[16] = "";
     char clean_vlan_hw[16] = "";
     /*clean up the nvram ,to let the new config work*/
-    for(i=1; i<7; i++)
+
+    if (nvram_match ("enable_vlan", "enable"))
     {
-        sprintf(br_ifname,"lan%d_ifname",i);
-        sprintf(br_ifnames,"lan%d_ifnames",i);
-        nvram_set(br_ifnames, "");
-        nvram_set(br_ifname, "");
-    }
-    for(i=1; i < 4094; i++)
-    {
-        sprintf(clean_vlan,"vlan%dports",i);
-        sprintf(clean_vlan_hw,"vlan%dhwname",i);
-        if( i == 1 || i == 2)
+        for(i=1; i<7; i++)
         {
-            nvram_set(clean_vlan,"");
-//            nvram_set(clean_vlan_hw,"");
+            sprintf(br_ifname,"lan%d_ifname",i);
+            sprintf(br_ifnames,"lan%d_ifnames",i);
+            nvram_set(br_ifnames, "");
+            nvram_set(br_ifname, "");
         }
-        else
+        for(i=1; i < 4094; i++)
         {
+            sprintf(clean_vlan,"vlan%dports",i);
+            sprintf(clean_vlan_hw,"vlan%dhwname",i);
+            if( i == 1 || i == 2)
+            {
+              nvram_set(clean_vlan,"");
+              nvram_set(clean_vlan_hw,"");
+            }
+            else
+            {
+                nvram_unset(clean_vlan);
+                nvram_unset(clean_vlan_hw);
+            }
+        }
+    }
+    else
+    {
+        for(i=3; i < 4094; i++)
+        {
+            sprintf(clean_vlan,"vlan%dports",i);
+            sprintf(clean_vlan_hw,"vlan%dhwname",i);
             nvram_unset(clean_vlan);
-//            nvram_unset(clean_vlan_hw);
+            nvram_unset(clean_vlan_hw);
         }
     }
 
@@ -1229,10 +1246,9 @@ static int config_iptv_params(void)
         char vlan_hwname[16] = "";
         char wan_vlan_ifname[16] = "";
         char lan_vlan_hwname[16] = "";
-        unsigned int vlan_bridge_intf = 0x00;
-        unsigned int enabled_vlan_ports = 0x00;
         vlan_rule vlan[C_MAX_VLAN_RULE];
         int numVlanRule = getVlanRule(vlan);
+       unsigned int vlan_bridge_intf = 0x00;
         char lan_vlan_ports[16] = "";
         char lan_ports[16] = "";
         int lan_vlan_port = 4;
@@ -1241,6 +1257,10 @@ static int config_iptv_params(void)
         char lan_vlan_ifnames[64] = "";
         char lan_ifnames[64] = "";
         char lan_ifname[16] = "";
+        int internet_vlan_id;
+
+        /* always set emf_enable to 0 when vlan is enable*/
+        nvram_set("emf_enable", "0");
 
         cprintf("rule_num:%d \n",numVlanRule);
         sprintf(lan_ifnames,"%s ",nvram_safe_get("lan_interface"));
@@ -1261,10 +1281,18 @@ static int config_iptv_params(void)
             if(!strcmp(vlan[i].vlan_name, "Internet"))
             {
          	    nvram_set(vlan_ifname_ports,"4t 5");
+                nvram_set("internet_prio",vlan[i].vlan_prio);
                 nvram_set("internet_vlan",vlan[i].vlan_id);
                 nvram_set("wan_ifnames", vlan_ifname);
                 nvram_set("wan_ifname", wan_vlan_ifname);
+                internet_vlan_id=atoi(vlan[i].vlan_id);
                 continue;
+            }
+            
+            if(internet_vlan_id==atoi(vlan[i].vlan_id))
+            {
+                nvram_set("wan_ifnames", "br1");
+                nvram_set("wan_ifname", "br1");
             }
             
 #if defined(R8000)
@@ -1314,6 +1342,17 @@ static int config_iptv_params(void)
 #if defined(R8000)
             if (vlan_bridge_intf & IPTV_WLAN3)
                 strcat(lan_vlan_ifnames, "eth3 ");
+#endif
+
+            if (vlan_bridge_intf & IPTV_WLAN_GUEST1)
+                strcat(lan_vlan_ifnames, "wl0.1 ");
+
+            if (vlan_bridge_intf & IPTV_WLAN_GUEST2)
+                strcat(lan_vlan_ifnames, "wl1.1 ");
+
+#if defined(R8000)
+            if (vlan_bridge_intf & IPTV_WLAN_GUEST3)
+                strcat(lan_vlan_ifnames, "wl2.1 ");
 #endif
             
             sprintf(br_ifname,"lan%d_ifname",lan_vlan_br);
@@ -1378,8 +1417,8 @@ static int config_iptv_params(void)
 #endif
     if (iptv_bridge_intf & IPTV_MASK)
     {
-        char lan_ifnames[32] = "vlan1 ";
-        char wan_ifnames[32] = "vlan2 ";
+        char lan_ifnames[128] = "vlan1 ";
+        char wan_ifnames[128] = "vlan2 ";
     
 #ifdef __CONFIG_IGMP_SNOOPING__
         /* always enable snooping for IPTV */
@@ -1421,6 +1460,24 @@ static int config_iptv_params(void)
         else
             strcat(lan_ifnames, "eth3 ");
 #endif
+
+        if (iptv_bridge_intf & IPTV_WLAN_GUEST1)
+            strcat(wan_ifnames, "wl0.1 ");
+        else
+            strcat(lan_ifnames, "wl0.1 ");
+
+        if (iptv_bridge_intf & IPTV_WLAN_GUEST2)
+            strcat(wan_ifnames, "wl1.1 ");
+        else
+            strcat(lan_ifnames, "wl1.1 ");
+
+#if defined(R8000)        
+        if (iptv_bridge_intf & IPTV_WLAN_GUEST3)
+            strcat(wan_ifnames, "wl2.1 ");
+        else
+            strcat(lan_ifnames, "wl2.1 ");
+#endif
+
 
         //nvram_set("lan_ifnames", lan_ifnames);
 #ifdef __CONFIG_GMAC3__
@@ -1466,17 +1523,17 @@ static int config_iptv_params(void)
         /* foxconn Bob modified end 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
 #ifdef __CONFIG_GMAC3__
             if(nvram_match("gmac3_enable", "1"))
-                nvram_set("vlan2ports", "4 8u");
+                nvram_set("vlan2ports", "4 8");
             else
-                nvram_set("vlan2ports", "4 5u");
+                nvram_set("vlan2ports", "4 5");
             	    
 #elif defined(R7000)
             nvram_set("vlan2ports", "0 5");
 #else
             nvram_set("vlan2ports", "4 5");
 #endif
-            nvram_set("wan_ifnames", "eth0");
-            nvram_set("wan_ifname", "eth0");
+            nvram_set("wan_ifnames", "vlan2");
+            nvram_set("wan_ifname", "vlan2");
         }
         else
 #endif
@@ -1547,8 +1604,24 @@ static int config_iptv_params(void)
         sprintf(wl_param, "%s_%d", "wla_sec_profile_enable", i);     
         if(nvram_match(wl_param, "1")){
             sprintf(if_name, "wl0.%d", i-1);
-            strcat(br0_ifnames, " ");
-            strcat(br0_ifnames, if_name);
+            if(nvram_match("enable_vlan", "enable"))
+            {
+                if(!(enabled_vlan_ports & IPTV_WLAN_GUEST1))
+                {
+                    strcat(br0_ifnames, " ");
+                    strcat(br0_ifnames, if_name);
+                }
+            }
+            else if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
+            {
+            	// Do nothing here
+            }
+            else
+            {
+                strcat(br0_ifnames, " ");
+                strcat(br0_ifnames, if_name);
+            }
+            	
         }
      }
 
@@ -1556,8 +1629,23 @@ static int config_iptv_params(void)
          sprintf(wl_param, "%s_%d", "wlg_sec_profile_enable", i);        
          if(nvram_match(wl_param, "1")){
              sprintf(if_name, "wl1.%d", i-1);
-             strcat(br0_ifnames, " ");
-             strcat(br0_ifnames, if_name);
+            if(nvram_match("enable_vlan", "enable"))
+            {
+                if(!(enabled_vlan_ports & IPTV_WLAN_GUEST2))
+                {
+                    strcat(br0_ifnames, " ");
+                    strcat(br0_ifnames, if_name);
+                }
+            }
+            else if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
+            {
+            	// Do nothing here
+            }
+            else
+            {
+                strcat(br0_ifnames, " ");
+                strcat(br0_ifnames, if_name);
+            }
          }
      }
 
@@ -1566,8 +1654,23 @@ static int config_iptv_params(void)
          sprintf(wl_param, "%s_%d", "wlh_sec_profile_enable", i);        
          if(nvram_match(wl_param, "1")){
              sprintf(if_name, "wl2.%d", i-1);
-             strcat(br0_ifnames, " ");
-             strcat(br0_ifnames, if_name);
+            if(nvram_match("enable_vlan", "enable"))
+            {
+                if(!(enabled_vlan_ports & IPTV_WLAN_GUEST3))
+                {
+                    strcat(br0_ifnames, " ");
+                    strcat(br0_ifnames, if_name);
+                }
+            }
+            else if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
+            {
+            	// Do nothing here
+            }
+	          else
+            {
+                strcat(br0_ifnames, " ");
+                strcat(br0_ifnames, if_name);
+            }
          }
      }
 #endif
@@ -1593,6 +1696,8 @@ static int config_iptv_params(void)
     /* Foxconn added end pling 08/17/2012 */
     return 0;
 }
+#endif
+#ifdef VLAN_SUPPORT
 
 static int active_vlan(void)
 {
@@ -1640,7 +1745,8 @@ static int config_switch_reg(void)
 #if defined(CONFIG_RUSSIA_IPTV)
 		nvram_match("iptv_enabled", "1") ||
 #endif          
-        (nvram_match("qos_enable", "1") 
+		nvram_match("enable_vlan", "enable") ||
+        (nvram_match("qos_enable", "1")  
         && !nvram_match("wla_repeater", "1")
 #if (defined INCLUDE_DUAL_BAND)
         && !nvram_match("wlg_repeater", "1")
@@ -1691,7 +1797,7 @@ static int config_switch_reg(void)
         system("et robowr 0x34 0x01 0x0E");
         system("et robowr 0x04 0x0E 0x0000");
 #endif
-        if (nvram_match("qos_enable", "1"))
+        if (nvram_match("qos_enable", "1") || nvram_match("enable_vlan", "enable"))
             system("et robowr 0xFFFF 0xFE 0x01");
         else if (!nvram_match("qos_port", ""))
             system("et robowr 0xFFFF 0xFE 0x02");
@@ -1940,7 +2046,6 @@ static int getVlanname(char vlanname[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE])
         num = getTokens(var, " ", vlanname, C_MAX_VLAN_RULE);
         for (i = 0; i< num; i++)
             restore_devname(vlanname[i]);
-printf("get num=%d\n",num);        
         return num;
     }
 
@@ -1988,14 +2093,6 @@ static int getVlanRule(vlan_rule vlan[C_MAX_VLAN_RULE])
         //strcpy( vlan[i].vlan_ports , VlanPorts[i]);
         sprintf( vlan[i].vlan_ports,"%s",VlanPorts[i]);
         strcpy( vlan[i].enable_rule , VlanRuleEnable[i]);
-
-printf("rule %d\n",i);
-printf("vlan[%d].vlan_name=%s\n",i,vlan[i].vlan_name);
-printf("vlan[%d].vlan_id=%s\n",i,vlan[i].vlan_id);
-printf("vlan[%d].vlan_prio=%s\n",i,vlan[i].vlan_prio);
-printf("vlan[%d].vlan_ports=%s\n",i,vlan[i].vlan_ports);
-printf("vlan[%d].enable_rule=%s\n",i,vlan[i].enable_rule);
-
     }
     
     return numVlanRule;
@@ -3953,11 +4050,13 @@ main_loop(void)
     /* Foxconn added start, Wins, 04/20/2011, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
 /* Foxconn modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+#if 0
     if ((!is_russia_specific_support()) && (!is_china_specific_support()))
     {
         nvram_set(NVRAM_IPTV_ENABLED, "0");
         nvram_set(NVRAM_IPTV_INTF, "0x00");
     }
+#endif    
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn added end, Wins, 04/20/2011, @RU_IPTV */
 /* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
@@ -4246,6 +4345,7 @@ main_loop(void)
 #endif
 			/* foxconn added end, zacker, 01/13/2012, @iptv_igmp */
 #if defined(R8000)
+        system("et -i eth0 robowr 0x4 0x4 0");   
 		if ( nvram_match("wla_region", "5"))
 		    nvram_set("dual_5g_band","0");
 		else

@@ -832,7 +832,9 @@ start_lan(void)
                 /*Foxconn, add-end by MJ., for debugging 5G crash. */
 				if (ifconfig(name, IFUP | IFF_ALLMULTI, NULL, NULL)){
 					perror("ifconfig");
-				} else {
+				} 
+//				else 
+				{
 					/* Set the logical bridge address to that of the first interface */
 					if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0) {
 						perror("socket");
@@ -1361,13 +1363,13 @@ start_wl(void)
 	int i;
     /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifname = nvram_safe_get("lan_ifname");
-	char lan_ifname[32];
+	char lan_ifname[128];   
     /* Foxconn modified end pling 11/26/2009 */
 	char name[80], *next;
 	char tmp[100];
     /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifnames;
-	char lan_ifnames[32];
+	char lan_ifnames[128];  
     /* Foxconn modified end pling 11/26/2009 */
 	int region;
 
@@ -2415,6 +2417,36 @@ void stop_wlan(void)
 	return;
 }
 
+#ifdef VLAN_SUPPORT
+void add_if_to_vlan_group(char *guest_if)
+{
+    int br_num;
+    char lanxx_ifnames[64];
+    char *lan_ifnames;
+    
+    for(br_num=1; br_num < MAX_NO_BRIDGE; br_num++)
+    {
+        sprintf(lanxx_ifnames,"lan%d_ifnames",br_num);
+        lan_ifnames=nvram_safe_get(lanxx_ifnames);
+        if(strlen(lan_ifnames))
+            if(strstr(lan_ifnames,guest_if))
+            {
+                char bridge[32];
+                sprintf(bridge,"br%d",br_num);
+                eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
+                eval("brctl", "addif", bridge, guest_if);
+            }
+            	
+    }
+    
+    if(br_num==MAX_NO_BRIDGE)
+    {
+        eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
+        eval("brctl", "addif", "br0", guest_if);
+    }    
+}
+#endif
+
 void start_wlan(void)
 {
     /* Foxconn modified start pling 11/26/2009 */
@@ -2422,9 +2454,10 @@ void start_wlan(void)
      *  of keeping just the pointer, since other processes
      *  might modify NVRAM at any time.
      */
-	char lan_ifname[32];
+	char lan_ifname[32],wan_ifname[32];
 	char wlif[32];
     strcpy(lan_ifname, nvram_safe_get("lan_ifname"));
+    strcpy(wan_ifname, nvram_safe_get("wan_ifname"));
     strcpy(wlif, nvram_safe_get("wl0_ifname"));
     /* Foxconn modified end pling 11/26/2009 */
     char wl1_ifname[32];
@@ -2473,7 +2506,7 @@ void start_wlan(void)
     sprintf(guest_mac,"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
     nvram_set("wl2.1_hwaddr",guest_mac);
 
-    if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
+    if (nvram_match(NVRAM_IPTV_ENABLED, "1") || nvram_match("enable_vlan", "enable"))
     {
         strcpy(iptv_intf, nvram_get(NVRAM_IPTV_INTF));
 #if defined(R8000)
@@ -2520,6 +2553,11 @@ void start_wlan(void)
           	}	    
         }
     }
+#ifdef VLAN_SUPPORT
+    else
+    	add_if_to_vlan_group(wlif);
+#endif
+    	
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wlif);
 #endif /* CONFIG_RUSSIA_IPTV */
@@ -2547,6 +2585,10 @@ void start_wlan(void)
             }
         }
     }
+#ifdef VLAN_SUPPORT
+    else
+    	add_if_to_vlan_group(wl1_ifname);
+#endif
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl1_ifname);
 #endif /* CONFIG_RUSSIA_IPTV */
@@ -2574,6 +2616,10 @@ void start_wlan(void)
             }
         }
     }
+#ifdef VLAN_SUPPORT
+    else
+    	add_if_to_vlan_group(wl2_ifname);
+#endif
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl2_ifname);
 #endif /* CONFIG_RUSSIA_IPTV */
@@ -2611,7 +2657,22 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name);
                 ifconfig(if_name, IFUP, NULL, NULL);
-	            eval("brctl", "addif", lan_ifname, if_name);
+#ifdef VLAN_SUPPORT
+                if(nvram_match("enable_vlan", "enable"))
+                    add_if_to_vlan_group(if_name);
+                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
+                {
+                    if (iptv_intf_val & IPTV_WLAN_GUEST1)
+      	                eval("brctl", "addif", wan_ifname, if_name);
+  	                else
+  	                    eval("brctl", "addif", lan_ifname, if_name);
+                        
+                }
+                else
+  	                eval("brctl", "addif", lan_ifname, if_name);
+#else
+  	                eval("brctl", "addif", lan_ifname, if_name);
+#endif  	                
             }
         }
         for (bssid_num=1; bssid_num<=3; bssid_num++)
@@ -2624,7 +2685,22 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name_5g);
                 ifconfig(if_name_5g, IFUP, NULL, NULL);
-	            eval("brctl", "addif", lan_ifname, if_name_5g);
+#ifdef VLAN_SUPPORT
+                if(nvram_match("enable_vlan", "enable"))
+                    add_if_to_vlan_group(if_name_5g);
+                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
+                {
+                    if (iptv_intf_val & IPTV_WLAN_GUEST2)
+      	                eval("brctl", "addif", wan_ifname, if_name_5g);
+  	                else
+  	                    eval("brctl", "addif", lan_ifname, if_name_5g);
+                        
+                }
+                else
+   	                eval("brctl", "addif", lan_ifname, if_name_5g);
+#else
+                eval("brctl", "addif", lan_ifname, if_name_5g);
+#endif   	                
             }
         }
 #if defined(R8000)
@@ -2638,7 +2714,22 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name_5g);
                 ifconfig(if_name_5g, IFUP, NULL, NULL);
-	            eval("brctl", "addif", lan_ifname, if_name_5g);
+#ifdef VLAN_SUPPORT
+                if(nvram_match("enable_vlan", "enable"))
+                    add_if_to_vlan_group(if_name_5g);
+                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
+                {
+                    if (iptv_intf_val & IPTV_WLAN_GUEST3)
+      	                eval("brctl", "addif", wan_ifname, if_name_5g);
+  	                else
+  	                    eval("brctl", "addif", lan_ifname, if_name_5g);
+                        
+                }
+                else
+                    eval("brctl", "addif", lan_ifname, if_name_5g);
+#else
+                eval("brctl", "addif", lan_ifname, if_name_5g);
+#endif                    
             }
         }
 #endif        

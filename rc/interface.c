@@ -223,6 +223,31 @@ config_loopback(void)
 	route_add("lo", 0, "127.0.0.0", "0.0.0.0", "255.0.0.0");
 }
 
+void update_port_priority(int vlan_id,char *vlan_interface,int priority)
+{
+    char *ports;
+    char vlanxxports[64];
+    
+    sprintf(vlanxxports,"vlan%dports",vlan_id);
+ 
+    ports=acosNvramConfig_get(vlanxxports);
+
+    if(strlen(ports))
+    {
+        char port_str[32],*next;
+        int port;
+        char priority_command[64];
+   	    foreach(port_str, ports, next) {
+   	        port=atoi(port_str);
+   	        if(port==5 || port == 4) // WAN port or CPU port 
+   	            break;
+ 
+   	        sprintf(priority_command,"et robowr 0x34 %d %d",0x10+port*2,vlan_id+(priority << 13));
+   	        system(priority_command);
+   	    }
+    }
+}
+
 /* configure/start vlan interface(s) based on nvram settings */
 int
 start_vlan(void)
@@ -319,7 +344,18 @@ start_vlan(void)
             char vlan_prio[16];
             snprintf(vlan_prio,sizeof(vlan_prio),"%s_prio",vlan_id);
             if(nvram_get(vlan_prio))
-                eval("vconfig", "set_egress_map",vlan_id, prio, nvram_get(vlan_prio));
+            {
+                update_port_priority(i,vlan_id,atoi(nvram_get(vlan_prio)));
+                if(i==atoi(nvram_get("internet_vlan")))
+                {
+                    if(j==0)
+                    {
+                        eval("vconfig", "set_egress_map",vlan_id, "0", nvram_get("internet_prio"));
+                    }
+                }
+                else
+                    eval("vconfig", "set_egress_map",vlan_id, prio, nvram_get(vlan_prio));
+            }
         }
 #endif
 		}

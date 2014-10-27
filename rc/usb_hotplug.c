@@ -414,7 +414,7 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
 /* Foxconn modified end, Wins, 04/11/2011 */
 {
     char source[128];
-    char target[128];
+    char target[128],target0[128];
     char buf[128];
     FILE *fp = NULL;
     int i;
@@ -437,6 +437,10 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
         snprintf(target, 128, "/tmp/mnt/not_approved%dpart%d", 16*(major_no/64) + minor_no/16, minor_no%16);
         mkdir(target, 0777);
     }
+    
+    snprintf(target0, 128, "/tmp/mnt/usb%d/part0", 16*(major_no/64) + minor_no/16, minor_no);
+    if(minor_no%16)
+    	umount(target0);
 
 #ifdef USB_DEBUG
     cprintf("%s:%d mount source =%s, target=%s\n", __func__, __LINE__, source, target);
@@ -842,7 +846,9 @@ hotplug_block(void)
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
         system("killall -9 bftpd 2> /dev/null");
+#ifndef CONFIG_SAMBA_NO_RESTART
         system("killall -9 smbd 2> /dev/null");
+#endif
         system("killall -9 nmbd 2> /dev/null");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */
@@ -913,7 +919,9 @@ hotplug_block(void)
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
         system("killall -9 bftpd 2> /dev/null");
+#ifndef CONFIG_SAMBA_NO_RESTART
         system("killall -9 smbd 2> /dev/null");
+#endif
         system("killall -9 nmbd 2> /dev/null");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */

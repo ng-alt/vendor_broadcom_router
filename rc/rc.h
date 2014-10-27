@@ -54,11 +54,16 @@ typedef struct vlan_rule_t{
 #define IPTV_WLAN2              0x20
 #if defined(R8000)
 #define IPTV_WLAN3              0x40
+#define IPTV_WLAN_GUEST1              0x80
+#define IPTV_WLAN_GUEST2              0x100
+#define IPTV_WLAN_GUEST3              0x200
 #define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3)   //0x30
-#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3)   //0x3F
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2 | IPTV_WLAN_GUEST3)   //0x3F
 #else
+#define IPTV_WLAN_GUEST1              0x40
+#define IPTV_WLAN_GUEST2              0x80
 #define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2)   //0x30
-#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2)   //0x3F
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2)   //0x3F
 #endif
 
 #define VCFG_PAGE               0xFFFF
