@@ -971,6 +971,21 @@ start_wps(void)
     {
         return 0;
     }
+    
+    /* Bob modified start on 10/06/2014, by default, wps is only enabled on 5G radio 2, if 5G radio 2 is diabled, then enable wps on 5G radio 1 */
+#if defined(R8000)
+    if(nvram_match("wl2_radio", "1"))
+    {
+        nvram_set("wl1_wps_mode", "disabled");
+        nvram_set("wl2_wps_mode", "enabled");
+    }
+    else
+    {
+        nvram_set("wl1_wps_mode", "enabled");
+        nvram_set("wl2_wps_mode", "disabled");
+    }
+#endif
+    /* Bob modified end on 10/06/2014 */
 
 	nvram_set("wps_status", "0");
 	nvram_set("wps_method", "1");
@@ -1173,9 +1188,10 @@ start_acsd(void)
     }
 
 	system("/usr/sbin/acsd");
-	system("acs_cli -i eth1 acs_policy 4");
-    system("acs_cli autochannel &");
-
+    /* Bob removed start 08/08/2014, "acs_cli autochannel" cause "wl chanim_stats" inconsistent with "wl status" */
+    //system("acs_cli -i eth1 acs_policy 4");
+    //system("acs_cli autochannel &");
+    /* Bob removed end 08/08/2014, "acs_cli autochannel" cause "wl chanim_stats" inconsistent with "wl status" */
 	return ret;
 }
 

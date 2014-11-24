@@ -337,7 +337,10 @@ start_vlan(void)
 		for (j = 0; j < VLAN_NUMPRIS; j ++) {
 			snprintf(prio, sizeof(prio), "%d", j);
 			eval("vconfig", "set_ingress_map", vlan_id, prio, prio);
+            
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
+
         /*setup egress vlan priority*/
         if(nvram_match("enable_vlan","enable"))
         {
@@ -358,6 +361,7 @@ start_vlan(void)
             }
         }
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
 		}
 	}
 

@@ -93,11 +93,13 @@ static int is_russia_specific_support (void);
 static int is_china_specific_support (void); /* Foxconn add, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 05/16/2011, @RU_IPTV */
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
 static int getVlanname(char vlanname[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE]);
 static int getVlanRule(vlan_rule vlan[C_MAX_VLAN_RULE]);
 static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE], int maxNumToken);
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
 extern struct nvram_tuple router_defaults[];
 
 #define RESTORE_DEFAULTS() \
@@ -161,6 +163,7 @@ static void convert_wlan_params(void)
 #define RANDOM_SSID_5G  "NTGR-5G_"
 
 #if defined(R8000)
+#define RANDOM_SSID_5G_1  "NTGR-5G-1_"
 #define RANDOM_SSID_5G_2  "NTGR-5G-2_"
 #endif
 
@@ -168,21 +171,31 @@ static void convert_wlan_params(void)
         /* Fix a issue where 2.4G radio is disabled, 
          * router uses incorrect random ssid */
         /* if (strncmp(wl0_ssid, RANDOM_SSID_2G, strlen(RANDOM_SSID_2G)) == 0) */
-                if (strncmp(wl0_ssid, RANDOM_SSID_2G, strlen(RANDOM_SSID_2G)) == 0 && !nvram_match("wl0_radio","0"))
+        if (strncmp(wl0_ssid, RANDOM_SSID_2G, strlen(RANDOM_SSID_2G)) == 0 && !nvram_match("wl0_radio","0") && nvram_match("wps_currentRFband", "1"))
         {
             printf("Random ssid 2.4G\n");
             /* Set correct ssid for 5G */
-            sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G, 
+            sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G_1, 
                     &wl0_ssid[strlen(RANDOM_SSID_2G)]);
             nvram_set("wl1_ssid", wl1_ssid);
 #if defined(R8000)
             sprintf(wl2_ssid, "%s%s", RANDOM_SSID_5G_2, 
                     &wl0_ssid[strlen(RANDOM_SSID_2G)]);
             nvram_set("wl2_ssid", wl2_ssid);
-#endif            
+#endif
+            if (nvram_match("wl_5g_bandsteering", "1"))
+                nvram_set("wl2_ssid", wl1_ssid);
+                
+            nvram_set("wl1_wpa_psk", nvram_safe_get("wl0_wpa_psk"));
+            nvram_set("wl1_akm", nvram_safe_get("wl0_akm"));
+            nvram_set("wl1_crypto", nvram_safe_get("wl0_crypto"));
+            nvram_set("wl2_wpa_psk", nvram_safe_get("wl0_wpa_psk"));
+            nvram_set("wl2_akm", nvram_safe_get("wl0_akm"));
+            nvram_set("wl2_crypto", nvram_safe_get("wl0_crypto"));
         }
         else
-        if (strncmp(wl1_ssid, RANDOM_SSID_5G, strlen(RANDOM_SSID_5G)) == 0 && !nvram_match("wl1_radio","0"))
+        if (strncmp(wl1_ssid, RANDOM_SSID_5G, strlen(RANDOM_SSID_5G)) == 0 && !nvram_match("wl1_radio","0") 
+            && nvram_match("wps_currentRFband", "2") && nvram_match("wl2_radio", "0") )
         {
             printf("Random ssid 5G\n");
             /* Set correct ssid for 2.4G */
@@ -193,36 +206,41 @@ static void convert_wlan_params(void)
             sprintf(wl2_ssid, "%s%s", RANDOM_SSID_5G_2, 
                     &wl1_ssid[strlen(RANDOM_SSID_5G)]);
             nvram_set("wl2_ssid", wl2_ssid);
-#endif            
-        
-            /* Foxconn added start pling 05/23/2012 */
-            /* Fix a issue where 2.4G radio is disabled, 
-             * router uses incorrect random ssid/passphrase.
-             */
-            if (nvram_match("wl0_radio","0"))
-                nvram_set("wl0_wpa_psk", nvram_get("wl1_wpa_psk"));
-            /* Foxconn added end pling 05/23/2012 */
+#endif
+            if (nvram_match("wl_5g_bandsteering", "1"))
+                nvram_set("wl2_ssid", wl1_ssid);
+                
+            nvram_set("wl0_wpa_psk", nvram_safe_get("wl1_wpa_psk"));
+            nvram_set("wl0_akm", nvram_safe_get("wl1_akm"));
+            nvram_set("wl0_crypto", nvram_safe_get("wl1_crypto"));
+            nvram_set("wl2_wpa_psk", nvram_safe_get("wl1_wpa_psk"));
+            nvram_set("wl2_akm", nvram_safe_get("wl1_akm"));
+            nvram_set("wl2_crypto", nvram_safe_get("wl1_crypto"));
         }
 #if defined(R8000)
         else
-        if (strncmp(wl2_ssid, RANDOM_SSID_5G_2, strlen(RANDOM_SSID_5G_2)) == 0 && !nvram_match("wl2_radio","0"))
+        if (strncmp(wl2_ssid, RANDOM_SSID_5G, strlen(RANDOM_SSID_5G)) == 0 && !nvram_match("wl2_radio","0")
+            && nvram_match("wps_currentRFband", "2"))
         {
             printf("Random ssid 5G_2\n");
             /* Set correct ssid for 2.4G */
             sprintf(wl0_ssid, "%s%s", RANDOM_SSID_2G, 
-                    &wl2_ssid[strlen(RANDOM_SSID_5G_2)]);
+                    &wl2_ssid[strlen(RANDOM_SSID_5G)]);
             nvram_set("wl0_ssid", wl0_ssid);
-            sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G, 
-                    &wl2_ssid[strlen(RANDOM_SSID_5G_2)]);
+            sprintf(wl1_ssid, "%s%s", RANDOM_SSID_5G_1, 
+                    &wl2_ssid[strlen(RANDOM_SSID_5G)]);
             nvram_set("wl1_ssid", wl1_ssid);
+            
+            if (nvram_match("wl_5g_bandsteering", "1"))
+                nvram_set("wl1_ssid", wl2_ssid);
+            
+            nvram_set("wl0_wpa_psk", nvram_safe_get("wl2_wpa_psk"));
+            nvram_set("wl0_akm", nvram_safe_get("wl2_akm"));
+            nvram_set("wl0_crypto", nvram_safe_get("wl2_crypto"));
+            nvram_set("wl1_wpa_psk", nvram_safe_get("wl2_wpa_psk"));
+            nvram_set("wl1_akm", nvram_safe_get("wl2_akm"));
+            nvram_set("wl1_crypto", nvram_safe_get("wl2_crypto"));
         
-            /* Foxconn added start pling 05/23/2012 */
-            /* Fix a issue where 2.4G radio is disabled, 
-             * router uses incorrect random ssid/passphrase.
-             */
-            if (nvram_match("wl0_radio","0"))
-                nvram_set("wl0_wpa_psk", nvram_get("wl2_wpa_psk"));
-            /* Foxconn added end pling 05/23/2012 */
         }
 #endif
         nvram_unset("wps_pbc_conn_success");
@@ -294,102 +312,130 @@ static void convert_wlan_params(void)
 #endif
             nvram_set("wl1_ssid", wl1_ssid);
 #if defined(R8000)
-            nvram_set("wl2_ssid", wl2_ssid);
+            if (nvram_match("wl_5g_bandsteering", "1"))
+                nvram_set("wl2_ssid", wl1_ssid);
+            else
+                 nvram_set("wl2_ssid", wl2_ssid);
+#endif
+
+#if defined(R8000)  /* Foxconn Bob added start 09/29/2014, must sync wifi security as well since WPS of 5G radio 1 is disabled. */
+            nvram_set("wl1_wpa_psk", nvram_safe_get("wl0_wpa_psk"));
+            nvram_set("wl1_akm", nvram_safe_get("wl0_akm"));
+            nvram_set("wl1_crypto", nvram_safe_get("wl0_crypto"));
 #endif
         }
         else
         if (nvram_match("wps_currentRFband", "2"))
         {
-            /* Case 3: 5GHz radio */
+            /* Case 2: 5GHz radio */
             /* Need to add "-2.4G" to the SSID of the 2.4GHz band */
-            char ssid_suffix[] = "-2.4G";
-            char ssid_suffix_2[] = "-5G-2";
+            
+            if (nvram_match("wl2_radio", "1"))
+            {
+                /*wps is done with 5G radio 2 */
+                char ssid_suffix[] = "-2.4G";
+                char ssid_suffix_2[] = "-5G-1";
 
-            if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix))
-            {
-                printf("5G Wireless External registrar 1!\n");
-                /* SSID is not long, so append suffix to wl1_ssid */
-                sprintf(wl0_ssid, "%s%s", wl1_ssid, ssid_suffix);
-            }
-            else
-            {
-                printf("5G Wireless External registrar 2!\n");
-                /* Replace last few chars ssid with suffix */
-                /* SSID is too long, so replace last few chars of ssid
-                 * with suffix
-                 */
-                strcpy(wl0_ssid, wl1_ssid);
-                strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
-            }
+                if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix))
+                {
+                    printf("5G Wireless External registrar 1!\n");
+                    /* SSID is not long, so append suffix to wl1_ssid */
+                    sprintf(wl0_ssid, "%s%s", wl2_ssid, ssid_suffix);
+                }
+                else
+                {
+                    printf("5G Wireless External registrar 2!\n");
+                    /* Replace last few chars ssid with suffix */
+                    /* SSID is too long, so replace last few chars of ssid
+                    * with suffix
+                    */
+                    strcpy(wl0_ssid, wl2_ssid);
+                    strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
+                }
 #if (defined R8000)
-            if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix_2))
-            {
-                printf("5G Wireless External registrar 1!\n");
-                /* SSID is not long, so append suffix to wl1_ssid */
-                sprintf(wl2_ssid, "%s%s", wl1_ssid, ssid_suffix_2);
-            }
-            else
-            {
-                printf("5G Wireless External registrar 2!\n");
-                /* Replace last few chars ssid with suffix */
-                /* SSID is too long, so replace last few chars of ssid
-                 * with suffix
-                 */
-                strcpy(wl2_ssid, wl1_ssid);
-                strcpy(&wl2_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
-            }
+                if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix_2))
+                {
+                    printf("5G Wireless External registrar 1!\n");
+                    /* SSID is not long, so append suffix to wl1_ssid */
+                    sprintf(wl1_ssid, "%s%s", wl2_ssid, ssid_suffix_2);
+                }
+                else
+                {
+                    printf("5G Wireless External registrar 2!\n");
+                    /* Replace last few chars ssid with suffix */
+                    /* SSID is too long, so replace last few chars of ssid
+                    * with suffix
+                    */
+                    strcpy(wl1_ssid, wl2_ssid);
+                    strcpy(&wl1_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
+                }
 #endif
-            nvram_set("wl0_ssid", wl0_ssid);
+                nvram_set("wl0_ssid", wl0_ssid);
 #if (defined R8000)
-            nvram_set("wl2_ssid", wl2_ssid);
+                if (nvram_match("wl_5g_bandsteering", "1"))
+                    nvram_set("wl1_ssid", wl2_ssid);
+                else
+                    nvram_set("wl1_ssid", wl1_ssid);
 #endif            
-        }
-#if (defined R8000)
-        else
-        if (nvram_match("wps_currentRFband", "3"))
-        {
-            /* Case 4: 5GHz radio 2 */
-            /* Need to add "-2.4G" to the SSID of the 2.4GHz band */
-            char ssid_suffix[] = "-2.4G";
-            char ssid_suffix_2[] = "-5G-2";
-
-            if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix))
-            {
-                printf("5G Wireless External registrar 1!\n");
-                /* SSID is not long, so append suffix to wl1_ssid */
-                sprintf(wl0_ssid, "%s%s", wl2_ssid, ssid_suffix);
-            }
-            else
-            {
-                printf("5G Wireless External registrar 2!\n");
-                /* Replace last few chars ssid with suffix */
-                /* SSID is too long, so replace last few chars of ssid
-                 * with suffix
-                 */
-                strcpy(wl0_ssid, wl1_ssid);
-                strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
-            }
-
-            if (MAX_SSID_LEN - strlen(wl2_ssid) >= strlen(ssid_suffix_2))
-            {
-                printf("5G Wireless External registrar 1!\n");
-                /* SSID is not long, so append suffix to wl1_ssid */
-                sprintf(wl1_ssid, "%s%s", wl2_ssid, ssid_suffix_2);
-            }
-            else
-            {
-                printf("5G Wireless External registrar 2!\n");
-                /* Replace last few chars ssid with suffix */
-                /* SSID is too long, so replace last few chars of ssid
-                 * with suffix
-                 */
-                strcpy(wl1_ssid, wl2_ssid);
-                strcpy(&wl1_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
-            }
-            nvram_set("wl0_ssid", wl0_ssid);
-            nvram_set("wl1_ssid", wl1_ssid);
-        }
+#if defined(R8000)  /* Foxconn Bob added start 09/29/2014, must sync wifi security as well since WPS of 5G radio 1 is disabled. */
+                nvram_set("wl1_wpa_psk", nvram_safe_get("wl2_wpa_psk"));
+                nvram_set("wl1_akm", nvram_safe_get("wl2_akm"));
+                nvram_set("wl1_crypto", nvram_safe_get("wl2_crypto"));
 #endif
+            }
+            else if (nvram_match("wl2_radio", "0"))
+            {
+                /*wps is done with 5G radio 1 */
+                char ssid_suffix[] = "-2.4G";
+                char ssid_suffix_2[] = "-5G-2";
+
+                if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix))
+                {
+                    printf("5G Wireless External registrar 1!\n");
+                    /* SSID is not long, so append suffix to wl1_ssid */
+                    sprintf(wl0_ssid, "%s%s", wl1_ssid, ssid_suffix);
+                }
+                else
+                {
+                    printf("5G Wireless External registrar 2!\n");
+                    /* Replace last few chars ssid with suffix */
+                    /* SSID is too long, so replace last few chars of ssid
+                    * with suffix
+                    */
+                    strcpy(wl0_ssid, wl1_ssid);
+                    strcpy(&wl0_ssid[MAX_SSID_LEN - strlen(ssid_suffix)], ssid_suffix);
+                }
+#if (defined R8000)
+                if (MAX_SSID_LEN - strlen(wl1_ssid) >= strlen(ssid_suffix_2))
+                {
+                    printf("5G Wireless External registrar 1!\n");
+                    /* SSID is not long, so append suffix to wl1_ssid */
+                    sprintf(wl2_ssid, "%s%s", wl1_ssid, ssid_suffix_2);
+                }
+                else
+                {
+                    printf("5G Wireless External registrar 2!\n");
+                    /* Replace last few chars ssid with suffix */
+                    /* SSID is too long, so replace last few chars of ssid
+                    * with suffix
+                    */
+                    strcpy(wl2_ssid, wl1_ssid);
+                    strcpy(&wl2_ssid[MAX_SSID_LEN - strlen(ssid_suffix_2)], ssid_suffix_2);
+                }
+#endif
+                nvram_set("wl0_ssid", wl0_ssid);
+                if (nvram_match("wl_5g_bandsteering", "1"))
+                    nvram_set("wl2_ssid", wl1_ssid);
+                else
+                    nvram_set("wl2_ssid", wl2_ssid);
+     
+#if defined(R8000)  /* Foxconn Bob added start 09/29/2014, must sync wifi security as well since WPS of 5G radio 1 is disabled. */
+                nvram_set("wl2_wpa_psk", nvram_safe_get("wl1_wpa_psk"));
+                nvram_set("wl2_akm", nvram_safe_get("wl1_akm"));
+                nvram_set("wl2_crypto", nvram_safe_get("wl1_crypto"));
+#endif
+            }
+        }
         else
             printf("Error! unknown external register!\n");
     }
@@ -1070,7 +1116,8 @@ static int config_iptv_params(void)
     char command[128]="";
     int i = 0;
     /*added by dennis end,05/04/2012,for guest network reconnect issue*/
-    
+
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
     char br_ifname[16] = "";
     char br_ifnames[64] = "";
@@ -1115,6 +1162,8 @@ static int config_iptv_params(void)
     }
 
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
+
     if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
     {
         char iptv_intf[32];
@@ -1200,6 +1249,7 @@ static int config_iptv_params(void)
 #else
     strcat(vlan1_ports, "5*");
 #endif    
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
     char lan_interface[16]="";
     char lan_hwname[16]="";
@@ -1212,15 +1262,18 @@ static int config_iptv_params(void)
     }
     else
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
     nvram_set("vlan1ports", vlan1_ports);
 
     /* build vlan3 for IGMP snooping on IPTV ports */
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
     if (nvram_match ("enable_vlan", "enable"))
         ;/*do nothing*/
     else
     {
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
         if (strlen(vlan_iptv_ports))
         {
             strcat(vlan_iptv_ports, "5");
@@ -1235,6 +1288,7 @@ static int config_iptv_params(void)
 #ifdef VLAN_SUPPORT
     }
 #endif
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
     
     if (nvram_match ("enable_vlan", "enable"))
@@ -1415,6 +1469,7 @@ static int config_iptv_params(void)
     }
 	else
 #endif
+/*Foxconn add end, edward zhang, 2013/07/03*/
     if (iptv_bridge_intf & IPTV_MASK)
     {
         char lan_ifnames[128] = "vlan1 ";
@@ -1431,6 +1486,7 @@ static int config_iptv_params(void)
             nvram_set("vlan2ports", "4 8");
         else
         {
+/*Foxconn add , edward zhang, 2013/07/03*/
             nvram_set("vlan2ports", "4 5");
         }
 #else
@@ -1440,6 +1496,7 @@ static int config_iptv_params(void)
         nvram_set("vlan2ports", "4 5");
 #endif        
 #endif
+
         /* build vlan3 for IGMP snooping on IPTV ports */
         if (strlen(vlan_iptv_ports))
             strcat(wan_ifnames, "vlan3 ");
@@ -1501,6 +1558,7 @@ static int config_iptv_params(void)
             strcpy(br0_ifnames,"vlan1");       
         else
         {
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
             nvram_set("vlan2hwname", "et0");
             nvram_set("vlan1hwname", "et0");
@@ -1518,9 +1576,9 @@ static int config_iptv_params(void)
         nvram_set("lan1_ifname", "");
 
 #ifdef __CONFIG_IGMP_SNOOPING__
-        /* foxconn Bob modified start 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
+        /* foxconn Bob modified start 07/18/2014, not to bridge eth0 and vlan1 in the same bridge, or may cause broadcast radiation */
         if (nvram_match("emf_enable", "1") || nvram_match("enable_ap_mode", "1") ) {
-        /* foxconn Bob modified end 08/26/2013, not to bridge eth0 and vlan1 in the same bridge */
+        /* foxconn Bob modified end 07/18/2014 */
 #ifdef __CONFIG_GMAC3__
             if(nvram_match("gmac3_enable", "1"))
                 nvram_set("vlan2ports", "4 8");
@@ -1532,8 +1590,10 @@ static int config_iptv_params(void)
 #else
             nvram_set("vlan2ports", "4 5");
 #endif
+            /* foxconn Bob modified start 07/18/2014, not to bridge eth0 and vlan1 in the same bridge, or may cause broadcast radiation */
             nvram_set("wan_ifnames", "vlan2");
             nvram_set("wan_ifname", "vlan2");
+            /* foxconn Bob modified end 07/18/2014 */
         }
         else
 #endif
@@ -2035,6 +2095,7 @@ static int is_china_specific_support (void)
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 04/20/2011 @RU_IPTV */
 
+/*Foxconn add start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
 static int getVlanname(char vlanname[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE])
 {
@@ -2098,6 +2159,7 @@ static int getVlanRule(vlan_rule vlan[C_MAX_VLAN_RULE])
     return numVlanRule;
 }
 #endif
+
 static int send_wps_led_cmd(int cmd, int arg)
 {
     int ret_val=0;
@@ -3358,6 +3420,13 @@ sysinit(void)
         /* foxconn modified end, zacker, 08/06/2010 */
 
 		/* Load ctf */
+		/* Foxconn added start pling 06/26/2014 */
+		/* Change CTF mode when access control is enabled */
+		if (nvram_match("access_control_mode", "1") &&
+			!nvram_match("ctf_disable", "1"))
+			nvram_set("ctf_disable", "1");
+		/* Foxconn added end pling 06/26/2014 */
+
     /* Foxconn added start pling 08/19/2010 */
     /* Make sure the NVRAM "ctf_disable" exist, otherwise 
      * MultiSsidCntrl will not work.
@@ -3989,6 +4058,13 @@ main_loop(void)
     /* foxconn wklin added start, 10/22/2008 */
 	sysinit();
 
+	/* Foxconn added start pling 06/26/2014 */
+	/* R8000 TD99, Link down/up WAN ethernet for Comcast modem IPv6 compatibility issue*/
+#if (defined R8000)
+	system("et robowr 0x14 0 0x1940");
+#endif
+	/* Foxconn added end pling 06/26/2014 */
+
 	/* Foxconn added start pling 03/20/2014 */
 	/* Router Spec Rev 12: disable/enable ethernet interface when dhcp server start */
 	eval("landown");
@@ -4070,6 +4146,11 @@ main_loop(void)
     nvram_unset("restart_all_processes");
 #endif
     /* Foxconn add end, Max Ding, 02/26/2010 */
+    /* Bob added start on 09/22/2014 for wifi schedule */
+    nvram_unset("wifi_2g_on_previous");
+    nvram_unset("wifi_5g_on_previous");
+    nvram_unset("wifi_5g_2_on_previous");
+    /* Bob added end on 09/22/2014 for wifi schedule */
 
 
 	/* Basic initialization */
@@ -4345,7 +4426,7 @@ main_loop(void)
 #endif
 			/* foxconn added end, zacker, 01/13/2012, @iptv_igmp */
 #if defined(R8000)
-        system("et -i eth0 robowr 0x4 0x4 0");   
+        system("et -i eth0 robowr 0x4 0x4 0");   /* Bob added on 07/17/2014, to enable STP forward */
 		if ( nvram_match("wla_region", "5"))
 		    nvram_set("dual_5g_band","0");
 		else
@@ -4473,6 +4554,14 @@ main_loop(void)
 			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
             /* Now start ACOS services */
+
+            /* Foxconn added start pling 06/26/2014 */
+            /* R8000 TD99, Link down/up WAN ethernet for Comcast modem IPv6 compatibility issue*/
+#if (defined R8000)
+            system("et robowr 0x14 0 0x1140");
+#endif
+            /* Foxconn added end pling 06/26/2014 */
+
             eval("acos_init");
             eval("acos_service", "start");
 

@@ -701,6 +701,7 @@ start_lan(void)
 	symlink("/sbin/rc", "/tmp/ldhclnt");
 
 
+/*Foxconn modified start, edward zhang, 2013/07/03*/
 #ifdef VLAN_SUPPORT
 	nvram_unset("unbridged_ifnames");
     /*unset some bridge nvram*/
@@ -1363,13 +1364,13 @@ start_wl(void)
 	int i;
     /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifname = nvram_safe_get("lan_ifname");
-	char lan_ifname[128];   
+	char lan_ifname[128];   /* Bob modifed 08/08/2014, increase buffer size for R8000 */
     /* Foxconn modified end pling 11/26/2009 */
 	char name[80], *next;
 	char tmp[100];
     /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifnames;
-	char lan_ifnames[128];  
+	char lan_ifnames[128];  /* Bob modifed 08/08/2014, increase buffer size for R8000 */
     /* Foxconn modified end pling 11/26/2009 */
 	int region;
 
@@ -1486,7 +1487,7 @@ start_wl(void)
 #endif
     }
     
-    system("wl -i eth1 pspretend_threshold 4");
+    // system("wl -i eth1 pspretend_threshold 4"); /* Bob removed 08/27/2014, 43602 does not supports psprented */
     
     system("wl -i eth1 mfp_enable 0");
     system("wl -i eth2 mfp_enable 0");
@@ -1548,8 +1549,8 @@ start_wl(void)
     
 #if defined(R8000)
     system("wl -i eth1 interference 7");
-    system("wl -i eth2 interference 0");
-    system("wl -i eth3 interference 0");
+    system("wl -i eth2 interference 7");
+    system("wl -i eth3 interference 7");
 #endif
       
 }
@@ -2533,7 +2534,7 @@ void start_wlan(void)
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn added end, Wins, 05/07/11, @RU_IPTV */
     eval("wlconf", wlif, "up");
-    eval("wlconf", wlif, "start");
+    //eval("wlconf", wlif, "start");    /* Bob removed 08/08/2014, no need to start here, start here will cause unexpected behavior of acsd. Start in start_wl after acsd */
     ifconfig(wlif, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2565,7 +2566,7 @@ void start_wlan(void)
 
 
     eval("wlconf", wl1_ifname, "up");
-    eval("wlconf", wl1_ifname, "start");
+    //eval("wlconf", wl1_ifname, "start");  /* Bob removed 08/08/2014, no need to start here, start here will cause unexpected behavior of acsd. Start in start_wl after acsd */
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2596,7 +2597,7 @@ void start_wlan(void)
 
 #if defined(R8000)
     eval("wlconf", wl2_ifname, "up");
-    eval("wlconf", wl2_ifname, "start");
+    //eval("wlconf", wl2_ifname, "start");      /* Bob removed 08/08/2014, no need to start here, start here will cause unexpected behavior of acsd. Start in start_wl after acsd */
     ifconfig(wl2_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV

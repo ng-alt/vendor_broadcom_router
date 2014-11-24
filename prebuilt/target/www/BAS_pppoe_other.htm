@@ -361,8 +361,8 @@ function loadSettings()
 	var wan_dns2_pri = cf.wan_dns2_pri.value.split(".");
 	var wan_dns2_sec = cf.wan_dns2_sec.value.split(".");
 
-	cf.pppoe_idletime.value = <%2553%> / 60;
-	//cf.pppoe2_idletime.value = <%2554%> / 60;
+	cf.pppoe_idletime.value = <%2569%> / 60;
+	//cf.pppoe2_idletime.value = <%2570%> / 60;
 	
 	// Get pppoe_dod (nvram)
 	cf.pppoe_dod.selectedIndex = <%516%>;
@@ -546,9 +546,9 @@ function valid_edit(type)
     if(cf.policyIdx.value.length == 0)//not select
     {
         if(type == 0)
-			alert("<%1733%>");
+			alert("<%1737%>");
         else if(type == 1)
-			alert("<%1734%>");
+			alert("<%1738%>");
         return false;
     }
     return true;
@@ -566,7 +566,7 @@ function valid_edit(type)
 <form id="target"  name="formname" method="POST" action="pppoe2.cgi" >
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
 <img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%357%></div>
+<div class="subhead2"> <%356%></div>
 <table border="0"     class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -593,16 +593,16 @@ function valid_edit(type)
 
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','login')" tabindex="-1"><b><%536%></b></a></td>
-	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="64" value="<%2555%>"></td>
+	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="64" value="<%2571%>"></td>
 </tr>
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','password')" tabindex="-1"><b><%538%></b></a></td>
-	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="64" value="<%2556%>"></td>
+	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="64" value="<%2572%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('BAS_pppoe','serv_name')" tabindex="-1"><%540%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%2557%>"></td>
+	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%2573%>"></td>
 </tr>
 <tr>
 <td width="50%" nowrap><a href="javascript:loadhelp('BAS_pppoe','conn_mode')" tabindex="-1"><b><%542%></b></a></td>
@@ -672,11 +672,11 @@ function valid_edit(type)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td width="50%"><b><%1513%></b></td>
+ <td width="50%"><b><%1517%></b></td>
  <td width="50%" align="right"><select name="session_type" onChange="setSession()">
-        <OPTION <%2561%>><%1514%></OPTION>
-        <OPTION <%2562%>><%1515%></OPTION>
-        <OPTION <%2563%>><%531%></OPTION>
+        <OPTION <%2577%>><%1518%></OPTION>
+        <OPTION <%2578%>><%1519%></OPTION>
+        <OPTION <%2579%>><%531%></OPTION>
       </select></td>
 </tr>
 
@@ -684,16 +684,16 @@ function valid_edit(type)
 
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','login')" tabindex="-1"><b><%536%></b></a></td>
-	<td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="64" value="<%2581%>"></td>
+	<td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="64" value="<%2597%>"></td>
 </tr>
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','password')" tabindex="-1"><b><%538%></b></a></td>
-	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="64" value="<%2582%>"></td>
+	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="64" value="<%2598%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('BAS_pppoe','serv_name')" tabindex="-1"><%540%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%2566%>"></td>
+	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%2582%>"></td>
 </tr>
 
 
@@ -749,12 +749,12 @@ function valid_edit(type)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td colspan="2" ><b><%2583%></b></td>
+ <td colspan="2" ><b><%2599%></b></td>
 </tr>
 
 <tr>
  <td width="50%"></td>
- <td width="50%" align="right"><select name="Policy"><option value="1"><%2569%></option><option value="2"><%492%></option><option value="3"><%626%></option></select></td>
+ <td width="50%" align="right"><select name="Policy"><option value="1"><%2585%></option><option value="2"><%492%></option><option value="3"><%626%></option></select></td>
 </tr>
 
 <tr>
@@ -767,20 +767,20 @@ function valid_edit(type)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td colspan="2" ><b><%2567%></b></td>
+ <td colspan="2" ><b><%2583%></b></td>
 </tr>
 
 <tr>
 <td colspan="2">
 	<table border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr><td  width="5%" align="center"><span class="thead"> &nbsp;</span></td>
-		<td width="15%" align="center"><b><span class="thead"><%2568%></span></b></td>
-		<td width="20%" align="center"><b><span class="thead"><%2569%></span></b></td>
+		<td width="15%" align="center"><b><span class="thead"><%2584%></span></b></td>
+		<td width="20%" align="center"><b><span class="thead"><%2585%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%492%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%626%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%646%></span></b></td>
     </tr>
-    <%2584%>
+    <%2600%>
 	</table>
 </td>
 </tr>
@@ -804,15 +804,15 @@ function valid_edit(type)
 
 <input type="hidden" name="runtest" value="<%504%>">
 <INPUT name=wan_ipaddr type=hidden value= "<%230%>">
-<INPUT name=wan2_ipaddr type=hidden value= "<%2570%>">
-<INPUT name=pppoe_localip type=hidden value= "<%2571%>">
-<INPUT name=wan_dns_sel type=hidden value= "<%2572%>">
-<INPUT name=wan_dns1_pri type=hidden value= "<%2573%>">
-<INPUT name=wan_dns1_sec type=hidden value= "<%2574%>">
-<INPUT name=pppoe2_localip type=hidden value= "<%2575%>">
-<INPUT name=wan2_dns_sel type=hidden value= "<%2576%>">
-<INPUT name=wan_dns2_pri type=hidden value= "<%2577%>">
-<INPUT name=wan_dns2_sec type=hidden value= "<%2578%>">
+<INPUT name=wan2_ipaddr type=hidden value= "<%2586%>">
+<INPUT name=pppoe_localip type=hidden value= "<%2587%>">
+<INPUT name=wan_dns_sel type=hidden value= "<%2588%>">
+<INPUT name=wan_dns1_pri type=hidden value= "<%2589%>">
+<INPUT name=wan_dns1_sec type=hidden value= "<%2590%>">
+<INPUT name=pppoe2_localip type=hidden value= "<%2591%>">
+<INPUT name=wan2_dns_sel type=hidden value= "<%2592%>">
+<INPUT name=wan_dns2_pri type=hidden value= "<%2593%>">
+<INPUT name=wan_dns2_sec type=hidden value= "<%2594%>">
 <INPUT name=FletType type=hidden value= "2">
 <INPUT name=ToDisable type=hidden value= "">
 <INPUT name=whichTest type=hidden value= "">

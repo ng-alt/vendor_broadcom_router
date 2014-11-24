@@ -4,12 +4,25 @@
 	<meta charset="UTF-8" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="<%1349%>">	
+	<script src="script/script.js"></script>
 	<title>NETGEAR Genie</title>
 	
 	
 </head>
 <script >
-var mode = <%2757%>
+var mode = <%2773%>
+var OSType = detectOS();
+
+function goGenieDownloadPage()
+{
+    if(OSType != "Win" && OSType != "Mac")
+        window.location.href='genie_download_skip.htm';
+    else
+        window.location.href='genie_download.htm';
+       
+    return false;
+}
+
 function submit()
 {
     document.forms["target"].submit();
@@ -127,9 +140,9 @@ function clickHere()
         <tr>
 		<td>&nbsp;</td>
         	<td class="textRow centerTd">		
-			<button class = "purpleBtn2"  onclick="window.location.href='genie_redirect_successpage.htm';return false;"><span><%2501%>&nbsp;</span></button>
+			<button class = "purpleBtn2"  onclick="window.location.href='genie_redirect_successpage.htm';return false;"><span><%2518%>&nbsp;</span></button>
 			<span style="display:-moz-inline-box;display:inline-block;width:300px;"></span>
-<button class = "purpleBtn2"  onclick="window.location.href='genie_download.htm';return false;"><span><%2503%> &nbsp;</span></button>
+<button class = "purpleBtn2"  onclick="goGenieDownloadPage();return false;"><span><%2509%> &nbsp;</span></button>
 		</td>
 		<td>&nbsp;</td>
 	</tr>

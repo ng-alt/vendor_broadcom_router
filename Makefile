@@ -448,7 +448,7 @@ obj-$(CONFIG_APLAY) += alsa-utils/aplay
 obj-$(CONFIG_NVRAM) += nvram
 obj-$(CONFIG_SHARED) += shared
 
-obj-$(CONFIG_LIBBCM) += libbcm
+#obj-$(CONFIG_LIBBCM) += libbcm
 
 obj-$(CONFIG_RC) += rc
 obj-$(CONFIG_GLIBC) += lib
