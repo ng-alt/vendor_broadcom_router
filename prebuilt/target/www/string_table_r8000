@@ -1,10 +1,10 @@
 ////English////
 ///////////////////////////////Please keep the line below in English////////////////////////////////////////////////////////////////
-lang_ori_english="Auto English German Chinese Korean Russian Spanish Polish French Italian Swedish Danish Dutch Greek Norwegian Czech Slovenian Portuguese Hungarian Romanian Finnish Slovak Turkish Japanese"
+lang_ori_english="Auto English German SimplifiedChinese TraditionalChinese Korean Russian Spanish Polish French Italian Swedish Danish Dutch Greek Norwegian Czech Slovenian Portuguese Hungarian Romanian Finnish Slovak Turkish Japanese"
 ////////////////////////////////Please keep the line below as it is ///////////////////////////////////////////////////////////////
-lang_ori="Auto English Deutsch 中文 한국어 Русский Español Polski Français Italiano Svenska Dansk Nederlands Ελληνικά Norsk Čeština Slovenščina Português Magyar Română Suomi Slovenčina Türkiye 日本語"
+lang_ori="Auto English Deutsch 简体中文 繁體中文 한국어 Русский Español Polski Français Italiano Svenska Dansk Nederlands Ελληνικά Norsk Čeština Slovenščina Português Magyar Română Suomi Slovenčina Türkiye 日本語"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-version="1.0.1.16_2.1.43.1"
+version="1.0.1.28_2.1.46.1"
 language="English"
 support_url="http://kbserver.netgear.com/main.asp"
 
@@ -147,9 +147,9 @@ r_wpa_en="WPA/WPA2 Enterprise"
 wpa_en_head="WPA/WPA2 Enterprise"
 wpa_en_encrypt="Encryption mode"
 
-wpa_en_encrypt_1="WPA-PSK [TKIP]" 
-wpa_en_encrypt_2="WPA2-PSK [AES]"
-wpa_en_encrypt_3="WPA-PSK [TKIP] + WPA2-PSK [AES]"
+wpa_en_encrypt_1="WPA [TKIP]" 
+wpa_en_encrypt_2="WPA2 [AES]"
+wpa_en_encrypt_3="WPA [TKIP] + WPA2 [AES]"
 wpa_en_gk_int="Group Key Update Interval"
 wpa_en_radius_ip="RADIUS server IP Address:"
 wpa_en_radius_port="RADIUS server Port:"
@@ -1540,6 +1540,8 @@ static_ip="Static IP Address"
 ipv6_dhcp_class="User Class (if Required)"
 //cgi string
 not_avaliable="Not Available"
+ipv6_pppoe_same_login="Use the same Login information as IPv4 PPPoE"
+pppoe_share_warning="IPv4 PPPoE configuration is shared with IPv6 PPPoE. Apply the change will disable the IPv6. Do you want to proceed?"
 
 //IPV6_auto.htm IPV6_pppoe.htm IPV6_dhcp.htm IPV6_tunnel.htm
 invalid_id="Interface ID is not valid, only hex digits are allowed."
@@ -1584,7 +1586,7 @@ media_ser_name="Media Server Name"
 content_scan="Content Scan"
 media_automatic="Automatic (when new files added)"
 alert_media_name="You can not input ':' as the ReadyDLNA media server name."
-h_UPNP_media="<BODY style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>Media Server (Settings) Help</B></font></P> <P>Setting this device as a ReadyDLNA Media server enables playback of Videos Movies and Pictures on DLNA/UPnP AV compliant Media Players like Xbox360, Playstation and NETGEAR's Digital Entertainer Live.</p><p>ReadyDLNA implies this device serves media in DLNA compatible form to DLNA/UPnP AV compliant Media Players </p> <ul><li><b>Enable Media Server</b> enables this device to act as a Media server.</li><li><b>Enable TiVo® support</b> Please visit http://www.readynas.com/?p=1428 to see how to use this feature with your TiVo device.</li><li><b>Media Server name</b> is the name that shows up on Media Players</li></ul> </p><p><b>Content Scan</b><ul><li><b>Automatically update database </b> Scans for Media files whenever new files are added to the ReadyShare USB Storage. Only shared folder with “All – no password” in Read Access can be scanned for Media files.</li><li>You can also click <b>Rescan media files</b> to delete current database and do a whole new scan immediately.</li></ul></p></div></BODY>"
+h_UPNP_media="<BODY style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>Media Server (Settings) Help</B></font></P> <P> You can use your router as a ReadyDLNA media server that serves media in DLNA compatible form to DLNA and UPnP AV compliant media players. Then you can play videos, movies and pictures from compatible media players like the Xbox360, PlayStation, and NETGEAR's Digital Entertainer Live. </P><P>You can also enable iTunes Media server and play music on your USB storage device using iTunes and Apple Remote.</P><B><P> Enable DNLA Media Server </P></B><P> Select this check box to enable the router to act as a ReadyDLNA media server. </P><B><P> Enable TiVo Support </P></B><P> Select this check box to allow TiVo devices to play media on a USB storage device connected to the router’s USB port.</P><B><P> Enable iTunes Media Server (Music Only) </P></B><P> Select this check box to use iTunes and Apple Remote to play music on a USB storage device connected to the router. When you plug your USB device in to the router’s USB port, you can see the music library that is on the USB device in your iTunes app on your Mac and Windows computers. The iTunes Media Server supports serveral files formats including MP3, AAC, FLAC, WAV, and WMA.</P><B><P> Enter the passcode displayed on Remote App</P></B><P> Apple Remote is an app for iPhone and iPad devices. It can control how music on the USB device is played on airplay devices. When you try to add a new library in the Apple Remote app, a four-digit passcode displays. Enter this passcode in the field and click the “Allow Control” button. Then your Apple Remote app will display the music library on the USB device connected to the router’s USB port. </P><B><P> Media Server/Device Name</P></B><P> This is the media server name that is used for both the DLNA media server and iTunes media server. The media server name is the same as the device name. The default name is the router model number. To change the name, click the “Check Here to change the Device Name” link and type in a new name.</P></div></BODY>"
 
 //20101207
 wlan_mode_217="Up to 217 Mbps"
@@ -1805,7 +1807,7 @@ usb_cloud_setup="You can follow step 2~4 above to access the storage from anywhe
 usb_cloud_switch="Click <B>Unregister</B> to register ReadySHARE Cloud with a different user"
 h_usb_cloud="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>ReadySHARE Cloud Help</B></font></P><p>The ReadySHARE Cloud feature gives you remote access over the Internet to a USB storage device that is connected to your router's USB port, no matter where you are. You can also invite family members or friends to access it.</p><p><b>How to Set Up ReadySHARE Cloud</b></p><p>Step 1: You need a ReadySHARE Cloud account. If you do not have one, click the link provided in this page to go to NETGEAR ReadySHARE Cloud page to create an account. <br/>You'll be asked to enter a valid email address which will be used to recover your user name or password.<br/>Step 2: After Step 1, you need to come back to this router web page, and enter your ReadySHARE Cloud user name and password to register your router and the USB device that is connected to it.<br/>This registration step has to be initiated from your NETGEAR router, meaning you can't register your router through the NETGEAR ReadySHARE Cloud web site <a target='_blank' href='http://readyshare.netgear.com' >http://readyshare.netgear.com</a></p>.<br/>Step 3: Log back into <a target='_blank' href='http://readyshare.netgear.com' >http://readyshare.netgear.com</a></p> with your account. You should see the USB device that is connected to your router. By default, all the contents of the USB device are accessible. You can create a new share that is limited to any subset of the contents with the security level you specify.<br/>Step 4: The first time you use ReadySHARE Cloud, you are asked to download a Windows client, which is used to make a secure connection from your PC to the router's USB device. Log into this client and you can access the USB device from anywhere.<br/>Currently you can only download the Windows OS client. The Mac OS client will be ready at a later time on the website.<br/> <b>Note:</b> Without this client, you can only browse your USB device contents by clicking the '+' icon (Add Share) on the website. You won't be able to open files or make changes to them. </p><p><b>User Name and Password</b></p><p>This is the ReadySHARE Cloud account you created on NETGEAR website in step 1.<br/> The router with USB storage will only show up after you register it. The Internet connection between the router and the ReadySHARE Cloud server will be kept alive until you unregister it.<br/> You can also register the router with another account after unregistering it from previous account.<br/></p></div></BODY>"
 DFS_radar_mark="This DFS channel is not allowed to use because the Radar was detected before. You can change another channel or wait "
-DFS_warning="You select a DFS channel, the channel will be changed automatically if any Radar is detected."
+DFS_warning="You selected a DFS channel. If a higher priority signal is detected, the channel will be adjusted automatically."
 //20120411
 router_pin_mark1="Enable Router's PIN"
 router_pin_mark2="To prevent PIN compromise, auto disable the PIN after"
@@ -2050,7 +2052,7 @@ usb_vault_info1="1. Install the genie app on each PC by downloading the software
 usb_vault_info2="2. Install ReadySHARE Vault on each PC by downloading the software from  <a class='linktype' target='_blank' href='http://www.netgear.com/readyshare'>www.netgear.com/readyshare</a>."
 usb_vault_info3="3. Launch ReadySHARE Vault. Use the Dashboard or the Backup tab to set up and run your backup."
 //QoS speedtest
-speedtest_checkbtn="Speed Test"
+speedtest_checkbtn="Speedtest"
 speedtest_checkinfo="<b><font color=#ADA7D7>Checking your Internet bandwidth</font></b>"
 speedtest_ckresult="<b><font color=#ADA7D7>Your uplink Internet bandwidth detected is</font></b>"
 speedtest_cknowan="<b><font color=#FFOOOO>The Internet connection is down, please connect to the Internet first.</font></b>"
@@ -2118,7 +2120,8 @@ second_5g="5GHz-2"
 quality_of_devices_basic="Dynamic QoS"
 iqos_enable="Enable Dynamic QoS"
 iqos_update_enable="Detection Database Auto Update"
-iqos_setting_1="Let Speedtest detect my Internet bandwidth" 
+iqos_setting_1="Let Speedtest detect my Internet bandwidth"
+ 
 iqos_setting_1_1="(Please make sure no device is accessing the Internet while running the test)"
 iqos_setting_2="I want to define my Internet Bandwidth"
 iqos_devlist="Click here to see bandwidth utilization by device and application"
@@ -2130,7 +2133,8 @@ iqos_down_speed_app="Internet Download Speed by App"
 iqos_up_speed_dev_app="Internet Upload Speed by App"
 edit_device="Edit Device"
 iqos_application="Application"
-iqos_warn1="QoS does not increase your total Internet bandwidth or WiFi throughput" 
+iqos_warn1="QoS does not increase your total Internet bandwidth or WiFi throughput"
+ 
 iqos_warn2="Setting a download and upload speed larger than your ISP provided will make Dynamic QoS service ineffective. \n Setting a download and upload speed smaller than your ISP provided will yield a smaller total bandwidth. You will not enjoy the full internet bandwidth that your ISP provided."
 iqos_subtitle1="Internet Bandwidth"
 iqos_subtitle2="Automatically update performance optimization database"
@@ -2186,3 +2190,9 @@ iptv_no_port_selected="Please select least one port as WAN bridge"
 iptv_all_port_selected="At least one port MUST be unchecked."
 iptv_enable="Enable Bridge Group"
 vlan_iptv_none="None"
+6rd="6rd Tunnel"
+6rd_br="6rd (IPv6 Rapid Deployment) Configuration"
+6rd_prefix="6rd Prefix"
+6rd_prefix_length = "6rd Prefix Length"
+6rd_masklen="6rd IPv4 Address Mask Length"
+6rd_ipv4br_address="6rd IPv4 Border Relay Address"

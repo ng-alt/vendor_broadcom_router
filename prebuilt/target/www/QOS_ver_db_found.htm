@@ -19,6 +19,15 @@
 
     $(document).ready(function()
     {	
+        var newFiles=<%1992%>;
+        var cf = document.forms[0];
+        if(newFiles & 0X1){
+            document.getElementById("signautre_result1").style.display="block";
+            document.getElementById("signautre_result2").style.display="block";
+        }
+        if(newFiles & 0X2){
+            document.getElementById("engine_result").style.display="block";
+        }
         $("#target").submit(function() {
             buttonFilter();
         });
@@ -28,7 +37,11 @@
 
 
 function goHome(){
-    window.location.href="QOS_down_streaming.htm";        
+    is_basic="<%1993%>";
+    if(is_basic=="1")
+        window.location.href="QOS_down_streaming_iqos_basic.htm";
+    else
+        window.location.href="QOS_down_streaming.htm";
 }
 //-->
 </script>
@@ -40,7 +53,7 @@ function goHome(){
 
 <tr>
 <td colspan="2">
-	<h1><%1987%></H1>
+	<h1><%1991%></H1>
 </td>
 </tr>
 
@@ -49,27 +62,29 @@ function goHome(){
 </tr>
 
 <tr>
-    <td colspan="2"><b><%1988%></b></td>
+    <td colspan="2"><b><%1994%></b></td>
 </tr>
 <tr></tr>
-<tr>
-	<td width="50%"><%1989%></td>
-        <td width="50%">v<%1990%></td>
+<tr id="signautre_result1" style="display: none;">
+	<td width="50%"><%1995%></td>
+        <td width="50%">v<%1996%></td>
 </tr>
 <tr></tr>
-<tr>
-	<td width="50%"><%1991%></td>
-        <td width="50%">v<%1992%></td>
+<tr id="signautre_result2" style="display: none;">
+	<td width="50%"><%1997%></td>
+        <td width="50%">v<%1998%></td>
 </tr>
 <tr></tr>
-
+<tr id="engine_result" style="display: none;">
+	<td colspan="2">New Performance Optimization Engine found.</td>
+</tr>
 <tr>
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
 <tr>
 	<td colspan="2" align="center">
-		&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%446%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%446%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%446%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-		&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%447%>" name="No" class="button-rule" onClick="buttonClick(this,'<%447%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%447%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%448%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%448%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%448%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%449%>" name="No" class="button-rule" onClick="buttonClick(this,'<%449%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%449%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td></tr>
 </table>
 </form>

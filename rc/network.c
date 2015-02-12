@@ -1467,12 +1467,14 @@ start_wl(void)
 #endif
     if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
     {
-	    system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth2 radarargs 2 5 45616 6 690 0x690 0x30 0x6419 0x7f09 11 700 2000 244 63568 2000 3000000 0x1e 0x8190 30528 65282 33860 5 5 0x31 128 20000000 70000000 2 12 0xb000");
+        system("wl -i eth2 radarthrs 0x68C 0x30 0x690 0x30 0x690 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
 #if defined(R8000)
-	    system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth3 radarargs 2 5 45616 6 690 0x690 0x30 0x6419 0x7f09 11 700 2000 244 63568 2000 3000000 0x1e 0x8190 30528 65282 33860 5 5 0x31 128 20000000 70000000 2 12 0xb000");
+        system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x690 0x30 0x68C 0x30 0x690 0x30 0x690 0x30");
 #endif
     }
-	else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
+    else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
     {
         system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
 #if defined(R8000)
@@ -1481,9 +1483,11 @@ start_wl(void)
     }
     else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
     {
-        system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth2 radarargs 2 5 45616 6 690 0x690 0x30 0x6419 0x7f09 11 700 2000 244 63568 2000 3000000 0x1e 0x8190 30528 65282 33860 5 5 0x31 128 20000000 70000000 2 12 0xa800");
+        system("wl -i eth2 radarthrs 0x68C 0x30 0x68C 0x30 0x68C 0x30 0x68C 0x30 0x68C 0x30 0x68C 0x30");
 #if defined(R8000)
-        system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+        system("wl -i eth3 radarargs 2 5 37411 6 690 0x6a4 0x30 0x6419 0x7f09 11 700 2000 25 63568 2000 3000000 0x1e 0x1591 31552 4098 33860 5 5 0x11 128 20000000 70000000 2 12 0xa800");
+        system("wl -i eth3 radarthrs 0x690 0x30 0x690 0x30 0x690 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
 #endif
     }
     
@@ -1510,6 +1514,7 @@ start_wl(void)
       eval("wl", "-i", "eth3", "frameburst", "1");
 #endif
 	  }
+      //eval("wl", "assert_type", "1"); /*foxconn Bob removed per request from Borg(BRCM), it may cause 2.4G interface not working */
 
     /* Foxconn added start by Antony 02/26/2014 The wifi driver could receive/transmit all multicast packets */      
     if(nvram_match("enable_sta_mode","1"))
@@ -1551,6 +1556,29 @@ start_wl(void)
     system("wl -i eth1 interference 7");
     system("wl -i eth2 interference 7");
     system("wl -i eth3 interference 7");
+    
+    if (nvram_match("enable_sta_mode", "1"))
+    {
+        system("wl -i eth1 buf_key_b4_m4 1");
+        system("wl -i eth2 buf_key_b4_m4 1");
+        system("wl -i eth3 buf_key_b4_m4 1");
+    }
+    else
+    {
+        system("wl -i eth1 buf_key_b4_m4 0");
+        system("wl -i eth2 buf_key_b4_m4 0");
+        system("wl -i eth3 buf_key_b4_m4 0");
+    }
+    
+
+    if( nvram_match("wl0_country_code", "EU") && nvram_match("wl0_country_rev", "106") )
+        system("wl -i eth1 country_abbrev_override 0x4544");
+    if( nvram_match("wl1_country_code", "EU") && nvram_match("wl1_country_rev", "106") )
+        system("wl -i eth2 country_abbrev_override 0x4544");
+    if( nvram_match("wl2_country_code", "EU") && nvram_match("wl2_country_rev", "106") )
+        system("wl -i eth3 country_abbrev_override 0x4544");
+
+
 #endif
       
 }
@@ -2565,8 +2593,18 @@ void start_wlan(void)
     /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
 
 
+    /*foxconn Han edited, 06/20/2014*/
+    #ifdef CONFIG_2ND_5G_BRIDGE_MODE
+    if(nvram_match("bridge_interface_eth2_down","1"))
+    { 
+        cprintf("\n%s %s %d bridge_interface_eth2_down == 1, keep eth2 down \n",__func__,__FILE__,__LINE__);
+    }
+    else
+    #endif /*CONFIG_2ND_5G_BRIDGE_MODE*/
+    {
     eval("wlconf", wl1_ifname, "up");
     //eval("wlconf", wl1_ifname, "start");  /* Bob removed 08/08/2014, no need to start here, start here will cause unexpected behavior of acsd. Start in start_wl after acsd */
+    }
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
@@ -2596,8 +2634,18 @@ void start_wlan(void)
     /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
 
 #if defined(R8000)
+    /*foxconn Han edited, 06/20/2014*/
+    #ifdef CONFIG_2ND_5G_BRIDGE_MODE
+    if(nvram_match("bridge_interface_eth3_down","1"))
+    { 
+        cprintf("\n%s %s %d bridge_interface_eth3_down == 1, keep eth3 down \n",__func__,__FILE__,__LINE__);
+    }
+    else
+    #endif /*CONFIG_2ND_5G_BRIDGE_MODE*/
+    {
     eval("wlconf", wl2_ifname, "up");
     //eval("wlconf", wl2_ifname, "start");      /* Bob removed 08/08/2014, no need to start here, start here will cause unexpected behavior of acsd. Start in start_wl after acsd */
+    }
     ifconfig(wl2_ifname, IFUP, NULL, NULL);
     /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV

@@ -306,7 +306,7 @@ export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
 export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
-export CFLAGS += -DVIDEO_STREAMING_QOS
+export CFLAGS +=  -DCONFIG_SAMBA_NO_RESTART
 ifeq ($(CONFIG_GPIO_LED_SWITCH),y)
 export CFLAGS += -DLED_GPIO_SWITCH
 endif
@@ -334,7 +334,7 @@ export CFLAGS += -DAUTO_CONN_24HR
 export CFLAGS += -DIGMP_PROXY
 export CFLAGS += -DAP_MODE
 #added by dennis ,01/02/2013, for ap mode detection
-export CFLAGS += -DINCLUDE_DETECT_AP_MODE
+#export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 export CFLAGS += -D__CONFIG_IGMP_SNOOPING__
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 export CFLAGS += -DLINUX26
@@ -347,6 +347,7 @@ export CFLAGS += -DSTA_MODE
 export CFLAGS += -DPPP_RU_DESIGN
 export CFLAGS += -DEXT_ACS
 export CFLAGS += -DARP_PROTECTION
+#export CFLAGS += -DCONFIG_2ND_5G_BRIDGE_MODE
 export CFLAGS += -DVLAN_SUPPORT
 endif
 

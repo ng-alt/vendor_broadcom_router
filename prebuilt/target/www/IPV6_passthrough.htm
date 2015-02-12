@@ -136,18 +136,20 @@ function setServer()
         window.location.href="IPV6_pppoe.htm";
     else if(stype==7) //Auto Config
         window.location.href="IPV6_autoconfig.htm";
+	else if(stype==8) //6RD
+        window.location.href="IPV6_6rd.htm";
 }
 
 function checkData()
 {
 	var cf = document.forms[0];
 	var msg = "";
-	var openvpnEnable = "<%473%>";
+	var openvpnEnable = "<%475%>";
 
 
 	
 	if(openvpnEnable == "enable"){
-		alert("<%2660%>");
+		alert("<%2675%>");
 		return false;
 	}
 }
@@ -169,7 +171,7 @@ function loadSettings()
 <form id="target"  name="formname" method="POST" action="ipv6_passthrough.cgi" >
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
 <img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%1119%></div>
+<div class="subhead2"> <%1123%></div>
 <table border="0"     class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -181,17 +183,18 @@ function loadSettings()
 
 <tr><td colspan="2" class="scrollpane-table-seperate-border"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 <tr>
- <td width="50%"><a><b><%2662%></b></a></td>
+ <td width="50%"><a><b><%2677%></b></a></td>
  <td width="50%" align="right">
     <select name="login_type" onChange="setServer()">
-        <option><%558%></option>
-        <option><%2663%></option>
-        <option><%2664%></option>
-        <option selected><%2665%></option>
-        <option ><%2666%></option>
-        <option ><%2667%></option>
-        <option ><%531%></option>
-        <option ><%2668%></option>
+        <option><%563%></option>
+        <option><%2678%></option>
+        <option><%2679%></option>
+        <option selected><%2680%></option>
+        <option ><%2681%></option>
+        <option ><%2682%></option>
+        <option ><%536%></option>
+        <option ><%2683%></option>
+ 		<option ><%2684%></option>
     </select>
  </td>
 </tr>

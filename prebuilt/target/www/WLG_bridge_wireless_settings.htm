@@ -134,6 +134,23 @@ var initialized = false;
                 }
     }
 
+function enable_5g_ap_function()
+{
+    var fm=document.forms[0];
+    
+    if(fm.enable_bridge_ap_mode.checked==true)
+    {
+        document.getElementById("setting_5G_ap").style.display="block";
+        document.getElementById("wpa_5G_ap").style.display="block";
+    }
+    else
+    {
+        document.getElementById("setting_5G_ap").style.display="none";
+        document.getElementById("wpa_5G_ap").style.display="none";
+    }
+    
+}
+
 function initScrn()
 {
     var defaultKey;
@@ -141,15 +158,34 @@ function initScrn()
     var i;
     var sec_type_2G = fm.security_type_2G.value;
     var sec_type_5G = fm.security_type_5G.value;
+    var sec_type_5G_ap = fm.security_type_5G_ap.value;
 	
 	if(sec_type_5G=="WEP" || sec_type_5G=="WPA-PSK" || sec_type_5G=="WPA-AUTO-PSK"){
 		sec_type_5G="WPA2-PSK";
 		fm.security_type_5G.value="WPA2-PSK";
 	}
     
+    if(sec_type_5G_ap=="")
+    {
+        sec_type_5G_ap=sec_type_5G;
+        fm.security_type_5G_ap.value=sec_type_5G;
+    }
+    
+    
+    if (sec_type_5G_ap == "WPA2-PSK")
+	{
+		fm.security_type_an_ap[1].checked = true;
+    }
+    else
+    {
+        fm.security_type_an_ap[0].checked = true;
+    }
+    
 	if(fm.wireless_interface.value == "0"){
 		document.getElementById("setting_2G").style.display="block";
 		document.getElementById("setting_5G").style.display="none";
+		document.getElementById("enable_ap_mode").style.display="none";
+		document.getElementById("setting_5G_ap").style.display="none";
 		if (sec_type_2G == "WEP")
 		{
 			fm.security_type[1].checked = true;
@@ -195,6 +231,8 @@ function initScrn()
 	}else{
 		document.getElementById("setting_2G").style.display="none";
 		document.getElementById("setting_5G").style.display="block";
+		document.getElementById("enable_ap_mode").style.display="block";
+		document.getElementById("setting_5G_ap").style.display="block"
 
 		if(sec_type_5G == "WPA2-PSK")
 		{
@@ -209,6 +247,21 @@ function initScrn()
 		{
 			fm.security_type_an[0].checked = true;
 		}
+		
+		if(sec_type_5G_ap == "WPA2-PSK")
+		{
+			document.getElementById("wpa_5G_ap").style.display="block";
+
+			if (sec_type_5G_ap == "WPA2-PSK")
+			{
+				fm.security_type_an_ap[1].checked = true;
+			}
+		}
+		else
+		{
+			fm.security_type_an_ap[0].checked = true;
+		}
+		enable_5g_ap_function();
 	}
     initialized=true; 
 }
@@ -303,6 +356,17 @@ function securityCheck(band)
             document.getElementById("wpa_5G").style.display="block";
             cf.security_type_5G.value="WPA2-PSK";
         }
+        
+        if(cf.security_type_an_ap[0].checked)
+        {
+            document.getElementById("wpa_5G_ap").style.display="none";
+            cf.security_type_5G_ap.value="None";
+        }
+		if(cf.security_type_an_ap[1].checked)
+        {
+            document.getElementById("wpa_5G_ap").style.display="block";
+            cf.security_type_5G_ap.value="WPA2-PSK";
+        }
     }
 }
 
@@ -357,7 +421,7 @@ function checkData()
 					}
 			}
 			/* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */	
-			if (!confirm("<%1644%>")){
+			if (!confirm("<%1648%>")){
 				return false;
 			}
 			show_tkip_or_wps_v20_msg = true;
@@ -388,7 +452,7 @@ function checkData()
 			if (cf.security_type_2G.value == "WPA-PSK")
 			{
 				if (!show_tkip_or_wps_v20_msg) {
-					if (!confirm("<%1644%>")){
+					if (!confirm("<%1648%>")){
 						return false;
 					}
 				}
@@ -398,14 +462,14 @@ function checkData()
 */		
 			if(cf.passphrase.value.length < 8)
 			{
-				alert("<%1546%>");
+				alert("<%1550%>");
 				return false;    
 			}
 			if(cf.passphrase.value.length > 63)
 			{
 				if ( isHex(cf.passphrase.value) == false)
 				{
-					alert("<%1547%>");
+					alert("<%1551%>");
 					cf.passphrase.value = "";
 					return false;
 				}    
@@ -452,14 +516,14 @@ function checkData()
 		
 			if(cf.passphrase_an.value.length < 8)
 			{
-				alert("<%1546%>");
+				alert("<%1550%>");
 				return false;    
 			}
 			if(cf.passphrase_an.value.length > 63)
 			{
 				if ( isHex(cf.passphrase_an.value) == false)
 				{
-					alert("<%1547%>");
+					alert("<%1551%>");
 					cf.passphrase_an.value = "";
 					return false;
 				}    
@@ -477,6 +541,57 @@ function checkData()
 				cf.security_type_an.value = "WPA2-PSK";
 			}
 		}
+		
+		if(cf.enable_bridge_ap_mode.checked==true)
+		{
+		    cf.enable_bridge_ap_mode.value="Enabled";
+		    if (cf.ssid_an_ap.value == "")
+		    {
+			    alert("<%37%>");
+			    return false;
+		    }
+
+		    if (cf.ssid_an_ap.value.match( /[^\x20-\x7E]/ ))
+		    {
+			    alert("<%38%>");
+			    return false;
+		    }
+	
+		    if (cf.security_type_5G_ap.value == "WPA2-PSK")
+		    {
+		    
+			    if(cf.passphrase_an_ap.value.length < 8)
+			    {
+				    alert("<%1550%>");
+				    return false;    
+			    }
+			    if(cf.passphrase_an_ap.value.length > 63)
+			    {
+				    if ( isHex(cf.passphrase_an_ap.value) == false)
+				    {
+					    alert("<%1551%>");
+					    cf.passphrase_an_ap.value = "";
+					    return false;
+				    }    
+			    }
+        
+			    if (cf.passphrase_an_ap.value.match( /[^\x20-\x7E]/ ))
+			    {
+				    alert("<%45%>");
+				    cf.passphrase_an_ap.focus();
+				    return false;
+			    }
+			
+			    if("<%50%>" == "checked")
+			    {
+				    cf.security_type_an_ap.value = "WPA2-PSK";
+			    }
+		    }
+	    }
+	    else
+	    {
+	        cf.enable_bridge_ap_mode.value="Disabled";
+	    }
     }
     
     return true;
@@ -501,6 +616,9 @@ function chginterface()
 			
 		document.getElementById("setting_5G").style.display="none";
 		document.getElementById("wpa_5G").style.display="none";
+        document.getElementById("enable_ap_mode").style.display="none";		
+		document.getElementById("setting_5G_ap").style.display="none";
+		document.getElementById("wpa_5G_ap").style.display="none";
 	}else{
 		cf.wireless_interface.value="1";
 		document.getElementById("setting_2G").style.display="none";
@@ -509,6 +627,13 @@ function chginterface()
 		document.getElementById("setting_5G").style.display="block";
 		if(cf.security_type_5G.value == "WPA2-PSK")
 			document.getElementById("wpa_5G").style.display="block";
+			
+	    document.getElementById("enable_ap_mode").style.display="block";
+		document.getElementById("setting_5G_ap").style.display="block";
+		if(cf.security_type_5G_ap.value == "WPA2-PSK")
+			document.getElementById("wpa_5G_ap").style.display="block";
+			
+		enable_5g_ap_function();
 	}
 }
 // -->
@@ -538,7 +663,7 @@ function chginterface()
     <tr>
       <td nowrap>Choose a Wireless Networks:</td>
       <td nowrap>
-          <select name="interface" size="1" onchange="chginterface()"><option <%2404%>>Wireless Networks (2.4Ghz b/g/n)</option><option <%2405%>>Wireless Networks (5Ghz n/ac)</option></select></td></tr>
+          <select name="interface" size="1" onchange="chginterface()"><option <%2410%>>Wireless Networks (2.4Ghz b/g/n)</option><option <%2411%>>Wireless Networks (5Ghz n/ac)</option></select></td></tr>
 
 <tr>
 <td colspan="2" >        
@@ -554,22 +679,22 @@ function chginterface()
     <tr>
       <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%125%></b></a></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="Disable" <%2406%> onClick="securityCheck(0);"><%126%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="Disable" <%2412%> onClick="securityCheck(0);"><%126%></td></tr>
     <tr>
         <td colspan="2">
             <div id="wep_radio_2G" style="display: block;">
-                <input type="radio" name="security_type" value="WEP" <%2407%> onClick="securityCheck(0);"><%127%>
+                <input type="radio" name="security_type" value="WEP" <%2413%> onClick="securityCheck(0);"><%127%>
             </div>
         </td>
     </tr>    
 <!--
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA-PSK" <%2408%> onClick="securityCheck(0);" ><%129%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA-PSK" <%2414%> onClick="securityCheck(0);" ><%129%></td></tr>
 -->
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%2409%> onClick="securityCheck(0);"><%130%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%2415%> onClick="securityCheck(0);"><%130%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%2410%> onClick="securityCheck(0);" ><%131%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%2416%> onClick="securityCheck(0);" ><%131%></td></tr>
     <tr>
         <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -647,9 +772,9 @@ function chginterface()
     <tr>
       <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%125%></b></a></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" <%2411%> onClick="securityCheck(1);"><%126%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" <%2417%> onClick="securityCheck(1);"><%126%></td></tr>
 	<tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%2412%> onClick="securityCheck(1);"><%130%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%2418%> onClick="securityCheck(1);"><%130%></td></tr>
     <tr>
         <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -668,6 +793,57 @@ function chginterface()
     <tr>
       <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%152%>: </td>
       <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" size=20 maxLength=64 value="<%184%>">&nbsp;&nbsp;<%154%></td></tr>
+    <tr>
+      <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+
+<tr>
+  <td colspan=2>
+  <div id="enable_ap_mode" style="display: none;">
+  <INPUT TYPE="checkbox" NAME="enable_bridge_ap_mode" value="Enabled" <%2419%> onclick="enable_5g_ap_function();">
+   Enable AP mode on another 5G radio
+  </div>
+  </td>
+ </tr>
+ 
+<tr>
+<td colspan="2" >        
+    <div id="setting_5G_ap" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+      <td width="50%" align="left"><%119%>:</td>
+      <td width="50%">
+        <input type="text" name="ssid_an_ap" value="<%2420%>" size="20" maxlength="32"></td></tr>
+    <tr>
+      
+      <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    <tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%125%></b></a></td></tr>
+    <tr>
+        <td colspan="2"><input type="radio" name="security_type_an_ap" value="Disable" onClick="securityCheck(1);"><%126%></td></tr>
+	<tr>
+        <td colspan="2"><input type="radio" name="security_type_an_ap" value="WPA2-PSK" onClick="securityCheck(1);"><%130%></td></tr>
+    <tr>
+        <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
+    </table>
+    </div>
+</td>
+</tr>
+<tr>
+<td colspan="2" >    
+    <div id="wpa_5G_ap" style="display: none;">
+    <table align="left" border="0" width="100%">
+    <tr>
+        <td nowrap="nowrap">
+        <%183%>
+        </td nowrap="nowrap">
+    </tr> 
+    <tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%152%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an_ap" size=20 maxLength=64 value="<%2421%>">&nbsp;&nbsp;<%154%></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -694,13 +870,14 @@ function chginterface()
   <input type="hidden" name="show_wps_alert" value="<%204%>">
   <input type="hidden" name="security_type_2G" value="<%205%>">
   <input type="hidden" name="security_type_5G" value="<%206%>">
+  <input type="hidden" name="security_type_5G_ap" value="<%2422%>">
   <input type="hidden" name="initAuthType" value="<%211%>">
   <input type="hidden" name="initDefaultKey" value="<%212%>">
   <input type="hidden" name="initAuthType_an" value="<%213%>">
   <input type="hidden" name="initDefaultKey_an" value="<%214%>">
   <input type="hidden" name="telec_dfs_ch_enable" value="<%217%>">  
-  <input type="hidden" name="enable_stamode" value="<%429%>">  
-  <input type="hidden" name="wireless_interface" value="<%2413%>">  
+  <input type="hidden" name="enable_stamode" value="<%431%>">  
+  <input type="hidden" name="wireless_interface" value="<%2423%>">  
   <%224%>
   <input type="hidden" name="fw_sku" value="SKU_WW">
   <%225%>

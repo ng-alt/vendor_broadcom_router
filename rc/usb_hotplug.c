@@ -854,9 +854,9 @@ hotplug_block(void)
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */
 #if defined(R6300v2) || defined (R7000) || defined(R8000)
-		usb_mount_block(major_no, minor_no, mntdev, usb_port);
+		err = usb_mount_block(major_no, minor_no, mntdev, usb_port);
 #else /* R6300v2 */
-		usb_mount_block(major_no, minor_no, mntdev);
+		err = usb_mount_block(major_no, minor_no, mntdev);
 #endif /* R6300v2 */
         /* Foxconn modified end, Wins, 04/11/2011 */
 		USB_UNLOCK();

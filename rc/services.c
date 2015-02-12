@@ -984,6 +984,20 @@ start_wps(void)
         nvram_set("wl1_wps_mode", "enabled");
         nvram_set("wl2_wps_mode", "disabled");
     }
+    
+    if(nvram_match("wla_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl0_wps_mode", "disabled");
+    }
+    if(nvram_match("wlg_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl1_wps_mode", "disabled");
+    }
+    if(nvram_match("wlh_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl2_wps_mode", "disabled");
+    }
+        
 #endif
     /* Bob modified end on 10/06/2014 */
 

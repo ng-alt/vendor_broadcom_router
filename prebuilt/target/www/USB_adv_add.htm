@@ -39,19 +39,19 @@ function checkData()
 	var r, re, fail;
 	var usb_folder_string = cf.usb_folder.value;
 	fail = 1;
-	<%2328%>
+	<%2334%>
 	if(fail == 1)
-        msg+= "<%2329%>\n";
+        msg+= "<%2335%>\n";
 	
 	if (cf.usb_folder.value == "")
-		 msg+= "<%2330%>\n";
+		 msg+= "<%2336%>\n";
 	if ( (cf.usb_folder.value.match( /[\x2E-\x2E]/ )) )
 	   {
-			alert("<%2329%>\n");
+			alert("<%2335%>\n");
 			return false;
 	   }
 	if (cf.share_name.value == "")
-		msg+= "<%2331%>\n";
+		msg+= "<%2337%>\n";
 	
     if (   (cf.share_name.value.match( /[\x22-\x22]/ ))
         || (cf.share_name.value.match( /[\x3A-\x3A]/ ))
@@ -66,9 +66,9 @@ function checkData()
        )
 	{
 		cf.share_name.focus();
-		msg+= "<%2332%>.\n";
+		msg+= "<%2338%>.\n";
 	}	
-	<%2333%>
+	<%2339%>
     if (msg.length > 1)
 	{
 		alert(msg);
@@ -82,7 +82,7 @@ function checkData()
     isAllAdmin = cf.isAllAdminFolder.value;    
     if ( cf.no_dlna.value != 1 ) {
        if(isAllAdmin > 0 && (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 1) )
-           alert("<%2293%>");
+           alert("<%2299%>");
     }
     pageRefresh();
     return true;
@@ -95,14 +95,14 @@ function loadSettings()
     if (partition != "-1")
         cf.usb_device[partition].selected = true;
     
-    var NotExistFolder = "<%2334%>";
+    var NotExistFolder = "<%2340%>";
     if (NotExistFolder == "1")
     {
         opener.document.location.href = "USB_adv.htm";
         window.close();
     }
     else if (NotExistFolder == "2")
-        alert("<%2329%>\n");
+        alert("<%2335%>\n");
 }
 
 function pageRefresh()
@@ -138,7 +138,7 @@ function chgWt()
     <table border="0"   width="100%">
 
     <tr>
-        <td><h1><%2324%></h1></td>
+        <td><h1><%2330%></h1></td>
     </tr>
 <tr>
  <td>
@@ -149,40 +149,40 @@ function chgWt()
 <table border="1" cellpadding="2" cellspacing="0" width="100%">
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2335%></span></td>
+<p align="left"><span class="thead"><%2341%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="usb_device" size="1" >
-        <%2336%>
+        <%2342%>
     </select></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2337%></span></td>
+<p align="left"><span class="thead"><%2343%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<input name="usb_folder" style="float: left" value="<%2338%>">
-&nbsp;&nbsp;&nbsp;<button type="button" value="<%437%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%437%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%437%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+<input name="usb_folder" style="float: left" value="<%2344%>">
+&nbsp;&nbsp;&nbsp;<button type="button" value="<%439%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%439%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%439%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2280%></span></td>
+<p align="left"><span class="thead"><%2286%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<input name="share_name" value="<%2339%>" size="21" maxlength="20" style="float: left"></td>
+<input name="share_name" value="<%2345%>" size="21" maxlength="20" style="float: left"></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2340%></span></td>
+<p align="left"><span class="thead"><%2346%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="read_access" size="1" onchange="chgRd()">
-        <option value=0><%2341%></option>
-        <option value=1 <%2342%> ><%2343%></option>
+        <option value=0><%2347%></option>
+        <option value=1 <%2348%> ><%2349%></option>
     </select></td>
 </tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2344%></span></td>
+<p align="left"><span class="thead"><%2350%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="write_access" size="1" onchange="chgWt()">
-        <option value=0><%2341%></option>
-        <option value=1 <%2345%> ><%2343%></option>
+        <option value=0><%2347%></option>
+        <option value=1 <%2351%> ><%2349%></option>
     </select></td>
 </tr>
 </table>
@@ -204,14 +204,14 @@ function chgWt()
 </tr>
 </table> 
  <table border="0" cellpadding="0" cellspacing="3" width="100%">
-<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%458%>" name="Close" class="button-rule" onclick="buttonClick(this,'<%458%>');window.close();"><span class="roundleft_button">&nbsp;&nbsp; <%458%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+<tr><td>&nbsp;&nbsp;&nbsp;<button type="button" value="<%460%>" name="Close" class="button-rule" onclick="buttonClick(this,'<%460%>');window.close();"><span class="roundleft_button">&nbsp;&nbsp; <%460%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 </table>
 </table>
 <INPUT name=mode type=hidden value="add">
 <INPUT name=fromPage type=hidden value="1">
-<INPUT name=selectp type=hidden value="<%2346%>">
-<INPUT name=isAllAdminFolder type=hidden value="<%2347%>">
-<input name="no_dlna" type="hidden" value="<%2326%>">
+<INPUT name=selectp type=hidden value="<%2352%>">
+<INPUT name=isAllAdminFolder type=hidden value="<%2353%>">
+<input name="no_dlna" type="hidden" value="<%2332%>">
 </form>
 </body></html>

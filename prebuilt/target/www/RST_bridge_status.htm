@@ -87,7 +87,16 @@ function loadSettings()
 		document.getElementById("conn_status_5g").style.display = "none";
 	}else{
 		document.getElementById("conn_status_24g").style.display = "none";
-		document.getElementById("conn_status_5g").style.display = "block";
+        if(cf.bridge_interface_eth3_down.value == 0)
+        {
+	    	document.getElementById("conn_status_5g").style.display = "none";
+    		document.getElementById("conn_status_5g2").style.display = "block";
+        }
+        else
+        {
+    		document.getElementById("conn_status_5g").style.display = "none";
+	    	document.getElementById("conn_status_5g2").style.display = "block";
+        }
 	}
 }
 
@@ -125,7 +134,7 @@ function showHelpIframe()
 
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
   <img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%693%></div>
+<div class="subhead2"> <%697%></div>
 <TABLE border=0  style="height:370px"  class="subhead2-table">
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2">
@@ -139,18 +148,18 @@ function showHelpIframe()
     <div id="Version_info">
         <table border="0" cellpadding="0" cellspacing="5" width="100%">
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%1866%></td>
-                <td class="basic-text-content" width="75%"> <%2477%> </td>
+                <td class="basic-text-menu" width="25%" ><%1870%></td>
+                <td class="basic-text-content" width="75%"> <%2487%> </td>
             </tr>
 
             <tr class="basic-text">
                 <td class="basic-text-menu" width="25%" ><%316%></td>
-                <td class="basic-text-content" width="75%"> <%2478%> </td>
+                <td class="basic-text-content" width="75%"> <%2488%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%2479%></td>
-                <td class="basic-text-content" width="75%"> <%2480%> </td>
+                <td class="basic-text-menu" width="25%" ><%2489%></td>
+                <td class="basic-text-content" width="75%"> <%2490%> </td>
             </tr>
         </table>
     </div>
@@ -170,18 +179,18 @@ function showHelpIframe()
 
             <tr class="basic-text">
                 <td class="basic-text-menu" width="25%" ><%119%></td>
-                <td class="basic-text-content" width="75%"> <%2481%> </td>
+                <td class="basic-text-content" width="75%"> <%2491%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%2482%></td>
-                <td class="basic-text-content" width="75%"><%2483%></td>
+                <td class="basic-text-menu" width="25%" ><%2492%></td>
+                <td class="basic-text-content" width="75%"><%2493%></td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%783%></td>
+                <td class="basic-text-menu" width="25%" ><%787%></td>
                 <td class="basic-text-content" width="75%" id="status_24g">
-				<%2484%>
+				<%2494%>
                 </td>
             </tr>
         </table>
@@ -200,24 +209,55 @@ function showHelpIframe()
 
             <tr class="basic-text">
                 <td class="basic-text-menu" width="25%" ><%119%></td>
-                <td class="basic-text-content" width="75%"> <%2485%> </td>
+                <td class="basic-text-content" width="75%"> <%2495%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%2482%></td>
-                <td class="basic-text-content" width="75%"><%2483%></td>
+                <td class="basic-text-menu" width="25%" ><%2492%></td>
+                <td class="basic-text-content" width="75%"><%2493%></td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%783%></td>
+                <td class="basic-text-menu" width="25%" ><%787%></td>
                 <td class="basic-text-content" width="75%">
-					<%2484%>
+					<%2494%>
                 </td>
             </tr>
         </table>
     </div>
 </td></tr>
 <!------ 5g connect status to existing network div end ------>
+<!------ 5g2 connect status to existing network div start ------>
+<tr><td colspan="2" nowrap>
+    <div id="conn_status_5g2">
+        <table border="0" cellpadding="0" cellspacing="5" width="100%">
+            <tr class="basic-text">
+                <td class="basic-text-subTitle" ><%394%> (5GHz)</td>
+                <td class="basic-text-content" > </td>
+            </tr>
+
+            <tr class="basic-text">
+                <td class="basic-text-menu" width="25%" ><%119%></td>
+                <td class="basic-text-content" width="75%"> <%2496%> </td>
+            </tr>
+
+            <tr class="basic-text">
+                <td class="basic-text-menu" width="25%" ><%2492%></td>
+                <td class="basic-text-content" width="75%"><%2493%></td>
+            </tr>
+
+            <tr class="basic-text">
+                <td class="basic-text-menu" width="25%" ><%787%></td>
+                <td class="basic-text-content" width="75%">
+					<%2494%>
+                </td>
+            </tr>
+        </table>
+    </div>
+</td></tr>
+<!------ 5g2 connect status to existing network div end ------>
+
+
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
@@ -231,33 +271,33 @@ function showHelpIframe()
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%694%></td>
-                <td class="basic-text-content" width="75%"> <%2486%> </td>
+                <td class="basic-text-menu" width="25%" ><%698%></td>
+                <td class="basic-text-content" width="75%"> <%2497%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%492%></td>
+                <td class="basic-text-menu" width="25%" ><%496%></td>
                 <td class="basic-text-content" width="75%"> <%298%> </td>
             </tr>
 
             <tr class="basic-text">
                 <td class="basic-text-menu" width="25%" >DHCP Client</td>
-                <td class="basic-text-content" width="75%"><%2487%></td>
+                <td class="basic-text-content" width="75%"><%2498%></td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%493%></td>
-                <td class="basic-text-content" width="75%"> <%1303%> </td>
+                <td class="basic-text-menu" width="25%" ><%497%></td>
+                <td class="basic-text-content" width="75%"> <%1307%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%580%></td>
-                <td class="basic-text-content" width="75%"> <%1305%> </td>
+                <td class="basic-text-menu" width="25%" ><%584%></td>
+                <td class="basic-text-content" width="75%"> <%1309%> </td>
             </tr>
 
             <tr class="basic-text">
-                <td class="basic-text-menu" width="25%" ><%2488%></td>
-                <td class="basic-text-content" width="75%"> <%2489%> </td>
+                <td class="basic-text-menu" width="25%" ><%2499%></td>
+                <td class="basic-text-content" width="75%"> <%2500%> </td>
             </tr>
         </table>
     </div>
@@ -268,7 +308,7 @@ function showHelpIframe()
 
 <tr class="basic-text" align="center" valign="middle">
 <td colspan="2" class="basic-table-seperate-border" align="center" style="height:20px;padding-top:5px;padding-left:8px">
-<button type="button" class="page-table-button" style="float:center;" onClick="advButtonClick(0);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();"><%1217%></button>                                             
+<button type="button" class="page-table-button" style="float:center;" onClick="advButtonClick(0);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();"><%1221%></button>                                             
 </td>
 </tr>
 
@@ -285,7 +325,9 @@ function showHelpIframe()
       </div>
 
 <input type="hidden" name="curlang" value="<%9%>">      
-<input type="hidden" name="bridge_interface" value="<%2490%>"> 
+<input type="hidden" name="bridge_interface" value="<%2501%>"> 
+<input type="hidden" name="bridge_interface_eth2_down" value="<%2502%>"> 
+<input type="hidden" name="bridge_interface_eth3_down" value="<%2503%>"> 
 
 <a name="helpframe-anchor"></a>
 

@@ -802,7 +802,10 @@ function ShowLanguageList()
         var i;
 	for(i=0; i < suportlanguage.length; i++)
 	{
-       		if(suportlanguage[i] == gui_region){
+       		if((suportlanguage[i] == gui_region) ||
+       		((suportlanguage[i] == "TraditionalChinese") && (gui_region=="TChinese")) ||
+       		((suportlanguage[i] == "SimplifiedChinese") && (gui_region=="Chinese")))
+       		{			
 			document.write('<option value='+gui_region+' selected >'+local_srpt[i]+'</option>');
 		}else{
 			document.write('<option value='+suportlanguage[i]+'>'+local_srpt[i]+'</option>');
@@ -1110,9 +1113,9 @@ function change_size()
           			 
                   <li class="SubMenu" id="adv_wireless_set"><a href="<%393%>" onClick="return false"><span class="subMenu_text"><%394%></span></a></li>                 
 		              <li id="ap_head" class="<%357%> SubMenuWDS SubMenuAP"><a href="WLG_ap_dual_band.htm" onClick="return false"><span class="subMenu_text"><%395%></span></a></li>
-<%396%>
+		<%396%>
 		              <li id="wds_head" class="<%359%> SubMenuWDS"><a href="<%397%>" onClick="return false"><span class="subMenu_text"><%398%></span></a></li>
-<%399%>
+		<%399%>
 		              <li id="pf_head"  class="<%400%>  SubMenuWDS"><a href="FW_forward3.htm" onClick="return false"><span class="subMenu_text"><%401%></span></a></li>
 		              <li class="<%355%> SubMenuWDS" id="ddns"><a href="DNS_ddns.htm" onClick="return false"><span class="subMenu_text"><%402%></span></a></li>		                
 		              <li class="<%355%> SubMenuWDS" id="openvpn"><a href="OPENVPN.htm" onClick="return false"><span class="subMenu_text"><%403%></span></a></li>
@@ -1218,14 +1221,17 @@ function change_size()
 <%416%>
 		<a target="_blank" href="<%415%>"><%414%></a> | 
 <%417%>
-		<a target="_blank" href="<%418%>"><%419%></a> | 
-		<a target="_blank" href="<%420%>"><%421%></a> |
-        <a target="_blank" href="GPL_rev1.htm"><%422%></a>
+<%418%>
+		<a target="_blank" href="<%415%>"><%414%></a> | 
+<%419%>
+		<a target="_blank" href="<%420%>"><%421%></a> | 
+		<a target="_blank" href="<%422%>"><%423%></a> |
+        <a target="_blank" href="GPL_rev1.htm"><%424%></a>
 </div>
 <div id="search" align=right>
-	<b> <%423%> </b>
-	<input type="text" id="search_text" name="search" value="<%424%>" onkeypress="detectEnter('num',event);" onFocus="this.select();" >
-	<input id="search_button" class="search_button" type="button" name="dosearch" value="<%425%>" onClick="do_search();">
+	<b> <%425%> </b>
+	<input type="text" id="search_text" name="search" value="<%426%>" onkeypress="detectEnter('num',event);" onFocus="this.select();" >
+	<input id="search_button" class="search_button" type="button" name="dosearch" value="<%427%>" onClick="do_search();">
 </div>
 </div>
 </div>
@@ -1249,11 +1255,11 @@ function change_size()
    <img src="ajax-loader.gif" width="1" height="1" alt="">
    <img src="img/main-page-bottom.gif" width="1" height="1" alt="">
    <img src="img/gray-button.gif" width="1" height="1" alt="">
-    <input type="hidden" name="repeater" value="<%426%>">
-    <input type="hidden" name="repeater_an" value="<%427%>">
-    <input type="hidden" name="enable_apmode" value="<%428%>">   
-    <input type="hidden" name="enable_stamode" value="<%429%>">   
-    <input type="hidden" name="have_usb_attached" value="<%430%>">
+    <input type="hidden" name="repeater" value="<%428%>">
+    <input type="hidden" name="repeater_an" value="<%429%>">
+    <input type="hidden" name="enable_apmode" value="<%430%>">   
+    <input type="hidden" name="enable_stamode" value="<%431%>">   
+    <input type="hidden" name="have_usb_attached" value="<%432%>">
 </div>                                                
 <!-- This JavaScript snippet activates those tabs -->
 <script>
@@ -1262,7 +1268,7 @@ function change_size()
 $(function() {
 	// setup ul.tabs to work as tabs for each div  directly under div.panes
 	$("ul.tabs").tabs("> .pane");     
-        var pnpx = <%431%>
+        var pnpx = <%433%>
             if(pnpx == 1){           
             $("#AdvanceTab").click();
             $("#basic-pane").css("display","none");

@@ -322,6 +322,9 @@ static void convert_wlan_params(void)
             nvram_set("wl1_wpa_psk", nvram_safe_get("wl0_wpa_psk"));
             nvram_set("wl1_akm", nvram_safe_get("wl0_akm"));
             nvram_set("wl1_crypto", nvram_safe_get("wl0_crypto"));
+            nvram_set("wl2_wpa_psk", nvram_safe_get("wl0_wpa_psk"));
+            nvram_set("wl2_akm", nvram_safe_get("wl0_akm"));
+            nvram_set("wl2_crypto", nvram_safe_get("wl0_crypto"));
 #endif
         }
         else
@@ -381,6 +384,9 @@ static void convert_wlan_params(void)
                 nvram_set("wl1_wpa_psk", nvram_safe_get("wl2_wpa_psk"));
                 nvram_set("wl1_akm", nvram_safe_get("wl2_akm"));
                 nvram_set("wl1_crypto", nvram_safe_get("wl2_crypto"));
+                nvram_set("wl0_wpa_psk", nvram_safe_get("wl2_wpa_psk"));
+                nvram_set("wl0_akm", nvram_safe_get("wl2_akm"));
+                nvram_set("wl0_crypto", nvram_safe_get("wl2_crypto"));
 #endif
             }
             else if (nvram_match("wl2_radio", "0"))
@@ -433,6 +439,9 @@ static void convert_wlan_params(void)
                 nvram_set("wl2_wpa_psk", nvram_safe_get("wl1_wpa_psk"));
                 nvram_set("wl2_akm", nvram_safe_get("wl1_akm"));
                 nvram_set("wl2_crypto", nvram_safe_get("wl1_crypto"));
+                nvram_set("wl0_wpa_psk", nvram_safe_get("wl1_wpa_psk"));
+                nvram_set("wl0_akm", nvram_safe_get("wl1_akm"));
+                nvram_set("wl0_crypto", nvram_safe_get("wl1_crypto"));
 #endif
             }
         }
@@ -444,13 +453,58 @@ static void convert_wlan_params(void)
     nvram_set("wla_ssid", nvram_safe_get("wl0_ssid"));
     nvram_set("wla_temp_ssid", nvram_safe_get("wl0_ssid"));
 
-    if (( strncmp(nvram_safe_get("wl0_akm"), "psk2", 4) == 0 ) || 
-    	  ( strncmp(nvram_safe_get("wl0_akm"), "psk psk2", 7) == 0 ))
+    if ( strncmp(nvram_safe_get("wl0_akm"), "psk psk2", 7) == 0 )
+    {
+        nvram_set("wla_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wla_temp_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wla_passphrase", nvram_safe_get("wl0_wpa_psk"));
+
+        /* If router changes from 'unconfigured' to 'configured' state by
+         * adding a WPS client, the wsc_randomssid and wsc_randomkey will
+         * be set. In this case, router should use mixedmode security.
+         */
+
+        if (!nvram_match("wps_randomssid", "") ||
+            !nvram_match("wps_randomkey", ""))
+        {
+            nvram_set("wla_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wla_temp_secu_type", "WPA-AUTO-PSK");
+
+            nvram_set("wl0_akm", "psk psk2 ");
+            nvram_set("wl0_crypto", "tkip+aes");
+
+            nvram_set("wps_mixedmode", "2");
+            //nvram_set("wps_randomssid", "");
+            //nvram_set("wps_randomkey", "");
+            config_flag = 1;
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wla_wds_enable", "1"))
+            {
+                nvram_set("wla_wds_enable",  "0");
+                nvram_set("wl0_wds", "");
+                nvram_set("wl0_mode", "ap");
+            }
+        }
+        else
+        {
+            /* Foxconn added start pling 02/25/2007 */
+            /* Disable WDS if it is already enabled */
+            if (nvram_match("wla_wds_enable", "1"))
+            {
+                nvram_set("wla_wds_enable",  "0");
+                nvram_set("wl0_wds", "");
+                nvram_set("wl0_mode", "ap");
+            }
+            /* Foxconn added end pling 02/25/2007 */
+        }
+    }
+    else if ( strncmp(nvram_safe_get("wl0_akm"), "psk2", 4) == 0 )
     {
         nvram_set("wla_secu_type", "WPA2-PSK");
         nvram_set("wla_temp_secu_type", "WPA2-PSK");
         nvram_set("wla_passphrase", nvram_safe_get("wl0_wpa_psk"));
-        nvram_set("wl0_akm", "psk2");
 
 
         /* If router changes from 'unconfigured' to 'configured' state by
@@ -472,10 +526,8 @@ static void convert_wlan_params(void)
         if (!nvram_match("wps_randomssid", "") ||
             !nvram_match("wps_randomkey", ""))
         {
-        nvram_set("wla_secu_type", "WPA2-PSK");
-        nvram_set("wla_temp_secu_type", "WPA2-PSK");
-//            nvram_set("wla_secu_type", "WPA-AUTO-PSK");
-//            nvram_set("wla_temp_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wla_secu_type", "WPA2-PSK");
+            nvram_set("wla_temp_secu_type", "WPA2-PSK");
 
             nvram_set("wl0_akm", "psk2");
             nvram_set("wl0_crypto", "aes");
@@ -484,7 +536,15 @@ static void convert_wlan_params(void)
             //nvram_set("wps_randomssid", "");
             //nvram_set("wps_randomkey", "");
             config_flag = 1;
-
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wla_wds_enable", "1"))
+            {
+                nvram_set("wla_wds_enable",  "0");
+                nvram_set("wl0_wds", "");
+                nvram_set("wl0_mode", "ap");
+            }
         }
         else
         {
@@ -655,17 +715,58 @@ static void convert_wlan_params(void)
     /* Foxconn add start, Tony W.Y. Wang, 11/23/2009 */
     nvram_set("wlg_ssid", nvram_safe_get("wl1_ssid"));
     nvram_set("wlg_temp_ssid", nvram_safe_get("wl1_ssid"));
-#if defined(R8000)
-    nvram_set("wlh_ssid", nvram_safe_get("wl2_ssid"));
-    nvram_set("wlh_temp_ssid", nvram_safe_get("wl2_ssid"));
-#endif
 
-    if ( (strncmp(nvram_safe_get("wl1_akm"), "psk2", 4) == 0) || 
-    	( strncmp(nvram_safe_get("wl1_akm"), "psk psk2", 7) == 0 ))
+    if ( strncmp(nvram_safe_get("wl1_akm"), "psk psk2", 7) == 0 )
+    {
+        nvram_set("wlg_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wlg_temp_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wlg_passphrase", nvram_safe_get("wl1_wpa_psk"));
+
+        /* If router changes from 'unconfigured' to 'configured' state by
+         * adding a WPS client, the wsc_randomssid and wsc_randomkey will
+         * be set. In this case, router should use mixedmode security.
+         */
+
+        if (!nvram_match("wps_randomssid", "") ||
+            !nvram_match("wps_randomkey", ""))
+        {
+            nvram_set("wlg_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wlg_temp_secu_type", "WPA-AUTO-PSK");
+
+            nvram_set("wl1_akm", "psk psk2 ");
+            nvram_set("wl1_crypto", "tkip+aes");
+
+            nvram_set("wps_mixedmode", "2");
+            //nvram_set("wps_randomssid", "");
+            //nvram_set("wps_randomkey", "");
+            config_flag = 1;
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wlg_wds_enable", "1"))
+            {
+                nvram_set("wlg_wds_enable",  "0");
+                nvram_set("wl1_wds", "");
+                nvram_set("wl1_mode", "ap");
+            }
+        }
+        else
+        {
+            /* Foxconn added start pling 02/25/2007 */
+            /* Disable WDS if it is already enabled */
+            if (nvram_match("wlg_wds_enable", "1"))
+            {
+                nvram_set("wlg_wds_enable",  "0");
+                nvram_set("wl1_wds", "");
+                nvram_set("wl1_mode", "ap");
+            }
+            /* Foxconn added end pling 02/25/2007 */
+        }
+    }
+    else if ( strncmp(nvram_safe_get("wl1_akm"), "psk2", 4) == 0 )
     {
         nvram_set("wlg_secu_type", "WPA2-PSK");
         nvram_set("wlg_temp_secu_type", "WPA2-PSK");
-        nvram_set("wl1_akm", "psk2");
         nvram_set("wlg_passphrase", nvram_safe_get("wl1_wpa_psk"));
 
 
@@ -695,11 +796,19 @@ static void convert_wlan_params(void)
             nvram_set("wl1_akm", "psk2");
             nvram_set("wl1_crypto", "aes");
 
-            nvram_unset("wps_mixedmode");
+            nvram_set("wps_mixedmode", "2");
             //nvram_set("wps_randomssid", "");
             //nvram_set("wps_randomkey", "");
             config_flag = 1;
-
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wlg_wds_enable", "1"))
+            {
+                nvram_set("wlg_wds_enable",  "0");
+                nvram_set("wl1_wds", "");
+                nvram_set("wl1_mode", "ap");
+            }
         }
         else
         {
@@ -864,12 +973,61 @@ static void convert_wlan_params(void)
     }
 
 #if (defined R8000)
-    if ( (strncmp(nvram_safe_get("wl2_akm"), "psk2", 4) == 0) || 
-    	( strncmp(nvram_safe_get("wl2_akm"), "psk psk2", 7) == 0 ))
+
+    nvram_set("wlh_ssid", nvram_safe_get("wl2_ssid"));
+    nvram_set("wlh_temp_ssid", nvram_safe_get("wl2_ssid"));
+
+    if ( strncmp(nvram_safe_get("wl2_akm"), "psk psk2", 7) == 0 )
+    {
+        nvram_set("wlh_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wlh_temp_secu_type", "WPA-AUTO-PSK");
+        nvram_set("wlh_passphrase", nvram_safe_get("wl2_wpa_psk"));
+
+        /* If router changes from 'unconfigured' to 'configured' state by
+         * adding a WPS client, the wsc_randomssid and wsc_randomkey will
+         * be set. In this case, router should use mixedmode security.
+         */
+
+        if (!nvram_match("wps_randomssid", "") ||
+            !nvram_match("wps_randomkey", ""))
+        {
+            nvram_set("wlh_secu_type", "WPA-AUTO-PSK");
+            nvram_set("wlh_temp_secu_type", "WPA-AUTO-PSK");
+
+            nvram_set("wl2_akm", "psk psk2 ");
+            nvram_set("wl2_crypto", "tkip+aes");
+
+            nvram_set("wps_mixedmode", "2");
+            //nvram_set("wps_randomssid", "");
+            //nvram_set("wps_randomkey", "");
+            config_flag = 1;
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wlh_wds_enable", "1"))
+            {
+                nvram_set("wlh_wds_enable",  "0");
+                nvram_set("wl2_wds", "");
+                nvram_set("wl2_mode", "ap");
+            }
+        }
+        else
+        {
+            /* Foxconn added start pling 02/25/2007 */
+            /* Disable WDS if it is already enabled */
+            if (nvram_match("wlh_wds_enable", "1"))
+            {
+                nvram_set("wlh_wds_enable",  "0");
+                nvram_set("wl2_wds", "");
+                nvram_set("wl2_mode", "ap");
+            }
+            /* Foxconn added end pling 02/25/2007 */
+        }
+    }
+    else if ( strncmp(nvram_safe_get("wl2_akm"), "psk2", 4) == 0 )
     {
         nvram_set("wlh_secu_type", "WPA2-PSK");
         nvram_set("wlh_temp_secu_type", "WPA2-PSK");
-        nvram_set("wl2_akm", "psk2");
         nvram_set("wlh_passphrase", nvram_safe_get("wl2_wpa_psk"));
 
 
@@ -899,17 +1057,25 @@ static void convert_wlan_params(void)
             nvram_set("wl2_akm", "psk2");
             nvram_set("wl2_crypto", "aes");
 
-            nvram_unset("wps_mixedmode");
+            nvram_set("wps_mixedmode", "2");
             //nvram_set("wps_randomssid", "");
             //nvram_set("wps_randomkey", "");
             config_flag = 1;
-
+            /* Since we changed to mixed mode, 
+             * so we need to disable WDS if it is already enabled
+             */
+            if (nvram_match("wlh_wds_enable", "1"))
+            {
+                nvram_set("wlh_wds_enable",  "0");
+                nvram_set("wl2_wds", "");
+                nvram_set("wl2_mode", "ap");
+            }
         }
         else
         {
             /* Foxconn added start pling 02/25/2007 */
             /* Disable WDS if it is already enabled */
-            if (nvram_match("wlg_wds_enable", "1"))
+            if (nvram_match("wlh_wds_enable", "1"))
             {
                 nvram_set("wlh_wds_enable",  "0");
                 nvram_set("wl2_wds", "");
@@ -1798,6 +1964,21 @@ static int active_vlan(void)
 /* these settings are for BCM53115S switch */
 static int config_switch_reg(void)
 {
+#ifdef VLAN_SUPPORT
+    if(nvram_match("enable_vlan", "enable"))
+    {
+
+        system("et robowr 0x00 0x08 0x1C");
+        system("et robowr 0x00 0x0B 0x07");
+        system("et robowr 0x02 0x00 0x80");
+#ifdef BCM5301X           
+        /*Enable BRCM header for port 5*/
+        system("et robowr 0x02 0x03 0x02");  /* Foxconn Bob added for 4708 */
+#endif        
+        system("et robowr 0xFFFF 0xFA 1");    	
+    }
+#endif
+
     if (
 #if (defined __CONFIG_IGMP_SNOOPING__)
         nvram_match("emf_enable", "1") ||
@@ -1805,7 +1986,6 @@ static int config_switch_reg(void)
 #if defined(CONFIG_RUSSIA_IPTV)
 		nvram_match("iptv_enabled", "1") ||
 #endif          
-		nvram_match("enable_vlan", "enable") ||
         (nvram_match("qos_enable", "1")  
         && !nvram_match("wla_repeater", "1")
 #if (defined INCLUDE_DUAL_BAND)
@@ -1857,7 +2037,7 @@ static int config_switch_reg(void)
         system("et robowr 0x34 0x01 0x0E");
         system("et robowr 0x04 0x0E 0x0000");
 #endif
-        if (nvram_match("qos_enable", "1") || nvram_match("enable_vlan", "enable"))
+        if (nvram_match("qos_enable", "1") )
             system("et robowr 0xFFFF 0xFE 0x01");
         else if (!nvram_match("qos_port", ""))
             system("et robowr 0xFFFF 0xFE 0x02");
@@ -3398,6 +3578,12 @@ sysinit(void)
 		/* foxconn modified start, zacker, 08/06/2010 */
 		/* Restore defaults if necessary */
 		restore_defaults();
+		
+		/* Foxconn Bob added start on 11/12/2014, force enable DFS */
+		nvram_set("fcc_dfs_ch_enable", "0");
+		nvram_set("ce_dfs_ch_enable", "1");
+		nvram_set("telec_dfs_ch_enable", "1");
+		/* Foxconn Bob added end on 11/12/2014, force enable DFS */
 
 
         /* For 4500 IR-159. by MJ. 2011.07.04  */
@@ -3411,10 +3597,6 @@ sysinit(void)
         nvram_unset("wl2_vifs");
         /* Foxconn added end pling 02/11/2011 */
 
-        /*Foxconn lawrence added start, 2013/03/06, Restore wifi_on_off button for default*/
-	//nvram_set("wifi_on_off", "1"); Tab Tseng removed, 2014/02/27
-        /*Foxconn lawrence added end, 2013/03/06, Restore wifi_on_off button for default*/
-		
         /* Read ethernet MAC, RF params, etc */
 		eval("read_bd");
         /* foxconn modified end, zacker, 08/06/2010 */
@@ -3467,6 +3649,10 @@ sysinit(void)
 		/* Foxconn added start pling 12/06/2010 */
 		/* By default ipv6_spi is inserted to system to drop all packets. */
 		/*Foxconn modify start by Hank for change ipv6_spi path in rootfs 08/27/2012*/
+    
+		if (nvram_match("enable_ap_mode","1"))
+			system("/sbin/insmod /lib/modules/2.6.36.4brcmarm+/kernel/lib/ipv6_spi.ko working_mode=\"ap\"");
+		else
 			system("/sbin/insmod /lib/modules/2.6.36.4brcmarm+/kernel/lib/ipv6_spi.ko");
 		/*Foxconn modify end by Hank for change ipv6_spi path in rootfs 08/27/2012*/
 		/* Foxconn added end pling 12/06/2010 */
@@ -3543,8 +3729,20 @@ sysinit(void)
         nvram_set("wl_rxchain_pwrsave_enable", "0");
         nvram_unset("wl0_rxchain_pwrsave_enable");
         nvram_unset("wl1_rxchain_pwrsave_enable");
+        
+		nvram_set("0:disband5grp","0x7");
+		nvram_set("2:disband5grp","0x18");
         /* foxconn added end by Bob 12/12/2013, BRCM suggest not to enable rxchain power save */
 
+        /* Foxconn Bob added start 01/26/2015, clear all FXCN defined DFS related nvram flag */
+        nvram_unset("eth1_dfs_OOC");
+        nvram_unset("eth2_dfs_OOC");
+        nvram_unset("eth3_dfs_OOC");
+        nvram_unset("eth1_dfs_detected");
+        nvram_unset("eth2_dfs_detected");
+        nvram_unset("eth3_dfs_detected");
+        /* Foxconn Bob added end 01/26/2015, clear all FXCN defined DFS related nvram flag */
+        
 		//modules = nvram_get("kernel_mods") ? : "et bcm57xx wl";
 		/*Foxconn modify start by Hank for insert dpsta 08/27/2012*/
 		/*Foxconn modify start by Hank for insert proxyarp 10/05/2012*/
@@ -3696,20 +3894,43 @@ sysinit(void)
 		mknod("/dev/snd/timer", S_IRWXU|S_IFCHR, makedev(116, 33));
 #endif
 #if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
-		if (nvram_match("broadstream_iqos_enable", "1")) {
+		if(1){
 			struct stat file_stat;
-
-			if (stat("/usr/sbin/qosd", &file_stat) == 0) {
+            /* contrack table turning for ACOSNAT start */
+			/*
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_generic_timeout");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_recv");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_sent2");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_sent");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait");
+			*/
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout");
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream");
+			system("echo 1800 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established");
+			system("echo 131072 > /proc/sys/net/ipv4/netfilter/ip_conntrack_max");
+            /* contrack table turning for ACOSNAT end */
+            nvram_set("brcm_speedtest",   "0");
+			if (stat("/usr/sbin/qosd.conf", &file_stat) == 0) {
 				if (mkdir("/tmp/trend", 0777) < 0 && errno != EEXIST)
-					perror("/tmp/trend not created");
+				perror("/tmp/trend not created");
 				else {
+					eval("cp", "/lib/modules/IDP.ko", "/tmp/trend");
+					eval("cp", "/lib/modules/bw_forward.ko", "/tmp/trend");
+					eval("cp", "/lib/modules/iqos.ko", "/tmp/trend");
 					eval("cp", "/usr/sbin/bwdpi-rule-agent", "/tmp/trend");
 					eval("cp", "/usr/sbin/rule.trf", "/tmp/trend");
 					eval("cp", "/usr/sbin/setup.sh", "/tmp/trend");
-					eval("cp", "/usr/sbin/qosd", "/tmp/trend");
+					eval("cp", "/usr/sbin/upgrade.sh", "/tmp/trend");
 					eval("cp", "/usr/sbin/qosd.conf", "/tmp/trend");
-					eval("cp", "/usr/sbin/qosd-setup.sh", "/tmp/trend");
 					eval("cp", "/usr/sbin/idpfw", "/tmp/trend");
+					eval("cp", "/usr/sbin/tmdbg", "/tmp/trend");
+					eval("cp", "/usr/sbin/TmToNtgr_dev_mapping", "/tmp/trend");
+					eval("cp", "/usr/sbin/rule.version", "/tmp/trend");
 				}
 			}
 		}
@@ -4051,6 +4272,7 @@ main_loop(void)
 #endif
 	sigset_t sigset;
 	pid_t shell_pid = 0;
+   char hwver[16];
 #ifdef __CONFIG_VLAN__
 	uint boardflags;
 #endif
@@ -4132,7 +4354,7 @@ main_loop(void)
         nvram_set(NVRAM_IPTV_ENABLED, "0");
         nvram_set(NVRAM_IPTV_INTF, "0x00");
     }
-#endif    
+#endif
 #endif /* CONFIG_RUSSIA_IPTV */
     /* Foxconn added end, Wins, 04/20/2011, @RU_IPTV */
 /* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
@@ -4425,10 +4647,18 @@ main_loop(void)
 			    config_switch_reg();
 #endif
 			/* foxconn added end, zacker, 01/13/2012, @iptv_igmp */
+			
+			if ( nvram_match("debug_port_mirror", "1"))
+            {
+                system("et robowr 0x02 0x10 0x8000");
+                system("et robowr 0x02 0x12 0x110");
+                system("et robowr 0x02 0x1C 0x110");
+            }
+            
 #if defined(R8000)
         system("et -i eth0 robowr 0x4 0x4 0");   /* Bob added on 07/17/2014, to enable STP forward */
 		if ( nvram_match("wla_region", "5"))
-		    nvram_set("dual_5g_band","0");
+		    nvram_set("dual_5g_band","1");
 		else
 		    nvram_set("dual_5g_band","1");
 #if 0		    
