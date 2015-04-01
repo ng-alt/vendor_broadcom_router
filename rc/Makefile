@@ -45,7 +45,7 @@ LDFLAGS	+= -L$(TOP)/nvram -L$(PLATFORMDIR)/install/nvram/usr/lib -lnvram -L$(TOP
 	-L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib -lbcmcrypto
 LDFLAGS += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib -lbcm
 CFLAGS	+= -I$(SRCBASE)/../ap/acos/shared
-LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(TARGETDIR)/usr/lib -lacos_shared
+LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(SRCBASE)/../ap/acos/acos_nat_cli -L$(TARGETDIR)/usr/lib -lacos_shared -lnat
 
 #Foxconn Silver added start, 2011/12/21, for kernel_ntfs
 ifneq ($(PROFILE),)	# PROFILE eq R6300v2 || R6250

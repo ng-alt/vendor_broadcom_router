@@ -3602,28 +3602,20 @@ sysinit(void)
         /* foxconn modified end, zacker, 08/06/2010 */
 
 		/* Load ctf */
-		/* Foxconn added start pling 06/26/2014 */
-		/* Change CTF mode when access control is enabled */
-		if (nvram_match("access_control_mode", "1") &&
-			!nvram_match("ctf_disable", "1"))
-			nvram_set("ctf_disable", "1");
-		/* Foxconn added end pling 06/26/2014 */
 
-    /* Foxconn added start pling 08/19/2010 */
-    /* Make sure the NVRAM "ctf_disable" exist, otherwise 
-     * MultiSsidCntrl will not work.
-     */
-    if (nvram_get("ctf_disable") == NULL)
-        nvram_set("ctf_disable", "1");
-    /* Foxconn added end pling 08/19/2010 */
-		if (!nvram_match("ctf_disable", "1"))
-			eval("insmod", "ctf");
+        /* Foxconn added start Bob 10/30/2014 */
+        /* Make sure ctf_disable value is correct after dynamic enable/disable CTF function is introduced */
+        if (nvram_match("enable_vlan", "1"))
+            nvram_set("ctf_disable", "1");
+        else
+            nvram_set("ctf_disable", "0");
+        /* Foxconn added end Bob 10/30/2014 */
+
+        if (!nvram_match("ctf_disable", "1"))
+            eval("insmod", "ctf");
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 		wapi_mtd_restore();
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */
-
-     	
-
 
 /* #ifdef BCMVISTAROUTER */
 #ifdef __CONFIG_IPV6__
@@ -3921,7 +3913,7 @@ sysinit(void)
 				else {
 					eval("cp", "/lib/modules/IDP.ko", "/tmp/trend");
 					eval("cp", "/lib/modules/bw_forward.ko", "/tmp/trend");
-					eval("cp", "/lib/modules/iqos.ko", "/tmp/trend");
+					eval("cp", "/lib/modules/tc_cmd.ko", "/tmp/trend");
 					eval("cp", "/usr/sbin/bwdpi-rule-agent", "/tmp/trend");
 					eval("cp", "/usr/sbin/rule.trf", "/tmp/trend");
 					eval("cp", "/usr/sbin/setup.sh", "/tmp/trend");
@@ -4534,9 +4526,10 @@ main_loop(void)
             
             save_wlan_time();          
             start_bcmupnp();
+            start_wps();            /* Foxconn modify by aspen Bai, 08/01/2008 */
             start_eapd();           /* Foxconn modify by aspen Bai, 10/08/2008 */
             start_nas();            /* Foxconn modify by aspen Bai, 08/01/2008 */
-            start_wps();            /* Foxconn modify by aspen Bai, 08/01/2008 */
+            
             if(nvram_match("enable_sta_mode","0"))
 				start_acsd();
             sleep(2);               /* Wait for WSC to start */
@@ -4756,9 +4749,10 @@ main_loop(void)
             /* wklin modified end, 10/23/2008 */           
             save_wlan_time();
 			start_bcmupnp();
+			start_wps();
             start_eapd();
             start_nas();
-            start_wps();
+            
             if(nvram_match("enable_sta_mode","0") )
 				start_acsd();
             sleep(2);
@@ -4967,9 +4961,10 @@ main_loop(void)
             
             save_wlan_time();
             start_bcmupnp();
+            start_wps();
             start_eapd();
             start_nas();
-            start_wps();
+            
             if(nvram_match("enable_sta_mode","0") )
 				start_acsd();
             sleep(2);           /* Wait for WSC to start */

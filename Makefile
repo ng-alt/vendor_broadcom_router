@@ -268,6 +268,9 @@ ifeq ($(CONFIG_OPENSSL),y)
 export CFLAGS += -DSUPPORT_REMOTE_HTTPS
 endif
 
+ifeq ($(CONFIG_CLOUD_XAGENT_CONF),y)
+CFLAGS += -DXAGENT_CLOUD_SUPPORT
+endif
 ifeq ($(CONFIG_QOS_AUTO_CHECK_BW),y)
 export CFLAGS += -DQOS_AUTO_CHECK_BANDWIDTH
 endif
@@ -543,11 +546,12 @@ endif
 ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
 obj-$(CONFIG_TREND_IQOS) += iqos
-obj-$(CONFIG_TREND_IQOS) += bcmiqosd
+
+#obj-$(CONFIG_TREND_IQOS) += bcmiqosd
 # Speedtest_cli
-obj-$(CONFIG_TREND_IQOS) += speedtest-cli
+#obj-$(CONFIG_TREND_IQOS) += speedtest-cli
 # curl
-obj-$(CONFIG_TREND_IQOS) += curl
+#obj-$(CONFIG_TREND_IQOS) += curl
 export CFLAGS += -D__CONFIG_TREND_IQOS__
 endif
 endif

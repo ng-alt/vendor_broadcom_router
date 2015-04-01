@@ -213,7 +213,7 @@
      
      function setInternetState()
      {
-         var Internet_Result = <%2869%>;
+         var Internet_Result = <%2932%>;
  
          if(Internet_Result == 0){
             
@@ -239,7 +239,7 @@
                 parent.$('#INT_menu').attr("href","<%334%>");
             }else if(Internet_Result == 1){
                 $('#Internet').click(function(ev){ 
-                    location.href = "<%2870%>";
+                    location.href = "<%2933%>";
                     
                     parent.$('#page').width(parseInt(page_contain_width));
                     parent.$('#page').height(parseInt(page_contain_height));
@@ -250,10 +250,10 @@
                     parent.$('#basic-int').addClass('menuActive');
 
                 });
-                parent.$('#INT_menu').attr("href","<%2870%>");
+                parent.$('#INT_menu').attr("href","<%2933%>");
             }else{
                 $('#Internet').click(function(ev){ 
-                    location.href = "<%2871%>";
+                    location.href = "<%2934%>";
                     
                     parent.$('#page').width(parseInt(page_contain_width));
                     parent.$('#page').height(parseInt(page_contain_height));
@@ -264,7 +264,7 @@
                     parent.$('#basic-int').addClass('menuActive');
 
                 });
-                parent.$('#INT_menu').attr("href","<%2871%>");
+                parent.$('#INT_menu').attr("href","<%2934%>");
             }               
         }
                                  
@@ -272,8 +272,8 @@
 
      function setWirelessState()
      {
-          var Wireless_Radio_Result = "<%2872%>";
-          var Wireless_Security_Result = "<%2873%>";   
+          var Wireless_Radio_Result = "<%2935%>";
+          var Wireless_Security_Result = "<%2936%>";   
           var Wireless_Result=0;
           var Wireless_Link_Result=0;
           if(Wireless_Radio_Result == "none"){
@@ -319,7 +319,7 @@
             }else if(Wireless_Link_Result == 1){
                 
                 $('#Wireless').click(function(ev){  
-                    location.href = "<%393%>";
+                    location.href = "<%394%>";
             
                     parent.$('#page').width(parseInt(page_contain_width));
                     parent.$('#page').height(parseInt(page_contain_height));
@@ -331,7 +331,7 @@
    
 
                 });
-                parent.$('#WLS_menu').attr("href","<%393%>");
+                parent.$('#WLS_menu').attr("href","<%394%>");
 
             }
 			}
@@ -342,12 +342,12 @@
      function setAttachedDevicesState()
      {
           
-          var AttachedDevices_Result = "<%2874%>";
-                    
+          var AttachedDevices_Result = "<%2937%>";
+          var iqos_clicked=0;                    
 
-          $('#AttachedDevices').click(function(ev){     
+          $('#AttachedDevices').click(function(ev){
+              if(!iqos_clicked){
               location.href = "DEV_redirect.htm";
-           
               parent.$('#page').width(parseInt(page_contain_width));
               parent.$('#page').height(parseInt(page_contain_height));
               parent.$('#page').css("margin-top","0");
@@ -355,23 +355,37 @@
              
               parent.$('.menuActive').removeClass('menuActive');
               parent.$('#basic-atd').addClass('menuActive'); 
+              }
           });
-            
+          if(document.forms[0].ap_mode.value!=1){                
+              $('#iqos_1').click(function(ev){     
+                  iqos_clicked=1;
+                  location.href = "QOS_down_streaming_iqos_basic.htm";
+                  
+                  parent.$('#page').width(parseInt(page_contain_width));
+                  parent.$('#page').height(parseInt(page_contain_height));
+                  parent.$('#page').css("margin-top","0");
+                  parent.$('#page').css("margin-left","30");
+                 
+                  parent.$('.menuActive').removeClass('menuActive');
+                  parent.$('#basic-qos').addClass('menuActive'); 
+              });
+          }
        
       }
 
       function setParentalControlsState()
      {
-          var ParentalControls_Result = <%2875%>;
+          var ParentalControls_Result = <%2938%>;
                      
-          var support = <%1891%>;
+          var support = <%1892%>;
           if(support == 0){
-              $('#ParentalControls-condition').text("<%2876%>"); 
+              $('#ParentalControls-condition').text("<%2939%>"); 
           }else{ 
               if(ParentalControls_Result == 1){
-                  $('#ParentalControls-condition').text("<%2877%>");
+                  $('#ParentalControls-condition').text("<%2940%>");
               }else{
-                  $('#ParentalControls-condition').text("<%2878%>");
+                  $('#ParentalControls-condition').text("<%2941%>");
               }
           } 
           if("<%334%>" != ""){
@@ -408,12 +422,12 @@
 
       function setReadyShareState()
      {
-          var ReadyShare_Result = <%2879%>;
+          var ReadyShare_Result = <%2942%>;
           
           if(ReadyShare_Result == 1){
-              $('#ReadyShare-condition').text("<%2880%>");
+              $('#ReadyShare-condition').text("<%2943%>");
           }else{
-              $('#ReadyShare-condition').text("<%2881%>");
+              $('#ReadyShare-condition').text("<%2944%>");
           }
 
           $('#ReadyShare').click(function(ev){     
@@ -434,10 +448,10 @@
 
        function setGuestNetworkState()
      {
-          var GuestNetwork_Result = "<%2882%>";
+          var GuestNetwork_Result = "<%2945%>";
            if(document.forms[0].sta_mode.value!=1){                
           $('#GuestNetwork').click(function(ev){     
-            location.href = "<%340%>";
+            location.href = "<%341%>";
            
             parent.$('#page').width(parseInt(page_contain_width));
             parent.$('#page').height(parseInt(page_contain_height));
@@ -464,14 +478,14 @@
                 <div style="height:31px;padding-top:5px;"><span style="display:-moz-inline-box;display:inline-block;width:20px;height:100%;">&nbsp;</span><span style="height:100%;display:-moz-inline-box;display:inline-block;width:30px;" id="Internet_head">&nbsp;</span></div>
              </div>
               <div style="height:115px;width:192px;background-image:url('DashBackCenter.gif'); background-repeat: no-repeat;text-align:center;border-bottom:1px inset #eaeaea;">
-                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="Internet.jpg"><br><span  class="subtext"><%2883%></span></div> 
+                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="Internet.jpg"><br><span  class="subtext"><%2946%></span></div> 
              </div>
              <div style="height:41px;width:192px;background-image:url('DashBackBottom.gif'); background-repeat: no-repeat;align:center">
                    <div id="Internet_bottom" class="normal-bottom">
                         <table style="width:100%;height:100%">
                         <tr>
                         <td id="internet1" style="valign:middle;text-align:center">
-                        <span id="Internet-status" class="Status-normal"><%2884%></span>
+                        <span id="Internet-status" class="Status-normal"><%2947%></span>
                         </td>
                         <td id="internet2"></td>
                         </tr>
@@ -485,12 +499,12 @@
                 <div style="height:31px;padding-top:5px;"><span style="display:-moz-inline-box;display:inline-block;width:20px;height:100%;">&nbsp;</span><span style="height:100%;display:-moz-inline-box;display:inline-block;width:30px;" id="Wireless_head">&nbsp;</span></div>
              </div>
               <div style="height:115px;width:192px;background-image:url('DashBackCenter.gif'); background-repeat: no-repeat;text-align:center;border-bottom:1px inset #eaeaea;">
-                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="img/Wireless.gif"><br><span  class="subtext"><%2885%></span></div> 
+                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="img/Wireless.gif"><br><span  class="subtext"><%2948%></span></div> 
              </div>
              <div style="height:41px;width:192px;background-image:url('DashBackBottom.gif'); background-repeat: no-repeat;align:center">
                    <div id="Wireless_bottom" class="normal-bottom">
                         <table style="width:100%;height:100%" CELLPADDING=0 CELLSPACING=0>
-                        <%2886%>
+                        <%2949%>
                         </table>
                    </div>
              </div>
@@ -506,9 +520,15 @@
                    <div id="AttachedDevices-bottom" class="normal-bottom"><table style="width:100%;height:100%">
                         <tr>
                         <td id="attached1" style="valign:middle;text-align:center">
-							<span id="AttachedDevices-status" class="Status-normal"><%2887%> :&nbsp;&nbsp;&nbsp;<span id="AttachedDevices-condition" class="Condition-normal"><%2888%></span></span>
+							<span id="AttachedDevices-status" class="Status-normal"><%2950%> :&nbsp;&nbsp;&nbsp;<span id="AttachedDevices-condition" class="Condition-normal"><%2951%></span></span>
                         </td>
                         <td id="attached2"></td>
+                        </tr>
+                        <tr>
+                        <td id="iqos_1" style="valign:middle;text-align:center">
+							<span id="qos-status" class="Status-normal"><%2952%> :&nbsp;&nbsp;&nbsp;<span id="qos-condition" class="Condition-normal"><%2953%></span></span>
+                        </td>
+                        <td id="iqos_2"></td>
                         </tr>
                         </table></div>
              </div>
@@ -520,13 +540,13 @@
                 <div style="height:31px;padding-top:5px;"><span style="display:-moz-inline-box;display:inline-block;width:20px;height:100%;">&nbsp;</span><span style="height:100%;display:-moz-inline-box;display:inline-block;width:30px;" id="ParentalControls-head">&nbsp;</span></div>
              </div>
               <div style="height:115px;width:192px;background-image:url('DashBackCenter.gif'); background-repeat: no-repeat;text-align:center;border-bottom:1px inset #eaeaea;">
-                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="ParentalControl.jpg"><br><span  class="subtext"><%2889%></span></div> 
+                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="ParentalControl.jpg"><br><span  class="subtext"><%2954%></span></div> 
              </div>
              <div style="height:41px;width:192px;background-image:url('DashBackBottom.gif'); background-repeat: no-repeat;align:center">
                    <div id="ParentalControls-bottom" class="normal-bottom"><table style="width:100%;height:100%">
                         <tr>
                         <td id="parental1" style="valign:middle;text-align:center">
-							<span id="ParentalControls-status" class="Status-normal"><%2890%>:&nbsp;&nbsp;&nbsp;<span id="ParentalControls-condition" class="Condition-normal"></span></span>
+							<span id="ParentalControls-status" class="Status-normal"><%2955%>:&nbsp;&nbsp;&nbsp;<span id="ParentalControls-condition" class="Condition-normal"></span></span>
                         </td>
                         <td id="parental2"></td>
                         </tr>
@@ -539,12 +559,12 @@
                 <div style="height:31px;padding-top:5px;"><span style="display:-moz-inline-box;display:inline-block;width:20px;height:100%;">&nbsp;</span><span style="height:100%;display:-moz-inline-box;display:inline-block;width:30px;" id="ReadyShare-head" >&nbsp;</span></div>
              </div>
               <div style="height:115px;width:192px;background-image:url('DashBackCenter.gif'); background-repeat: no-repeat;text-align:center;border-bottom:1px inset #eaeaea;">
-                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="img/ReadyShare.gif"><br><span  class="subtext" style="font-family:Arial;"><%339%></span></div> 
+                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="img/ReadyShare.gif"><br><span  class="subtext" style="font-family:Arial;"><%340%></span></div> 
              </div>
              <div style="height:41px;width:192px;background-image:url('DashBackBottom.gif'); background-repeat: no-repeat;align:center">
                    <div  id="ReadyShare-bottom" class="normal-bottom" ><table style="width:100%;height:100%">
                    <tr>
-				       <td id="readyshare1" style="valign:middle;text-align:center"><span id="ReadyShare-status" class="Status-normal" ><%2890%>:&nbsp;&nbsp;&nbsp;<span id="ReadyShare-condition" class="Condition-normal"></span></span></td>
+				       <td id="readyshare1" style="valign:middle;text-align:center"><span id="ReadyShare-status" class="Status-normal" ><%2955%>:&nbsp;&nbsp;&nbsp;<span id="ReadyShare-condition" class="Condition-normal"></span></span></td>
                     <td id="readyshare2"></td>
                     </tr></table></div>
              </div>
@@ -554,10 +574,10 @@
                 <div style="height:31px;padding-top:5px;"><span style="display:-moz-inline-box;display:inline-block;width:20px;height:100%;">&nbsp;</span><span style="height:100%;display:-moz-inline-box;display:inline-block;width:30px;">&nbsp;</span></div>
              </div>
               <div style="height:115px;width:192px;background-image:url('DashBackCenter.gif'); background-repeat: no-repeat;text-align:center;border-bottom:1px inset #eaeaea;">
-                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="GuestNetwork.jpg"><br><span  class="subtext"><%341%></span></div> 
+                 <div style="height:100%;width:188px;background-image:url('DashCenter.gif'); background-repeat: no-repeat;margin-left:2px;text-align:center;border-bottom:1px solid #d4d4d4;"><img src="GuestNetwork.jpg"><br><span  class="subtext"><%342%></span></div> 
              </div>
              <div style="height:41px;width:192px;background-image:url('DashBackBottom.gif'); background-repeat: no-repeat;align:center">               
-                   <div id="GuestNetwork-bottom" class="normal-bottom"><table style="width:100%;height:100%" CELLPADDING=0 CELLSPACING=0><%2891%></table>
+                   <div id="GuestNetwork-bottom" class="normal-bottom"><table style="width:100%;height:100%" CELLPADDING=0 CELLSPACING=0><%2956%></table>
                    </div>
              </div>
          </td>
@@ -565,7 +585,8 @@
          </table> 
          <form>
           <input type="hidden" name="curlang" value="<%9%>">  
-          <input type="hidden" name="sta_mode" value="<%431%>">  
+          <input type="hidden" name="sta_mode" value="<%432%>">  
+          <input type="hidden" name="ap_mode" value="<%431%>">  
          </form>
   </body>
  <head>
