@@ -26,12 +26,23 @@
 
 #define sin_addr(s) (((struct sockaddr_in *)(s))->sin_addr)
 
-#define MAX_NO_BRIDGE 1     /*  modified pling 05/16/2007, 2->1 */
+#define MAX_NO_BRIDGE 1     /* Foxconn modified pling 05/16/2007, 2->1 */
 
-/*  modified start, zacker, 01/13/2012, @iptv_igmp */
+#ifdef VLAN_SUPPORT
+#define C_MAX_TOKEN_SIZE        128
+#define C_MAX_VLAN_RULE     10
+typedef struct vlan_rule_t{
+    char vlan_name[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE];
+    char vlan_id[6];
+    char vlan_prio[4];
+    char vlan_ports[10];
+    char enable_rule[4];
+}vlan_rule;
+#endif
+/* foxconn modified start, zacker, 01/13/2012, @iptv_igmp */
 #if defined(CONFIG_RUSSIA_IPTV)
 #undef MAX_NO_BRIDGE
-#define MAX_NO_BRIDGE 2
+#define MAX_NO_BRIDGE 10		/*Foxconn modified, edward zhang, 2013/07/03, change 2->10 for vlan support*/
 
 #define NVRAM_IPTV_INTF         "iptv_interfaces"
 #define NVRAM_IPTV_ENABLED      "iptv_enabled"
@@ -41,8 +52,19 @@
 #define IPTV_LAN4               0x08
 #define IPTV_WLAN1              0x10
 #define IPTV_WLAN2              0x20
+#if defined(R8000)
+#define IPTV_WLAN3              0x40
+#define IPTV_WLAN_GUEST1              0x80
+#define IPTV_WLAN_GUEST2              0x100
+#define IPTV_WLAN_GUEST3              0x200
+#define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3)   //0x30
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2 | IPTV_WLAN_GUEST3)   //0x3F
+#else
+#define IPTV_WLAN_GUEST1              0x40
+#define IPTV_WLAN_GUEST2              0x80
 #define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2)   //0x30
-#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2)   //0x3F
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2)   //0x3F
+#endif
 
 #define VCFG_PAGE               0xFFFF
 #define VCFG_REG                0xFD
@@ -54,7 +76,7 @@
 #define MAC_BYTE5               0x06
 #define SET_VLAN                0x80
 #endif /* CONFIG_RUSSIA_IPTV */
-/*  modified end, zacker, 01/13/2012, @iptv_igmp */
+/* foxconn modified end, zacker, 01/13/2012, @iptv_igmp */
 
 #ifdef LINUX26
 #define AGLOG_MAJOR_NUM             123
@@ -114,10 +136,10 @@ extern int hotplug_usb(void);
 extern int hotplug_block(void);
 extern int wan_ifunit(char *ifname);
 extern int wan_primary_ifunit(void);
-/*  wklin added start, 10/17/2006 */
+/* foxconn wklin added start, 10/17/2006 */
 extern void start_wlan(void);
 extern void stop_wlan(void);
-/*  wklin added end, 10/17/2006 */
+/* foxconn wklin added end, 10/17/2006 */
 /* services */
 extern int start_dhcpd(void);
 extern int stop_dhcpd(void);
@@ -173,6 +195,6 @@ extern int stop_firewall2(char *ifname);
 /* routes */
 extern int preset_wan_routes(char *ifname);
 #ifdef SAMBA_ENABLE
-extern int usb_sem_init(void);  //  added pling 07/13/2009 
+extern int usb_sem_init(void);  // Foxconn added pling 07/13/2009 
 #endif
 #endif /* _rc_h_ */

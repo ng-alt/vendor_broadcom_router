@@ -64,7 +64,7 @@ main(int argc, char **argv)
 		} else if (!strcmp(*argv, "unset")) {
 			if (*++argv)
 				nvram_unset(*argv);
-        } else if (!strcmp (*argv, "commit") || !strcmp (*argv, "save")) { /* add, Jasmine Yang, 03/30/2006 */
+        } else if (!strcmp (*argv, "commit") || !strcmp (*argv, "save")) { /*Foxconn add, Jasmine Yang, 03/30/2006 */
 			nvram_commit();
 		} else if (!strcmp(*argv, "show") ||
 		           !strcmp(*argv, "dump")) {
@@ -77,13 +77,13 @@ main(int argc, char **argv)
 				        size, MAX_NVRAM_SPACE - size);
         }
 #ifdef ACOS_MODULES_ENABLE
-        else if (!strncmp (*argv, "loaddefault", 11))   /* add, Jasmine Yang, 03/30/2006 */
+        else if (!strncmp (*argv, "loaddefault", 11))   /*Foxconn add, Jasmine Yang, 03/30/2006 */
         {
             /* Write only NVRAM header to flash */
             extern int nvram_loaddefault(void);
             nvram_loaddefault ();
         }
-        else if (!strncmp (*argv, "version", 7))        /* add, Jasmine Yang, 03/30/2006 */
+        else if (!strncmp (*argv, "version", 7))        /*Foxconn add, Jasmine Yang, 03/30/2006 */
         {
             memset (buf, '\0', sizeof (buf));
             if ((value = nvram_safe_get ("pmon_ver")))

@@ -15,20 +15,23 @@
 # OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile 348932 2012-08-04 03:14:30Z $
+# $Id: Makefile 387385 2013-02-25 20:22:54Z $
 #
 
 
 include .config
 
-export FW_TYPE = WW
+ifndef FW_TYPE
+FW_TYPE = WW
+endif
+export FW_TYPE
 
 
-BOARDID_FILE=compatible_r6300v2.txt
-FW_NAME=R6300v2
 
-
-
+ifeq ($(PROFILE),R6400)
+BOARDID_FILE=compatible_r6400.txt
+FW_NAME=R6400
+endif
 #
 # Paths
 #
@@ -73,6 +76,13 @@ else
 export 	LINUXDIR := $(SRCBASE)/linux/linux
 endif
 
+# Opensource bases
+OPENSOURCE_BASE_DIR := $(BASEDIR)/components/opensource
+DNSMASQ_DIR := $(OPENSOURCE_BASE_DIR)/dnsmasq
+LIBNFNETLINK_DIR := $(OPENSOURCE_BASE_DIR)/netfilter/libnfnetlink
+LIBMNL_DIR := $(OPENSOURCE_BASE_DIR)/netfilter/libmnl
+LIBNETFILTER_QUEUE_DIR := $(OPENSOURCE_BASE_DIR)/netfilter/libnetfilter_queue
+LIBNETFILTER_CONNTRACK_DIR := $(OPENSOURCE_BASE_DIR)/netfilter/libnetfilter_conntrack
 
 #
 # Cross-compile environment variables
@@ -136,6 +146,10 @@ endif
 #look at driver configuration
 WLCFGDIR=$(SRCBASE)/wl/config
 
+ifeq ($(CONFIG_NVRAM),y)
+export CFLAGS += -DBCMNVRAM
+endif
+
 ifeq ($(CONFIG_BCMWPA2),y)
 export CFLAGS += -DBCMWPA2
 endif
@@ -165,6 +179,14 @@ ifeq ($(CONFIG_IGMP_PROXY),y)
 export CFLAGS += -D__CONFIG_IGMP_PROXY__
 endif
 
+ifeq ($(CONFIG_NORTON),y)
+export CFLAGS += -D__CONFIG_NORTON__
+endif
+
+ifeq ($(CONFIG_TRAFFIC_MGMT_RSSI_POLICY),y)
+export CFLAGS += -DTRAFFIC_MGMT_RSSI_POLICY
+endif
+
 ifeq ($(CONFIG_WL_ACI),y)
 export CFLAGS += -D__CONFIG_WL_ACI__
 endif
@@ -180,18 +202,17 @@ export CFLAGS += -DTRAFFIC_MGMT_RSSI_POLICY
 obj-$(CONFIG_UTELNETD) += utelnetd
 endif
 
-#ifdef BRCM_SYSCAP_IE
-ifeq ($(CONFIG_BRCM_SYSCAP_IE),y)
-export CFLAGS += -DBRCM_SYSCAP_IE
-endif
-#endif
+MNL_CFLAGS:="-I$(LIBMNL_DIR)/install/include"
+MNL_LIBS:="-L$(LIBMNL_DIR)/install/lib -lmnl"
 
-#ifdef WET_TUNNEL
-ifeq ($(CONFIG_WET_TUNNEL),y)
-export CFLAGS += -DWET_TUNNEL
-endif
-#endif
+NFNETLINK_CFLAGS:="-I$(LIBNFNETLINK_DIR)/install/include"
+NFNETLINK_LIBS:="-L$(LIBNFNETLINK_DIR)/install/lib -lnfnetlink"
 
+NETFILTER_CONNTRACK_CFLAGS:="-I$(LIBNETFILTER_CONNTRACK_DIR)/install/include"
+NETFILTER_CONNTRACK_LIBS:="-L$(LIBNETFILTER_CONNTRACK_DIR)/install/lib -lnetfilter_conntrack"
+
+NETFILTER_QUEUE_CFLAGS:="-I$(LIBNETFILTER_QUEUE_DIR)/install/include"
+NETFILTER_QUEUE_LIBS:="-L$(LIBNETFILTER_QUEUE_DIR)/install/lib -lnetfilter_queue"
 
 ifeq ($(CONFIG_SOUND),y)
 export CFLAGS += -D__CONFIG_SOUND__
@@ -248,14 +269,23 @@ endif
 export CFLAGS += -DINCLUDE_UCP
 
 #export CFLAGS += -DECOSYSTEM_SUPPORT
-
-export CFLAGS += -DU12H240 -DR6300v2
+ifeq ($(PROFILE),R7000)
+export CFLAGS += -DU12H270 -DR7000
 export CFLAGS += -DMULTIPLE_SSID
 export CFLAGS += -DENABLE_ML
+export CFLAGS += -DOPEN_SOURCE_SUPPORT
 export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
+export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
-
+export CFLAGS += -DVIDEO_STREAMING_QOS
+export CFLAGS += -DSPEEDTEST_SUPPORT
+ifeq ($(INCLUDE_FBWIFI_FLAG),y)
+export CFLAGS += -DFBWIFI_FLAG
+endif
+ifeq ($(CONFIG_FBWIFI_DEBUG),y)
+export CFLAGS += -DCONFIG_FBWIFI_DEBUG
+endif
 ifeq ($(CONFIG_DLNA),y)
 export CFLAGS += -DDLNA
 #export CFLAGS += -DDLNA_DEBUG
@@ -287,9 +317,79 @@ export CFLAGS += -DSUPPORT_AC_MODE
 export CFLAGS += -DSTA_MODE
 export CFLAGS += -DPPP_RU_DESIGN
 export CFLAGS += -DEXT_ACS
+export CFLAGS += -DVLAN_SUPPORT
+export CFLAGS += -DINCLUDE_DETECT_AP_MODE
+endif
+
+
+ifeq ($(PROFILE),R6400)
+export CFLAGS += -DU12H332 -DR7000 -DR6400
+export CFLAGS += -DMULTIPLE_SSID
+export CFLAGS += -DENABLE_ML
+export CFLAGS += -DOPEN_SOURCE_SUPPORT
+export CFLAGS += -DBCM53125
+export CFLAGS += -DBCM5301X
+export CFLAGS += -DACS_INTF_DETECT_PATCH
+export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
+export CFLAGS += -DVIDEO_STREAMING_QOS
+#export CFLAGS += -DSPEEDTEST_SUPPORT
+ifeq ($(INCLUDE_FBWIFI_FLAG),y)
+export CFLAGS += -DFBWIFI_FLAG
+endif
+ifeq ($(CONFIG_FBWIFI_DEBUG),y)
+export CFLAGS += -DCONFIG_FBWIFI_DEBUG
+endif
+ifeq ($(CONFIG_DLNA),y)
+export CFLAGS += -DDLNA
+#export CFLAGS += -DDLNA_DEBUG
+endif
+export CFLAGS += -DHTTP_ACCESS_USB
+export CFLAGS += -DMAX_USB_ACCESS
+export CFLAGS += -DSAMBA_ENABLE
+export CFLAGS += -DUSB_NEW_SPEC
+export CFLAGS += -DINCLUDE_WIFI_BUTTON
+export CONFIG_LIBNSL=y
+export CFLAGS += -DINCLUDE_USB_LED
+export CFLAGS += -DINCLUDE_DUAL_BAND
+export CFLAGS += -DSINGLE_FIRMWARE
+export CFLAGS += -DINCLUDE_GET_ST_CHKSUM
+export CFLAGS += -DUNIFIED_STR_TBL
+export CFLAGS += -DFIRST_MTD_ROTATION
+export CFLAGS += -DWIFI_ON_OFF_SCHE
+export CFLAGS += -DAUTO_CONN_24HR
+export CFLAGS += -DIGMP_PROXY
+export CFLAGS += -DAP_MODE
+export CFLAGS += -D__CONFIG_IGMP_SNOOPING__
+ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+export CFLAGS += -DLINUX26
+export CFLAGS += -DINCLUDE_IPV6
+endif
+export CFLAGS += -DPRESET_WL_SECURITY
+export CFLAGS += -DNEW_BCM_WPS_IPC
+export CFLAGS += -DSUPPORT_AC_MODE
+export CFLAGS += -DSTA_MODE
+export CFLAGS += -DPPP_RU_DESIGN
+export CFLAGS += -DEXT_ACS
+export CFLAGS += -DVLAN_SUPPORT
+export CFLAGS += -DINCLUDE_DETECT_AP_MODE
+endif
+
+
+
+
+
+
 
 ifeq ($(FW_TYPE),NA)
 export CFLAGS += -DFW_VERSION_NA
+endif
+
+ifeq ($(CONFIG_BCMDCS),y)
+export CFLAGS += -DBCM_DCS
+endif
+
+ifeq ($(CONFIG_EXTACS),y)
+export CFLAGS += -DEXT_ACS
 endif
 
 ifeq ($(CONFIG_MFP),y)
@@ -308,8 +408,20 @@ ifeq ($(CONFIG_SIGMA),y)
 export CFLAGS += -D__CONFIG_SIGMA__
 endif
 
+ifeq ($(CONFIG_MINI_ROUTER), y)
+export CFLAGS += -D__CONFIG_ROUTER_MINI__
+endif
+
+ifeq ($(CONFIG_NPS), y)
+export CFLAGS += -DNPS
+endif
+
+ifneq ($(CONFIG_HSPOT)$(CONFIG_NPS),)
+export CFLAGS += -DPROXYARP
+endif
 
 export CC := $(CROSS_COMPILE)gcc
+export CXX := $(CROSS_COMPILE)g++
 export AR := $(CROSS_COMPILE)ar
 export AS := $(CROSS_COMPILE)as
 export LD := $(CROSS_COMPILE)ld
@@ -344,6 +456,12 @@ endef
 # note : the dongle target is only for after pre-build 
 obj-$(CONFIG_USBAP) += bmac dongle
 
+#added start @ NEW_DEBUG_HIDDEN_PAGE
+ifeq ($(PROFILE),R6400)
+obj-y += mpstat
+endif
+#added end @ NEW_DEBUG_HIDDEN_PAGE
+
 # always build libbcmcrypto
 obj-y += libbcmcrypto
 
@@ -362,12 +480,10 @@ obj-$(CONFIG_APLAY) += alsa-utils/aplay
 #endif
 obj-$(CONFIG_NVRAM) += nvram
 obj-$(CONFIG_SHARED) += shared
-#obj-$(CONFIG_SHARED) += acos_shared
-
+obj-$(CONFIG_SHARED) += acos_shared
 obj-$(CONFIG_LIBBCM) += libbcm
 
 #obj-$(CONFIG_OPENSSL) += openssl
-
 
 obj-$(CONFIG_RC) += rc
 obj-$(CONFIG_GLIBC) += lib
@@ -378,6 +494,15 @@ obj-$(CONFIG_BUSYBOX) += busybox
 obj-$(CONFIG_DNSMASQ) += dnsmasq
 obj-$(CONFIG_IPTABLES) += iptables
 obj-$(CONFIG_LIBIPT) += iptables
+# Build only for kernel >= 2.6.36.
+ifeq ($(call wlan_version_ge,$(BCM_KVERSIONSTRING),2.6.36),TRUE)
+obj-$(CONFIG_LIBSTDCPP) += libstdcpp
+obj-$(CONFIG_LIBFLOW) += libflow
+obj-$(CONFIG_LIBMNL) += libmnl
+obj-$(CONFIG_LIBNFNETLINK) += libnfnetlink
+obj-$(CONFIG_LIBNETFILTER_CONNTRACK) += libnetfilter_conntrack
+obj-$(CONFIG_LIBNETFILTER_QUEUE) += libnetfilter_queue
+endif
 obj-$(CONFIG_HSPOT) += hspot_ap
 obj-$(CONFIG_NAS) += nas
 obj-$(CONFIG_WAPI) += wapi/wapid
@@ -390,6 +515,7 @@ obj-$(CONFIG_NTP) += ntpclient
 obj-$(CONFIG_PPP) += ppp
 obj-$(CONFIG_UDHCPD) += udhcpd
 obj-$(CONFIG_UPNP) += upnp
+obj-$(CONFIG_NORTON) += norton
 obj-$(CONFIG_LIBUPNP) += libupnp
 obj-$(CONFIG_FFMPEG) += ffmpeg
 obj-$(CONFIG_DLNA_DMR) += dlna/dmr
@@ -418,7 +544,11 @@ obj-$(CONFIG_SWRESETD) += swresetd
 obj-$(CONFIG_PHYMON_UTILITY) += phymon
 #endif
 #if defined(EXT_ACS)
-obj-$(CONFIG_EXTACS) += acsd
+ifeq ($(PROFILE),R6400)
+#obj-$(CONFIG_EXTACS) += acsd
+else
+#obj-$(CONFIG_EXTACS) += acsd
+endif
 #endif
 obj-$(CONFIG_VMSTAT) += vmstat
 
@@ -427,6 +557,11 @@ obj-$(CONFIG_IPROUTE2) += iproute2
 obj-$(CONFIG_IPUTILS) += iputils
 obj-$(CONFIG_DHCPV6S) += dhcp6s
 obj-$(CONFIG_DHCPV6C) += dhcp6c
+
+obj-$(CONFIG_BCMBSD) += gbsd
+
+obj-$(CONFIG_TASKSET) += taskset
+#speed up USB throughput
 
 # BUZZZ tools: function call tracing, performance monitoring, event history
 obj-$(CONFIG_BUZZZ) += buzzz
@@ -446,7 +581,7 @@ ifeq ($(CONFIG_VOIP),y)
 obj-y += voipd
 endif
 
-# Foxconn Add, Jasmine Yang, 03/23/2006
+
 ifeq ($(CONFIG_ACOS_MODULES),y)
 #obj-y += ../../ap/acos
 obj-y += ../../ap/gpl
@@ -474,8 +609,6 @@ endif
 all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
         # Also build kernel
         
-acos_shared:
-	$(MAKE) -f Makefile-shared -C ../../ap/acos CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP)
 
         
 linux_kernel:        
@@ -546,7 +679,7 @@ ifneq (2_4,$(LINUX_VERSION))
 else
 	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) clean
 endif
-#	$(MAKE) -C $(SRCBASE)/cfe/build/broadcom/bcm947xx ARCH=$(ARCH) clean
+	$(MAKE) -C $(SRCBASE)/cfe/build/broadcom/bcm947xx ARCH=$(ARCH) clean
 #	[ ! -f $(SRCBASE)/tools/misc/Makefile ] || $(MAKE) -C $(SRCBASE)/tools/misc clean
 
 distclean mrproper: clean
@@ -573,14 +706,7 @@ endif
 		modules_install DEPMOD=/bin/true INSTALL_MOD_PATH=$(TARGETDIR) ; \
 	fi
 	#	$(MAKE) acos-install
-	for dir in $(SRCBASE)/prebuilt/$(FW_TYPE); do \
-        (cd $${dir} && tar cpf - .) | (cd $(TARGETDIR) && tar xpf -) \
-    done
 	#water, 08/11/2009
-	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/build
-	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/source
-	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/modules.*
-	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/extra
 	find $(TARGETDIR) -name .svn  | xargs rm -rf
 	rm -rf $(TARGETDIR)/usr/bin/[
 	rm -rf $(TARGETDIR)/usr/bin/[[
@@ -590,14 +716,44 @@ endif
 	rm -rf $(TARGETDIR)/usr/sbin/upnpnat
 	rm -rf $(TARGETDIR)/usr/sbin/epi_ttcp
 	$(STRIP) $(TARGETDIR)/bin/eapd
+ifeq ($(PROFILE),R6400)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	cp $(BASEDIR)/src/router/usbprinter/GPL_NetUSB_$(PROFILE).ko $(BASEDIR)/src/router/usbprinter/GPL_NetUSB.ko 
+	cp $(BASEDIR)/src/router/usbprinter/NetUSB_$(PROFILE).ko $(BASEDIR)/src/router/usbprinter/NetUSB.ko 
+	cp $(BASEDIR)/src/router/usbprinter/KC_BONJOUR_$(PROFILE) $(BASEDIR)/src/router/usbprinter/KC_BONJOUR 
+	cp $(BASEDIR)/src/router/usbprinter/KC_PRINT_$(PROFILE) $(BASEDIR)/src/router/usbprinter/KC_PRINT 
 	install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
 	install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	install usbprinter/KC_BONJOUR $(TARGETDIR)/usr/bin
+	install usbprinter/KC_PRINT $(TARGETDIR)/usr/bin
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
+	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
+	install ufsd/mkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
+	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
+	install utelnetd/ookla $(TARGETDIR)/bin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
+#	rm $(TARGETDIR)/usr/bin/soapcpp2
+	
+	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/ipv6_spi.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/MultiSsidCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/ubd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/br_dns_hijack.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	install prebuilt/l7_filter.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
+	
+endif
+ifeq ($(CONFIG_IPERF),y)
+	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
+	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
+endif
+
+
+
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
 	echo "=====> Don't delete wl_high.ko for USBAP"
@@ -617,11 +773,13 @@ endif
 endif
 	# Prepare filesystem
 	cd $(TARGETDIR) && $(TOP)/misc/rootprep.sh
-	#  add start by Hank for ecosystem support 08/14/2012
-	#cp -f $(PLATFORMDIR)/cp_installer.sh $(TARGETDIR)/usr/sbin/cp_installer.sh
-	#cp -f $(PLATFORMDIR)/CAs.txt $(TARGETDIR)/etc/CAs.txt
-	#  add end by Hank for ecosystem support 08/14/2012 
-
+ifeq ($(PROFILE),R6400)
+#	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
+#	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
+else
+	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
+	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
+endif
 ifeq ($(CONFIG_SQUASHFS), y)
 	###########################################
 	### Create Squashfs filesystem ############
@@ -866,6 +1024,16 @@ lib-install:
 www www-%:
 	$(MAKE) -C www/$(CONFIG_VENDOR) $* INSTALLDIR=$(INSTALLDIR)/www
 
+NORTON_DIR := $(BASEDIR)/components/vendor/symantec/norton
+
+norton:
+	+$(MAKE) -C $(NORTON_DIR)
+
+norton-install:
+	+$(MAKE) -C $(NORTON_DIR) install INSTALLDIR=$(INSTALLDIR)/norton
+
+norton-clean:
+	+$(MAKE) -C $(NORTON_DIR) clean
 
 
 
@@ -924,14 +1092,134 @@ buzzz-install:
 buzzz-clean:
 	$(MAKE) -C buzzz clean
 
+ifeq ($(call wlan_version_ge,$(BCM_KVERSIONSTRING),2.6.36),TRUE)
+dnsmasq:
+	+$(MAKE) -C $(DNSMASQ_DIR)
+
+dnsmasq-install:
+	install -D $(DNSMASQ_DIR)/src/dnsmasq $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
+	$(STRIP) $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
+else
 dnsmasq-install:
 	install -D dnsmasq/dnsmasq $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
 	$(STRIP) $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
+endif
+
+libstdcpp:
+	# So that generic rule does not take precedence
+	@:
+
+libstdcpp-install:
+	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6.0.14 $(INSTALLDIR)/libstdcpp/usr/lib/libstdc++.so.6.0.14
+	+ldconfig -N -n -r $(INSTALLDIR)/libstdcpp usr/lib
+	+$(STRIP) $(INSTALLDIR)/libstdcpp/usr/lib/libstdc++.so.6.0.14
+
+libmnl:
+	[ -f $(LIBMNL_DIR)/Makefile ] || \
+	(cd $(LIBMNL_DIR); \
+	 CC=$(CC) ./configure \
+	    --target=$(PLATFORM)-linux \
+	    --host=$(PLATFORM)-linux \
+	    --build=`/bin/arch`-linux \
+	    --with-kernel=$(LINUXDIR) \
+	    --prefix=$(LIBMNL_DIR)/install)
+	+$(MAKE) -C $(LIBMNL_DIR)
+	+$(MAKE) -C $(LIBMNL_DIR) install-strip
+
+libmnl-install:
+	install -d $(INSTALLDIR)/libmnl/usr/lib
+	cp -rf $(LIBMNL_DIR)/install/lib/* $(INSTALLDIR)/libmnl/usr/lib
+
+libmnl-clean:
+	+$(MAKE) -C $(LIBMNL_DIR) KERNEL_DIR=$(LINUXDIR) clean
+
+libnfnetlink:
+	[ -f $(LIBNFNETLINK_DIR)/Makefile ] || \
+	(cd $(LIBNFNETLINK_DIR); \
+	 CC=$(CC) ./configure \
+	    --target=$(PLATFORM)-linux \
+	    --host=$(PLATFORM)-linux \
+	    --build=`/bin/arch`-linux \
+	    --with-kernel=$(LINUXDIR) \
+	    --prefix=$(LIBNFNETLINK_DIR)/install)
+	+$(MAKE) -C $(LIBNFNETLINK_DIR)
+	+$(MAKE) -C $(LIBNFNETLINK_DIR) install-strip
+
+libnfnetlink-install:
+	install -d $(INSTALLDIR)/libnfnetlink/usr/lib
+	cp -rf $(LIBNFNETLINK_DIR)/install/lib/* $(INSTALLDIR)/libnfnetlink/usr/lib
+
+libnfnetlink-clean:
+	+$(MAKE) -C $(LIBNFNETLINK_DIR) KERNEL_DIR=$(LINUXDIR) clean
+
+libnetfilter_conntrack: libmnl libnfnetlink
+	[ -f $(LIBNETFILTER_CONNTRACK_DIR)/Makefile ] || \
+	(cd $(LIBNETFILTER_CONNTRACK_DIR); \
+	 CC=$(CC) ./configure \
+	    --target=$(PLATFORM)-linux \
+	    --host=$(PLATFORM)-linux \
+	    --build=`/bin/arch`-linux \
+	    --with-kernel=$(LINUXDIR) \
+	    --prefix=$(LIBNETFILTER_CONNTRACK_DIR)/install \
+        LIBNFNETLINK_CFLAGS=$(NFNETLINK_CFLAGS) LIBNFNETLINK_LIBS=$(NFNETLINK_LIBS) \
+        LIBMNL_CFLAGS=$(MNL_CFLAGS) LIBMNL_LIBS=$(MNL_LIBS))
+	+$(MAKE) -C $(LIBNETFILTER_CONNTRACK_DIR)
+	+$(MAKE) -C $(LIBNETFILTER_CONNTRACK_DIR) install-strip
+
+libnetfilter_conntrack-install:
+	install -d $(INSTALLDIR)/libnetfilter_conntrack/usr/lib
+	cp -rf $(LIBNETFILTER_CONNTRACK_DIR)/install/lib/* $(INSTALLDIR)/libnetfilter_conntrack/usr/lib
+
+libnetfilter_conntrack-clean:
+	+$(MAKE) -C $(LIBNETFILTER_CONNTRACK_DIR) KERNEL_DIR=$(LINUXDIR) clean
+
+libnetfilter_queue: libmnl libnfnetlink
+	[ -f $(LIBNETFILTER_QUEUE_DIR)/Makefile ] || \
+	(cd $(LIBNETFILTER_QUEUE_DIR); \
+	 CC=$(CC) ./configure \
+	    --target=$(PLATFORM)-linux \
+	    --host=$(PLATFORM)-linux \
+	    --build=`/bin/arch`-linux \
+	    --with-kernel=$(LINUXDIR) \
+	    --prefix=$(LIBNETFILTER_QUEUE_DIR)/install \
+        LIBNFNETLINK_CFLAGS=$(NFNETLINK_CFLAGS) LIBNFNETLINK_LIBS=$(NFNETLINK_LIBS) \
+        LIBMNL_CFLAGS=$(MNL_CFLAGS) LIBMNL_LIBS=$(MNL_LIBS))
+	+$(MAKE) -C $(LIBNETFILTER_QUEUE_DIR)
+	+$(MAKE) -C $(LIBNETFILTER_QUEUE_DIR) install-strip
+
+libnetfilter_queue-install:
+	install -d $(INSTALLDIR)/libnetfilter_queue/usr/lib
+	cp -rf $(LIBNETFILTER_QUEUE_DIR)/install/lib/* $(INSTALLDIR)/libnetfilter_queue/usr/lib
+
+libnetfilter_queue-clean:
+	+$(MAKE) -C $(LIBNETFILTER_QUEUE_DIR) KERNEL_DIR=$(LINUXDIR) clean
+
+LIBFLOW_DIR := $(BASEDIR)/components/shared/libflow
+
+libflow: libnetfilter_conntrack
+	$(MAKE) -C $(LIBFLOW_DIR) LIBMNL_CFLAGS=$(MNL_CFLAGS) LIBMNL_LIBS=$(MNL_LIBS) LIBNFNETLINK_CFLAGS=$(NFNETLINK_CFLAGS) LIBNFNETLINK_LIBS=$(NFNETLINK_LIBS) LIBNETFILTER_CONNTRACK_CFLAGS=$(NETFILTER_CONNTRACK_CFLAGS) LIBNETFILTER_CONNTRACK_LIBS=$(NETFILTER_CONNTRACK_LIBS)
+
+libflow-install:
+	install -d $(INSTALLDIR)/libflow/usr/lib
+	install -D $(LIBFLOW_DIR)/libflow.so $(INSTALLDIR)/libflow/usr/lib
+	$(STRIP) $(INSTALLDIR)/libflow/usr/lib/libflow.so
+
+libflow-clean:
+	$(MAKE) -C $(LIBFLOW_DIR) clean
+
+ifeq ($(CONFIG_LIBNFNETLINK),y)
+# iptables will try to link with netfilter's libs if enabled.
+IPTABLES_DEPS := libnfnetlink
+endif
+
+ifeq ($(CONFIG_IPV6),y)
+DOIPV6=1
+else
+DOIPV6=0
+endif
 
 ifeq (2_6_36,$(LINUX_VERSION))
 iptables:
-	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
-	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 
 iptables-install:
 ifeq ($(CONFIG_IPTABLES),y)
@@ -1037,7 +1325,7 @@ ifeq ($(CONFIG_EMF),y)
 endif
 
 emf-clean:
-	#$(MAKE) -C emf/emfconf clean
+	$(MAKE) -C emf/emfconf clean
 
 igs:
 	$(MAKE) -C emf/igsconf CROSS=$(CROSS_COMPILE)
@@ -1064,15 +1352,28 @@ igmp-clean:
 	$(MAKE) -C igmp clean
 
 wps: nvram shared
+ifneq ($(PROFILE),)	# PROFILE eq R6300v2 , R6250
 	[ ! -f wps/Makefile ] || $(MAKE) -C wps EXTRA_LDFLAGS=$(EXTRA_LDFLAGS)
+else
+	# Prevent to use generic rules"
+	@true
+endif
 
 wps-install:
-	[ ! -f wps/Makefile ] || $(MAKE) -C wps install INSTALLDIR=$(INSTALLDIR)/wps EXTRA_LDFLAGS=$(EXTRA_LDFLAGS)
-
+ifneq ($(PROFILE),)	# PROFILE eq R6300v2 , R6250
+	[ ! -f wps/Makefile ] || $(MAKE) -C wps install INSTALLDIR=$(INSTALLDIR) EXTRA_LDFLAGS=$(EXTRA_LDFLAGS)
+else
+	# Prevent to use generic rules"
+	@true
+endif
 
 wps-clean:
+ifeq ($(PROFILE),)	# PROFILE eq R6300v2 , R6250
 	[ ! -f wps/Makefile ] || $(MAKE) -C wps clean
-
+else
+	# Prevent to use generic rules"
+	@true
+endif
 acos_link:
 ifneq ($(PROFILE),)
 	cd ../../project/acos/include; rm -f ambitCfg.h; ln -s ambitCfg_$(FW_TYPE)_$(PROFILE).h ambitCfg.h
@@ -1081,76 +1382,12 @@ else
 endif
 
 ifneq ($(PROFILE),)
-#	cp ../../project/acos/config_$(PROFILE).in ../../project/acos/config.in
-#	cp ../../project/acos/config_$(PROFILE).mk ../../project/acos/config.mk
-#	cp ../../project/acos/Makefile_$(PROFILE) ../../project/acos/Makefile
 	cp $(LINUXDIR)/.config_$(PROFILE) $(LINUXDIR)/.config
-#	cp $(LINUXDIR)/include/generated/asm-offsets_$(PROFILE).h $(LINUXDIR)/include/generated/asm-offsets.h
-#	cp $(LINUXDIR)/include/generated/bounds_$(PROFILE).h $(LINUXDIR)/include/generated/bounds.h
-#	cp $(LINUXDIR)/autoconf.h_$(PROFILE) $(LINUXDIR)/include/linux/autoconf.h
-#	cp $(BASEDIR)/ap/acos/access_control/Makefile_arm $(BASEDIR)/ap/acos/access_control/Makefile
-#	cp $(BASEDIR)/ap/acos/acos_nat/Makefile_arm $(BASEDIR)/ap/acos/acos_nat/Makefile
-#	cp $(BASEDIR)/ap/acos/acos_nat/acosnat.lds_arm $(BASEDIR)/ap/acos/acos_nat/acosnat.lds
-#	cp $(BASEDIR)/ap/acos/acos_nat_cli/Makefile_arm $(BASEDIR)/ap/acos/acos_nat_cli/Makefile
-#	cp $(BASEDIR)/ap/acos/autoipd/Makefile_arm $(BASEDIR)/ap/acos/autoipd/Makefile
-#	cp $(BASEDIR)/ap/acos/bd/Makefile_arm $(BASEDIR)/ap/acos/bd/Makefile
-#	cp $(BASEDIR)/ap/acos/bpa_monitor/Makefile_arm $(BASEDIR)/ap/acos/bpa_monitor/Makefile
-#	cp $(BASEDIR)/ap/acos/br_dns_hijack/Makefile_arm $(BASEDIR)/ap/acos/br_dns_hijack/Makefile
-#	cp $(BASEDIR)/ap/acos/check_firmware/Makefile_arm $(BASEDIR)/ap/acos/check_firmware/Makefile
-#	cp $(BASEDIR)/ap/acos/ddns/Makefile_arm $(BASEDIR)/ap/acos/ddns/Makefile
-#	cp $(BASEDIR)/ap/acos/dlnad/Makefile_arm $(BASEDIR)/ap/acos/dlnad/Makefile
-#	cp $(BASEDIR)/ap/acos/dns_redirect/Makefile_arm $(BASEDIR)/ap/acos/dns_redirect/Makefile
-#	cp $(BASEDIR)/ap/acos/email/Makefile_arm $(BASEDIR)/ap/acos/email/Makefile
-#	cp $(BASEDIR)/ap/acos/ftpc/Makefile_arm $(BASEDIR)/ap/acos/ftpc/Makefile
-#	cp $(BASEDIR)/ap/acos/heartbeat/Makefile_arm $(BASEDIR)/ap/acos/heartbeat/Makefile
-#	cp $(BASEDIR)/ap/acos/httpd/Makefile_arm $(BASEDIR)/ap/acos/httpd/Makefile
-#	cp $(BASEDIR)/ap/acos/ipv6_spi/Makefile_arm $(BASEDIR)/ap/acos/ipv6_spi/Makefile
-#	cp $(BASEDIR)/ap/acos/l7filter/Makefile_arm $(BASEDIR)/ap/acos/l7filter/Makefile
-#	cp $(BASEDIR)/ap/acos/lltd/Makefile_arm $(BASEDIR)/ap/acos/lltd/Makefile
-#	cp $(BASEDIR)/ap/acos/mevent/Makefile_arm $(BASEDIR)/ap/acos/mevent/Makefile
-#	cp $(BASEDIR)/ap/acos/mld/Makefile_arm $(BASEDIR)/ap/acos/mld/Makefile
-#	cp $(BASEDIR)/ap/acos/multissidcontrol/Makefile_arm $(BASEDIR)/ap/acos/multissidcontrol/Makefile
-#	cp $(BASEDIR)/ap/acos/opendns/Makefile_arm $(BASEDIR)/ap/acos/opendns/Makefile
-#	cp $(BASEDIR)/ap/acos/output_image/Makefile_arm $(BASEDIR)/ap/acos/output_image/Makefile
-#	cp $(BASEDIR)/ap/acos/parser/Makefile_arm $(BASEDIR)/ap/acos/parser/Makefile
-#	cp $(BASEDIR)/ap/acos/pot/Makefile_arm $(BASEDIR)/ap/acos/pot/Makefile
-#	cp $(BASEDIR)/ap/acos/rc/Makefile_arm $(BASEDIR)/ap/acos/rc/Makefile
-#	cp $(BASEDIR)/ap/acos/rtsol/Makefile_arm $(BASEDIR)/ap/acos/rtsol/Makefile
-#	cp $(BASEDIR)/ap/acos/sche_action/Makefile_arm $(BASEDIR)/ap/acos/sche_action/Makefile
-#	cp $(BASEDIR)/ap/acos/shared/Makefile_arm $(BASEDIR)/ap/acos/shared/Makefile
-#	cp $(BASEDIR)/ap/acos/telnet_enable/Makefile_arm $(BASEDIR)/ap/acos/telnet_enable/Makefile
-#	cp $(BASEDIR)/ap/acos/timesync/Makefile_arm $(BASEDIR)/ap/acos/timesync/Makefile
-#	cp $(BASEDIR)/ap/acos/traffic_meter/Makefile_arm $(BASEDIR)/ap/acos/traffic_meter/Makefile
-#	cp $(BASEDIR)/ap/acos/traffic_meter2/Makefile_arm $(BASEDIR)/ap/acos/traffic_meter2/Makefile
-#	cp $(BASEDIR)/ap/acos/ubd/Makefile_arm $(BASEDIR)/ap/acos/ubd/Makefile
-#	cp $(BASEDIR)/ap/acos/ubdu/Makefile_arm $(BASEDIR)/ap/acos/ubdu/Makefile
-#	cp $(BASEDIR)/ap/acos/ubp/Makefile_arm $(BASEDIR)/ap/acos/ubp/Makefile
-#	cp $(BASEDIR)/ap/acos/upnp_sa/Makefile_arm $(BASEDIR)/ap/acos/upnp_sa/Makefile
-#	cp $(BASEDIR)/ap/acos/wan_debug/Makefile_arm $(BASEDIR)/ap/acos/wan_debug/Makefile
-#	cp $(BASEDIR)/ap/acos/wandetect/Makefile_arm $(BASEDIR)/ap/acos/wandetect/Makefile
-#	cp $(BASEDIR)/ap/acos/wlanconfigd/Makefile_arm $(BASEDIR)/ap/acos/wlanconfigd/Makefile
-#	cp $(BASEDIR)/ap/acos/www/Makefile_arm $(BASEDIR)/ap/acos/www/Makefile
-#	cp $(BASEDIR)/ap/gpl/curl-7.23.1/make_arm.sh $(BASEDIR)/ap/gpl/curl-7.23.1/make.sh
-#	cp $(BASEDIR)/ap/gpl/curl-7.23.1/Makefile_arm $(BASEDIR)/ap/gpl/curl-7.23.1/Makefile
-#	cp $(BASEDIR)/ap/gpl/IGMP-PROXY/Makefile_arm $(BASEDIR)/ap/gpl/IGMP-PROXY/Makefile
-#	cp $(BASEDIR)/ap/gpl/iproute2/lib/Makefile_arm $(BASEDIR)/ap/gpl/iproute2/lib/Makefile
-#	cp $(BASEDIR)/ap/gpl/l2tpd-0.69/Makefile_arm $(BASEDIR)/ap/gpl/l2tpd-0.69/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile
-#	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile
-#	cp $(BASEDIR)/ap/gpl/openssl/Makefile_arm $(BASEDIR)/ap/gpl/openssl/Makefile
-#	cp $(BASEDIR)/ap/gpl/samba-3.0.13/Makefile_arm $(BASEDIR)/ap/gpl/samba-3.0.13/Makefile
-else
-#	cp ../../project/acos/config_WNR3500v2.in ../../project/acos/config.in
-#	cp ../../project/acos/config_WNR3500v2.mk ../../project/acos/config.mk
-#	cp ../../project/acos/Makefile_WNR3500v2 ../../project/acos/Makefile
-#	cp $(LINUXDIR)/.config_WNR3500v2 $(LINUXDIR)/.config
-#	cp $(LINUXDIR)/autoconf.h_WNR3500v2 $(LINUXDIR)/include/linux/autoconf.h
 endif
+ifeq ($(PROFILE),R6400)
+	cp -f $(SRCBASE)/wl/linux/wl_apsta_$(PROFILE).o $(SRCBASE)/wl/linux/wl_apsta.o
+endif	
+
 
 acos:
 
@@ -1322,3 +1559,10 @@ $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 .PHONY: all clean distclean mrproper install package
 .PHONY: conf mconf oldconf kconf kmconf config menuconfig oldconfig
 .PHONY: dummy
+.PHONY: norton norton-install norton-clean
+.PHONY: libstdcpp libstdcpp-install
+.PHONY: libmnl libmnl-install libmnl-clean
+.PHONY: libnfnetlink libnfnetlink-install libnfnetlink-clean
+.PHONY: libnetfilter_conntrack libnetfilter_conntrack-install libnetfilter_conntrack-clean
+.PHONY: libnetfilter_queue libnetfilter_queue-install libnetfilter_queue-clean
+.PHONY: libflow libflow-install libflow-clean

@@ -1,3 +1,4 @@
+# Modified by Broadcom Corp. Portions Copyright (c) Broadcom Corp, 2003.
 # Makefile for uClibc
 #
 # Copyright (C) 2002 Erik Andersen <andersen@codepoet.org>

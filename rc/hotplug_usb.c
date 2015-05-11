@@ -206,7 +206,7 @@ int usb_mount()
             system(buf);
 #endif
         }
-        /* add start, water, 12/08/2008*/
+        /*foxconn add start, water, 12/08/2008*/
 #endif/*if 0, removed water, 12/08/2008, @write throughput too low.*/
         /*If we do mount by key in mount command in the console. the write throughput is ok.*/
         /*I think there're some bugs in the above mount function. But the mount command build by busybox is ok.*/
@@ -217,7 +217,7 @@ int usb_mount()
         /*ntfs read only supported*/
         snprintf(buf, 128, "/bin/mount -t ntfs /dev/sda%d /tmp/mnt/usb%d", i, i);
         system(buf);
-        /* add end, water, 12/08/2008*/
+        /*foxconn add end, water, 12/08/2008*/
     } //end of for
     
     return 0;

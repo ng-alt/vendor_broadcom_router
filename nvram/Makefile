@@ -25,13 +25,15 @@ ACOSTOPDIR= $(SRCBASE)/../ap/acos
 ACOSNVRAM= $(ACOSTOPDIR)/nvram
 endif
 
+#foxconn wklin add start, 05/12/2009, for nvram_loaddefault MTD device
 CFLAGS += -DLINUX26
+#foxconn wklin add end, 05/12/2009
 
 CFLAGS	+= -I. -I$(SRCBASE)/include -I$(SRCBASE)/../project/acos/include -Wall -DINCLUDE_WAN_LAN_SUBNET
 CFLAGS	+= -DINCLUDE_WDS -DINCLUDE_QOS -DBANDWIDTH_DETECT_17
 
 
-ifeq ($(PROFILE),R6300v2)
+ifneq ($(PROFILE),) ## R6300v2 || R6250
 CFLAGS  += -DX_ST_ML
 endif
 
@@ -68,11 +70,13 @@ else
 	# Utility not wanted: get rid of any leftover one
 	rm -f $(INSTALLDIR)/usr/sbin/nvram
 endif
-
+	cd $(INSTALLDIR)/usr/sbin && ln -sf nvram readycloud_nvram
 
 clean:
 	rm -f *.o *.a *.so nvram
-
+ifeq ($(CONFIG_ACOS_MODULES),y)
+	rm -f $(ACOSNVRAM)/*.o
+endif	
 
 libnvram.so: $(OBJS)
 	$(LD) -fPIC -shared -o $@ $^

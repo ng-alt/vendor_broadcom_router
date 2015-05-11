@@ -34,7 +34,7 @@
 #include "bcmnvram.h"
 
 //#define USB_HOTPLUG_DBG//@debug
-#define MNT_DETACH 0x00000002 /*  add , Jenny Zhao, 04/22/2009 @usb dir */
+#define MNT_DETACH 0x00000002 /* Foxconn add , Jenny Zhao, 04/22/2009 @usb dir */
 
 /***********************************************************************************************************************
 * Environment of hotplug for USB:
@@ -50,7 +50,7 @@
 *
 ***********************************************************************************************************************/
 
-/*  added start pling 07/13/2009 */
+/* Foxconn added start pling 07/13/2009 */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
@@ -99,17 +99,17 @@ int usb_sem_init(void)
 
 #define USB_LOCK()      usb_sem_lock(LOCK)
 #define USB_UNLOCK()    usb_sem_lock(UNLOCK)
-/*  added end pling 07/13/2009 */
+/* Foxconn added end pling 07/13/2009 */
 
-/*  add start pling 02/05/2010*/
+/* Foxconn add start pling 02/05/2010*/
 /* USB LED on / off */
 #ifdef INCLUDE_USB_LED
 #include "wps_led.h"
 #include <sys/stat.h>
 #include <fcntl.h>
 
-/*  added start, Wins, 04/11/2011 */
-#if defined(R6300v2)
+/* Foxconn added start, Wins, 04/11/2011 */
+#if defined(R6300v2) || defined(R7000)
 #define MAX_BUF_LEN     512
 #define USB_MNT_TABLE   "/tmp/usb_mnt_table"
 #define USB_MNT_TABLE2  "/tmp/usb_mnt_table2"
@@ -121,12 +121,26 @@ int get_usb_port(char *pDevPath, char *pUsbPort)
     char buf[256];
     char *strPos1 = NULL, *strPos2 = NULL;
 
-
+#if defined(R6300v2)
     if ((strPos1 = strstr(pDevPath, "/usb")) != NULL) 
     {
         sscanf(strPos1, "/usb%s", buf);    
+#elif defined(R7000)
+    if ((strstr(pDevPath, "/usb1/1-") != NULL) || (strstr(pDevPath, "/usb3/3-") != NULL)) 
+    {
+
+        if((strPos1 = strstr(pDevPath, "/usb1/1-")) != NULL)
+            sscanf(strPos1, "/usb1/1-%s", buf);    
+        else if((strPos1 = strstr(pDevPath, "/usb3/3-")) != NULL)
+            sscanf(strPos1, "/usb3/3-%s", buf);    
+#else
+    if ((strPos1 = strstr(pDevPath, "/host")) != NULL) 
+    {
+        sscanf(strPos1, "/host%s", buf);    
+#endif        
         if ((strPos2 = strchr(buf, '/')) != NULL) 
         {
+
             memcpy(pUsbPort, buf, (strPos2 - buf));
             rtn_val = 1;
         }
@@ -168,7 +182,7 @@ int add_into_mnt_file(char *pUsbPort, char *pDevice, char *pPart)
     int rtn_val = 0;
     char buf[128];
 
-    /*  added start, Wins, 06/30/2011 */
+    /* Foxconn added start, Wins, 06/30/2011 */
     if ((fp = fopen(USB_MNT_TABLE, "r")) != NULL)
     {
         int rec_found = 0;
@@ -190,7 +204,7 @@ int add_into_mnt_file(char *pUsbPort, char *pDevice, char *pPart)
             return 1;   /* Not need to add a duplicated record. */
     }
     fp = NULL;
-    /*  added end, Wins, 06/30/2011 */
+    /* Foxconn added end, Wins, 06/30/2011 */
 
     if ((fp = fopen(USB_MNT_TABLE, "a+")) != NULL)
     {
@@ -271,7 +285,7 @@ int usb1_led(void)
         }
         fclose(fp);
     }
-    /*  wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
+    /* foxconn wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
 #if (defined GPIO_EXT_CTRL) /* WNDR4000 */
     if (has_usb1_dev)
         system("gpio usbled 1");
@@ -294,7 +308,7 @@ int usb1_led(void)
         close(fd);
     }
 #endif /* GPIO_EXT_CTRL */
-    /*  wklin modified end ,01/19/2011 */
+    /* foxconn wklin modified end ,01/19/2011 */
     return rtn_val;
 } /* usb1_led() */
 
@@ -318,7 +332,7 @@ int usb2_led(void)
         }
         fclose(fp);
     }
-    /*  wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
+    /* foxconn wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
 #if (defined GPIO_EXT_CTRL) /* WNDR4000 */
     if (has_usb2_dev)
         system("gpio usbled 1");
@@ -341,7 +355,7 @@ int usb2_led(void)
         close(fd);
     }
 #endif /* GPIO_EXT_CTRL */
-    /*  wklin modified end ,01/19/2011 */
+    /* foxconn wklin modified end ,01/19/2011 */
     return rtn_val;
 } /* usb2_led() */
 
@@ -350,7 +364,9 @@ int usb_dual_led(void)
     int rtn_val = 0;
 
     usb1_led();
+#if (!defined R6700)    /* No USB2 LED for R6700 */
     usb2_led();
+#endif
 
     return rtn_val;
 } /* usb_dual_led() */
@@ -373,9 +389,9 @@ int usb_led(void)
         }
         fclose(fp);
     }
-    /*  wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
+    /* foxconn wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
 #if (defined GPIO_EXT_CTRL) /* WNDR4000 */
-#if 0   /*  removed pling 12/26/2011, not needed for WNDR4000AC */
+#if 0   /* Foxconn removed pling 12/26/2011, not needed for WNDR4000AC */
     if (has_usb_dev)
         system("gpio usbled 1");
     else
@@ -391,13 +407,13 @@ int usb_led(void)
         close(fd);
     }
 #endif /* GPIO_EXT_CTRL */
-    /*  wklin modified end ,01/19/2011 */
+    /* foxconn wklin modified end ,01/19/2011 */
     return 0;
 }
 #endif /* R6300v2 */
-/*  added end, Wins, 04/11/2011 */
+/* Foxconn added end, Wins, 04/11/2011 */
 #endif
-/*  add end pling 02/05/2010*/
+/* Foxconn add end pling 02/05/2010*/
 
 int usb_mount(void)
 {
@@ -407,7 +423,7 @@ int usb_mount(void)
     int i;
     int rval;
 
-    /* add start, @mount approved devices, water, 05/11/2009*/
+    /*foxconn add start, @mount approved devices, water, 05/11/2009*/
     int index = 0;
     FILE *fp = NULL;
     char line[150] = "";
@@ -419,9 +435,9 @@ int usb_mount(void)
     char approved_usb[20][80] = {0};
     int not_approved_index;
 
-    /*  added start pling 09/16/2009 */
+    /* Foxconn added start pling 09/16/2009 */
     int last_scsi_host_num = -1;
-    /*  added end pling 09/16/2009 */
+    /* Foxconn added end pling 09/16/2009 */
 
     sleep(3);   /* pling added 06/04/2009, add this delay seems to make mount more robust. */
 
@@ -446,7 +462,7 @@ int usb_mount(void)
                 {
                     sscanf(line, "Host: scsi%d %*s", &scsi_host_num);
 
-                    /*  added start pling 09/16/2009 */
+                    /* Foxconn added start pling 09/16/2009 */
                     /* Handle multi-lun devices */
                     if (scsi_host_num == last_scsi_host_num)
                     {
@@ -457,7 +473,7 @@ int usb_mount(void)
                         index++;
                         continue;
                     }
-                    /*  added end pling 09/16/2009 */
+                    /* Foxconn added end pling 09/16/2009 */
 
                     if ((fgets(line, 150, fp) == NULL))
                         break;
@@ -484,19 +500,19 @@ int usb_mount(void)
                             continue;
                         if (0 == strcmp(approved_usb[i], buf) )
                         {/*this usb device was approved*/
-                            /*  modified start pling 09/16/2009 */
+                            /* Foxconn modified start pling 09/16/2009 */
                             /* Use 'index' to help check multi-LUN device */
                             //usb_dev_approved[scsi_host_num] = 1;
                             usb_dev_approved[index] = 1;
-                            /*  modified end pling 09/16/2009 */
+                            /* Foxconn modified end pling 09/16/2009 */
                             break;
                         }
                     }
-                    /*  added start pling 09/16/2009 */
+                    /* Foxconn added start pling 09/16/2009 */
                     /* Multi-LUN devices */
                     index++;
                     last_scsi_host_num = scsi_host_num; 
-                    /*  added end pling 09/16/2009 */
+                    /* Foxconn added end pling 09/16/2009 */
                 }
             }
             fclose(fp);
@@ -508,7 +524,7 @@ int usb_mount(void)
             usb_dev_approved[i] = 1;
     }
     not_approved_index = 0;
-    /* add end, water, 05/11/2009*/
+    /*foxconn add end, water, 05/11/2009*/
     
     index = 0;      // pling added 09/16/2009, reset index for later use
 
@@ -519,18 +535,18 @@ int usb_mount(void)
 // 3. restart smb
 //------------------------------------------------------
 //fixme: no good. zzz@
-/*  modified start, Jenny Zhao, 04/13/2009 @usb dir */
+/* Foxconn modified start, Jenny Zhao, 04/13/2009 @usb dir */
     char diskName;
     int j = 0;
     int max_partition = atoi(nvram_safe_get("usb_disk_max_part"));
     for (diskName='a'; diskName<='z'; diskName++)   // try to mount sda->sdz
     {
-        /* add start, @mount approved devices, water, 05/11/2009*/
+        /*foxconn add start, @mount approved devices, water, 05/11/2009*/
         if (usb_dev_approved[index++] == 1)/*this device was approved...*/
             scsi_host_num = 1;
         else
             scsi_host_num = 0;
-        /* add end, water, 05/11/2009*/
+        /*foxconn add end, water, 05/11/2009*/
         for (i=0; i<=max_partition; i++)            // try to mount sdx or sdx1, ..., sdx5
         {
             //------------------------
@@ -544,7 +560,7 @@ int usb_mount(void)
             //------------------------
             //set up target
             //------------------------
-            /* modified start, water, 05/12/2009*/
+            /*foxconn modified start, water, 05/12/2009*/
             /*some usb device not in approved device list, but the approved device page
                 need to show its info, so it need mount too. */
             //snprintf(target, 128, "/tmp/mnt/usb%d/part%d", j, i);
@@ -552,7 +568,7 @@ int usb_mount(void)
                 snprintf(target, 128, "/tmp/mnt/usb%d/part%d", j, i);
             else
                 snprintf(target, 128, "/tmp/mnt/not_approved%d", not_approved_index++);
-            /* modified end, water, 05/12/2009*/
+            /*foxconn modified end, water, 05/12/2009*/
     
             //------------------------
             //start mount with sync
@@ -563,17 +579,17 @@ int usb_mount(void)
             /* Use mlabel to read VFAT volume label after successful mount */
             if (rval == 0)
             {
-                /* , add-start by MJ., for downsizing WNDR3400v2,
+                /* Foxconn, add-start by MJ., for downsizing WNDR3400v2,
                  * 2011.02.11. */
 #if (defined WNDR3400v2) || (defined R6300v2)
                 snprintf(buf, 128, "/lib/udev/vol_id %s", source);
-                /*  added start pling 12/26/2011, for WNDR4000AC */
+                /* Foxconn added start pling 12/26/2011, for WNDR4000AC */
 #elif (defined WNDR4000AC)
                 get_vol_id(source);
                 memset(buf, 0, sizeof(buf));
-                /*  added end pling 12/26/2011, for WNDR4000AC */
+                /* Foxconn added end pling 12/26/2011, for WNDR4000AC */
 #else
-                /* , add-end by MJ., for downsizing WNDR3400v2,
+                /* Foxconn, add-end by MJ., for downsizing WNDR3400v2,
                  * 2011.02.11. */
                 snprintf(buf, 128, "/usr/bin/mlabel -i %s -s ::", source);
 #endif
@@ -607,7 +623,7 @@ int usb_mount(void)
                 system(buf);
 #endif
 
-                /*  added pling 08/24/2009 */
+                /* Foxconn added pling 08/24/2009 */
                 /* To speed up mounting: 
                  *  if sda is mounted, then don't bother about sda1, sda2... 
                  */
@@ -617,28 +633,28 @@ int usb_mount(void)
                     if (status == 0 && i == 0)
                         break;
                 }
-                /*  added pling 08/24/2009 */
+                /* Foxconn added pling 08/24/2009 */
             }
         } //end of for
         j++;
     }//end of for(diskName = 'a';diskName < 'd';diskName++)
-    /*  modified end, Jenny Zhao, 04/13/2009 */
+    /* Foxconn modified end, Jenny Zhao, 04/13/2009 */
     //nvram_set("usb_dev_no_change", "0");
     /* send signal to httpd ,create link ,2009/05/07, jenny*/
     //nvram_set("usb_mount_signal", "1");
     system("killall -SIGUSR2 httpd");
     /* USB LED on / off */
 #ifdef INCLUDE_USB_LED
-    /*  modified start, Wins, 04/11/2011 */
-#if defined(R6300v2)
+    /* Foxconn modified start, Wins, 04/11/2011 */
+#if defined(R6300v2) || defined(R7000)
     usb_dual_led();
 #else /* R6300v2 */
     usb_led();
 #endif /* R6300v2 */
-    /*  modified end, Wins, 04/11/2011 */
+    /* Foxconn modified end, Wins, 04/11/2011 */
 #endif
     
-    //sleep(5);   //  added pling 07/13/2009, wait for httpd to complete mount/umount processes
+    //sleep(5);   // Foxconn added pling 07/13/2009, wait for httpd to complete mount/umount processes
     //nvram_set("usb_mount_signal", "0");
     //acosNvramConfig_save();
     return 0;
@@ -655,10 +671,10 @@ int usb_umount(void)
     // remount devices
     //------------------------------------------------------
     //fixme: no good. zzz@
-    /*  modify start, Jenny Zhao, 04/13/2009 @usb dir */
+    /* Foxconn modify start, Jenny Zhao, 04/13/2009 @usb dir */
     char diskName;
     
-    /* add start, water, 05/12/2009*/
+    /*foxconn add start, water, 05/12/2009*/
     /*some usb device not in approved device list, but the approved device 
      page need to show its info, so it need mount too. */
     for (j=0; j<20; j++)
@@ -666,7 +682,7 @@ int usb_umount(void)
         snprintf(path, 128, "/tmp/mnt/not_approved%d", j);
         umount2(path, MNT_DETACH);
     }
-    /* add end, water, 05/12/2009*/
+    /*foxconn add end, water, 05/12/2009*/
     
     for (diskName='a', i=0; diskName<='z'; diskName++,i++)
     {
@@ -698,7 +714,7 @@ int usb_umount(void)
 #endif
         }
     }
-    /*  modify end, Jenny Zhao, 04/13/2009 */  
+    /* Foxconn modify end, Jenny Zhao, 04/13/2009 */  
     nvram_set("usb_dev_no_change", "0");
     //acosNvramConfig_save();
       
@@ -713,14 +729,14 @@ int usb_hotplug(void)
     int class, subclass, protocol;
     char cmd[512];
     
-    /* add start, water, 05/11/2009*/
+    /*foxconn add start, water, 05/11/2009*/
     if (nvram_match("restart_usb", "1") )
     {
         usb_umount();
         nvram_unset("restart_usb");
         //eval("/usr/bin/setsmbftpconf");
     }
-    /* add end, water, 05/11/2009*/
+    /*foxconn add end, water, 05/11/2009*/
     
     if (!(action = getenv("ACTION")) ||
         !(type = getenv("TYPE")) ||
@@ -751,13 +767,13 @@ int usb_hotplug(void)
     //set_usb_led();/*No usb led in WNR3500U board, need further check.*/
 
     //check Mass Storage for add action
-    /*  modified start pling 11/11/2009 */
+    /* Foxconn modified start pling 11/11/2009 */
     /* We should mount all subclasses of Mass Storage class (8), 
      *  not just subclass 6 (Transparent SCSI).
      */
     //if (class == 8 && subclass == 6  && !strcmp(action, "add"))
     if (class == 8 && !strcmp(action, "add"))
-    /*  modified end pling 11/11/2009 */
+    /* Foxconn modified end pling 11/11/2009 */
     {
         /*
         sometimes usb_umount() not execute when unplug usb.
@@ -765,22 +781,22 @@ int usb_hotplug(void)
         not sure, I think it need further test.
         */
         //usb_mount();
-        USB_LOCK();     //  added pling 07/13/2009
+        USB_LOCK();     // Foxconn added pling 07/13/2009
         usb_umount();/*water, 11/06/2008*/
-        USB_UNLOCK();   //  added pling 07/13/2009
+        USB_UNLOCK();   // Foxconn added pling 07/13/2009
     }
     //check Mass Storage for remove action
-    /*  modified start pling 11/11/2009 */
+    /* Foxconn modified start pling 11/11/2009 */
     /* We should un-mount all subclasses of Mass Storage class (8), 
      *  not just subclass 6 (Transparent SCSI).
      */
     //else if (class == 8 && subclass == 6  && !strcmp(action, "remove"))
     else if (class == 8 && !strcmp(action, "remove"))
-    /*  modified end pling 11/11/2009 */
+    /* Foxconn modified end pling 11/11/2009 */
     {
-        USB_LOCK();     //  added pling 07/13/2009
+        USB_LOCK();     // Foxconn added pling 07/13/2009
         usb_umount();
-        USB_UNLOCK();   //  added pling 07/13/2009
+        USB_UNLOCK();   // Foxconn added pling 07/13/2009
     }
     
     //eval("/usr/bin/setsmbftpconf");

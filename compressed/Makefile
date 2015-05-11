@@ -82,7 +82,7 @@ CFLAGS		+= $(CFLAGS-$(ARCH))
 ASFLAGS		+= $(ASFLAGS-$(ARCH))
 
 # Default to lzma_4k
-# modify by Hank for change lzma tool path in 2.6.36 08/21/2012
+#Foxconn modify by Hank for change lzma tool path in 2.6.36 08/21/2012
 COMPRESS	?= ../../../tools/lzma_4k e
 CFLAGS		+= -DUSE_LZMA -D_LZMA_NO_SYSTEM_SIZE_T -DBCMLZMA -I$(SRCBASE)/tools/misc/lzma_src/C
 

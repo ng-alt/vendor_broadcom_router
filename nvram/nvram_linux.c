@@ -33,7 +33,7 @@
 #include <typedefs.h>
 #include <bcmnvram.h>
 
-#include "ambitCfg.h" // add, FredPeng, 04/17/2009
+#include "ambitCfg.h" //Foxconn add, FredPeng, 04/17/2009
 #define PATH_DEV_NVRAM "/dev/nvram"
 
 /* wklin added, 12/13/2006 */
@@ -90,6 +90,7 @@ static char *nvram_buf = NULL;
 int
 nvram_init(void *unused)
 {
+
 	if (nvram_fd >= 0)
 		return 0;
 
@@ -108,7 +109,7 @@ nvram_init(void *unused)
 
 	return 0;
 
- err:
+err:
 	perror(PATH_DEV_NVRAM);
 	return errno;
 }
@@ -222,7 +223,7 @@ nvram_commit(void)
 {
 	int ret;
 
-    /*  wklin added start, 11/02/2010, show messag when doing commit */ 
+    /* foxconn wklin added start, 11/02/2010, show messag when doing commit */ 
     {
         FILE *fp;
         fp = fopen("/dev/console", "w");
@@ -231,7 +232,7 @@ nvram_commit(void)
             fclose(fp);
         }
     }
-    /*  wklin added end , 11/02/2010 */
+    /* foxconn wklin added end , 11/02/2010 */
 	if ((ret = nvram_init(NULL)))
 		return ret;
 
@@ -243,27 +244,27 @@ nvram_commit(void)
 	return ret;
 }
 
-/*  added start Peter Ling 12/05/2005 */
+/* Foxconn added start Peter Ling 12/05/2005 */
 #ifdef ACOS_MODULES_ENABLE
 extern struct nvram_tuple router_defaults[];
 
 int nvram_loaddefault (void)
 {
-    /*  add start, FredPeng, 04/14/2009 */
+    /* Foxconn add start, FredPeng, 04/14/2009 */
     char cmd[128];
     memset(cmd, 0, sizeof(cmd));
-    /*  add end, FredPeng, 04/14/2009 */
+    /* Foxconn add end, FredPeng, 04/14/2009 */
 
     system("rm /tmp/ppp/ip-down"); /* added by EricHuang, 01/12/2007 */
     
-    /*  modify start, FredPeng, 04/14/2009 */
+    /* Foxconn modify start, FredPeng, 04/14/2009 */
     sprintf(cmd, "erase %s", NVRAM_MTD_WR);
     system(cmd);
-    /*  modify end, FredPeng, 04/14/2009 */
+    /* Foxconn modify end, FredPeng, 04/14/2009 */
     
     printf("Load default done!\n");
     
     return (0);
 }
 #endif
-/*  added end Peter Ling 12/05/2005 */
+/* Foxconn added end Peter Ling 12/05/2005 */

@@ -23,7 +23,7 @@ LDFLAGS += -L.
 OBJS := bcmgpio.o
 
 
-all: libbcm.so
+all:
 
 install: all
 	install -d $(INSTALLDIR)/usr/lib

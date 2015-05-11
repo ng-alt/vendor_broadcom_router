@@ -22,7 +22,9 @@ include $(TOP)/.config
 
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 CFLAGS += -DLINUX26 -DLINUX_2_6_36
+# /* Fxcn port-S Wins, 0720-09 */
 CFLAGS += -DACOS_LINUX26
+# /* Fxcn port-E Wins, 0720-09 */
 
 CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall -I$(LINUXDIR)/include -I$(TOP)/busybox-1.x
 else
@@ -45,9 +47,11 @@ LDFLAGS += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib -lbcm
 CFLAGS	+= -I$(SRCBASE)/../ap/acos/shared
 LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(TARGETDIR)/usr/lib -lacos_shared
 
+#Foxconn Silver added start, 2011/12/21, for kernel_ntfs
 ifneq ($(PROFILE),)	# PROFILE eq R6300v2 || R6250
 CFLAGS += -DUSE_KERNEL_NTFS
 endif
+#Foxconn Silver added end, 2011/12/21, for kernel_ntfs
 LDFLAGS += $(EXTRA_LDFLAGS)
 
 

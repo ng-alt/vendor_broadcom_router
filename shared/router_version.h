@@ -26,15 +26,15 @@
 
 #define	ROUTER_RC_NUMBER		163
 
-#define	ROUTER_INCREMENTAL_NUMBER	2002
+#define	ROUTER_INCREMENTAL_NUMBER	30
 
 #define	ROUTER_BUILD_NUMBER		0
 
-#define	ROUTER_VERSION			6, 30, 163, 2002
+#define	ROUTER_VERSION			6, 30, 163, 30
 
-#define	ROUTER_VERSION_NUM		0x061ea37d2
+#define	ROUTER_VERSION_NUM		0x061ea31e
 
 /* Version String, ASCII, 32 chars max */
-#define	ROUTER_VERSION_STR		"6.30.163.2002"
+#define	ROUTER_VERSION_STR		"6.30.163.30"
 
 #endif /* _version_h_ */

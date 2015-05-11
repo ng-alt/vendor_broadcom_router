@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: defaults.c 371984 2012-11-30 02:49:21Z $
+ * $Id: defaults.c 387711 2013-02-26 22:28:04Z $
  */
 
 #include <epivers.h>
@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <ezc.h>
 #include <bcmconfig.h>
+#include <shutils.h>
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
@@ -358,11 +359,6 @@ struct nvram_tuple router_defaults[] = {
 	{ "wl_wme_no_ack", "off", 0},		/* WME No-Acknowledgment mode */
 	{ "wl_wme_apsd", "on", 0},		/* WME APSD mode */
 
-	/* Per AC Tx parameters */
-	{ "wl_wme_txp_be", "7 3 4 2 0", 0 },	/* WME AC_BE Tx parameters */
-	{ "wl_wme_txp_bk", "7 3 4 2 0", 0 },	/* WME AC_BK Tx parameters */
-	{ "wl_wme_txp_vi", "7 3 4 2 0", 0 },	/* WME AC_VI Tx parameters */
-	{ "wl_wme_txp_vo", "7 3 4 2 0", 0 },	/* WME AC_VO Tx parameters */
 #ifdef __CONFIG_ROUTER_MINI__
 	{ "wl_maxassoc", "64", 0},		/* Max associations driver could support */
 	{ "wl_bss_maxassoc", "64", 0},		/* Max associations driver could support */
@@ -409,9 +405,7 @@ struct nvram_tuple router_defaults[] = {
 
 	{ "igmp_enable", "0", 0 },		/* Enable igmp proxy in AP mode */
 
-#ifdef WET_TUNNEL
 	{ "wl_wet_tunnel", "0", 0  },   /* Disable wet tunnel */
-#endif /* WET_TUNNEL */
 
 	{ "dpsta_ifnames", "", 0  },
 	{ "dpsta_policy", "1", 0  },
@@ -422,12 +416,60 @@ struct nvram_tuple router_defaults[] = {
 #ifdef __CONFIG_EMF__
 	{ "wl_wmf_ucigmp_query", "0", 0 }, /* Disable Converting IGMP Query to ucast (default) */
 	{ "wl_wmf_mdata_sendup", "0", 0 }, /* Disable Sending Multicast Data to host  (default) */
+	{ "wl_wmf_ucast_upnp", "0", 0 }, /* Disable Converting upnp to ucast (default) */
 #endif /* __CONFIG_EMF__ */
 
 	/* Tx Beamforming */
 	{ "wl_txbf_bfr_cap", "1", 0 },
 	{ "wl_txbf_bfe_cap", "1", 0 },
 
+	/* PsPretend threshold and retry_limit */
+	{ "wl_pspretend_threshold", "0", 0 },
+	{ "wl_pspretend_retry_limit", "0", 0 },
+
+	/* acsd setting */
+	{ "wl_acs_fcs_mode", "0", 0 },	/* acsd disable FCS mode */
+	{ "wl_dcs_csa_unicast", "0", 0 },		/* disable unicast csa */
+	{ "wl_acs_excl_chans", "", 0 },	/* acsd exclude chanspec list */
+	{ "wl_acs_dfs", "0", 0 },		/* acsd fcs disable init DFS chan */
+	{ "wl_acs_dfsr_immediate", "300 3", 0 },     /* immediate if > 3 switches last 5 minutes */
+	{ "wl_acs_dfsr_deferred", "604800 5", 0 },   /* deferred if > 5 switches in last 7 days */
+	{ "wl_acs_dfsr_activity", "30 10240", 0 },    /* active: >10k I/O in the last 30 seconds */
+	{ "wl_acs_cs_scan_timer", "900", 0 },	/* acsd fcs cs scan timeout */
+	{ "wl_acs_ci_scan_timer", "4", 0 },		/* acsd fcs CI scan period */
+	{ "wl_acs_ci_scan_timeout", "300", 0 },	/* acsd fcs CI scan timeout */
+	{ "wl_acs_scan_entry_expire", "3600", 0 },	/* acsd fcs scan expier time */
+	{ "wl_acs_tx_idle_cnt", "5", 0 },		/* acsd fcs tx idle thld */
+	{ "wl_acs_chan_dwell_time", "30", 0 },	/* acsd fcs chan dwell time */
+	{ "wl_acs_chan_flop_period", "30", 0 },	/* acsd fcs chan flip-flop time */
+	{ "wl_intf_speriod", "50", 0 },	/* acsd fcs sample period */
+	{ "wl_intf_scnt", "5", 0 },		/* acsd fcs smaple cnt */
+	{ "wl_intf_swin", "7", 0 },	/* acsd fcs smaple win */
+	{ "wl_intf_drate", "0", 0 },	/* acsd fcs dmarate thld */
+	{ "wl_intf_rrate", "0", 0 },	/* acsd fcs glitch thld */
+	{ "wl_intf_glitch", "0", 0 },		/* acsd fcs glitch thld */
+	{ "wl_intf_txbad", "0", 0 },		/* acsd fcs txbad thld */
+	{ "wl_intf_txnoack", "0x4000f", 0 }, /* fcs txnoack setting */
+	{ 0, 0, 0 }
+};
+
+/* nvram override default setting for Media Router */
+struct nvram_tuple router_defaults_override_type1[] = {
+	{ "router_disable", "1", 0 },		/* lan_proto=static lan_stp=0 wan_proto=disabled */
+	{ "lan_stp", "0", 0 },			/* LAN spanning tree protocol */
+	{ "wl_wmf_bss_enable", "1", 0 },	/* WMF Enable for IPTV Media or WiFi+PLC */
+	{ "wl_reg_mode", "h", 0 },		/* Regulatory: 802.11H(h) */
+	{ "wl_wet_tunnel", "1", 0  },   	/* Enable wet tunnel */
+#ifdef __CONFIG_EMF__
+	{ "emf_enable", "1", 0 },		/* Enable EMF by default */
+	{ "wl_wmf_ucigmp_query", "1", 0 }, 	/* Enable Converting IGMP Query to ucast */
+	{ "wl_wmf_ucast_upnp", "1", 0 },	/* enable upnp to ucast conversion */
+#endif
+	{ "wl_acs_fcs_mode", "1", 0 },		/* enable acsd fcs mode */
+	{ "wl_dcs_csa_unicast", "1", 0 },	/* enable unicast csa */
+	/* Exclude ACSD to select 140l, 144u, 140/80, 144/80 to compatible with Ducati 11N */
+	{ "wl_acs_excl_chans", "0xd98e,0xd88e,0xe28a,0xe38a", 0 },
+	{ "wl_pspretend_retry_limit", "5", 0 }, /* Enable PsPretend */
 	{ 0, 0, 0 }
 };
 
@@ -477,6 +519,14 @@ nvram_default_get(const char *name)
 		}
 	}
 
+	if (!strcmp(nvram_safe_get("devicemode"), "1")) {
+		for (idx = 0; router_defaults_override_type1[idx].name != NULL; idx++) {
+			if (strcmp(router_defaults_override_type1[idx].name, fixed_name) == 0) {
+				return router_defaults_override_type1[idx].value;
+			}
+		}
+	}
+
 	for (idx = 0; router_defaults[idx].name != NULL; idx++) {
 		if (strcmp(router_defaults[idx].name, fixed_name) == 0) {
 			return router_defaults[idx].value;
@@ -484,4 +534,60 @@ nvram_default_get(const char *name)
 	}
 
 	return NULL;
+}
+/* validate/restore all per-interface related variables */
+void
+nvram_validate_all(char *prefix, bool restore)
+{
+	struct nvram_tuple *t;
+	char tmp[100];
+	char *v;
+
+	for (t = router_defaults; t->name; t++) {
+		if (!strncmp(t->name, "wl_", 3)) {
+			strcat_r(prefix, &t->name[3], tmp);
+			if (!restore && nvram_get(tmp))
+				continue;
+			v = nvram_get(t->name);
+			nvram_set(tmp, v ? v : t->value);
+		}
+	}
+
+	/* override router type1 nvram setting */
+	if (!strcmp(nvram_safe_get("devicemode"), "1")) {
+		for (t = router_defaults_override_type1; t->name; t++) {
+			if (!strncmp(t->name, "wl_", 3)) {
+				strcat_r(prefix, &t->name[3], tmp);
+				if (!restore && nvram_get(tmp))
+					continue;
+				v = nvram_get(t->name);
+				nvram_set(tmp, v ? v : t->value);
+			}
+		}
+	}
+}
+
+/* restore specific per-interface variable */
+void
+nvram_restore_var(char *prefix, char *name)
+{
+	struct nvram_tuple *t;
+	char tmp[100];
+
+	for (t = router_defaults; t->name; t++) {
+		if (!strncmp(t->name, "wl_", 3) && !strcmp(&t->name[3], name)) {
+			nvram_set(strcat_r(prefix, name, tmp), t->value);
+			break;
+		}
+	}
+
+	/* override router type1 setting */
+	if (!strcmp(nvram_safe_get("devicemode"), "1")) {
+		for (t = router_defaults_override_type1; t->name; t++) {
+			if (!strncmp(t->name, "wl_", 3) && !strcmp(&t->name[3], name)) {
+				nvram_set(strcat_r(prefix, name, tmp), t->value);
+				break;
+			}
+		}
+	}
 }

@@ -1,15 +1,21 @@
 /*
  * Network services
  *
- * Copyright (C) 2009, Broadcom Corporation
- * All Rights Reserved.
+ * Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
  * 
- * THIS SOFTWARE IS OFFERED "AS IS", AND BROADCOM GRANTS NO WARRANTIES OF ANY
- * KIND, EXPRESS OR IMPLIED, BY STATUTE, COMMUNICATION OR OTHERWISE. BROADCOM
- * SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A SPECIFIC PURPOSE OR NONINFRINGEMENT CONCERNING THIS SOFTWARE.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: network.c 326755 2012-04-10 20:13:34Z $
+ * $Id: network.c 373149 2012-12-06 07:54:50Z $
  */
 
 #include <stdio.h>
@@ -471,7 +477,7 @@ start_lan(void)
 
 	dprintf("%s\n", lan_ifname);
 
-	/* , added by MJ., for DLAN AUTO IP, 2010.05.18 */
+	/* Foxconn, added by MJ., for DLAN AUTO IP, 2010.05.18 */
 #ifdef DLNA
 #ifdef DLNA_DEBUG
 	char auto_ip[8];
@@ -536,19 +542,35 @@ start_lan(void)
 
 	//nvram_commit();
 #endif
-	/* , ended by MJ., for DLAN AUTO IP, 2010.05.18 */
+	/* Foxconn, ended by MJ., for DLAN AUTO IP, 2010.05.18 */
 
 
 	/* Create links */
 	symlink("/sbin/rc", "/tmp/ldhclnt");
 
 
+/*Foxconn modified start, edward zhang, 2013/07/03*/
+#ifdef VLAN_SUPPORT
+	nvram_unset("unbridged_ifnames");
+    /*unset some bridge nvram*/
+    char br_ifname_tag[16] = "";
+    char br_ifnames_tag[64] = "";
+    
+    for(i=0; i<7; i++)
+    {
+        sprintf(br_ifname_tag,"br%d_ifname",i);
+        sprintf(br_ifnames_tag,"br%d_ifnames",i);
+        nvram_unset(br_ifname_tag);
+        nvram_unset(br_ifnames_tag);
+    }
+#else
 	nvram_unset("br0_ifname");
 	nvram_unset("br1_ifname");
 	nvram_unset("unbridged_ifnames");
 	nvram_unset("br0_ifnames");
 	nvram_unset("br1_ifnames");
-
+#endif
+/*Foxconn modified end, edward zhang, 2013/07/03*/
 #if defined(__CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__)
 	nvram_unset("acs_ifnames");
 #endif /* defined(_CONFIG_EXTACS__) || defined(__CONFIG_WL_ACI__ */
@@ -599,10 +621,10 @@ start_lan(void)
 			/* Bob added end to avoid sending router solicitation packets, 09/03/2009 */ 
 			
 			eval("brctl", "setfd", lan_ifname, "0");
-			/*  modified start pling 12/05/2007, enable STP only in repeater mode */
+			/* Foxconn modified start pling 12/05/2007, enable STP only in repeater mode */
 			//if (nvram_match(lan_stp, "0")) 
 			if (nvram_invmatch("wla_repeater", "1"))
-			/*  modified end pling 12/05/2007 */
+			/* Foxconn modified end pling 12/05/2007 */
 
 				eval("brctl", "stp", lan_ifname, "off");
 			else
@@ -639,17 +661,19 @@ start_lan(void)
 
 				/* Bring up interface. Ignore any bogus/unknown interfaces on the NVRAM list */
                 //cprintf("--> ifconfig %s up\n", name);
-                /*, add by MJ, for debugging 5G crash. */
+                /*Foxconn, add by MJ, for debugging 5G crash. */
 #if 0
                 if(!strcmp(name, "eth2")){
                     cprintf("give up enable eth2 for debugging.\n");
                     continue;
                 }
 #endif
-                /*, add-end by MJ., for debugging 5G crash. */
+                /*Foxconn, add-end by MJ., for debugging 5G crash. */
 				if (ifconfig(name, IFUP | IFF_ALLMULTI, NULL, NULL)){
 					perror("ifconfig");
-				} else {
+				} 
+//				else 
+				{
 					/* Set the logical bridge address to that of the first interface */
 					if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0) {
 						perror("socket");
@@ -718,21 +742,24 @@ start_lan(void)
 						 * dpsta interface.
 						 */
 						if (strstr(nvram_safe_get("dpsta_ifnames"), name)) {
-							strcpy(name, !dpsta ?  "dpsta" : "");
-							dpsta++;
-
-							/* Assign hw address */
+							/* Assign first wl i/f as dpsta hw address */
 							if ((s = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) >= 0) {
 								strncpy(ifr.ifr_name, "dpsta", IFNAMSIZ);
 								if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0 &&
 								    memcmp(ifr.ifr_hwaddr.sa_data, "\0\0\0\0\0\0",
 								           ETHER_ADDR_LEN) == 0) {
-									ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
-									memcpy(ifr.ifr_hwaddr.sa_data, hwaddr, ETHER_ADDR_LEN);
-									ioctl(s, SIOCSIFHWADDR, &ifr);
+									strncpy(ifr.ifr_name, name, IFNAMSIZ);
+									if (ioctl(s, SIOCGIFHWADDR, &ifr) == 0) {
+										strncpy(ifr.ifr_name, "dpsta", IFNAMSIZ);
+										ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
+										ioctl(s, SIOCSIFHWADDR, &ifr);
+									}
 								}
 								close(s);
 							}
+
+							strcpy(name, !dpsta ?  "dpsta" : "");
+							dpsta++;
 						}
 					
 						eval("brctl", "addif", lan_ifname, name);
@@ -783,7 +810,7 @@ start_lan(void)
 			close(s);
 		}
 
-        /*  added start pling 03/18/2011 */
+        /* Foxconn added start pling 03/18/2011 */
         /* Remove bridge DNS hijack module first.
          * If we are in AP mode, this module will be
          * inserted later again.
@@ -791,7 +818,7 @@ start_lan(void)
 #ifdef AP_MODE
         system("/sbin/rmmod br_dns_hijack 2>/dev/null");
 #endif
-        /*  added end pling 03/18/2011 */
+        /* Foxconn added end pling 03/18/2011 */
 
 		if (l2bridge_no_ipaddr(lan_ifname)) {
 			ifconfig(lan_ifname, IFUP, NULL, NULL);
@@ -809,7 +836,7 @@ start_lan(void)
 			/* Start dhcp daemon */
 			_eval(dhcp_argv, ">/dev/console", 0, &pid);
 		}
-/*  add start, Jenny Zhao, 03/07/2011  @Spec 2.0:AP Mode*/
+/* Foxconn add start, Jenny Zhao, 03/07/2011  @Spec 2.0:AP Mode*/
         /* Auto IP mode. Now according to Router Spec 2.0,
          * this is not related to UPnP/DLNA anymore, 
          * but related to "AP mode".
@@ -817,7 +844,7 @@ start_lan(void)
 #ifdef AP_MODE
         else if (nvram_match("enable_ap_mode", "1")) {
 
-            /*  added start pling 03/18/2011 */
+            /* Foxconn added start pling 03/18/2011 */
             /* In AP mode, we need to hijack some domain names,
              * e.g. www.routerlogin.net
              *      readyshare.routerlogin.net.
@@ -845,9 +872,9 @@ start_lan(void)
 #else
             system("/sbin/insmod /lib/modules/2.4.20/kernel/net/ipv4/acos_nat/acos_nat.o");
 #endif
-            /*  added end pling 03/18/2011 */
+            /* Foxconn added end pling 03/18/2011 */
 
-            /*  added start, Wins, 03/12/2011, @SamKnows */
+            /* Foxconn added start, Wins, 03/12/2011, @SamKnows */
 //#ifdef ISP_SK
             char cmd[64];
             /* Bring up WAN interface. */
@@ -860,8 +887,11 @@ start_lan(void)
             sprintf(cmd, "brctl stp %s on", nvram_get("lan_ifname"));
             system(cmd);
 //#endif /* ISP_SK */
-            /*  added end, Wins, 03/12/2011, @SamKnows */
+            /* Foxconn added end, Wins, 03/12/2011, @SamKnows */
+			/*Foxconn add start by Hank 01/11/2013*/
+			/*Fix can not see IPTV in AP mode*/
 			eval("emf", "add", "iface", lan_ifname, "vlan2");
+			/*Foxconn add end by Hank 01/11/2013*/
             
             /* Removed to start_services function in ap/acos/services.c */
             /* We should start autoipd in start_services(this function called 
@@ -871,12 +901,12 @@ start_lan(void)
             */
 #if 0
             if (nvram_match("ap_dyn_ip", "1")) {
-                /*  added start pling 03/16/2011 */
+                /* Foxconn added start pling 03/16/2011 */
                 /* Clear the NVRAM, so that heartbeat can show
                  * the Internet LED correctly.
                  */
                 nvram_set("lan_ipaddr", "0.0.0.0");
-                /*  added end pling 03/16/2011 */
+                /* Foxconn added end pling 03/16/2011 */
                 eval("autoipd");
             }
             else
@@ -892,7 +922,7 @@ start_lan(void)
                 
                 //use static settings from GUI
                 ifconfig(lan_ifname, IFUP, nvram_get("lan_ipaddr"),
-                            nvram_get("lan_netmask"));  /*  modified pling 03/24/2011 */
+                            nvram_get("lan_netmask"));  /* Foxconn modified pling 03/24/2011 */
                 sprintf (command, "route add default gw %s", nvram_get("apmode_gateway"));
                 system (command);            
                     
@@ -912,8 +942,8 @@ start_lan(void)
         }
     }
 #endif
-/*  add end, Jenny Zhao, 03/07/2011 */
-        /*  added start pling 03/01/2012 */
+/* Foxconn add end, Jenny Zhao, 03/07/2011 */
+        /* Foxconn added start pling 03/01/2012 */
         /* In station mode, we insert br_dns_hijack
          * module to make GUI management, USB access
          * possible.
@@ -934,7 +964,7 @@ start_lan(void)
 #endif
             system(command);
 
-            /*  added start pling 03/06/2012 */
+            /* Foxconn added start pling 03/06/2012 */
             /* Fix station mode static IP not work issue */
             if (!nvram_match("ap_dyn_ip", "1")) {
                 char command[128];
@@ -963,10 +993,10 @@ start_lan(void)
                 }
                 fclose(fp);
             }
-            /*  added end pling 03/06/2012 */
+            /* Foxconn added end pling 03/06/2012 */
         }
 #endif /* STA_MODE */
-        /*  added end pling 03/01/2012 */
+        /* Foxconn added end pling 03/01/2012 */
         		
 		/* Handle static IP address - AP or Router */
 		else {
@@ -1063,7 +1093,7 @@ stop_lan(void)
 
 
 		/* Bring down LAN interface */
-#if 0 /*  wklin removed start, 03/24/2011 */
+#if 0 /* foxconn wklin removed start, 03/24/2011 */
 		ifconfig(lan_ifname, 0, NULL, NULL);
 
 		/* Bring down bridged interfaces */
@@ -1099,9 +1129,9 @@ stop_lan(void)
 		/* Bring down specific interface */
 		else if (strcmp(lan_ifname, ""))
 			eval("wlconf", lan_ifname, "down");
-#endif /*  wklin removed end, 03/24/2011 */
+#endif /* foxconn wklin removed end, 03/24/2011 */
 
-        /*  add start, Jenny Zhao, 03/29/2011  @AP Mode*/
+        /* Foxconn add start, Jenny Zhao, 03/29/2011  @AP Mode*/
         /* We should delete eth0 from br0 for router mode */
         if (nvram_match("enable_ap_mode", "0")) {
             char cmd[64];
@@ -1109,7 +1139,7 @@ stop_lan(void)
             sprintf(cmd, "brctl delif %s %s", nvram_get("lan_ifname"), nvram_get("wan_ifname"));
             system(cmd);
         }
-        /*  add end, Jenny Zhao, 03/29/2011 */
+        /* Foxconn add end, Jenny Zhao, 03/29/2011 */
 	}
 
 	unlink("/tmp/ldhclnt");
@@ -1121,16 +1151,16 @@ void
 start_wl(void)
 {
 	int i;
-    /*  modified start pling 11/26/2009 */
+    /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifname = nvram_safe_get("lan_ifname");
 	char lan_ifname[32];
-    /*  modified end pling 11/26/2009 */
+    /* Foxconn modified end pling 11/26/2009 */
 	char name[80], *next;
 	char tmp[100];
-    /*  modified start pling 11/26/2009 */
+    /* Foxconn modified start pling 11/26/2009 */
 	//char *lan_ifnames;
-	char lan_ifnames[32];
-    /*  modified end pling 11/26/2009 */
+	char lan_ifnames[128];
+    /* Foxconn modified end pling 11/26/2009 */
 	int region;
 
 	/* If we're a travel router... then we need to make sure we get
@@ -1145,7 +1175,7 @@ start_wl(void)
  	/* Bring up bridged interfaces */
 	for(i=0; i < MAX_NO_BRIDGE; i++) {
 		if(!i) {
-            /*  modified start pling 11/26/2009 */
+            /* Foxconn modified start pling 11/26/2009 */
             /* Use char array to keep the nvram value instead of
              *  using pointers. 
              */
@@ -1155,11 +1185,11 @@ start_wl(void)
 #endif
 			strcpy(lan_ifname, nvram_safe_get("lan_ifname"));
 			strcpy(lan_ifnames, nvram_safe_get("lan_ifnames"));
-            /*  modified end pling 11/26/2009 */
+            /* Foxconn modified end pling 11/26/2009 */
 		} 
 		else {
 			snprintf(tmp, sizeof(tmp), "lan%x_ifname", i);
-            /*  modified start pling 11/26/2009 */
+            /* Foxconn modified start pling 11/26/2009 */
             /* Use char array to keep the nvram value instead of
              *  using pointers. 
              */
@@ -1168,7 +1198,7 @@ start_wl(void)
 			snprintf(tmp, sizeof(tmp), "lan%x_ifnames", i);
 			//lan_ifnames = nvram_safe_get( tmp);
 			strcpy(lan_ifnames, nvram_safe_get( tmp));
-            /*  modified end pling 11/26/2009 */
+            /* Foxconn modified end pling 11/26/2009 */
 		}
 		if (strncmp(lan_ifname, "br", 2) == 0) {
 			foreach(name, lan_ifnames, next) {
@@ -1189,152 +1219,89 @@ start_wl(void)
 		}
 	} /* For loop */
 	
-    /* add start by Hank 03/07/2012*/
+    /*Foxconn add start by Hank 03/07/2012*/
     /*disable roam_trigger when bridge mode*/
 #ifdef STA_MODE
     if(nvram_match("enable_sta_mode","1")){
         system("wl roam_trigger -100");
         system("wl -i eth2 roam_trigger -100");
-		/* add start by Hank 06/27/2012*/
+		/*Foxconn add start by Hank 06/27/2012*/
 		/*Fix can not see ssdp packet in bridge mode*/
 		system("ifconfig eth1 allmulti");
 		system("ifconfig eth2 allmulti");
-		/* add end by Hank 06/27/2012*/
+		/*Foxconn add end by Hank 06/27/2012*/
     }else{
         system("wl roam_trigger 0");
         system("wl -i eth2 roam_trigger 0");
     }
 #endif
-    /* add end by Hank 03/07/2012*/
+    /*Foxconn add end by Hank 03/07/2012*/
 
-
-#if 0
-	if(nvram_match("wla_region", "3") || nvram_match("wla_region", "11"))  //AU or NA
-	{
-		/* modify start by Hank 05/17/2012*/
-        /*change 2.4G country code*/
-        eval("wl", "country", "Q2/12");
-        /* modify end by Hank 05/17/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-        /* modify start by Hank 03/05/2012*/
-        /*disable set country code to let HT80 work*/
-		eval("wl", "-i", "eth2", "country", "Q2/12");
-        /* modify end by Hank 03/05/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");	/* change 5G to SISO mode(MCS0!MCS7 ??) to improve performance, from HW */
-        /*change txcore for 5G from broadcom*/
-        /* modify end by Hank 03/29/2012*/
-	}
-	else if(nvram_match("wla_region", "5"))
-	{
-		/* modify start by Hank 05/21/2012*/
-        /*change 2.4G country code for CE*/
-		eval("wl", "country", "EU/31");
-		/* modify end by Hank 05/21/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify start by Hank 05/21/2012*/
-        /*change 5G country code for CE*/
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 03/05/2012*/
-        /*disable set country code to let HT80 work*/
-		eval("wl", "-i", "eth2", "country", "EU/31");
-        /* modify end by Hank 03/05/2012*/
-		/* modify end by Hank 05/21/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-        
-	}
-    else if(nvram_match("wla_region", "7"))
-	{
-		eval("wl", "country", "Q2/12");
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
-		eval("wl", "-i", "eth2", "country", "Q2/12");
-        /* modify end by Hank 06/12/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}
-
-	else
-#endif
-		/* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
+	/*redesign for set country code*/
 	region=atoi(nvram_get("wla_region"));
-#if defined(R6250)
-	if(region == 4 || region == 9 || region == 11){
-		eval("wl", "country", "Q2/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}else if(region == 1 || region == 5 || region == 6 || region == 7 || region == 12 || region == 20 || region == 22){
-		eval("wl", "country", "EU/55");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "EU/55");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 24){
-		eval("wl", "country", "Q2/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "TW/1");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else{
-		eval("wl", "country", "EU/55");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}
-#else
-	if(region == 4 || region == 9 || region == 11){
-		eval("wl", "country", "Q2/40");
-		/* modify end by Hank 06/12/2012*/
-        /* modify start by Hank 03/29/2012*/ /*change txcore for 2.4G from HW*/
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		/* modify start by Hank 05/21/2012*/
-        /*change 5G country code for CE*/
-		/* modify end by Hank 03/29/2012*/
-        /* modify start by Hank 06/12/2012*/
-		/*for set country code to Q2/12 when region is not Europe*/
-		eval("wl", "-i", "eth2", "country", "Q2/40");
-        /* modify end by Hank 06/12/2012*/
-		/* modify end by Hank 05/21/2012*/
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
-	}else if(region == 1 || region == 5 || region == 6 || region == 7 || region == 12 || region == 20 || region == 22){
-		eval("wl", "country", "EU/58");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "EU/58");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 24){
-		eval("wl", "country", "Q2/40");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "TW/1");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 3){
-		eval("wl", "country", "AU/16");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "AU/16");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else if(region == 14){
-		eval("wl", "country", "RU/35");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "RU/35");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}else{
-		eval("wl", "country", "EU/58");
-        system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
-		eval("wl", "-i", "eth2", "country", "Q2/40");
-		system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7");
-	}
-#endif
-	/*  added end, Bob, 08/04/2011 */
+    system("wl -i eth1 txcore -k 7 -o 7 -s 1 -c 7 -s 2 -c 7");
+    system("wl -i eth2 txcore -o 7 -s 1 -c 7 -s 2 -c 7 -s 3 -c 7"); /* change to MIMO mode */
+    if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
+    {
+	    system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+    }
+	else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
+    {
+        system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+    }
+    else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
+    {
+        system("wl -i eth2 radarthrs 0x690 0x30 0x690 0x30 0x688 0x30 0x690 0x30 0x690 0x30 0x690 0x30");
+    }
+    
+    if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region==14) || (region==1) || (region==5) || (region==6) || (region==12) || (region==20) || (region==22) || (region==24)))
+    {
+        system("wl -i eth1 country_abbrev_override 0x4544");
+        system("wl -i eth2 country_abbrev_override 0x4544");
+    }
+    
+    system("wl -i eth1 pspretend_threshold 4");
+    
+    system("wl -i eth1 mfp_enable 0");
+    system("wl -i eth2 mfp_enable 0");
 
-    /*  modified end pling 12/26/2011, for WNDR4000AC */
-    
-    /* add start by Hank 04/06/2012*/
-    /*modify from broadcom suggest*/
-    eval("wl", "-i", "eth1", "interference", "3");
-    /* add end by Hank 04/06/2012*/
-    
+    if (nvram_match("enable_atf", "1"))
+    {
+//      system("wl -i eth2 shmem 0x80 2");
+      eval("wl", "-i", "eth2", "frameburst", "1");
+	  }
+	  else
+	  {
+      eval("wl", "-i", "eth2", "frameburst", "1");
+	  }
+      eval("wl", "assert_type", "1");
+
+    /* Foxconn added start by Antony 02/26/2014 The wifi driver could receive/transmit all multicast packets */      
+    if(nvram_match("enable_sta_mode","1"))
+    {
+        system("wl -i eth1 allmulti 1");
+        system("wl -i eth2 allmulti 1");
+    }
+    else
+    {
+        system("wl -i eth1 allmulti 0");
+        system("wl -i eth2 allmulti 0");
+    }
+    /* Fxoconn added end by Antony 02/26/2014  */
+
+    /*Foxconn add start by Antony start 09/13/2013 Add rf support of Russia Region */
+    if (nvram_match("wla_region", "14"))
+    {
+        system("wl -i eth2 txpwr1 -o -d 14");
+    }
+    else
+    {
+        system("wl -i eth2 txpwr1 -1");
+    }
+    /*Foxconn add start by Antony end 09/13/2013 */
+#if (defined R6400)
+    system("wl -i eth1 interference 4");
+#endif  
 }
 
 #ifdef __CONFIG_NAT__
@@ -2110,10 +2077,10 @@ wan_primary_ifunit(void)
 	return 0;
 }
 #endif	/* __CONFIG_NAT__ */
-/*  added start, wklin, 10/17/2006 */
+/* foxconn added start, wklin, 10/17/2006 */
 void stop_wlan(void)
 { 
-    /*  modified start pling 11/26/2009 */
+    /* Foxconn modified start pling 11/26/2009 */
     /* Should store the nvram value in a local variable, instead
      *  of keeping just the pointer, since other processes
      *  might modify NVRAM at any time.
@@ -2123,26 +2090,26 @@ void stop_wlan(void)
 	char wlif[32];
     strcpy(lan_ifname, nvram_safe_get("lan_ifname"));
     strcpy(wlif, nvram_safe_get("wl0_ifname"));
-    /*  modified end pling 11/26/2009 */    
+    /* Foxconn modified end pling 11/26/2009 */    
 	
 	eval("wlconf", wlif, "down");
 	ifconfig(wlif, 0, NULL, NULL);
 	eval("brctl", "delif", lan_ifname, wlif);
 
     /* Bring down 2nd WLAN i/f */
-    /*  modified start pling 12/02/2009 */
+    /* Foxconn modified start pling 12/02/2009 */
     //wlif = nvram_safe_get("wl1_ifname");
     strcpy(wlif, nvram_safe_get("wl1_ifname"));
-    /*  modified end pling 12/02/2009 */
+    /* Foxconn modified end pling 12/02/2009 */
 	eval("wlconf", wlif, "down");
 	ifconfig(wlif, 0, NULL, NULL);
 	eval("brctl", "delif", lan_ifname, wlif);
 
-    /*  added start pling 06/06/2007 */
+    /* Foxconn added start pling 06/06/2007 */
 //#ifdef BUILD_TWC
-/*  add start by aspen Bai, 11/13/2008 */
+/* Foxconn add start by aspen Bai, 11/13/2008 */
 #ifdef MULTIPLE_SSID
-/*  add end by aspen Bai, 11/13/2008 */
+/* Foxconn add end by aspen Bai, 11/13/2008 */
     if (1)  /* Remove all BSSIDs from LAN */
     {
         int bssid_num;
@@ -2162,109 +2129,166 @@ void stop_wlan(void)
         }
     }	
 #endif
-    /*  added end pling 06/06/2007 */
+    /* Foxconn added end pling 06/06/2007 */
 
 	return;
 }
 
+#ifdef VLAN_SUPPORT
+void add_if_to_vlan_group(char *guest_if)
+{
+    int br_num;
+    char lanxx_ifnames[64];
+    char *lan_ifnames;
+    
+    for(br_num=1; br_num < MAX_NO_BRIDGE; br_num++)
+    {
+        sprintf(lanxx_ifnames,"lan%d_ifnames",br_num);
+        lan_ifnames=nvram_safe_get(lanxx_ifnames);
+        if(strlen(lan_ifnames))
+            if(strstr(lan_ifnames,guest_if))
+            {
+                char bridge[32];
+                sprintf(bridge,"br%d",br_num);
+                eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
+                eval("brctl", "addif", bridge, guest_if);
+            }
+            	
+    }
+    
+    if(br_num==MAX_NO_BRIDGE)
+    {
+        eval("brctl", "delif", acosNvramConfig_get("lan_ifname"), guest_if);
+        eval("brctl", "addif", "br0", guest_if);
+    }    
+}
+#endif
+
 void start_wlan(void)
 {
-    /*  modified start pling 11/26/2009 */
+    /* Foxconn modified start pling 11/26/2009 */
     /* Should store the nvram value in a local variable, instead
      *  of keeping just the pointer, since other processes
      *  might modify NVRAM at any time.
      */
-	char lan_ifname[32];
+	char lan_ifname[32],wan_ifname[32];
 	char wlif[32];
     strcpy(lan_ifname, nvram_safe_get("lan_ifname"));
+    strcpy(wan_ifname, nvram_safe_get("wan_ifname"));
     strcpy(wlif, nvram_safe_get("wl0_ifname"));
-    /*  modified end pling 11/26/2009 */
+    /* Foxconn modified end pling 11/26/2009 */
     char wl1_ifname[32];
 
     strcpy(wl1_ifname, nvram_safe_get("wl1_ifname"));
 
-    /*  added start, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn added start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
     char iptv_intf[32];
+#if defined(R8000)
+    unsigned int iptv_intf_val = 0x00;
+#else
     unsigned char iptv_intf_val = 0x00;
+#endif
     int ru_iptv_en = 0;
     int wlan1_en = 0;
     int wlan2_en = 0;
-    if (nvram_match(NVRAM_IPTV_ENABLED, "1"))
+
+    if (nvram_match(NVRAM_IPTV_ENABLED, "1") || nvram_match("enable_vlan", "enable"))
     {
         strcpy(iptv_intf, nvram_get(NVRAM_IPTV_INTF));
+#if defined(R8000)
+        sscanf(iptv_intf, "0x%04X", &iptv_intf_val);
+#else
         sscanf(iptv_intf, "0x%02X", &iptv_intf_val);
+#endif
         if (iptv_intf_val & IPTV_WLAN1)
             wlan1_en = 1;
-        /*  modified start pling 04/20/2012 */
+        /* Foxconn modified start pling 04/20/2012 */
         /* WLAN1 and WLAN2 can both bridge to WAN */
         //else if (iptv_intf_val & IPTV_WLAN2)
         if (iptv_intf_val & IPTV_WLAN2)
-        /*  modified end pling 04/20/2012 */
+        /* Foxconn modified end pling 04/20/2012 */
             wlan2_en = 1;
         ru_iptv_en = 1;
     }
 #endif /* CONFIG_RUSSIA_IPTV */
-    /*  added end, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn added end, Wins, 05/07/11, @RU_IPTV */
     eval("wlconf", wlif, "up");
     ifconfig(wlif, IFUP, NULL, NULL);
-    /*  modified start, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (wlan1_en)
+    if(!nvram_match("enable_vlan", "enable"))
     {
-        eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
-	    eval("brctl", "addif", "br1", wlif);
+        if (wlan1_en)
+        {
+            eval("brctl", "delif", lan_ifname, wlif);   /* pling added 04/03/2012 */
+            eval("brctl", "addif", "br1", wlif);
+        }
+        else
+        {
+            eval("brctl", "addif", "br0", wlif);        /* pling added 04/03/2012 */
+        }
     }
+#ifdef VLAN_SUPPORT
     else
-    {
-        eval("brctl", "delif", "br1", wlif);        /* pling added 04/03/2012 */
-	    eval("brctl", "addif", lan_ifname, wlif);
-    }
+    	add_if_to_vlan_group(wlif);
+#endif
+    	
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wlif);
 #endif /* CONFIG_RUSSIA_IPTV */
-    /*  modified end, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
 
 
     eval("wlconf", wl1_ifname, "up");
     ifconfig(wl1_ifname, IFUP, NULL, NULL);
-    /*  modified start, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn modified start, Wins, 05/07/11, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-    if (wlan2_en)
+    if(!nvram_match("enable_vlan", "enable"))
     {
-        eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
-	    eval("brctl", "addif", "br1", wl1_ifname);
+        if (wlan2_en)
+        {
+            eval("brctl", "delif", lan_ifname, wl1_ifname);/* pling added 04/03/2012 */
+            eval("brctl", "addif", "br1", wl1_ifname);
+        }
+        else
+        {
+            eval("brctl", "addif", "br0", wl1_ifname);  /* pling added 04/03/2012 */
+        }
     }
+#ifdef VLAN_SUPPORT
     else
-    {
-        eval("brctl", "delif", "br1", wl1_ifname);  /* pling added 04/03/2012 */
-        eval("brctl", "addif", lan_ifname, wl1_ifname);
-    }
+    	add_if_to_vlan_group(wl1_ifname);
+#endif
 #else /* CONFIG_RUSSIA_IPTV */
 	eval("brctl", "addif", lan_ifname, wl1_ifname);
 #endif /* CONFIG_RUSSIA_IPTV */
-    /*  modified end, Wins, 05/07/11, @RU_IPTV */
+    /* Foxconn modified end, Wins, 05/07/11, @RU_IPTV */
 
+    /* Foxocnn added start pling 03/30/2010 */
     /* For WiFi test case 4.2.41 */
     //if(nvram_match("wifi_test", "1"))
+    /*Foxconn add start by Hank 08/14/2012*/
 	/*change obss_coex by user selection*/
 	if(nvram_match("wl0_obss_coex","0"))
         eval("wl", "-i", wlif, "obss_coex", "0");
 	else
 		eval("wl", "-i", wlif, "obss_coex", "1");
+	/*Foxconn add start by Hank 08/14/2012*
+    /* Foxocnn added end pling 03/30/2010 */
 
-    /*  added start pling 06/06/2007 */
+    /* Foxconn added start pling 06/06/2007 */
 //#ifdef BUILD_TWC
-/*  add start by aspen Bai, 11/13/2008 */
+/* Foxconn add start by aspen Bai, 11/13/2008 */
 #ifdef MULTIPLE_SSID
-/*  add end by aspen Bai, 11/13/2008 */
+/* Foxconn add end by aspen Bai, 11/13/2008 */
     if (1)      /* Add the additional BSSIDs to LAN */
     {
         int bssid_num;
         for (bssid_num=1; bssid_num<=3; bssid_num++)
         {
             //char param_name[16];
-            char param_name[20];/* modified water, @multi-ssid not workable..*/
+            char param_name[20];/*foxconn modified water, @multi-ssid not workable..*/
             char if_name[16];
             sprintf(param_name, "wl0.%d_bss_enabled", bssid_num);
             sprintf(if_name, "wl0.%d", bssid_num);
@@ -2272,12 +2296,27 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name);
                 ifconfig(if_name, IFUP, NULL, NULL);
-	            eval("brctl", "addif", lan_ifname, if_name);
+#ifdef VLAN_SUPPORT
+                if(nvram_match("enable_vlan", "enable"))
+                    add_if_to_vlan_group(if_name);
+                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
+                {
+                    if (iptv_intf_val & IPTV_WLAN_GUEST1)
+      	                eval("brctl", "addif", wan_ifname, if_name);
+  	                else
+  	                    eval("brctl", "addif", lan_ifname, if_name);
+                        
+                }
+                else
+  	                eval("brctl", "addif", lan_ifname, if_name);
+#else
+  	                eval("brctl", "addif", lan_ifname, if_name);
+#endif  	                
             }
         }
         for (bssid_num=1; bssid_num<=3; bssid_num++)
         {
-            char param_name_5g[32]; //  modified pling 10/06/2010, 16->32
+            char param_name_5g[32]; // Foxconn modified pling 10/06/2010, 16->32
             char if_name_5g[16];
             sprintf(param_name_5g, "wl1.%d_bss_enabled", bssid_num);
             sprintf(if_name_5g, "wl1.%d", bssid_num);
@@ -2285,24 +2324,33 @@ void start_wlan(void)
             {
                 wl_vif_hwaddr_set(if_name_5g);
                 ifconfig(if_name_5g, IFUP, NULL, NULL);
-	            eval("brctl", "addif", lan_ifname, if_name_5g);
+#ifdef VLAN_SUPPORT
+                if(nvram_match("enable_vlan", "enable"))
+                    add_if_to_vlan_group(if_name_5g);
+                else if(nvram_match(NVRAM_IPTV_ENABLED, "1") && (bssid_num==1))
+                {
+                    if (iptv_intf_val & IPTV_WLAN_GUEST2)
+      	                eval("brctl", "addif", wan_ifname, if_name_5g);
+  	                else
+  	                    eval("brctl", "addif", lan_ifname, if_name_5g);
+                        
+                }
+                else
+   	                eval("brctl", "addif", lan_ifname, if_name_5g);
+#else
+                eval("brctl", "addif", lan_ifname, if_name_5g);
+#endif   	                
             }
         }
     }
 #endif
-    /*  added end pling 06/06/2007 */
+    /* Foxconn added end pling 06/06/2007 */
 
-    /* , add by MJ., for wifi cert. */
+    /* Foxconn, add by MJ., for wifi cert. */
     //if(!nvram_match("wifi_test", "1"))
-        eval("wl", "-i", wl1_ifname, "obss_coex", "0"); /*  added, zacker, 01/05/2011 */
+        eval("wl", "-i", wl1_ifname, "obss_coex", "0"); /* foxconn added, zacker, 01/05/2011 */
 
-    /* modify start by Hank for 04/06/2012*/
-    /*modify from broadcom suggest*/
-    /*  added, zacker, 12/23/2010 */
-    eval("wl", "-i", wl1_ifname, "interference", "3");
-    /* modify end by Hank for 04/06/2012*/
-
-    /*  added start, zacker, 11/01/2010 */
+    /* foxconn added start, zacker, 11/01/2010 */
     {
         int s;
         struct ifreq ifr;
@@ -2318,8 +2366,8 @@ void start_wlan(void)
             close(s);
         }
     }
-    /*  added end, zacker, 11/01/2010 */
+    /* foxconn added end, zacker, 11/01/2010 */
 
 	return;
 }
-/*  added end, wklin, 10/17/2006 */
+/* foxconn added end, wklin, 10/17/2006 */

@@ -102,6 +102,8 @@ mtd_erase(const char *mtd)
 		return errno;
 	}
 
+    /* Foxconn Bob modified start, 09/06/2013, a workaround to avoid erase to next partition,
+       unknown reason, erase bad block won't return error in the case of 15th block(last block of nvram partition) is bad block */
 	if(!strcmp(mtd, "/dev/mtd1"))
 	    isNvram = 1;
 	erase_info.length = mtd_info.erasesize;
@@ -112,17 +114,18 @@ mtd_erase(const char *mtd)
 	     erase_info.start += mtd_info.erasesize) {
 		(void) ioctl(mtd_fd, MEMUNLOCK, &erase_info);
 		if (ioctl(mtd_fd, MEMERASE, &erase_info) != 0) {
-			cprintf("%s: erase failed, could be bad block, continue next block!\n", mtd);
+		    cprintf("%s: erase failed, could be bad block, continue next block!\n", mtd);
 		        mtd_info.size -= mtd_info.erasesize;
 		    continue;
 			//perror(mtd);
 			//close(mtd_fd);
 			//return errno;
 		}
-		cnt++;
-		if(isNvram==1 && cnt>=4)
-		    break;
+		    cnt++;
+		    if(isNvram==1 && cnt>=4)
+		        break;
 	}
+	/* Foxconn Bob modified end on 09/06/2013 */
 
 	close(mtd_fd);
 	return 0;

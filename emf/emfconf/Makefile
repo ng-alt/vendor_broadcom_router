@@ -7,8 +7,7 @@ CC = $(CROSS)gcc
 AR = $(CROSS)ar
 STRIP = $(CROSS)strip
 
-#ALL_OBJS = emfu.o emfu_linux.o
-ALL_OBJS=
+ALL_OBJS = emfu.o emfu_linux.o
 
 CCFLAGS = -Os -Wall -I../../../include -I../../shared -I../../../include/emf/emf
 
@@ -20,8 +19,8 @@ all: emf
 endif
 
 emf: $(ALL_OBJS)
-#	$(CC) $(CCFLAGS) $(LDFLAGS) -o $@ $(ALL_OBJS) $(LDLIBS)
-#	$(STRIP) $@
+	$(CC) $(CCFLAGS) $(LDFLAGS) -o $@ $(ALL_OBJS) $(LDLIBS)
+	$(STRIP) $@
 
 $(ALL_OBJS): %.o: %.c
 	@echo " "
@@ -29,9 +28,9 @@ $(ALL_OBJS): %.o: %.c
 	$(CC) $(CCFLAGS) -c $<
 
 install: all
-#	install -d $(INSTALLDIR)/emf/usr/sbin
-#	install -m 755 emf $(INSTALLDIR)/emf/usr/sbin
+	install -d $(INSTALLDIR)/emf/usr/sbin
+	install -m 755 emf $(INSTALLDIR)/emf/usr/sbin
 
 .PHONY:	clean
 clean:
-#	-rm -f *.o *~ core emf
+	-rm -f *.o *~ core emf

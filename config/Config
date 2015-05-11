@@ -52,6 +52,12 @@ config CONFIG_LIBBCM
        help
        Answer Y for shared functions for accesing Broadcom h/w
 
+config CONFIG_BUZZZ
+       bool "Broadcom BUZZZ Tool configuration"
+       default n
+       help
+       Answer Y for the BUZZZ configuration utility.
+
 config CONFIG_BUSYBOX
        bool "BusyBox"
        default y
@@ -189,6 +195,11 @@ config CONFIG_IGD
        depends on CONFIG_NAT && CONFIG_LIBUPNP
        default n
 
+config CONFIG_NORTON
+       bool "Norton Gateway Apps"
+       depends on CONFIG_HTTPD && CONFIG_RC && CONFIG_NAT && CONFIG_NVRAM && CONFIG_LIBPTHREAD && CONFIG_LIBDL && CONFIG_LIBRESOLV && CONFIG_DNSMASQ && CONFIG_IPTABLES && CONFIG_LIBNETFILTER_QUEUE && CONFIG_LIBNETFILTER_CONNTRACK && CONFIG_LIBSTDCPP && CONFIG_LIBFLOW
+       default n
+
 config CONFIG_SAMBA
        bool "Support SAMBA"
        default n
@@ -214,6 +225,11 @@ config CONFIG_MFP
 
 config CONFIG_HSPOT
        bool "HOTSPOT 2.0 support"
+       depends on CONFIG_NVRAM && CONFIG_SHARED
+       default n
+
+config CONFIG_NPS
+       bool "Network Power Save support"
        depends on CONFIG_NVRAM && CONFIG_SHARED
        default n
 
@@ -334,21 +350,13 @@ config CONFIG_WL_ACI
        bool "Adjacent Channel Mitigation daemon"
        default n
 
-config CONFIG_TRAFFIC_MGMT
-       bool "Traffic Management Filter"
+config CONFIG_TRAFFIC_MGMT_RSSI_POLICY
+       bool "Traffic Management RSSI policy"
        default n
-
-#ifdef BRCM_SYSCAP_IE
-config CONFIG_BRCM_SYSCAP_IE
-       bool "BRCM System Level Capability IE"
-       default n
-#endif
-
-#ifdef WET_TUNNEL
-config CONFIG_WET_TUNNEL
-       bool "WET Tunnel"
-       default n
-#endif
+       help
+       Answer Y to enable support for traffic management RSSI policy,
+       also known as VIDEOTAG - a feature to alter packet priority based
+       on the remote station RSSI.
 
 config CONFIG_PHYMON_UTILITY
        bool "PHY Calibration Monitor"
@@ -497,6 +505,13 @@ config CONFIG_LIBDL
        help
        libdl is the dynamic linking interface library.
 
+config CONFIG_LIBFLOW
+       bool "libflow"
+       default y
+       depends on CONFIG_LIBMNL && CONFIG_LIBNFNETLINK && CONFIG_LIBNETFILTER_CONNTRACK
+       help
+       provides an API for flow management
+
 config CONFIG_LIBM
        bool "libm"
        default n
@@ -522,12 +537,50 @@ config CONFIG_LIBRESOLV
        Functions in this library provide for creating, sending, and
        interpreting packets to the Internet domain name servers.
 
+config CONFIG_LIBSTDCPP
+       bool "libstdc++"
+       default y
+       help
+       libstdc++ is the GNU Standard C++ Library.
+
 config CONFIG_LIBUTIL
        bool "libutil"
        default n
        help
        Contains code for "standard" functions used in many different
        Unix utilities.
+
+config CONFIG_LIBNFNETLINK
+       bool "libnfnetlink"
+       default y
+       help
+       provides a generic messaging infrastructure for in-kernel
+       netfilter subsystems (such as nfnetlink_log, nfnetlink_queue,
+       nfnetlink_conntrack) and their respective users and/or
+       management tools in userspace.
+
+config CONFIG_LIBNETFILTER_CONNTRACK
+       bool "libnetfilter_conntrack"
+       default y
+       depends on CONFIG_LIBNFNETLINK && CONFIG_LIBMNL
+       help
+       provides a programming interface (API) to the in-kernel
+       connection tracking state table
+
+config CONFIG_LIBNETFILTER_QUEUE
+       bool "libnetfilter_queue"
+       default y
+       depends on CONFIG_LIBNFNETLINK
+       help
+       provides an API to packets that have been queued by the
+       kernel packet filter
+
+config CONFIG_LIBMNL
+       bool "libmnl"
+       default y
+       help
+       provides a minimalistic user-space library oriented to
+       Netlink developers
 
 endmenu
 
@@ -565,7 +618,7 @@ menu "Internal Options"
 
 config CONFIG_UTELNETD
        bool "Telnet server"
-       default y
+       default n
 
 #endif
 

@@ -236,7 +236,7 @@ int add_iQosRules(char *pcWANIF)
 			sprintf(acClass, "0x%x/0xFF", class_num);
 			stIptCommand.apCommand[stIptCommand.siCount++] = "-j";
 			stIptCommand.apCommand[stIptCommand.siCount++] = "CONNMARK";
-			stIptCommand.apCommand[stIptCommand.siCount++] = "--set-return";
+			stIptCommand.apCommand[stIptCommand.siCount++] = "--set-mark";		 
 			stIptCommand.apCommand[stIptCommand.siCount++] = acClass;
 			stIptCommand.apCommand[stIptCommand.siCount++] = NULL;
 		}
@@ -247,6 +247,17 @@ int add_iQosRules(char *pcWANIF)
 			printcmd(&stIptCommand);
 			_eval(stIptCommand.apCommand, NULL, 4, NULL);
 		}
+			stIptCommand.siCount = 3;
+			stIptCommand.apCommand[stIptCommand.siCount++] = "-A";
+		if(qosox_enable)
+			stIptCommand.apCommand[stIptCommand.siCount++] = "QOSOX";
+		else
+			stIptCommand.apCommand[stIptCommand.siCount++] = "QOSO";
+			stIptCommand.apCommand[stIptCommand.siCount++] = "-j";
+			stIptCommand.apCommand[stIptCommand.siCount++] = "RETURN";	
+			stIptCommand.apCommand[stIptCommand.siCount++] = NULL;
+			printcmd(&stIptCommand);
+		_eval(stIptCommand.apCommand, NULL, 4, NULL);
 	}
 	free(buf);
 
@@ -262,11 +273,13 @@ int add_iQosRules(char *pcWANIF)
 		class_num = i + 1;
 		if (method == 1) class_num |= 0x200;
 		sprintf(acClass, "0x%x", class_num);
-		eval("iptables", "-t", "mangle", "-A", "QOSO",
-		"-j", "CONNMARK", "--set-return", acClass);
+		eval("iptables", "-t", "mangle", "-A", qosox_enable ? "QOSOX" : "QOSO",
+		"-j", "CONNMARK", "--set-mark", acClass);
+		eval("iptables", "-t", "mangle", "-A", qosox_enable ? "QOSOX" : "QOSO",
+                "-j", "RETURN");
 	}
 
-		eval("iptables", "-t", "mangle", "-A", "FORWARD", "-o", pcWANIF, "-j", "QOSO");
+		eval("iptables", "-t", "mangle", "-A", "FORWARD", "-o", pcWANIF, "-j", qosox_enable ? "QOSOX" : "QOSO");
 
 	/*
 	*	Ingress rules:

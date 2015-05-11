@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: nvparse.c 374496 2012-12-13 08:59:12Z $
+ * $Id: nvparse.c 387385 2013-02-25 20:22:54Z $
  */
 
 #include <stdio.h>
@@ -915,7 +915,6 @@ del_filter_url(int which)
 #endif /* __CONFIG_URLFILTER__ */
 #endif	/* __CONFIG_NAT__ */
 
-#ifdef TRAFFIC_MGMT
 /*
  * Parser for traffic management filter settings,  convert string to  binary structure
  * string format: proto,sr_port,dst_port,mac_adr,priority,favored,enable
@@ -1051,7 +1050,6 @@ del_trf_mgmt_port(char *prefix, int which)
 	snprintf(name, sizeof(name), "%stm%d", prefix, which);
 	return (nvram_unset(name) == 0) ? TRUE : FALSE;
 }
-#endif /* TRAFFIC_MGMT */
 
 /*
  * wl_wds<N> is authentication protocol dependant.
@@ -1685,7 +1683,10 @@ convert_deprecated(void)
 	/* static_route used to save routes for LAN and WAN and is now between lan_route and
 	 * wan_route
 	 */
+	/*Foxconn modify start by Hank 09/08/2012
+	  not unset static_route when reboot or restart all process*/
 	/*convert_static_route();*/
+	/*Foxconn modify end by Hank 09/08/2012
 
 	/* convert wl_wep and combine wl_auth_mode and wl_auth */
 	convert_wsec();
