@@ -20,7 +20,7 @@ ul.tabs li {
 	  padding:0;
     margin-left:5px;
 	  background-color:transparent;
-          background-size:200px 35px!important;
+          background-size:100% 100% !important;
 	  list-style-image:none !important;
     display: inline; 
 }
@@ -29,17 +29,17 @@ ul.tabs li {
 /* link inside the tab. uses a background image */
 ul.tabs a { 
         background: url(../img/qos-tab-nonactive.jpg) no-repeat 0;
-        background-size:200px 35px!important;
+        background-size:cover !important;
 	font-size:15px;
 	font-weight:bold;
 	display:block;
 	height: 35px;  
 	line-height:35px;
-	width: 200px;
+	width: auto;
 	text-align:center;	
 	text-decoration:none;
 	color:#4e4e4e;
-	padding:0px;
+	padding:0px 10px 0px 10px;
 	position:relative;    
 	top:0px;	  
 	top: 0px\9;
@@ -49,7 +49,7 @@ ul.tabs a {
 ul.tabs a:active {
 	outline:none;		
 	background: url(../img/qos-tab-nonactive.jpg) no-repeat 0;
-        background-size:200px 35px!important;       
+        background-size:100% 100% !important;       
 }
 
 /* when mouse enters the tab move the background image */
@@ -57,7 +57,7 @@ ul.tabs a:active {
 
 ul.tabs a.current, ul.tabs a.current:hover, ul.tabs li.current a {
 	background: url(../img/qos-tab-hover.jpg) no-repeat  0;
-        background-size:200px 35px!important;
+        background-size:100% 100% !important;
 	cursor:default !important; 
 	color:#000 !important;
 }

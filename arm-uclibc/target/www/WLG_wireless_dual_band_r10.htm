@@ -40,7 +40,7 @@ var StartChannel = new Array(  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 var FinishChannel = new Array(11,13,13,13,11,13,13,13,13,13,13,13,11,13,13,13,13,13,13,13,13,11,11);
 //<%19%>
  
-
+<%20%>
 var Band1Channel_20M = new Array (36,40,44,48);
 var Band2Channel_20M = new Array (52,56,60,64);
 var Band3Channel_20M = new Array (100,104,108,112,116,132,136,140);
@@ -50,7 +50,6 @@ var Band2Channel_40M = new Array (52,56,60,64);
 var Band3Channel_40M = new Array (100,104,108,112,132,136);
 var Band4Channel_40M = new Array (149,153,157,161);
 
-/* r10 ver. */
 var Band3Channel_CA_40M = new Array (100,104,108,112);
 var Band1Channel_TW_20M = new Array (56,60,64); 
 var Band1Channel_TW_40M = new Array (60,64);
@@ -58,6 +57,26 @@ var Band3Channel_JP_20M = new Array (100,104,108,112,116,120,124,128,132,136,140
 var Band3Channel_JP_40M = new Array (100,104,108,112,116,120,124,128,132,136);
 var Band3Channel_JP_80M = new Array (100,104,108,112,116,120,124,128);
 var Band3Channel_CE_80M = new Array (100,104,108,112);
+<%21%>
+
+<%22%>
+var Band1Channel_20M = new Array (36,40,44,48);
+var Band2Channel_20M = new Array (52,56,60,64);
+var Band3Channel_20M = new Array (100,104,108,112,116,120,124,128,132,136,140);
+var Band4Channel_20M = new Array (149,153,157,161,165);
+var Band1Channel_40M = new Array (36,40,44,48);
+var Band2Channel_40M = new Array (52,56,60,64);
+var Band3Channel_40M = new Array (100,104,108,112,116,120,124,128,132,136);
+var Band4Channel_40M = new Array (149,153,157,161);
+
+var Band3Channel_CA_40M = new Array (100,104,108,112,116,120,124,128);
+var Band1Channel_TW_20M = new Array (56,60,64); 
+var Band1Channel_TW_40M = new Array (60,64);
+var Band3Channel_JP_20M = new Array (100,104,108,112,116,120,124,128,132,136,140);
+var Band3Channel_JP_40M = new Array (100,104,108,112,116,120,124,128,132,136);
+var Band3Channel_JP_80M = new Array (100,104,108,112,116,120,124,128);
+var Band3Channel_CE_80M = new Array (100,104,108,112,116,120,124,128);
+<%23%>
 
 var OpMode_BG_TEXT;
 var OpMode_20M_TEXT;
@@ -73,8 +92,8 @@ var OpMode_5G_20M_VALUE;
 var OpMode_5G_40M_VALUE;
 var selected2=100,selected3=100, ch_selected=100;
 
-var curr_region = "<%20%>"
-var curr_channel_an_value = "<%21%>";
+var curr_region = "<%24%>"
+var curr_channel_an_value = "<%25%>";
 var curr_channel_an_index = 0;
 
 var chgCh_cnt = 0;  
@@ -221,22 +240,22 @@ function initScrn()
     if( (BoardId != "U12H192T00_NETGEAR") && (BoardId != "U12H181T00_NETGEAR") && (BoardId != "U12H189T00_NETGEAR") && (BoardId != "U12H189T90_NETGEAR") && (BoardId != "U12H224T00_NETGEAR") && (BoardId != "U12H224T02_NETGEAR") && (BoardId != "U12H208T00_NETGEAR") && (BoardId != "U12H240T00_NETGEAR") && (BoardId != "U12H240T10_NETGEAR") && (BoardId != "U12H245T00_NETGEAR") && (BoardId != "U12H264T00_NETGEAR") && (BoardId != "U12H240T99_NETGEAR") && (BoardId != "U12H270T00_NETGEAR") && (BoardId != "U12H270T10_NETGEAR")&& (BoardId != "U12H332T00_NETGEAR") )
 	{       
         var select = document.getElementById("region_select");
-        <%22%>
+        <%26%>
        var ru = document.getElementById("ru_ww");
-       select.removeChild(ru);
-       <%23%>
-       <%24%>
-       var ru = document.getElementById("ru_ww");
-       select.removeChild(ru);
-       <%25%>
-       <%26%>
-       var ru = document.getElementById("ru_jp");
        select.removeChild(ru);
        <%27%>
        <%28%>
-       var ru = document.getElementById("ru_na");
+       var ru = document.getElementById("ru_ww");
        select.removeChild(ru);
        <%29%>
+       <%30%>
+       var ru = document.getElementById("ru_jp");
+       select.removeChild(ru);
+       <%31%>
+       <%32%>
+       var ru = document.getElementById("ru_na");
+       select.removeChild(ru);
+       <%33%>
         
     }
 
@@ -461,7 +480,7 @@ function checkRegion()
     if(cf.WRegion.selectedIndex == 0)
     {
         cf.WRegion.focus();
-        return alertR("<%30%>");
+        return alertR("<%34%>");
     }
     if (notShown)
         notShown = false;
@@ -591,11 +610,11 @@ function setChannel()
     //var currentMode = cf.opmode.selectedIndex;
     //var chIndex_an = cf.w_channel_an.selectedIndex;
     //var currentMode_an = cf.opmode_an.selectedIndex;
-    var currChVal_an = "<%21%>";
+    var currChVal_an = "<%25%>";
     var i=0, chMatch_an=0;
     var b0=0, b1=0, b2=0, b3=0, b4=0;  
-	var wlaRegion = "<%20%>";
-    var sku = "<%31%>";
+	var wlaRegion = "<%24%>";
+    var sku = "<%35%>";
 	
     /* 2G part start */
     var sku_name = cf.fw_sku.value;
@@ -612,7 +631,7 @@ function setChannel()
         cf.w_channel.options.length = FinishChannel[index] - StartChannel[index]+2;
     }
 
-    cf.w_channel.options[0].text = "<%32%>";
+    cf.w_channel.options[0].text = "<%36%>";
     cf.w_channel.options[0].value = 0;
     
     for (var i = StartChannel[index]; i <= FinishChannel[index]; i++) {
@@ -686,7 +705,7 @@ function setChannel()
     if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 6 && index != 8 && index != 9 
         && index != 15 && index != 17))		/// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
     {
-        cf.w_channel_an.options[0].text = "<%32%>";
+        cf.w_channel_an.options[0].text = "<%36%>";
         cf.w_channel_an.options[0].value = 0;
         b0 = 1;
     }
@@ -1058,7 +1077,7 @@ function checkChannel()
     var index = cf.WRegion.selectedIndex;
     var new_channel_an_index = cf.w_channel_an.selectedIndex;
     var new_channel_an_value = cf.w_channel_an.options[new_channel_an_index].value;
-    var wlaRegion = "<%20%>";
+    var wlaRegion = "<%24%>";
     var i = 0;
     if(index == 4 || index == 6 || index == 8 || index == 9 || index == 22 || (wlaRegion == 7 && sku == "JP") || wlaRegion == 11)
     {
@@ -1073,7 +1092,7 @@ function checkChannel()
                new_channel_an_value == "124" || new_channel_an_value == "128" ||
                new_channel_an_value == "132" || new_channel_an_value == "136" ||
                new_channel_an_value == "140")
-                if (!confirm("<%33%>"))
+                if (!confirm("<%37%>"))
                 {
                     cf.w_channel_an.selectedIndex = curr_channel_an_index;
                     return false;
@@ -1099,7 +1118,7 @@ function checkChannel()
                     (new_channel_an_value != "165") )
                 {
                     ch_selected = new_channel_an_value;
-                    if (!confirm("<%34%>"))
+                    if (!confirm("<%38%>"))
                     {
                         cf.w_channel_an.selectedIndex = curr_channel_an_index;
                         return false;
@@ -1241,7 +1260,7 @@ function securityCheck(band)
                    following warning alert wouldn't appear twice */
                 cf.opmode.selectedIndex = 0;
 				setTimeout(function(){
-                alert("<%35%>");
+                alert("<%39%>");
 				},10);   
                 cf.opmode.selectedIndex = 0;
                 document.getElementById("wep_radio_2G").style.display="block";
@@ -1267,7 +1286,7 @@ function securityCheck(band)
             {
                 selected2=cf.opmode.selectedIndex;
 				setTimeout(function(){
-                alert("<%35%>");
+                alert("<%39%>");
 				},10);   
             }
             document.getElementById("wpa_2G").style.display="block";
@@ -1283,7 +1302,7 @@ function securityCheck(band)
             {
                 selected2=cf.opmode.selectedIndex;
                 setTimeout(function(){
-                alert("<%36%>");
+                alert("<%40%>");
                 },10);
             }
             document.getElementById("wpa_en_2G").style.display="block";
@@ -1333,7 +1352,7 @@ function securityCheck(band)
                    following warning alert wouldn't appear twice */
                 cf.opmode_an.selectedIndex = 0;
                 setTimeout(function(){
-                alert("<%35%>");
+                alert("<%39%>");
                 },10);
                 setChannel();
                 document.getElementById("wep_radio_5G").style.display="block";
@@ -1361,7 +1380,7 @@ function securityCheck(band)
             {
                 selected3=cf.opmode_an.selectedIndex;
                 setTimeout(function(){
-                alert("<%37%>");
+                alert("<%41%>");
                 },10);
             }
             else
@@ -1369,7 +1388,7 @@ function securityCheck(band)
             {
                 selected3=cf.opmode_an.selectedIndex;
                 setTimeout(function(){
-                alert("<%38%>");
+                alert("<%42%>");
                 },10);
             }
             document.getElementById("wpa_5G").style.display="block";
@@ -1385,18 +1404,18 @@ function securityCheck(band)
             if ((cf.support_ac_mode.value == "1") && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                //alert("<%37%>");
+                //alert("<%41%>");
                 setTimeout(function(){
-				alert("<%36%>");
+				alert("<%40%>");
                 },10);
             }
             else
             if ((cf.opmode_an.selectedIndex != 0) && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                //alert("<%38%>");
+                //alert("<%42%>");
                 setTimeout(function(){
-				alert("<%36%>");
+				alert("<%40%>");
                 },10);
             }
             document.getElementById("wpa_5G").style.display="none";
@@ -1425,10 +1444,10 @@ function securityCheck(band)
 function checkData()
 {
     var cf = document.forms[0];
-    var msg_key64_type = "<%39%>" ;
-    var msg_key128_type = "<%40%>";
+    var msg_key64_type = "<%43%>" ;
+    var msg_key128_type = "<%44%>";
     var show_wep_or_wps_msg = false;
-    var wps_version = "<%41%>";  
+    var wps_version = "<%45%>";  
     //var show_wep_or_wps_v20_msg = false;
     var show_tkip_or_wps_v20_msg = false;
     var show_ssid_bc_or_wps_v20_msg = false;
@@ -1448,7 +1467,7 @@ function checkData()
 	else
 	{
 		if(cf.gui_security_type_5G.value=="")
-			cf.security_type_5G.value="<%42%>";
+			cf.security_type_5G.value="<%46%>";
 		else
 			cf.security_type_5G.value=cf.gui_security_type_5G.value;
 	}
@@ -1463,19 +1482,19 @@ function checkData()
  */   
     if (cf.ssid.value == "")
     {
-        alert("<%43%>");
+        alert("<%47%>");
         return false;
     }
 
     if (cf.ssid.value.match( /[^\x20-\x7E]/ ))
     {
-        alert("<%44%>");
+        alert("<%48%>");
         return false;
     }
 
     if (cf.wds_enable.value == "1" && cf.w_channel[0].selected)
     {
-        alert("<%45%>");
+        alert("<%49%>");
         return false;
     }
         
@@ -1483,20 +1502,20 @@ function checkData()
     {
         if (cf.wds_enable_an.value == "1" && cf.w_channel_an[0].selected && (!cf.opmode_an[2].selected))
         {
-            alert("<%45%>");
+            alert("<%49%>");
             return false;
         }
     }
     
     if (cf.ssid_an.value == "")
     {
-        alert("<%43%>");
+        alert("<%47%>");
         return false;
     }
 
     if (cf.ssid_an.value.match( /[^\x20-\x7E]/ ))
     {
-        alert("<%44%>");
+        alert("<%48%>");
         return false;
     }
 
@@ -1505,7 +1524,7 @@ function checkData()
     {
         //Disable SSID Broadcast (2.4GHz)
         if(!cf.ssid_bc.checked) {
-            if (!confirm("<%46%>")){
+            if (!confirm("<%50%>")){
                 return false;
             }
             show_ssid_bc_or_wps_v20_msg = true;
@@ -1515,7 +1534,7 @@ function checkData()
         //Disable SSID Broadcast (5GHz)
         if(!cf.ssid_bc_an.checked) {
             if (!show_ssid_bc_or_wps_v20_msg) {
-                if (!confirm("<%46%>")){
+                if (!confirm("<%50%>")){
                     return false;
                 }
             }
@@ -1525,7 +1544,7 @@ function checkData()
 
         //Security option is set to None (2.4GHz)
         if (cf.security_type_2G.value == "None") {
-            if (!confirm("<%47%>")){
+            if (!confirm("<%51%>")){
                 return false;
             }
             show_open_or_wps_v20_msg = true;
@@ -1534,7 +1553,7 @@ function checkData()
         //Security option is set to None (5GHz)
         if (cf.security_type_5G.value == "None") {
             if (!show_open_or_wps_v20_msg) {
-                if (!confirm("<%47%>")){
+                if (!confirm("<%51%>")){
                     return false;
                 }
             }
@@ -1570,7 +1589,7 @@ function checkData()
         //Foxconn modified start, Wins, 06/22/2011, @WPS v2.0
         if (wps_version == "2.0")
         {   
-            if (!confirm("<%48%>")){
+            if (!confirm("<%52%>")){
                 return false;
             }
             show_tkip_or_wps_v20_msg = true;
@@ -1581,7 +1600,7 @@ function checkData()
             if (cf.authAlgm.value.toLowerCase() == "sharedkey" && 
 				(cf.initAuthType.value.toLowerCase() != "sharedkey" || cf.init_security_type_2G.value.toLowerCase() != "wep"))
             {
-                 if (!confirm("<%49%>")){
+                 if (!confirm("<%53%>")){
                     return false;
                 }
                 show_wep_or_wps_msg = true;
@@ -1642,7 +1661,7 @@ function checkData()
         if (wps_version == "2.0")
         {
             if (!show_tkip_or_wps_v20_msg) {
-                if (!confirm("<%48%>")){
+                if (!confirm("<%52%>")){
                     return false;
                 }
             }
@@ -1655,7 +1674,7 @@ function checkData()
 				(cf.initAuthType_an.value.toLowerCase() != "sharedkey" && cf.init_security_type_5G.value.toLowerCase() != "wep"))
             {
                 if (!show_wep_or_wps_msg) {
-                    if (!confirm("<%49%>")){
+                    if (!confirm("<%53%>")){
                         return false;
                     }
                 }
@@ -1695,7 +1714,7 @@ function checkData()
         {
             if (cf.security_type_2G.value == "WPA-PSK")
             {
-                if (!confirm("<%48%>")){
+                if (!confirm("<%52%>")){
                     return false;
                 }
                 show_tkip_or_wps_v20_msg = true;
@@ -1706,14 +1725,14 @@ function checkData()
 
         if(cf.passphrase.value.length < 8)
         {
-            alert("<%50%>");
+            alert("<%54%>");
             return false;    
         }
         if(cf.passphrase.value.length > 63)
         {
             if ( isHex(cf.passphrase.value) == false)
             {
-                alert("<%50%>");
+                alert("<%54%>");
                 cf.passphrase.value = "";
                 return false;
             }    
@@ -1721,14 +1740,14 @@ function checkData()
         
         if (cf.passphrase.value.match( /[^\x20-\x7E]/ ))
         {
-            alert("<%51%>");
+            alert("<%55%>");
             cf.passphrase.focus();
             return false;
         }
         
         if (cf.wds_enable.value == "1" && cf.w_channel[0].selected)
         {
-            alert("<%45%>");
+            alert("<%49%>");
             cf.w_channel.focus();
             return false;
         }
@@ -1749,7 +1768,7 @@ function checkData()
             if (cf.security_type_5G.value == "WPA-PSK")
             {
                 if (!show_tkip_or_wps_v20_msg) {
-                    if (!confirm("<%48%>")){
+                    if (!confirm("<%52%>")){
                         return false;
                     }
                 }
@@ -1762,14 +1781,14 @@ function checkData()
         
         if(cf.passphrase_an.value.length < 8)
         {
-            alert("<%50%>");
+            alert("<%54%>");
             return false;    
         }
         if(cf.passphrase_an.value.length > 63)
         {
             if ( isHex(cf.passphrase_an.value) == false)
             {
-                alert("<%50%>");
+                alert("<%54%>");
                 cf.passphrase_an.value = "";
                 return false;
             }    
@@ -1777,7 +1796,7 @@ function checkData()
         
         if (cf.passphrase_an.value.match( /[^\x20-\x7E]/ ))
         {
-            alert("<%51%>");
+            alert("<%55%>");
             cf.passphrase_an.focus();
             return false;
         }
@@ -1786,7 +1805,7 @@ function checkData()
         {
             if (cf.wds_enable_an.value == "1" && cf.w_channel_an[0].selected)
             {
-                alert("<%45%>");
+                alert("<%49%>");
                 return false;
             }
         }
@@ -1809,7 +1828,7 @@ function checkData()
         /* ip checking  */
         if ( (w_setip != 0) && ( w_ipaddr == w_setip) )
         {
-            alert("<%52%>");
+            alert("<%56%>");
             return false;
         }        
         if(checkIP(cf.RADIUSAddr1_wla,cf.RADIUSAddr2_wla,cf.RADIUSAddr3_wla,cf.RADIUSAddr4_wla,254)
@@ -1823,14 +1842,14 @@ function checkData()
         /* port  checking */ 
         if(setPort > 65535 || setPort < 0)
         {
-            alert("<%53%>");
+            alert("<%57%>");
             return false;
         }       
         
         /* share screct length checking */ 
         if(ss_len > 128)
         {
-            alert("<%54%>");
+            alert("<%58%>");
             return false;  
         }   
 		needGrayOutWPS = 1; 
@@ -1847,7 +1866,7 @@ function checkData()
         /* ip checking  */
         if ( (w_setip != 0) && ( w_setip == w_ipaddr) )
         {
-            alert("<%52%>");
+            alert("<%56%>");
             return false;
         }        
         if(checkIP(cf.RADIUSAddr1_wlg,cf.RADIUSAddr2_wlg,cf.RADIUSAddr3_wlg,cf.RADIUSAddr4_wlg,254)
@@ -1861,14 +1880,14 @@ function checkData()
         /* port  checking */ 
         if(setPort > 65535 || setPort < 0)
         {
-            alert("<%53%>");
+            alert("<%57%>");
             return false;
         }       
 
         /* share screct length checking */ 
         if(ss_len > 128)
         {
-            alert("<%54%>");
+            alert("<%58%>");
             return false;  
         }    
 		needGrayOutWPS = 1; 
@@ -1879,14 +1898,14 @@ function checkData()
 
         if((cf.ssid.value != cf.ssid_an.value) ||(cf.security_type_2G.value!=cf.security_type_5G.value))
         {
-            if (!confirm("<%55%>"))
+            if (!confirm("<%59%>"))
                return false;
         }
 
         if(cf.security_type_2G.value!='None' && cf.security_type_5G.value!='None')
         {
             if(cf.passphrase.value!= cf.passphrase_an.value)
-                if (!confirm("<%55%>"))
+                if (!confirm("<%59%>"))
                    return false;
         }
     }
@@ -1905,7 +1924,7 @@ function showWpsAlert()
 {
     var cf = document.forms[0];
     if(cf.show_wps_alert.value == "1")
-        alert("<%56%>");
+        alert("<%60%>");
 }
 
 
@@ -1946,20 +1965,20 @@ function getkey(e)
 </script>
 </head>
 <body  onload="change_size();initScrn();setKeys();showWpsAlert();highLightMenu('setup_header', 'wireless_set');" class="page-body"  onResize="change_size();" >
-<img class="cover-image" src="<%57%>">
-<img class="body-image" src="<%58%>">
+<img class="cover-image" src="<%61%>">
+<img class="body-image" src="<%62%>">
 <div id="full-page-container">
 
 <form id="target"  method="POST" action="wireless.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-  <img class="subtop-image" src="<%59%>">
-<div class="subhead2"> <%60%></div>
+  <img class="subtop-image" src="<%63%>">
+<div class="subhead2"> <%64%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%61%>"  onclick="buttonClick(this,'<%61%>');return checkData();" type="SUBMIT" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%62%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="<%63%>" onclick="buttonClick(this,'<%63%>');"  type="SUBMIT" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%64%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%65%>"  onclick="buttonClick(this,'<%65%>');return checkData();" type="SUBMIT" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%66%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%67%>" onclick="buttonClick(this,'<%67%>');"  type="SUBMIT" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%68%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -1967,76 +1986,76 @@ function getkey(e)
     
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-      <td width="30%" align="left"><a href="javascript:loadhelp('WLG_wireless','region')" tabindex="-1"><b><%65%></b> </a></td>
-      <%66%>
-      <td width="70%"><font size="4"><b><%67%></b></td>
-      <%68%>
+      <td width="30%" align="left"><a href="javascript:loadhelp('WLG_wireless','region')" tabindex="-1"><b><%69%></b> </a></td>
+      <%70%>
+      <td width="70%"><font size="4"><b><%71%></b></td>
+      <%72%>
     </tr>
     <tr>
-      <td nowrap colspan="2"><%69%>:
-      <%70%>
+      <td nowrap colspan="2"><%73%>:
+      <%74%>
 	<select id="region_select" nowrap="nowrap" name="WRegion" size="1" onchange="chgCh(1)">
-		<option <%71%> value="0">--- <%72%> ---</option>
-		<option <%73%> value="1"><%74%></option>
-		<option <%75%> value="2"><%76%></option>
-		<option <%77%> value="3"><%78%></option>
-		<option <%79%> value="4"><%80%></option>
-		<option <%81%> value="16"><%82%></option>
-		<option <%83%> value="5"><%84%></option>
-		<option <%85%> value="17"><%86%></option>		
-		<option <%87%> value="6"><%88%></option>
-		<option <%89%> value="7"><%90%></option>
-		<option <%91%> value="8"><%92%></option>
-		<option <%93%> value="18"><%94%></option>		
-		<option <%95%> value="9"><%96%></option>
-		<option <%97%> value="12"><%98%></option>
-		<option <%99%> value="19"><%100%></option>
-		<option <%101%> value="20"><%102%></option>
-		<option <%103%> value="21"><%104%></option>
-		<option <%105%> value="22"><%106%></option>
-		<option id="ru_ww" <%107%> value="14"><%108%></option>
-		<option <%109%> value="23"><%110%></option>
-		<option <%111%> value="10"><%112%></option>
-		<option <%113%> value="24"><%114%></option>
-  <option <%115%> value="11"><%116%></option>
-	</select></td></tr>
-      <%117%>
-      <%66%>
-        <tr><td colspan="2" >
-	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
-		<option value="0">--- <%72%> ---</option>
-		<option value="1"><%74%></option> 
-		<option value="2"><%76%></option> 
-		<option value="3"><%78%></option>
-		<option value="10"><%112%></option>   
-		<option value="5"><%84%></option> 
-		<option value="6"><%88%></option> 
-		<option value="9"><%96%></option> 
-		<option value="8"><%92%></option> 
-		<option selected value="7"><%90%></option> 
-		<option value="12"><%118%></option>
-                <option id="ru_jp" value="14"><%108%></option>       
-		<option value="11"><%119%></option>
-	</select></td></tr>
-      <%68%>
-	  <%120%>
-        <tr><td colspan="2" >
-	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
-		<option value="0">--- <%72%> ---</option>
-		<option value="1"><%74%></option> 
-		<option value="2"><%76%></option> 
-		<option value="3"><%78%></option>
-		<option value="5"><%84%></option> 
-		<option value="6"><%88%></option> 
-		<option value="7"><%90%></option> 
-		<option value="8"><%92%></option> 
-		<option value="9"><%96%></option> 
-		<option value="12"><%118%></option>
-		<option value="10"><%112%></option>
-                <option id="ru_na" value="14"><%108%></option>
-		<option selected value="11"><%119%></option>
+		<option <%75%> value="0">--- <%76%> ---</option>
+		<option <%77%> value="1"><%78%></option>
+		<option <%79%> value="2"><%80%></option>
+		<option <%81%> value="3"><%82%></option>
+		<option <%83%> value="4"><%84%></option>
+		<option <%85%> value="16"><%86%></option>
+		<option <%87%> value="5"><%88%></option>
+		<option <%89%> value="17"><%90%></option>		
+		<option <%91%> value="6"><%92%></option>
+		<option <%93%> value="7"><%94%></option>
+		<option <%95%> value="8"><%96%></option>
+		<option <%97%> value="18"><%98%></option>		
+		<option <%99%> value="9"><%100%></option>
+		<option <%101%> value="12"><%102%></option>
+		<option <%103%> value="19"><%104%></option>
+		<option <%105%> value="20"><%106%></option>
+		<option <%107%> value="21"><%108%></option>
+		<option <%109%> value="22"><%110%></option>
+		<option id="ru_ww" <%111%> value="14"><%112%></option>
+		<option <%113%> value="23"><%114%></option>
+		<option <%115%> value="10"><%116%></option>
+		<option <%117%> value="24"><%118%></option>
+  <option <%119%> value="11"><%120%></option>
 	</select></td></tr>
       <%121%>
+      <%70%>
+        <tr><td colspan="2" >
+	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
+		<option value="0">--- <%76%> ---</option>
+		<option value="1"><%78%></option> 
+		<option value="2"><%80%></option> 
+		<option value="3"><%82%></option>
+		<option value="10"><%116%></option>   
+		<option value="5"><%88%></option> 
+		<option value="6"><%92%></option> 
+		<option value="9"><%100%></option> 
+		<option value="8"><%96%></option> 
+		<option selected value="7"><%94%></option> 
+		<option value="12"><%122%></option>
+                <option id="ru_jp" value="14"><%112%></option>       
+		<option value="11"><%123%></option>
+	</select></td></tr>
+      <%72%>
+	  <%124%>
+        <tr><td colspan="2" >
+	<select id="region_select" name="WRegion" size="1" onchange="chgCh(1)" disabled >
+		<option value="0">--- <%76%> ---</option>
+		<option value="1"><%78%></option> 
+		<option value="2"><%80%></option> 
+		<option value="3"><%82%></option>
+		<option value="5"><%88%></option> 
+		<option value="6"><%92%></option> 
+		<option value="7"><%94%></option> 
+		<option value="8"><%96%></option> 
+		<option value="9"><%100%></option> 
+		<option value="12"><%122%></option>
+		<option value="10"><%116%></option>
+                <option id="ru_na" value="14"><%112%></option>
+		<option selected value="11"><%123%></option>
+	</select></td></tr>
+      <%125%>
 <tr>
 <td colspan="2" >        
     <div id="setting_2G" style="display: block;">
@@ -2045,55 +2064,55 @@ function getkey(e)
     <tr>
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr> 
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%122%></b> </a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%126%></b> </a></td></tr>
    <!--
-     <%123%>
+     <%127%>
     <tr>
       <td nowrap colspan="2">
-        <input type="checkbox"  <%124%> name="enable_isolation" value="enable_isolation"> <%125%> </td></tr>
-    <%126%>
+        <input type="checkbox"  <%128%> name="enable_isolation" value="enable_isolation"> <%129%> </td></tr>
+    <%130%>
    -->
      <tr>
       <td nowrap colspan="2">
-      <input type="checkbox"  <%127%> name="ssid_bc" value="ssid_24G_bc"> <%128%> </td></tr>
+      <input type="checkbox"  <%131%> name="ssid_bc" value="ssid_24G_bc"> <%132%> </td></tr>
     <tr>
-      <td width="50%" align="left"><%129%>:</td>
+      <td width="50%" align="left"><%133%>:</td>
       <td width="50%">
-        <input type="text" name="ssid" value="<%130%>" size="20" maxlength="32"></td></tr>
+        <input type="text" name="ssid" value="<%134%>" size="20" maxlength="32"></td></tr>
     <tr>
-      <td nowrap><%131%>:</td>
+      <td nowrap><%135%>:</td>
       <td nowrap>
-          <select name="w_channel" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option></select></td></tr>
+          <select name="w_channel" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option></select></td></tr>
     <tr>
-      <td nowrap><%133%>:</td>
-      <td nowrap><select name="opmode" onchange="chgCh(2);"><%134%></select></td></tr>
+      <td nowrap><%137%>:</td>
+      <td nowrap><select name="opmode" onchange="chgCh(2);"><%138%></select></td></tr>
     <tr>
       
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%135%></b></a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%139%></b></a></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="Disable" onClick="securityCheck(0);"><%136%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="Disable" onClick="securityCheck(0);"><%140%></td></tr>
     <tr>
         <td colspan="2">
             <div id="wep_radio_2G" style="display: block;">
-                <input type="radio" name="security_type" value="WEP" onClick="securityCheck(0);"><%137%>
+                <input type="radio" name="security_type" value="WEP" onClick="securityCheck(0);"><%141%>
             </div>
         </td>
     </tr>    
     <tr>
         <td colspan="2">
             <div id="wpa_radio_2G" style="display: none;">
-                <input type="radio" name="security_type" value="WPA-PSK" <%138%> onClick="securityCheck(0);" ><%139%>
+                <input type="radio" name="security_type" value="WPA-PSK" <%142%> onClick="securityCheck(0);" ><%143%>
             </div>
         </td>
     </tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%138%> onClick="securityCheck(0);"><%140%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%142%> onClick="securityCheck(0);"><%144%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%138%> onClick="securityCheck(0);" ><%141%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%142%> onClick="securityCheck(0);" ><%145%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA-ENTERPRISE" <%138%> onClick="securityCheck(0);" ><%142%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA-ENTERPRISE" <%142%> onClick="securityCheck(0);" ><%146%></td></tr>
     <tr>
         <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2106,13 +2125,13 @@ function getkey(e)
     <div id="wep_2G" style="display: none;">
     <table align="left" border="0" width="100%">
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%143%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%147%></b></a></td></tr>
     <tr>
-      <td nowrap><%144%>:</td>
-      <td nowrap="nowrap"><select name="authAlgm" size=1><option value="automatic"><%145%></option><option value="sharedkey"><%146%></option></select></td></tr>
+      <td nowrap><%148%>:</td>
+      <td nowrap="nowrap"><select name="authAlgm" size=1><option value="automatic"><%149%></option><option value="sharedkey"><%150%></option></select></td></tr>
     <tr>
-      <td nowrap><%147%>:</td>
-      <td nowrap="nowrap"><select name="wepenc" size=1 onchange="setKeys();"><option <%148%> value="1"><%149%></option><option <%150%> value="2"><%151%>
+      <td nowrap><%151%>:</td>
+      <td nowrap="nowrap"><select name="wepenc" size=1 onchange="setKeys();"><option <%152%> value="1"><%153%></option><option <%154%> value="2"><%155%>
       </option>
       </select>
       </td>
@@ -2120,17 +2139,17 @@ function getkey(e)
     <tr>
       <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%152%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%156%></b></a></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
-            <td nowrap="nowrap"><%153%> :<input type="radio"  checked name="wep_key_no" value="1"><input type="text" name="KEY1" maxLength=32 size=34 value="<%154%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[0].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%157%> :<input type="radio"  checked name="wep_key_no" value="1"><input type="text" name="KEY1" maxLength=32 size=34 value="<%158%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[0].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%155%> :<input type="radio" name="wep_key_no" value="2"><input type="text" name="KEY2" maxLength=32 size=34 value="<%156%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[1].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%159%> :<input type="radio" name="wep_key_no" value="2"><input type="text" name="KEY2" maxLength=32 size=34 value="<%160%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[1].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%157%> :<input type="radio" name="wep_key_no" value="3"><input type="text" name="KEY3" maxLength=32 size=34 value="<%158%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[2].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%161%> :<input type="radio" name="wep_key_no" value="3"><input type="text" name="KEY3" maxLength=32 size=34 value="<%162%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[2].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%159%> :<input type="radio" name="wep_key_no" value="4"><input type="text" name="KEY4" maxLength=32 size=34 value="<%160%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[3].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%163%> :<input type="radio" name="wep_key_no" value="4"><input type="text" name="KEY4" maxLength=32 size=34 value="<%164%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[3].checked=true;"></td></tr>
        </td>
     </tr>
     <tr>
@@ -2145,12 +2164,12 @@ function getkey(e)
     <table align="left" border="0" width="100%">
     <tr>
         <td nowrap="nowrap">
-        <%161%>
+        <%165%>
         </td nowrap="nowrap">
     </tr> 
     <tr>
-      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%162%>: </td>
-      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase" size=20 maxLength=64 value="<%163%>">&nbsp;&nbsp;<%164%></td></tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%166%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase" size=20 maxLength=64 value="<%167%>">&nbsp;&nbsp;<%168%></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2163,31 +2182,31 @@ function getkey(e)
     <div id="wpa_en_2G" style="display: none;">
     <table align="left" border="0" width="100%">
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%165%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%169%></b></a></td></tr>
     <tr>
-      <td nowrap><%166%>:</td>
+      <td nowrap><%170%>:</td>
       <td nowrap="nowrap"><select name="encryptmode" size=1>
 <!--
-        <option value="0"><%167%></option>
+        <option value="0"><%171%></option>
 -->        
-        <option value="1"><%168%></option>
-        <option value="2"><%169%></option></select></td></tr>
+        <option value="1"><%172%></option>
+        <option value="2"><%173%></option></select></td></tr>
     <tr>
-      <td nowrap="nowrap"><%170%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%171%>">&nbsp;&nbsp;<%172%></td></tr>    
+      <td nowrap="nowrap"><%174%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%175%>">&nbsp;&nbsp;<%176%></td></tr>    
     <tr>
-    <td nowrap><%173%>:</td>
+    <td nowrap><%177%>:</td>
     <td nowrap  class="num">
         <input type="text" name="RADIUSAddr1_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr2_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr3_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr4_wla" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td></tr>
     <tr>
-      <td nowrap="nowrap"><%174%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%175%>"></td></tr>    
+      <td nowrap="nowrap"><%178%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%179%>"></td></tr>    
     <tr>
-      <td nowrap="nowrap"><%176%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss" size=20 maxLength=130 value="<%177%>"></td></tr>    
+      <td nowrap="nowrap"><%180%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss" size=20 maxLength=130 value="<%181%>"></td></tr>    
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2200,118 +2219,118 @@ function getkey(e)
     <div id="setting_5G" style="display: block;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr> 
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%178%></b> </a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%182%></b> </a></td></tr>
     <!--
-    <%123%>
+    <%127%>
     <tr>
       <td nowrap colspan="2">
-        <input type="checkbox"  <%179%> name="enable_isolation_an" value="enable_isolation_an"> <%125%> </td></tr>
-    <%126%>
+        <input type="checkbox"  <%183%> name="enable_isolation_an" value="enable_isolation_an"> <%129%> </td></tr>
+    <%130%>
    -->
      <tr>
       <td nowrap colspan="2">
-      <input type="checkbox"  <%180%> name="ssid_bc_an" value="ssid_5G_bc"> <%128%> </td></tr>
+      <input type="checkbox"  <%184%> name="ssid_bc_an" value="ssid_5G_bc"> <%132%> </td></tr>
     <tr>
-      <td width="50%" align="left"><%129%>:</td>
+      <td width="50%" align="left"><%133%>:</td>
       <td width="50%">
-        <input type="text" name="ssid_an" value="<%181%>" size="20" maxlength="32"></td></tr>
+        <input type="text" name="ssid_an" value="<%185%>" size="20" maxlength="32"></td></tr>
     <tr>
-      <td nowrap><%131%>:</td>
+      <td nowrap><%135%>:</td>
       <td nowrap>
-<%182%>      
-          <select name="w_channel_an" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%183%>
-<%184%>      
-          <select name="w_channel_an" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%185%>
-
-<%186%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%187%>          
-
-<%188%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%189%>          
+<%186%>      
+          <select name="w_channel_an" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%187%>
+<%188%>      
+          <select name="w_channel_an" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%189%>
 
 <%190%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%191%> 
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%191%>          
 
 <%192%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%193%>         
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%193%>          
 
 <%194%>
-          <select name="w_channel_an" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%195%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%195%> 
 
 <%196%>
-          <select name="w_channel_an" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%197%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%197%>         
 
 <%198%>
-          <select name="w_channel_an" size=1><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%199%>
 
 <%200%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%201%> 
+          <select name="w_channel_an" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%201%>
+
 <%202%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%203%>
+
 <%204%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%205%>           
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%205%> 
 <%206%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%207%>     
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%207%>
 <%208%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%209%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%209%>           
 <%210%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
-<%211%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%211%>     
 <%212%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%213%>
 <%214%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%215%>
 <%216%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%217%>
 <%218%>
-          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%132%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
 <%219%>
+<%220%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%221%>
+<%222%>
+          <select name="w_channel_an" size=1 onClick="ch_selected = 100;" onChange="checkChannel();"><option selected><%136%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
+<%223%>
     <tr>
-      <td nowrap><%133%>:</td>
-      <td nowrap><select name="opmode_an" onchange="chgCh(3);"><%220%></select></td></tr>
+      <td nowrap><%137%>:</td>
+      <td nowrap><select name="opmode_an" onchange="chgCh(3);"><%224%></select></td></tr>
     <tr>
       
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%135%></b></a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%139%></b></a></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" onClick="securityCheck(1);"><%136%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" onClick="securityCheck(1);"><%140%></td></tr>
     <tr>
         <td colspan="2">
         <div id="wep_radio_5G" style="display: block;">
-        <input type="radio" name="security_type_an" value="WEP" onClick="securityCheck(1);"><%137%>
+        <input type="radio" name="security_type_an" value="WEP" onClick="securityCheck(1);"><%141%>
         </div>
         </td>
     </tr>    
     <tr>
         <td colspan="2">
         <div id="wpa_radio_5g" style="display: block;">
-        <input type="radio" name="security_type_an" value="WPA-PSK" <%221%> onClick="securityCheck(1);" ><%139%>
+        <input type="radio" name="security_type_an" value="WPA-PSK" <%225%> onClick="securityCheck(1);" ><%143%>
         </div>
         </td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" id="5gAes" value="WPA2-PSK" <%221%> onClick="securityCheck(1);"><%140%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gAes" value="WPA2-PSK" <%225%> onClick="securityCheck(1);"><%144%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" id="5gTA" value="AUTO-PSK" <%221%> onClick="securityCheck(1);" ><%141%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gTA" value="AUTO-PSK" <%225%> onClick="securityCheck(1);" ><%145%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" id="5gEtp" value="WPA-ENTERPRISE" <%221%> onClick="securityCheck(1);" ><%142%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" id="5gEtp" value="WPA-ENTERPRISE" <%225%> onClick="securityCheck(1);" ><%146%></td></tr>
 	<tr>
         <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2324,13 +2343,13 @@ function getkey(e)
     <div id="wep_5G" style="display: none;">
     <table align="left" border="0" width="100%">
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%143%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%147%></b></a></td></tr>
     <tr>
-      <td nowrap><%144%>:</td>
-      <td nowrap="nowrap"><select name="authAlgm_an" size=1><option value="automatic"><%145%></option><option value="sharedkey"><%146%></option></select></td></tr>
+      <td nowrap><%148%>:</td>
+      <td nowrap="nowrap"><select name="authAlgm_an" size=1><option value="automatic"><%149%></option><option value="sharedkey"><%150%></option></select></td></tr>
     <tr>
-      <td nowrap><%147%>:</td>
-      <td nowrap="nowrap"><select name="wepenc_an" size=1 onchange="setKeys();"><option <%222%> value="1"><%149%></option><option <%223%> value="2"><%151%>
+      <td nowrap><%151%>:</td>
+      <td nowrap="nowrap"><select name="wepenc_an" size=1 onchange="setKeys();"><option <%226%> value="1"><%153%></option><option <%227%> value="2"><%155%>
       </option>
       </select>
       </td>
@@ -2338,17 +2357,17 @@ function getkey(e)
     <tr>
       <td nowrap="nowrap" colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%152%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wepkey')" tabindex="-1"><b><%156%></b></a></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
-            <td nowrap="nowrap"><%153%> :<input type="radio"  checked name="wep_key_no_an" value="1"><input type="text" name="KEY1_an" maxLength=32 size=34 value="<%224%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%157%> :<input type="radio"  checked name="wep_key_no_an" value="1"><input type="text" name="KEY1_an" maxLength=32 size=34 value="<%228%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%155%> :<input type="radio" name="wep_key_no_an" value="2"><input type="text" name="KEY2_an" maxLength=32 size=34 value="<%225%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%159%> :<input type="radio" name="wep_key_no_an" value="2"><input type="text" name="KEY2_an" maxLength=32 size=34 value="<%229%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%157%> :<input type="radio" name="wep_key_no_an" value="3"><input type="text" name="KEY3_an" maxLength=32 size=34 value="<%226%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%161%> :<input type="radio" name="wep_key_no_an" value="3"><input type="text" name="KEY3_an" maxLength=32 size=34 value="<%230%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%159%> :<input type="radio" name="wep_key_no_an" value="4"><input type="text" name="KEY4_an" maxLength=32 size=34 value="<%227%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%163%> :<input type="radio" name="wep_key_no_an" value="4"><input type="text" name="KEY4_an" maxLength=32 size=34 value="<%231%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
        </td>
     </tr>
     <tr>
@@ -2364,12 +2383,12 @@ function getkey(e)
     <table align="left" border="0" width="100%">
     <tr>
         <td nowrap="nowrap">
-        <%228%>
+        <%232%>
         </td nowrap="nowrap">
     </tr> 
     <tr>
-      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%162%>: </td>
-      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" size=20 maxLength=64 value="<%229%>">&nbsp;&nbsp;<%164%></td></tr>
+      <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%166%>: </td>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" size=20 maxLength=64 value="<%233%>">&nbsp;&nbsp;<%168%></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2382,31 +2401,31 @@ function getkey(e)
     <div id="wpa_en_5G" style="display: none;">
     <table align="left" border="0" width="100%">
     <tr>
-      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%165%></b></a></td></tr>
+      <td nowrap="nowrap" colspan="2"><a href="javascript:loadhelp('WLG_wireless','wep')" tabindex="-1"><b><%169%></b></a></td></tr>
     <tr>
-      <td nowrap><%166%>:</td>
+      <td nowrap><%170%>:</td>
       <td nowrap="nowrap"><select name="encryptmode_an" size=1>
 <!--        
-        <option value="0"><%167%></option>
+        <option value="0"><%171%></option>
 -->
-        <option value="1"><%168%></option>
-        <option value="2"><%169%></option></select></td></tr>
+        <option value="1"><%172%></option>
+        <option value="2"><%173%></option></select></td></tr>
     <tr>
-      <td nowrap="nowrap"><%170%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%230%>">&nbsp;&nbsp;<%172%></td></tr>    
+      <td nowrap="nowrap"><%174%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%234%>">&nbsp;&nbsp;<%176%></td></tr>    
     <tr>
-    <td nowrap><%173%>:</td>
+    <td nowrap><%177%>:</td>
     <td nowrap  class="num">
         <input type="text" name="RADIUSAddr1_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr2_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr3_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr4_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td></tr>
     <tr>
-      <td nowrap="nowrap"><%174%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%231%>"></td></tr>    
+      <td nowrap="nowrap"><%178%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%235%>"></td></tr>    
     <tr>
-      <td nowrap="nowrap"><%176%>:</td>
-      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss_wlg" size=20 maxLength=130 value="<%232%>"></td></tr>    
+      <td nowrap="nowrap"><%180%>:</td>
+      <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss_wlg" size=20 maxLength=130 value="<%236%>"></td></tr>    
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -2420,51 +2439,51 @@ function getkey(e)
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%233%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%237%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%234%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%238%> </span>
       </div>
 
 
  
-  <input type="hidden" name="tempSetting" value="<%235%>">
-  <input type="hidden" name="tempRegion" value="<%236%>">
-  <input type="hidden" name="setRegion" value="<%20%>">
-  <input type="hidden" name="wds_enable" value="<%237%>">    
-  <input type="hidden" name="wds_enable_an" value="<%238%>">    
+  <input type="hidden" name="tempSetting" value="<%239%>">
+  <input type="hidden" name="tempRegion" value="<%240%>">
+  <input type="hidden" name="setRegion" value="<%24%>">
+  <input type="hidden" name="wds_enable" value="<%241%>">    
+  <input type="hidden" name="wds_enable_an" value="<%242%>">    
   <input type="hidden" name="only_mode" value="0">
-  <input type="hidden" name="show_wps_alert" value="<%239%>">
-  <input type="hidden" name="security_type_2G" value="<%240%>">
-  <input type="hidden" name="security_type_5G" value="<%42%>">
+  <input type="hidden" name="show_wps_alert" value="<%243%>">
+  <input type="hidden" name="security_type_2G" value="<%244%>">
+  <input type="hidden" name="security_type_5G" value="<%46%>">
   <input type="hidden" name="gui_security_type_5G" value="">
-  <input type="hidden" name="init_security_type_2G" value="<%240%>">
-  <input type="hidden" name="init_security_type_5G" value="<%42%>">
-  <input type="hidden" name="initChannel" value="<%241%>">
-  <input type="hidden" name="initAuthType" value="<%242%>">
-  <input type="hidden" name="initDefaultKey" value="<%243%>">
-  <input type="hidden" name="initChannel_an" value="<%21%>">
-  <input type="hidden" name="initAuthType_an" value="<%244%>">
-  <input type="hidden" name="initDefaultKey_an" value="<%245%>">
-  <input type="hidden" name="telec_dfs_ch_enable" value="<%246%>">  
-  <input type="hidden" name="ce_dfs_ch_enable" value="<%247%>"> 
-  <input type="hidden" name="fcc_dfs_ch_enable" value="<%248%>"> 
-  <input type="hidden" name="auto_channel_5G" value="<%249%>">  
-  <input type="hidden" name="support_ac_mode" value="<%250%>">
-  <input type="hidden" name="board_id" value="<%251%>">
-  <input type="hidden" name="enable_band_steering" value="<%252%>">
-  <%253%>
+  <input type="hidden" name="init_security_type_2G" value="<%244%>">
+  <input type="hidden" name="init_security_type_5G" value="<%46%>">
+  <input type="hidden" name="initChannel" value="<%245%>">
+  <input type="hidden" name="initAuthType" value="<%246%>">
+  <input type="hidden" name="initDefaultKey" value="<%247%>">
+  <input type="hidden" name="initChannel_an" value="<%25%>">
+  <input type="hidden" name="initAuthType_an" value="<%248%>">
+  <input type="hidden" name="initDefaultKey_an" value="<%249%>">
+  <input type="hidden" name="telec_dfs_ch_enable" value="<%250%>">  
+  <input type="hidden" name="ce_dfs_ch_enable" value="<%251%>"> 
+  <input type="hidden" name="fcc_dfs_ch_enable" value="<%252%>"> 
+  <input type="hidden" name="auto_channel_5G" value="<%253%>">  
+  <input type="hidden" name="support_ac_mode" value="<%254%>">
+  <input type="hidden" name="board_id" value="<%255%>">
+  <input type="hidden" name="enable_band_steering" value="<%256%>">
+  <%257%>
   <input type="hidden" name="fw_sku" value="SKU_WW">
-  <%254%>
-  <%120%>
+  <%258%>
+  <%124%>
   <input type="hidden" name="fw_sku" value="SKU_NA">
-  <%121%>
-  <input type="hidden" name="wla_radius_ipaddr" value="<%255%>">
-  <input type="hidden" name="wlg_radius_ipaddr" value="<%256%>">
-  <input type="hidden" name="wla_ent_secu_type" value="<%257%>">  
-  <input type="hidden" name="wlg_ent_secu_type" value="<%258%>">  
-  <INPUT type="hidden" name="wan_ipaddr" value= "<%259%>">
-  <INPUT type="hidden" name="wan_netmask" value= "<%260%>">  
+  <%125%>
+  <input type="hidden" name="wla_radius_ipaddr" value="<%259%>">
+  <input type="hidden" name="wlg_radius_ipaddr" value="<%260%>">
+  <input type="hidden" name="wla_ent_secu_type" value="<%261%>">  
+  <input type="hidden" name="wlg_ent_secu_type" value="<%262%>">  
+  <INPUT type="hidden" name="wan_ipaddr" value= "<%263%>">
+  <INPUT type="hidden" name="wan_netmask" value= "<%264%>">  
 <a name="helpframe-anchor"></a>
 </form>
 
