@@ -773,7 +773,7 @@ function detectEnter(type, e)
 function detectOS() 
 {   // detect the system type of user computer
     var sUserAgent = navigator.userAgent;  
-    var isWin = (navigator.platform == "Win32") || (navigator.platform == "Windows");  
+    var isWin = (navigator.platform == "Win32") || (navigator.platform == "Win64") || (navigator.platform == "Windows");  
     var isMac = (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh") || (navigator.platform == "MacIntel");  
     if (isMac) return "Mac";  
     var isUnix = (navigator.platform == "X11") && !isWin && !isMac;  

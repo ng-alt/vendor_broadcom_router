@@ -2538,6 +2538,24 @@ sysinit(void)
         if (!nvram_match("pci/2/1/mcsbw205ghpo", "0xBA768600"))
             nvram_set("pci/2/1/mcsbw205ghpo", "0xBA768600");
 #endif
+#if (defined R6400)
+
+		if(acosNvramConfig_match("sku_name", "WW") && acosNvramConfig_match("wla_region","5"))
+		{
+				nvram_set("pci/2/1/mcsbw205gmpo","0x10000000");
+				nvram_set("pci/2/1/mcsbw405gmpo","0x11112222");
+				nvram_set("pci/2/1/mcsbw805gmpo","0x5555AAAA");		
+				nvram_set("pci/2/1/mcsbw805glpo","0x0");
+		}
+		else if(acosNvramConfig_match("sku_name", "NA") && acosNvramConfig_match("wla_region","11"))
+		{
+				nvram_set("pci/2/1/mcsbw205gmpo","0xECA86400");
+				nvram_set("pci/2/1/mcsbw405gmpo","0xECA86400");
+				nvram_set("pci/2/1/mcsbw805gmpo","0xFEA86400");	
+				nvram_set("pci/2/1/mcsbw805glpo","0x5555AAAA");				
+		}
+
+#endif
         /* foxconn added end by Bob 03/10/2014, BRCM's workaround for bridge mode connect fail issue. */
         
         

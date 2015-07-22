@@ -25,20 +25,20 @@ function checkData()
 
     if(isNumeric(cf.Port_1,65535))
     {
-        msg+= "<%2536%>\n";
+        msg+= "<%2545%>\n";
         alert(msg);
         return false;
     }
 
     if(isNumeric(cf.Port_2,65535))
     {
-        msg+= "<%2536%>\n";
+        msg+= "<%2545%>\n";
         alert(msg);
         return false;
     }
 
     if(i > j)
-	    msg+= "<%2536%>\n";
+	    msg+= "<%2545%>\n";
 
 	if (msg.length > 1)
 	{
@@ -55,19 +55,19 @@ function checkData()
 <FORM action="pppoe2_port.cgi" method="post" name="formname">
   <TABLE border=0 width="100%">
     <TR>
-      <TD colspan="2" align="left"><h1><%2514%></h1></TD></TR>
+      <TD colspan="2" align="left"><h1><%2523%></h1></TD></TR>
     <tr> <!-- RULE -->
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
 
     <TR>
-      <TD align="left" nowrap> <%2532%></td>
-      <td><INPUT type="text" name="trigger" maxlength="20" value="<%590%>" onfocus="this.blur()"></TD></TR>
+      <TD align="left" nowrap> <%2541%></td>
+      <td><INPUT type="text" name="trigger" maxlength="20" value="<%592%>" onfocus="this.blur()"></TD></TR>
     <TR>
-      <TD align="left" nowrap> <%2537%></td>
-      <td align="left" ><input type="text" name="Port_1" class="num" size="5" maxlength="5" value=<%2533%>> - <input type="text" name="Port_2" class="num" size="5" maxlength="5" value=<%2535%>></TD></TR>
+      <TD align="left" nowrap> <%2546%></td>
+      <td align="left" ><input type="text" name="Port_1" class="num" size="5" maxlength="5" value=<%2542%>> - <input type="text" name="Port_2" class="num" size="5" maxlength="5" value=<%2544%>></TD></TR>
     <tr>
-      <TD align="left" nowrap> <%610%></td>
-      <td><select name="Protocol"><option value="TCP/UDP"><%613%></option><option value="TCP"><%611%></option><option value="UDP"><%612%></option></select></td>
+      <TD align="left" nowrap> <%612%></td>
+      <td><select name="Protocol"><option value="TCP/UDP"><%615%></option><option value="TCP"><%613%></option><option value="UDP"><%614%></option></select></td>
     </TR>
     <tr> <!-- RULE -->
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
@@ -75,7 +75,7 @@ function checkData()
       <td colspan="2" align="center">
         <INPUT type="submit" name="accept" value=" <%65%> " onclick="return checkData()">
         <INPUT type="button" name="cancel" value=" <%67%> " onclick="location.href='BAS_basic.htm'">
-    <input type="hidden" name="policyIndex" value=<%2534%>>
+    <input type="hidden" name="policyIndex" value=<%2543%>>
 </form>
 </body>
 </html>

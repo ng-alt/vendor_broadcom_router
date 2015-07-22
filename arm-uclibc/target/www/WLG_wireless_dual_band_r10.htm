@@ -39,7 +39,7 @@ var initialized = false;
 var StartChannel = new Array(  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 var FinishChannel = new Array(11,13,13,13,11,13,13,13,13,13,13,13,11,13,13,13,13,13,13,13,13,11,11);
 //<%19%>
- 
+var dfs_note=' (DFS)'; 
 <%20%>
 var Band1Channel_20M = new Array (36,40,44,48);
 var Band2Channel_20M = new Array (52,56,60,64);
@@ -721,7 +721,8 @@ function setChannel()
         cf.w_channel_an.options.length = 100;
         if (index != 5 && index != 14 ) // No band 1, 2, 3 for China, Middle East(Iran/Lebanon/Qater)
         {
-            if(index == 21) /* Taiwan */ 
+		/*
+            if(index == 21) // Taiwan  
             {
                 for (b1=0; b1<Band1Channel_TW_40M.length; b1++)
                 {
@@ -730,6 +731,7 @@ function setChannel()
                 }                        
             }
             else
+		*/
             {    
                 for (b1=0; b1<Band1Channel_40M.length; b1++)
                 {
@@ -750,34 +752,18 @@ function setChannel()
                 if (cf.telec_dfs_ch_enable.value == "1" )
                 {
                     // Israel not support 40M
-                    /*
-                    if (index == 6)
-                    {
-                    	   for (b2=0; b2<Band2Channel_40M.length; b2++)
-                        {
-                            cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2];
-                            cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_40M[b2];
-                        }
-                       
-                        for (b3=0; b3<Band3Channel_40M.length; b3++)
-                        {
-                            cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_40M[b3];
-                            cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_40M[b3];
-                        }
-                    }
-                    */
                    if(index == 9 || (wlaRegion == 7 && sku == "JP")) /* Japan */
                    {
                     	for (b2=0; b2<Band2Channel_40M.length; b2++)
 						          {
-                            cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2];
+                            cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2]+dfs_note;
                             cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_40M[b2];
                       }
                       if(cf.opmode_an.selectedIndex == 2)
 					            {
 							            for (b3=0; b3<Band3Channel_JP_80M.length; b3++)
 							            {
-								              cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_80M[b3];
+								              cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_80M[b3]+dfs_note;
 								              cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_JP_80M[b3];
 							            }	
 					            }
@@ -785,7 +771,7 @@ function setChannel()
 					            {
 							            for (b3=0; b3<Band3Channel_JP_40M.length; b3++)
 							            {
-								              cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_40M[b3];
+								              cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_40M[b3]+dfs_note;
 								              cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_JP_40M[b3];
 							            }
 						          }
@@ -794,11 +780,11 @@ function setChannel()
                 
                 if (cf.ce_dfs_ch_enable.value == "1" )
                 {
-                    if (index == 4 || index == 6) /* Canda, Europe */
+                    if (index == 6) /* Europe */
                     {
 					              for (b2=0; b2<Band2Channel_40M.length; b2++)
                         {
-                            cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2];
+                            cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_40M[b2]+dfs_note;
                             cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_40M[b2];
 			                  }
                     
@@ -806,7 +792,7 @@ function setChannel()
                         {                 
                             for (b3=0; b3<Band3Channel_CE_80M.length; b3++)
                             {
-                                cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_CE_80M[b3];
+                                cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_CE_80M[b3]+dfs_note;
                                 cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_CE_80M[b3];
                             }
                         }
@@ -814,7 +800,7 @@ function setChannel()
                         {
                             for (b3=0; b3<Band3Channel_40M.length; b3++)
                             {
-                                cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_40M[b3];
+                                cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_40M[b3]+dfs_note;
                                 cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_40M[b3];
                             }
                         }
@@ -823,9 +809,9 @@ function setChannel()
                 }
 	
 			
-	              if (cf.fcc_dfs_ch_enable.value == "1" )
+	            if (cf.fcc_dfs_ch_enable.value == "1" )
                 {
-                    if(index == 22 || wlaRegion == 11) 
+                    if(index == 4 || index == 22 || wlaRegion == 11) 
                     { 
                         for (b2=0; b2<Band2Channel_40M.length; b2++)       
                         {
@@ -834,20 +820,12 @@ function setChannel()
                         }
                         for (b3=0; b3<Band3Channel_CA_40M.length; b3++)
                         {
-                            cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_CA_40M[b3];
+                            cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_CA_40M[b3]+dfs_note;
                             cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_CA_40M[b3];
                         }      
                     }
                     
-                    if(index == 6) /* Europe */
-                    {                 
-                        for (b3=0; b3<Band3Channel_40M.length; b3++)
-                        {
-                           cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_40M[b3];
-                           cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_40M[b3];
-                        }
-                    }
-				        }
+				}
             }
         }
         
@@ -890,7 +868,8 @@ function setChannel()
         cf.w_channel_an.options.length = 100;
         if (index != 5 && index != 14 ) // No band 1, 2, 3 for China, Middle East(Iran/Lebanon/Qater)
         {
-            if(index == 21) /* Taiwan */ 			
+            /*
+			if(index == 21) // Taiwan 		
             {
                 if(cf.opmode_an.selectedIndex == 0)
                 {
@@ -910,6 +889,7 @@ function setChannel()
                 }
             }
             else
+			*/
             {      
                 for (b1=0; b1<Band1Channel_20M.length; b1++)
                 {
@@ -929,11 +909,11 @@ function setChannel()
             
             if (cf.telec_dfs_ch_enable.value == "1" )
             {
-                if (index == 9 || index == 8 || (wlaRegion == 7 && sku == "JP")) /* Irael, Japan */
+                if (index == 9 || (wlaRegion == 7 && sku == "JP")) /* Irael, Japan */
                 {
                 	   for (b2=0; b2<Band2Channel_20M.length; b2++)
                     {
-                        cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2];
+                        cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2]+dfs_note;
                         cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_20M[b2];
                     }
                     
@@ -941,7 +921,7 @@ function setChannel()
                     {
                         for (b3=0; b3<Band3Channel_JP_20M.length; b3++)
                         {
-                            cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_20M[b3];
+                            cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_JP_20M[b3]+dfs_note;
                             cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_JP_20M[b3];
                         }
                     }
@@ -955,13 +935,13 @@ function setChannel()
                 {
                 	for (b2=0; b2<Band2Channel_20M.length; b2++)
                     {
-                        cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2];
+                        cf.w_channel_an.options[b0+b1+b2].text = Band2Channel_20M[b2]+dfs_note;
                         cf.w_channel_an.options[b0+b1+b2].value = Band2Channel_20M[b2];
                     }
                     
                     for (b3=0; b3<Band3Channel_20M.length; b3++)
                     {
-                        cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_20M[b3];
+                        cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_20M[b3]+dfs_note;
                         cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_20M[b3];
                     }
                 }
@@ -969,7 +949,7 @@ function setChannel()
 			
             if (cf.fcc_dfs_ch_enable.value == "1" )
             {
-	            if(index == 22 || wlaRegion == 11)
+	            if(index == 4 || index == 22 || wlaRegion == 11)
                 {
                 	for (b2=0; b2<Band2Channel_20M.length; b2++)       
                     {
@@ -978,7 +958,7 @@ function setChannel()
                     }
                     for (b3=0; b3<Band3Channel_20M.length; b3++)
                     {
-                        cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_20M[b3];
+                        cf.w_channel_an.options[b0+b1+b2+b3].text = Band3Channel_20M[b3]+dfs_note;
                         cf.w_channel_an.options[b0+b1+b2+b3].value = Band3Channel_20M[b3];
                     }                              
                 }
