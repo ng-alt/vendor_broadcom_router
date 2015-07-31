@@ -96,16 +96,20 @@
     var type_icon=["icon/Device_0.png","icon/Amazon_Kindle_1.png","icon/Android_Device_2.png","icon/Android_Phone_3.png","icon/Android_Tablet_4.png","icon/Apple_Airport_Express_5.png","icon/Blu-ray_player_6.png","icon/Bridge_7.png","icon/Cable_STB_8.png","icon/Camera_9.png","icon/Router_10.png","icon/DVR_11.png","icon/Gaming_Console_12.png","icon/iMac_13.png","icon/iPad_14.png","icon/iPad_mini_15.png","icon/iPhone_5_16.png","icon/iPhone_17.png","icon/iPod_Touch_18.png","icon/Linux_PC_19.png","icon/Mac_mini_20.png","icon/Mac_Pro_21.png","icon/Mac_Book_22.png","icon/Media_Device_23.png","icon/Network_Device_24.png","icon/Other_STB_25.png","icon/Powerline_26.png","icon/Printer_27.png","icon/Repeater_28.png","icon/Satellite_STB_29.png","icon/scanner_30.png","icon/Sling_box_31.png","icon/Smart_phone_32.png","icon/Storage_NAS_33.png","icon/Switch_34.png","icon/TV_35.png","icon/Tablet_36.png","icon/Unix_PC_37.png","icon/Windows_PC_38.png","icon/Surface_39.png","icon/Wifi_Extender_40.png","icon/Apple_TV_41.png","icon/AV_Receiver_42.png","icon/Chromcast_43.png","icon/Google_Nexus_5_44.png","icon/Google_Nexus_7_45.png","icon/Google_Nexus_10_46.png","icon/Other_47.png","icon/WN1000RP_48.png","icon/WN2500RP_49.png","icon/VoIP_50.png","icon/iPhone6_51.png"];
 function loadSettings()
 {
-    var prio=<%2548%>;
-    var devType=<%2549%>;
+    var prio=<%2550%>;
+    var devType=<%2551%>;
     var enable_iqos = document.getElementsByName("enable_iqos");
-    
+    var ap_mode_flag = document.getElementsByName("enable_apmode");
+    var sta_mode_flag = document.getElementsByName("enable_stamode");
+    var repeater_flag = document.getElementsByName("repeater");
+    var repeater_an_flag = document.getElementsByName("repeater_an");
+
     if(devType==0)
         devType=47;
    
     $("#priority").attr("value",prio);
     
-    if(enable_iqos[0].value == "0"){
+    if(enable_iqos[0].value == "0" || ap_mode_flag[0].value=="1" || repeater_flag[0].value=="1" || repeater_an_flag[0].value=="1"){
         var iqos_item = document.getElementsByName("iqos_item");
         for(i=0 ; i<$('tr[name=iqos_item]').length ; i++)
         {
@@ -161,13 +165,13 @@ function changeIcon(list)
 <form id="target"  name="frmLan" method="POST" action="devices.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%2550%></div>
+<div class="subhead2"> <%2552%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="Apply" onclick="set_mac();buttonClick(this,'Apply');return checkData()"  type="SUBMIT" name="Apply" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2551%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="Back" onclick="window.location.href='DEV_redirect.htm';"  type="BUTTON" name="Back" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2541%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="Apply" onclick="set_mac();buttonClick(this,'Apply');return checkData()"  type="SUBMIT" name="Apply" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2553%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="Back" onclick="window.location.href='DEV_redirect.htm';"  type="BUTTON" name="Back" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2543%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -177,20 +181,20 @@ function changeIcon(list)
 <tr><td colspan="3" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr height="30px">
-<td nowrap><%2552%></td>
-<td nowrap colspan="2"><%2553%></td>
+<td nowrap><%2554%></td>
+<td nowrap colspan="2"><%2555%></td>
 </tr>
 <tr height="30px">
 <td nowrap><%743%></td>
-<td nowrap colspan="2"><span id="mac" name="mac"><%2554%></span></td>
+<td nowrap colspan="2"><span id="mac" name="mac"><%2556%></span></td>
 </tr>
 <tr height="30px">
 <td nowrap><%744%></td>
-<td nowrap colspan="2"><input type="text" size="24" maxlength="24" name="devName" value="<%2555%>"></td>
+<td nowrap colspan="2"><input type="text" size="24" maxlength="24" name="devName" value="<%2557%>"></td>
 </tr>
 <tr name="iqos_item" height="30px">
 <td nowrap><%1921%></td>
-<td nowrap colspan="2"><select name="priority" id="priority"><option value=3><%2556%></option><option value=2><%2557%></option><option value=1><%2558%></option><option value=0><%2559%></option></select></td>
+<td nowrap colspan="2"><select name="priority" id="priority"><option value=3><%2558%></option><option value=2><%2559%></option><option value=1><%2560%></option><option value=0><%2561%></option></select></td>
 </tr>
 <tr name="iqos_item">
 <td nowrap style="vertical-align:top;" >Device Type</td>
@@ -215,15 +219,19 @@ function changeIcon(list)
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
       </div>
 
 
-    <input name="enable_iqos" type="hidden" value= "<%2004%>">
-    <input name="select_dev" type="hidden" value= "<%2547%>">
+    <input name="enable_iqos" type="hidden" value= "<%2006%>">
+    <input type="hidden" name="repeater" value="<%429%>">
+    <input type="hidden" name="repeater_an" value="<%430%>">
+    <input type="hidden" name="enable_apmode" value="<%431%>">   
+    <input type="hidden" name="enable_stamode" value="<%432%>">   
+    <input name="select_dev" type="hidden" value= "<%2549%>">
     <input name="page_submit" type="hidden" value= "edit_dev">
     <input name="select_mac" type="hidden" value= "">
 </form>

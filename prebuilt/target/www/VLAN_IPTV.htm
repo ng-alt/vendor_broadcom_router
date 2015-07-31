@@ -99,6 +99,11 @@ function chgSel(index)
     return true;
 }
 
+var is_dual_5g=0;
+<%2965%>
+is_dual_5g=1;
+<%2966%>
+
 function loadSettings()
 {
     var cf = document.forms[0];
@@ -172,7 +177,7 @@ function loadSettings()
     else
         cf.iptv_ports_7.checked=false;
 
-<%2961%>
+<%2965%>
     if(iptv_interface & 0x100)
         cf.iptv_ports_8.checked=true;
     else
@@ -183,7 +188,7 @@ function loadSettings()
     else
         cf.iptv_ports_9.checked=false;
 
-<%2962%>
+<%2966%>
 }
 
 function load_vlan_rule_enable()
@@ -350,12 +355,12 @@ function checkData()
         if( (!cf.iptv_ports_0.checked) && (!cf.iptv_ports_1.checked) && (!cf.iptv_ports_2.checked) &&
             (!cf.iptv_ports_3.checked) && (!cf.iptv_ports_4.checked) && (!cf.iptv_ports_5.checked) &&
             (!cf.iptv_ports_6.checked) &&(!cf.iptv_ports_7.checked) 
-<%2963%>
+<%2965%>
             &&(!cf.iptv_ports_8.checked) && (!cf.iptv_ports_9.checked)
-<%2964%>
+<%2966%>
             )
         {
-            alert("<%2965%>");
+            alert("<%2967%>");
             return false;
         }
     }
@@ -365,12 +370,12 @@ function checkData()
         if( (cf.iptv_ports_0.checked) && (cf.iptv_ports_1.checked) && (cf.iptv_ports_2.checked) &&
             (cf.iptv_ports_3.checked) && (cf.iptv_ports_4.checked) && (cf.iptv_ports_5.checked) &&
             (cf.iptv_ports_6.checked) &&(cf.iptv_ports_7.checked) 
-<%2963%>
+<%2965%>
             &&(cf.iptv_ports_8.checked) && (cf.iptv_ports_9.checked)
-<%2964%>
+<%2966%>
             )
         {
-            alert("<%2966%>");
+            alert("<%2968%>");
             return false;
         }
     }
@@ -406,7 +411,7 @@ function confirmDel()
     if ( cf.select.value == 10)
         rule_name = vlan_rule[10];
         
-    if(!confirm("<%2967%>" + rule_name + " ?"))
+    if(!confirm("<%2969%>" + rule_name + " ?"))
         return false;
     return true;    
 }
@@ -435,7 +440,7 @@ function confirmDel()
   			<table style="border-collapse:collapse;width:97%">
           <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
           <tr>
-            <td><input type="checkbox" name="vlan_iptv_enable" value="enable" onclick="vlan_iptv_enable_click();"><%2968%></td>
+            <td><input type="checkbox" name="vlan_iptv_enable" value="enable" onclick="vlan_iptv_enable_click();"><%2970%></td>
           </tr>
           <tr>
             <td colspan="2" nowrap style="padding-left:40px"> 
@@ -443,7 +448,7 @@ function confirmDel()
                 <table border="0" cellpadding="2" cellspacing="0" width="100%">
   	              <tr>
   	                <td>
-                      <input type="radio" name="vlan_iptv_select" value="iptv_enable" onClick="check_iptv_checkbox();"><b> <%2969%></b> 
+                      <input type="radio" name="vlan_iptv_select" value="iptv_enable" onClick="check_iptv_checkbox();"><b> <%2971%></b> 
                     </td>
                   </tr>
                   <tr>
@@ -454,8 +459,8 @@ function confirmDel()
                       <div id="iptv_check" style="display: block;">
                         <table border="1" cellpadding="2" cellspacing="0" width="100%" style="">
                           <tr>
-                            <td nowrap align="center"><span class="thead"><%2970%></span></td>
-                            <td nowrap align="center"><span class="thead"><%2971%></span></td>
+                            <td nowrap align="center"><span class="thead"><%2972%></span></td>
+                            <td nowrap align="center"><span class="thead"><%2973%></span></td>
                           </tr>
                           <tr>            
                             <td>
@@ -480,31 +485,12 @@ function confirmDel()
                                   <td align="center">
                                     <input type="checkbox" name="iptv_ports_4">WiFi-2.4G
                                     <input type="checkbox" name="iptv_ports_5">WiFi-5G
-<%2972%>
-                                  </td>
-                                </tr>
-                                <tr>            
-                                  <td align="center">
-                                    <input type="checkbox" name="iptv_ports_6">Guest-2.4G
-                                    <input type="checkbox" name="iptv_ports_7">Guest-5G
-                                  </td>
-                                </tr>
-                             
-<%2973%>
-<%1280%>
-                                    <input type="checkbox" name="iptv_ports_6">WiFi-5G-2
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td align="center">
-                                    <input type="checkbox" name="iptv_ports_7">Guest-2.4G
-                                    <input type="checkbox" name="iptv_ports_8">Guest-5G
-                                    <input type="checkbox" name="iptv_ports_9">Guest-5G-2
+<script>if(is_dual_5g!=1) document.write('</td></tr><tr><td align=\"center\"><input type=\"checkbox" name=\"iptv_ports_6\">Guest-2.4G<input type=\"checkbox\" name=\"iptv_ports_7\">Guest-5G');</script>
+<script>if(is_dual_5g==1) document.write('<input type=\"checkbox\" name=\"iptv_ports_6\">WiFi-5G-2</td></tr><tr><td align=\"center\"><input type=\"checkbox\" name=\"iptv_ports_7\">Guest-2.4G<input type=\"checkbox\" name=\"iptv_ports_8\">Guest-5G<input type=\"checkbox\" name=\"iptv_ports_9\">Guest-5G-2');</script>
                                   </td>
                                 </tr>
                               </table>
                             </td>
-<%1289%>          
                           </tr>
                         </table>
                       </div>
@@ -530,8 +516,8 @@ function confirmDel()
                             <td nowrap align="center"><span class="thead"><%2976%></span></td>
                             <td nowrap align="center"><span class="thead"><%2977%></span></td>
                             <td nowrap align="center"><span class="thead"><%2978%></span></td>
-                            <td nowrap align="center"><span class="thead"><%2970%></span></td>
-                            <td nowrap align="center"><span class="thead"><%2971%></span></td>
+                            <td nowrap align="center"><span class="thead"><%2972%></span></td>
+                            <td nowrap align="center"><span class="thead"><%2973%></span></td>
                           </tr>
                           <%2979%>     
                         </table>
@@ -563,10 +549,10 @@ function confirmDel()
         <img class="subfooter-image" src="img/subhead2-bottom.gif">
       <div class="subhead2-bottom" >
       <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-      <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+      <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
       <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-      <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
+      <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
     </div>
 	  
 <input type="hidden" name="select" value="-1">

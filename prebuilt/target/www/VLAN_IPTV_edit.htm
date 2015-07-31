@@ -143,9 +143,9 @@ function checkData()
     if((!cf.vlan_ports_0.checked) && (!cf.vlan_ports_1.checked) && (!cf.vlan_ports_2.checked)
          && (!cf.vlan_ports_3.checked) && (!cf.vlan_ports_4.checked) && (!cf.vlan_ports_5.checked)
          && (!cf.vlan_ports_6.checked) && (!cf.vlan_ports_7.checked)
-<%2963%>
+<%2965%>
          && (!cf.vlan_ports_8.checked) && (!cf.vlan_ports_9.checked)
-<%2964%>
+<%2966%>
          )
     {
         alert("<%2996%>");
@@ -155,9 +155,9 @@ function checkData()
     if((cf.vlan_ports_0.checked) && (cf.vlan_ports_1.checked) && (cf.vlan_ports_2.checked)
          && (cf.vlan_ports_3.checked) && (cf.vlan_ports_4.checked) && (cf.vlan_ports_5.checked)
          && (cf.vlan_ports_6.checked) && (cf.vlan_ports_7.checked)
-<%2963%>
+<%2965%>
          && (cf.vlan_ports_8.checked) && (cf.vlan_ports_9.checked)
-<%2964%>
+<%2966%>
          )
     {
         alert("<%2995%>");
@@ -171,17 +171,17 @@ function checkData()
 function loadSettings()
 {
     var cf = document.forms[0];
-    cf.vlan_name.value = "<%3000%>";
+    cf.vlan_name.value = "<%3004%>";
     
     if(cf.vlan_name.value == "Internet")
     {
         document.getElementById("vlan_name").readOnly = true
         document.getElementById("vlan_support_lan").style.display = "none";
     }
-    cf.vlan_id.value = "<%3001%>";
-    cf.vlan_prio.value = "<%3002%>";
+    cf.vlan_id.value = "<%3005%>";
+    cf.vlan_prio.value = "<%3006%>";
     
-    var vlan_ports= "<%3003%>";
+    var vlan_ports= "<%3007%>";
     
     if (vlan_ports & 0x1)
         cf.vlan_ports_0.checked = true;
@@ -200,12 +200,12 @@ function loadSettings()
     if (vlan_ports & 0x80)
         cf.vlan_ports_7.checked = true; 
 
-<%2963%>
+<%2965%>
     if (vlan_ports & 0x100)
         cf.vlan_ports_8.checked = true;
     if (vlan_ports & 0x200)
         cf.vlan_ports_9.checked = true; 
-<%2964%>
+<%2966%>
 
 }
 
@@ -220,7 +220,7 @@ function loadSettings()
 <form id="target"  method="POST" action="vlan_rule.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
     <img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%3004%></div>
+<div class="subhead2"> <%3008%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -264,16 +264,16 @@ function loadSettings()
     <input type="checkbox" name="vlan_ports_3">Port4
     <input type="checkbox" name="vlan_ports_4">WiFi-2.4G
     <input type="checkbox" name="vlan_ports_5">WiFi-5G
-<%2972%>
+<%3000%>
     <input type="checkbox" name="vlan_ports_6">Guest-2.4G
     <input type="checkbox" name="vlan_ports_7">Guest-5G
-<%2973%>
-<%1280%>
+<%3009%>
+<%3002%>
     <input type="checkbox" name="vlan_ports_6">WiFi-5G-2
     <input type="checkbox" name="vlan_ports_7">Guest-2.4G
     <input type="checkbox" name="vlan_ports_8">Guest-5G
     <input type="checkbox" name="vlan_ports_9">Guest-5G-2
-<%1289%>
+<%3003%>
 </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -286,14 +286,14 @@ function loadSettings()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%195%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%196%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
       </div>
 
 <input type="hidden" name="vlan_rule_name" value="<%2983%>">
-<input type="hidden" name="orig_vlan_name" value="<%3000%>">
+<input type="hidden" name="orig_vlan_name" value="<%3004%>">
 <INPUT name="vlan_enable" type="hidden" value= "<%2980%>">
 <INPUT name="vlan_mode" type="hidden" value="edit">
 
