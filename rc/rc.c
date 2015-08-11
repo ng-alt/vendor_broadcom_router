@@ -1,7 +1,7 @@
 /*
  * Router rc control script
  *
- * Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+ * Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -84,6 +84,7 @@ static void rc_signal(int sig);
 /* Foxconn added start, Wins, 05/16/2011, @RU_IPTV */
 #if defined(CONFIG_RUSSIA_IPTV)
 static int is_russia_specific_support (void);
+static int is_china_specific_support (void); /* add, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 05/16/2011, @RU_IPTV */
 /*Foxconn add start, edward zhang, 2013/07/03*/
@@ -889,8 +890,8 @@ static int config_iptv_params(void)
         int lan_vlan_port = 4;
         int lan_vlan_br = 1;
         char lan_vlan_ifname[16] = "";
-        char lan_vlan_ifnames[64] = "";
-        char lan_ifnames[64] = "";
+        char lan_vlan_ifnames[128] = "";
+        char lan_ifnames[128] = "";
         char lan_ifname[16] = "";
         int internet_vlan_id;
 
@@ -1537,6 +1538,41 @@ static int getVlanRule(vlan_rule vlan[C_MAX_VLAN_RULE])
     return numVlanRule;
 }
 #endif
+/*  add start, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+static int is_china_specific_support (void)
+{
+    int result = 0;
+    char sku_name[8];
+
+    /* Router Spec v2.0:                                                        *
+     *   Case 1: RU specific firmware.                                          *
+     *   Case 2: single firmware & region code is PR.                           *
+     *   Case 3: WW firmware & GUI language is Chinise.                         *
+     *   Case 4: single firmware & region code is WW & GUI language is Chinise. *
+     * Currently, new built firmware will be single firmware.                   */
+    strcpy(sku_name, nvram_get("sku_name"));
+    if (!strcmp(sku_name, "PR"))
+    {
+        /* Case 2: single firmware & region code is PR. */
+        /* Region is PR (0x0004) */
+        result = 1;
+    }
+    else if (!strcmp(sku_name, "WW"))
+    {
+        /* Region is WW (0x0002) */
+        char gui_region[16];
+        strcpy(gui_region, nvram_get("gui_region"));
+        if (!strcmp(gui_region, "Chinese"))
+        {
+            /* Case 4: single firmware & region code is WW & GUI language is Chinise */
+            /* GUI language is Chinise */
+            result = 1;
+        }
+    }
+
+    return result;
+}
+/*  add end, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 
 static int send_wps_led_cmd(int cmd, int arg)
 {
@@ -2873,6 +2909,92 @@ do_timer(void)
 	return 0;
 }
 
+/*  add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+#ifdef ARP_PROTECTION
+static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE], int maxNumToken)
+{
+    char temp[16*1024];    
+    char *field;
+    int numToken=0, i, j;
+    char *ppLast = NULL;
+
+    /* Check for empty string */
+    if (str == NULL || str[0] == '\0')
+        return 0;
+   
+    /* Now get the tokens */
+    strcpy(temp, str);
+    
+    for (i=0; i<maxNumToken; i++)
+    {
+        if (i == 0)
+            field = strtok_r(temp, delimiter, &ppLast);
+        else 
+            field = strtok_r(NULL, delimiter, &ppLast);
+
+        /*  modified start, Wins, 06/27/2010 */
+        //if (field == NULL || field[0] == '\0')
+        if (field == NULL || (field != NULL && field[0] == '\0'))
+        /*  modified end, Wins, 06/27/2010 */
+        {
+            for (j=i; j<maxNumToken; j++)
+                token[j][0] = '\0';
+            break;
+        }
+
+        numToken++;
+        strcpy(token[i], field);
+    }
+
+    return numToken;
+}
+
+static int getReservedAddr(char reservedMacAddr[][C_MAX_TOKEN_SIZE], char reservedIpAddr[][C_MAX_TOKEN_SIZE])
+/*  modified end, zacker, 10/31/2008, @lan_setup_change */
+{
+    int numReservedMac=0, numReservedIp=0;
+    char *var;
+    
+    /* Read MAC and IP address tokens */
+    if ( (var = acosNvramConfig_get("dhcp_resrv_mac")) != NULL )
+    {
+        numReservedMac = getTokens(var, " ", reservedMacAddr, C_MAX_RESERVED_IP);
+    }
+    
+    if ( (var=acosNvramConfig_get("dhcp_resrv_ip")) != NULL )
+    {
+        numReservedIp = getTokens(var, " ", reservedIpAddr, C_MAX_RESERVED_IP);
+    }
+    
+    if (numReservedMac != numReservedIp)
+    {
+        printf("getReservedAddr: reserved mac and ip not match\n");
+    }
+    
+    return (numReservedMac<numReservedIp ? numReservedMac:numReservedIp);
+}
+
+static void config_arp_table(void)
+{
+    if(acosNvramConfig_match("arp_enable","enable"))
+    {
+        int i;
+        char resrvMacAddr[C_MAX_RESERVED_IP][C_MAX_TOKEN_SIZE];
+        char resrvIpAddr[C_MAX_RESERVED_IP][C_MAX_TOKEN_SIZE];
+        int numResrvAddr = getReservedAddr(resrvMacAddr, resrvIpAddr);
+        char arp_cmd[64];
+        for (i=0; i<numResrvAddr; i++)
+        {
+            sprintf(arp_cmd,"arp -s %s %s",resrvIpAddr[i],resrvMacAddr[i]);
+            printf("%s\n",arp_cmd);
+            system(arp_cmd);
+        }
+    }
+    
+    return 0;
+}
+#endif
+/*  add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 /* Main loop */
 static void
 main_loop(void)
@@ -2886,13 +3008,13 @@ main_loop(void)
 	uint boardflags;
 #endif
 
-    /* foxconn wklin added start, 10/22/2008 */
+    /*  wklin added start, 10/22/2008 */
 	sysinit();
 
-	/* Foxconn added start pling 03/20/2014 */
+	/*  added start pling 03/20/2014 */
 	/* Router Spec Rev 12: disable/enable ethernet interface when dhcp server start */
 	eval("landown");
-	/* Foxconn added end pling 03/20/2014 */
+	/*  added end pling 03/20/2014 */
 
 	/* Add loopback */
 	config_loopback();
@@ -2907,22 +3029,22 @@ main_loop(void)
 
     /* Read ethernet MAC, etc */
     //eval("read_bd"); /* foxconn removed, zacker, 08/06/2010, move to sysinit() */
-    /* foxconn wklin added end, 10/22/2008 */
+    /*  wklin added end, 10/22/2008 */
 
     /* Reset some wps-related parameters */
     nvram_set("wps_start",   "none");
-    /* foxconn added start, zacker, 05/20/2010, @spec_1.9 */
+    /*  added start, zacker, 05/20/2010, @spec_1.9 */
     nvram_set("wps_status", "0"); /* start_wps() */
     nvram_set("wps_proc_status", "0");
-    /* foxconn added end, zacker, 05/20/2010, @spec_1.9 */
+    /*  added end, zacker, 05/20/2010, @spec_1.9 */
     
-    /* Foxconn Perry added start, 2011/05/13, for IPv6 router advertisment prefix information */
+    /*  Perry added start, 2011/05/13, for IPv6 router advertisment prefix information */
     /* reset IPv6 obsolete prefix information after reboot */
     nvram_set("radvd_lan_obsolete_ipaddr", "");
     nvram_set("radvd_lan_obsolete_ipaddr_length", "");
     nvram_set("radvd_lan_new_ipaddr", "");
     nvram_set("radvd_lan_new_ipaddr_length", "");
-    /* Foxconn Perry added end, 2011/05/13, for IPv6 router advertisment prefix information */
+    /*  Perry added end, 2011/05/13, for IPv6 router advertisment prefix information */
     
 #if defined(R7000)
     if (nvram_match("internal_antenna", "1"))
@@ -2937,7 +3059,7 @@ main_loop(void)
     }
 #endif
 
-    /* Foxconn added start, zacker, 06/17/2010, @new_tmp_lock */
+    /*  added start, zacker, 06/17/2010, @new_tmp_lock */
     /* do this in case "wps_aplockdown_forceon" is set to "1" for tmp_lock
      * purpose but then there are "nvram_commit" and "reboot" action
      */
@@ -2945,11 +3067,11 @@ main_loop(void)
         nvram_set("wps_aplockdown_forceon", "1");
     else
         nvram_set("wps_aplockdown_forceon", "0");
-    /* Foxconn added end, zacker, 06/17/2010, @new_tmp_lock */
+    /*  added end, zacker, 06/17/2010, @new_tmp_lock */
 
-    /* Foxconn added start, Wins, 04/20/2011, @RU_IPTV */
+    /*  added start, Wins, 04/20/2011, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-/* Foxconn modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+/*  modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #if 0
     if ((!is_russia_specific_support()) && (!is_china_specific_support()))
     {
@@ -2958,8 +3080,13 @@ main_loop(void)
     }
 #endif
 #endif /* CONFIG_RUSSIA_IPTV */
-    /* Foxconn added end, Wins, 04/20/2011, @RU_IPTV */
-
+    /*  added end, Wins, 04/20/2011, @RU_IPTV */
+/*  add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+    if ((!is_russia_specific_support()) && (!is_china_specific_support()))
+    {
+        nvram_set(NVRAM_ARP_ENABLED, "disable");
+    }
+/*  add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
     /* Foxconn add start, Max Ding, 02/26/2010 */
 #ifdef RESTART_ALL_PROCESSES
     nvram_unset("restart_all_processes");
@@ -3518,6 +3645,9 @@ main_loop(void)
             start_wps();
             sleep(2);           /* Wait for WSC to start */
             start_wl();
+#ifdef ARP_PROTECTION
+            config_arp_table();
+#endif 
 			/*Foxconn add start by Hank 06/14/2012*/
 			/*Enable 2.4G auto channel detect, call acsd to start change channel*/
 			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))

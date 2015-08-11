@@ -39,7 +39,7 @@ typedef struct vlan_rule_t{
     char enable_rule[4];
 }vlan_rule;
 #endif
-/* foxconn modified start, zacker, 01/13/2012, @iptv_igmp */
+/*  modified start, zacker, 01/13/2012, @iptv_igmp */
 #if defined(CONFIG_RUSSIA_IPTV)
 #undef MAX_NO_BRIDGE
 #define MAX_NO_BRIDGE 10		/*Foxconn modified, edward zhang, 2013/07/03, change 2->10 for vlan support*/
@@ -76,8 +76,11 @@ typedef struct vlan_rule_t{
 #define MAC_BYTE5               0x06
 #define SET_VLAN                0x80
 #endif /* CONFIG_RUSSIA_IPTV */
-/* foxconn modified end, zacker, 01/13/2012, @iptv_igmp */
+/*  modified end, zacker, 01/13/2012, @iptv_igmp */
 
+#define NVRAM_ARP_ENABLED        "arp_enable"
+#define C_MAX_TOKEN_SIZE        128
+#define C_MAX_RESERVED_IP       64
 #ifdef LINUX26
 #define AGLOG_MAJOR_NUM             123
 #define WPS_LED_MAJOR_NUM           253
