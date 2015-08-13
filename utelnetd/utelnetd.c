@@ -161,25 +161,6 @@ void error_msg_and_die(char *text)
 }
 
 
-/* 
-   Remove all IAC's from the buffer pointed to by bf (recieved IACs are ignored
-   and must be removed so as to not be interpreted by the terminal).  Make an
-   uninterrupted string of characters fit for the terminal.  Do this by packing
-   all characters meant for the terminal sequentially towards the end of bf. 
-
-   Return a pointer to the beginning of the characters meant for the terminal.
-   and make *processed equal to the number of characters that were actually
-   processed and *num_totty the number of characters that should be sent to
-   the terminal.  
-   
-   Note - If an IAC (3 byte quantity) starts before (bf + len) but extends
-   past (bf + len) then that IAC will be left unprocessed and *processed will be
-   less than len.
-  
-   FIXME - if we mean to send 0xFF to the terminal then it will be escaped,
-   what is the escape character?  We aren't handling that situation here.
-
-  */
 static char *
 remove_iacs(unsigned char *bf, int len, int *processed, int *num_totty) {
     unsigned char *ptr = bf;
@@ -440,8 +421,6 @@ int main(int argc, char **argv)
 	}
 	  
 	if (access(loginpath, X_OK) < 0) {
-		/* workaround: error_msg_and_die has doesn't understand
- 		   variable argument lists yet */
 		fprintf(stderr,"\"%s\"",loginpath);
 		perror_msg_and_die(" is no valid executable!\n");
 	}

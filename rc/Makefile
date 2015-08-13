@@ -1,7 +1,7 @@
 #
 # Router rc control scripts Makefile
 #
-# Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+# Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -15,21 +15,25 @@
 # OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile 360733 2012-10-04 07:54:28Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
 include $(TOP)/.config
 
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
-CFLAGS += -DLINUX26 -DLINUX_2_6_36
+ifneq (2_4,$(LINUX_VERSION))
+ifeq (2_6_36,$(LINUX_VERSION))
+CFLAGS += -DLINUX26 -DLINUX_2_6_36 -DAUTOFW_PORT_DEPRECATED
+else
+CFLAGS += -DLINUX26
+endif
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall -I$(LINUXDIR)/include -I$(TOP)/busybox-1.x
+else
+CFLAGS += -I. -I$(TOP)/shared -I$(TOP)/busybox -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall
+endif
+
 # /* Fxcn port-S Wins, 0720-09 */
 CFLAGS += -DACOS_LINUX26
 # /* Fxcn port-E Wins, 0720-09 */
-
-CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall -I$(LINUXDIR)/include -I$(TOP)/busybox-1.x
-else
-CFLAGS += -I. -I$(TOP)/shared -I$(TOP)/busybox -I$(SRCBASE)/include -Wall
-endif
 
 CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(SRCBASE)/shared/bcmwifi/include)))
 CFLAGS += -I$(TOP)/dpsta
@@ -45,7 +49,7 @@ LDFLAGS	+= -L$(TOP)/nvram -L$(PLATFORMDIR)/install/nvram/usr/lib -lnvram -L$(TOP
 	-L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib -lbcmcrypto
 LDFLAGS += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib -lbcm
 CFLAGS	+= -I$(SRCBASE)/../ap/acos/shared
-LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(TARGETDIR)/usr/lib -lacos_shared
+LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(SRCBASE)/../ap/acos/acos_nat_cli -L$(TARGETDIR)/usr/lib -lacos_shared -lnat
 
 #Foxconn Silver added start, 2011/12/21, for kernel_ntfs
 ifneq ($(PROFILE),)	# PROFILE eq R6300v2 || R6250
@@ -80,6 +84,10 @@ ifeq ($(CONFIG_NAT),y)
 OBJS += ppp.o
 endif
 
+ifeq ($(RWL),1)
+CFLAGS += -DRWL_SOCKET
+endif
+
 ifeq ($(CONFIG_WCN),y)
 OBJS += usb_hotplug.o
 endif
@@ -107,6 +115,12 @@ install: all
 	cd $(INSTALLDIR)/sbin && ln -sf rc init
 	cd $(INSTALLDIR)/sbin && ln -sf rc erase
 	cd $(INSTALLDIR)/sbin && ln -sf rc write
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_isbad
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_markbad
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_write_oob
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_read_oob
+	cd $(INSTALLDIR)/sbin && ln -sf rc mtd_write_page
+	cd $(INSTALLDIR)/sbin && ln -sf rc write_cfe
 	cd $(INSTALLDIR)/sbin && ln -sf rc stats
 	cd $(INSTALLDIR)/sbin && ln -sf rc hotplug
 	cd $(INSTALLDIR)/sbin && ln -sf rc preinit

@@ -44,6 +44,13 @@ extern int mtd_erase(const char *mtd);
  */
 extern int mtd_write(const char *path, const char *mtd);
 
+/* Foxconn Bob added start for nand page write, 03/19/2014 */
+extern int mtd_markbad(const char *mtd, const char *off);
+extern int mtd_write_page(const char *mtd, const char *off);
+extern int mtd_write_oob(const char *mtd, const char *off);
+extern int mtd_read_oob(const char *mtd, const char *off);
+/* Foxconn Bob added end for nand page write, 03/19/2014 */
+
 /*
  * Write a CFE image to a MTD device
  * @param	path	file to write or a URL

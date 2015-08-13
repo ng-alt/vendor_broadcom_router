@@ -15,7 +15,7 @@
 # OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile 271576 2011-07-12 20:31:22Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
 include $(TOP)/.config
@@ -29,7 +29,8 @@ endif
 CFLAGS += -DLINUX26
 #foxconn wklin add end, 05/12/2009
 
-CFLAGS	+= -I. -I$(SRCBASE)/include -I$(SRCBASE)/../project/acos/include -Wall -DINCLUDE_WAN_LAN_SUBNET
+CFLAGS	+= -I. -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall
+CFLAGS += -I$(SRCBASE)/../project/acos/include -Wall -DINCLUDE_WAN_LAN_SUBNET
 CFLAGS	+= -DINCLUDE_WDS -DINCLUDE_QOS -DBANDWIDTH_DETECT_17
 
 
@@ -39,7 +40,12 @@ endif
 
 
 #CFLAGS	+= -g -DDEBUG
-CFLAGS	+= -s -O2
+CFLAGS	+= -s
+ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
+CFLAGS  += -Os
+else
+CFLAGS  += -O2
+endif
 LDFLAGS += -L.
 
 ifeq ($(CONFIG_ACOS_MODULES),y)
@@ -70,13 +76,13 @@ else
 	# Utility not wanted: get rid of any leftover one
 	rm -f $(INSTALLDIR)/usr/sbin/nvram
 endif
-
+	cd $(INSTALLDIR)/usr/sbin && ln -sf nvram readycloud_nvram
 
 clean:
 	rm -f *.o *.a *.so nvram
-ifeq ($(CONFIG_ACOS_MODULES),y)
-	rm -f $(ACOSNVRAM)/*.o
-endif	
+#ifeq ($(CONFIG_ACOS_MODULES),y)
+#	rm -f $(ACOSNVRAM)/*.o
+#endif	
 
 libnvram.so: $(OBJS)
 	$(LD) -fPIC -shared -o $@ $^

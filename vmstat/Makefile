@@ -1,7 +1,7 @@
 #
 # vmstat utility Makefile
 #
-# Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+# Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -15,10 +15,10 @@
 # OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile 321517 2012-03-15 17:15:37Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
-CFLAGS	+= -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall
+CFLAGS	+= -I. -I$(TOP)/shared -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall
 #CFLAGS	+= -g -DDEBUG
 CFLAGS	+= -s -O2
 

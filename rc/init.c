@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: init.c 241182 2011-02-17 21:50:03Z $
+ * $Id: init.c 431067 2013-10-22 11:09:45Z $
  */
 
 #include <stdio.h>
@@ -91,7 +91,7 @@ console_init()
 	int fd;
 
 	/* Clean up */
-	ioctl(0, TIOCNOTTY, 0);
+	(void)ioctl(0, TIOCNOTTY, 0);
 	close(0);
 	close(1);
 	close(2);
@@ -106,7 +106,7 @@ console_init()
 	dup2(fd, 1);
 	dup2(fd, 2);
 
-	ioctl(0, TIOCSCTTY, 1);
+	(void)ioctl(0, TIOCSCTTY, 1);
 	tcsetpgrp(0, getpgrp());
 	set_term(0);
 
@@ -154,7 +154,7 @@ run_shell(int timeout, int nowait)
 		/* Pass on TZ */
 		snprintf(tz, sizeof(tz), "TZ=%s", getenv("TZ"));
 
-		/* Now run it.  The new program will take over this PID, 
+		/* Now run it.  The new program will take over this PID,
 		 * so nothing further in init.c should be run.
 		 */
 		execve(SHELL, (char *[]) { "/bin/sh", NULL }, envp);

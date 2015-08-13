@@ -1,7 +1,7 @@
 #
 # BCM shared library Makefile for Linux router
 #
-# Copyright (C) 2012, Broadcom Corporation
+# Copyright (C) 2015, Broadcom Corporation
 # All Rights Reserved.
 # 
 # This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
@@ -9,21 +9,26 @@
 # or duplicated in any form, in whole or in part, without the prior
 # written permission of Broadcom Corporation.
 #
-# $Id: Makefile 244997 2011-03-08 05:47:15Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
 include $(TOP)/.config
 
 
-CFLAGS	+= -I. -I$(SRCBASE)/include -I$(SRCBASE)/router/shared -Wall
+CFLAGS	+= -I. -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -I$(SRCBASE)/router/shared -Wall
 #CFLAGS	+= -g -DDEBUG
-CFLAGS	+= -s -O2
+CFLAGS	+= -s
+ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
+CFLAGS  += -Os
+else
+CFLAGS  += -O2
+endif
 LDFLAGS += -L.
 
 OBJS := bcmgpio.o
 
 
-all:
+all: libbcm.so
 
 install: all
 	install -d $(INSTALLDIR)/usr/lib

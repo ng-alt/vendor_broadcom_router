@@ -1,7 +1,7 @@
 #
 # Linux netconf Makefile
 #
-# Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
+# Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -15,11 +15,11 @@
 # OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 # CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile 341899 2012-06-29 04:06:38Z $
+# $Id: Makefile 403251 2013-05-20 05:15:55Z $
 #
 
 #CFLAGS	+= -g -DDEBUG
-CFLAGS	+= -s -O2
+CFLAGS	+= -s
 
 ifeq (2_6_36,$(LINUX_VERSION))
 CFLAGS += -DLINUX26 -DLINUX_2_6_36
@@ -35,7 +35,7 @@ CFLAGS  += -I$(TOP)/iptables/include
 LDFLAGS += -L. -L$(TOP)/iptables/libiptc
 endif
 
-CFLAGS	+= -I. -I$(TOP)/shared -I$(SRCBASE)/include -I$(LINUXDIR)/include -Wall
+CFLAGS	+= -I. -I$(TOP)/shared -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -I$(LINUXDIR)/include -Wall
 
 all: libnetconf.so netconf
 

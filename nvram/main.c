@@ -24,21 +24,38 @@
 
 #include <typedefs.h>
 #include <bcmnvram.h>
+#include <ctype.h>
 
 void
 usage(void)
 {
 	fprintf(stderr,
-	        "usage: nvram [get name] [set name=value] "
-	        "[unset name] [show] [commit] ...\n");
+		"usage: nvram [get name] [set name=value] [getflag flagname bit]"
+		"[setflag flagname bit=value] [unset name] [show] [commit] ...\n");
 	exit(0);
 }
+
+static int
+isnumber(const char *src)
+{
+	char *iter = (char *)src;
+	while (*iter) {
+		if (! isdigit(*iter))
+			return 0;
+		iter++;
+	}
+	return 1;
+}
+
+#define NEXT_ARG(argc, argv) do { argv++; if (--argc <= 0) usage(); } while (0)
+#define NEXT_IS_NUMBER(argc, argv) do { if ((argc - 1 <= 0) || !isnumber(argv[1])) usage(); } while (0)
+#define NEXT_IS_VALID(argc) do { if ((argc - 1 <= 0)) usage(); }  while (0)
 
 /* NVRAM utility */
 int
 main(int argc, char **argv)
 {
-	char *name, *value, buf[MAX_NVRAM_SPACE];
+	char *name, *value, *bit = NULL, buf[MAX_NVRAM_SPACE];
 	int size;
 
 	/* Skip program name */
@@ -75,6 +92,21 @@ main(int argc, char **argv)
 			if (**argv != 'd')
 				fprintf(stderr, "size: %d bytes (%d left)\n",
 				        size, MAX_NVRAM_SPACE - size);
+		} else if (!strcmp(*argv, "getflag")) {
+			NEXT_ARG(argc, argv);
+			NEXT_IS_NUMBER(argc, argv);
+			if ((value = nvram_get_bitflag(argv[0], atoi(argv[1]))))
+				puts(value);
+			++argv;
+		} else if (!strcmp(*argv, "setflag")) {
+			NEXT_ARG(argc, argv);
+			NEXT_IS_VALID(argc);
+			value = argv[1];
+			bit = strsep(&value, "=");
+			if (value && bit && isnumber(value) && isnumber(bit)) {
+				nvram_set_bitflag(argv[0], atoi(bit), atoi(value));
+				++argv;
+			}
         }
 #ifdef ACOS_MODULES_ENABLE
         else if (!strncmp (*argv, "loaddefault", 11))   /*Foxconn add, Jasmine Yang, 03/30/2006 */

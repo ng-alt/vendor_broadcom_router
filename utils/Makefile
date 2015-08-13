@@ -9,12 +9,12 @@
 # SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
 # FOR A SPECIFIC PURPOSE OR NONINFRINGEMENT CONCERNING THIS SOFTWARE.
 #
-# $Id: Makefile 361287 2012-10-08 00:28:04Z $
+# $Id: Makefile 534840 2015-02-16 06:44:15Z $
 #
 
 include $(SRCBASE)/router/.config
 
-WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
+WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcmxtlv.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
 ifneq ($(wildcard $(SRCBASE)/wl/exe/wlu_common.c),)
 WLU_OBJS += wlu_common.o
 endif
@@ -36,7 +36,7 @@ WL_EXE  := wl
 endif
 
 UTILS := epi_ttcp
-CFLAGS += -s -I$(SRCBASE)/include
+CFLAGS += -s -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include
 CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(SRCBASE)/shared/bcmwifi/include)))
 ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
 CFLAGS  += -Os
@@ -47,8 +47,7 @@ CFLAGS += -DBCMINTERNAL -DBCMDBG
 
 CFLAGS += -DLINUX -I$(SRCBASE)/wl/exe
 
-# Use newer 11ac ratespec for wl command line
-CFLAGS += -DD11AC_IOTYPES -DPPR_API
+CFLAGS += -DPPR_API -lgcc_s
 
 #ifdef WLCNT
 CFLAGS += -DWLCNT
@@ -58,17 +57,29 @@ ifeq ($(CONFIG_TRAFFIC_MGMT),y)
 CFLAGS += -DTRAFFIC_MGMT
 endif
 
-vpath %.c $(SRCBASE)/tools/misc $(WLAN_ComponentSrcDirs)
+## Enable DMA RX overflow fix
+ifeq ($(ET_INGRESS_QOS),1)
+CFLAGS += -DET_INGRESS_QOS
+endif
+
+#NETGEAR R8500 external switch
+ifeq ($(NETGEAR_PATCH),1)
+CFLAGS += -DETEROBO
+endif
+
+vpath %.c $(SRCBASE)/tools/misc $(WLAN_StdSrcDirsA) $(WLAN_ComponentSrcDirs)
 
 ifneq ($(wildcard $(SRCBASE)/et/linux/et.c),)
 UTILS += et
 vpath %.c $(SRCBASE)/et/linux
 endif
 
+ifneq ($(CONFIG_DHDAP),y)
 ifneq ($(wildcard $(SRCBASE)/wl/exe),)
 CFLAGS += -I$(SRCBASE)/wl/exe
 UTILS += wl
 vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
+endif
 endif
 
 ifeq ($(RWL),1)
@@ -80,16 +91,17 @@ vpath %.c $(SRCBASE)/router/aput
 endif
 endif
 
+ifneq ($(CONFIG_DHDAP),y)
 ifneq ($(wildcard $(SRCBASE)/wl/exe),)
 UTILS += $(SERVER_SOCKET)
-vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
+UTILS += $(SERVER_WIFI)
+endif
+endif
 endif
 
-ifneq ($(wildcard $(SRCBASE)/wl/exe),)
-UTILS += $(SERVER_WIFI)
-vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
-endif
-endif
+LDFLAGS += -L$(TOP)/nvram -L$(INSTALLDIR)/nvram/usr/lib -lnvram
+LDFLAGS += -L$(TOP)/shared -L$(INSTALLDIR)/shared/usr/lib -lshared
+LDFLAGS += $(EXTRA_LDFLAGS)
 
 all: $(UTILS)
 

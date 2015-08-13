@@ -24,12 +24,20 @@
 #include <signal.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 #include <bcmnvram.h>
 #include <netconf.h>
 #include <shutils.h>
 #include <rc.h>
 #include <pmon.h>
+#if defined(LINUX_2_6_36)
+#include <mntent.h>
+#include <fcntl.h>
+#endif /* LINUX_2_6_36 */
+
+#define NVNAME_BUFF					32
+#define MAX_NVPARSE					16
 
 #define assert(a)
 
@@ -210,11 +218,13 @@ start_dns(void)
 #ifdef	__CONFIG_NORTON__
 	/* TODO: dnsmasq doesn't support a single hostname across multiple interfaces */
 	if (atoi(nvram_safe_get("nga_enable")))
-		sprintf(if_hostnames, "--interface-name norton.local,%s ", nvram_safe_get("lan_ifname"));
+		sprintf(if_hostnames, "--interface-name norton.home,%s ",
+			nvram_safe_get("lan_ifname"));
 #endif /* __CONFIG_NORTON__ */
 
 	/* Start the dns relay */
-	sprintf(dns_cmd, "/usr/sbin/dnsmasq -h -n %s -r /tmp/resolv.conf %s&", dns_ifnames, if_hostnames);
+	sprintf(dns_cmd, "/usr/sbin/dnsmasq -h -n %s -r /tmp/resolv.conf %s&",
+		dns_ifnames, if_hostnames);
 	ret = system(dns_cmd);
 
 	dprintf("done\n");
@@ -347,9 +357,11 @@ start_dhcp6s(void)
 			continue;
 
 		strncpy(acIFName[siCount], pcIF, sizeof(acIFName[0]));
+		acIFName[siCount][sizeof(acIFName[0])-1] = '\0';
 		apCommand[siCount + 3] = acIFName[siCount];
 
 		strncpy(acPrefix, pcPrefix, sizeof(acPrefix));
+		acPrefix[sizeof(acPrefix)-1] = '\0';
 		pcNMask = strchr(acPrefix, '/');
 		if (pcNMask == NULL)
 			pcNMask = "112";
@@ -654,6 +666,32 @@ stop_httpd(void)
 	dprintf("done\n");
 	return ret;
 }
+#ifdef	__CONFIG_VISUALIZATION__
+static int
+start_visualization_tool(void)
+{
+	int ret;
+
+	ret = eval("vis-dcon");
+	ret = eval("vis-datacollector");
+
+	dprintf("done\n");
+
+	return ret;
+}
+
+static int
+stop_visualization_tool(void)
+{
+	int ret;
+
+	ret = eval("killall", "vis-dcon");
+	ret = eval("killall", "vis-datacollector");
+
+	dprintf("done\n");
+	return ret;
+}
+#endif /* __CONFIG_VISUALIZATION__ */
 
 #ifdef PLC
 static int
@@ -917,23 +955,85 @@ int
 stop_wps(void)
 {
 	int ret = 0;
+#ifdef __CONFIG_WPS__
+	FILE *fp = NULL;
+	char saved_pid[32];
+	int i, wait_time = 3;
+	pid_t pid;
 
-   	ret = eval("killall","wps_monitor");
-   	ret = eval("rm", "-f", "/tmp/wps_monitor.pid"); /* foxconn added, zacker */
-   	ret = eval("killall","wps_ap");
+	if (((fp = fopen("/tmp/wps_monitor.pid", "r")) != NULL) &&
+	    (fgets(saved_pid, sizeof(saved_pid), fp) != NULL)) {
+		/* remove new line first */
+		for (i = 0; i < sizeof(saved_pid); i++) {
+			if (saved_pid[i] == '\n')
+				saved_pid[i] = '\0';
+		}
+		saved_pid[sizeof(saved_pid) - 1] = '\0';
+		eval("kill", saved_pid);
+
+		do {
+			if ((pid = get_pid_by_name("/bin/wps_monitor")) <= 0)
+				break;
+			wait_time--;
+			sleep(1);
+		} while (wait_time);
+
+		if (wait_time == 0)
+			dprintf("Unable to kill wps_monitor!\n");
+	}
+	if (fp)
+		fclose(fp);
+#endif /* __CONFIG_WPS__ */
 
 	return ret;
 }
 int
 start_wps(void)
 {
+	int ret = 0;
+#ifdef __CONFIG_WPS__
 	char *wps_argv[] = {"/bin/wps_monitor", NULL};
 	pid_t pid;
 	int wait_time = 3;
+	/* For PF#1 debug only + */
+	if (nvram_match("nsa_only", "1")) {
+		dprintf("nsa_only mode, ignore wps_monitor!\n");
+		return 0;
+	}
+	/* For PF#1 debug only - */
     if ( nvram_match("wps_status", "2") && !nvram_match("wps_start", "pbc") ) /* added for CGI process */
     {
         return 0;
     }
+    
+    /* Bob modified start on 10/06/2014, by default, wps is only enabled on 5G radio 2, if 5G radio 2 is diabled, then enable wps on 5G radio 1 */
+#if defined(INCLULDE_2ND_5G_RADIO)
+    if(nvram_match("wl2_radio", "1"))
+    {
+        nvram_set("wl1_wps_mode", "disabled");
+        nvram_set("wl2_wps_mode", "enabled");
+    }
+    else
+    {
+        nvram_set("wl1_wps_mode", "enabled");
+        nvram_set("wl2_wps_mode", "disabled");
+    }
+    
+    if(nvram_match("wla_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl0_wps_mode", "disabled");
+    }
+    if(nvram_match("wlg_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl1_wps_mode", "disabled");
+    }
+    if(nvram_match("wlh_secu_type", "WPA-ENTERPRISE"))
+    {
+        nvram_set("wl2_wps_mode", "disabled");
+    }
+        
+#endif
+    /* Bob modified end on 10/06/2014 */
 
 	nvram_set("wps_status", "0");
 	nvram_set("wps_method", "1");
@@ -950,25 +1050,17 @@ start_wps(void)
 	}
 
 	nvram_set("wps_sta_pin", "00000000");
-	nvram_set("wps_currentband", "");
 
-	eval("killall", "wps_monitor");
-	do {
-		if ((pid = get_pid_by_name("/bin/wps_monitor")) <= 0)
-			break;
-		wait_time--;
-		sleep(1);
-	} while (wait_time);
-	if (wait_time == 0)
-		dprintf("Unable to kill wps_monitor!\n");
-
-   	eval("killall","wps_ap");
-   	eval("killall","wps_enr");
+	/* stop wps first in case some one call start_wps for restart it. */
+	stop_wps();
 
 	_eval(wps_argv, NULL, 0, &pid);
+#else
+	/* if we don't support WPS, make sure we unset any remaining wl_wps_mode */
+	nvram_unset("wl_wps_mode");
+#endif /* __CONFIG_WPS__ */
 
-	return 0;
-
+	return ret;
 }
 
 int
@@ -1042,6 +1134,42 @@ stop_igmp_proxy(void)
 }
 #endif /* __CONFIG_IGMP_PROXY__ */
 
+#ifdef __CONFIG_HSPOT__
+
+int
+start_hspotap(void)
+{
+	char *hs_argv[] = {"/bin/hspotap", NULL};
+	pid_t pid;
+	int wait_time = 3;
+
+	eval("killall", "hspotap");
+	do {
+		if ((pid = get_pid_by_name("/bin/hspotap")) <= 0)
+			break;
+		wait_time--;
+		sleep(1);
+	} while (wait_time);
+	if (wait_time == 0)
+		dprintf("Unable to kill hspotap!\n");
+
+	_eval(hs_argv, NULL, 0, &pid);
+
+	dprintf("done\n");
+	return 0;
+}
+
+int
+stop_hspotap(void)
+{
+	int ret = 0;
+	ret = eval("killall", "hspotap");
+
+	dprintf("done\n");
+	return ret;
+}
+#endif /* __CONFIG_IGMP_PROXY__ */
+
 #ifdef __CONFIG_LLD2D__
 int start_lltd(void)
 {
@@ -1083,7 +1211,7 @@ int
 start_acsd(void)
 {
     int ret;
-
+    
     if(nvram_match("enable_ccs", "1"))
     {
         nvram_set("acs_rt_sw", "1");
@@ -1093,14 +1221,17 @@ start_acsd(void)
     else
     {
         nvram_unset("acs_rt_sw");
-        nvram_unset("acs_2g_ch_no_restrict");
+        /* Remove by Foxconn Antony start 2014/05/15 remove the nvram or the acsd wouldn't select the correct channel */
+//        nvram_unset("acs_2g_ch_no_restrict");
+//      /* Remove by Foxconn Antony end 2014/05/15*/
         nvram_unset("acs_no_lockout");
     }
-	//ret=eval("/usr/sbin/acsd");
-	system("/usr/sbin/acsd");
-	system("acs_cli -i eth1 acs_policy 4");
-	system("acs_cli autochannel &");
 
+	system("/usr/sbin/acsd");
+    /* Bob removed start 08/08/2014, "acs_cli autochannel" cause "wl chanim_stats" inconsistent with "wl status" */
+    //system("acs_cli -i eth1 acs_policy 4");
+    //system("acs_cli autochannel &");
+    /* Bob removed end 08/08/2014, "acs_cli autochannel" cause "wl chanim_stats" inconsistent with "wl status" */
 	return ret;
 }
 
@@ -1113,19 +1244,105 @@ stop_acsd(void)
 }
 #endif /* BCM_DCS || EXT_ACS */
 
+#if defined(__CONFIG_TOAD__)
+static void
+start_toads(void)
+{
+	char toad_ifname[16];
+	char *next;
+
+	foreach(toad_ifname, nvram_safe_get("toad_ifnames"), next) {
+		eval("/usr/sbin/toad", "-i", toad_ifname);
+	}
+}
+
+static void
+stop_toads(void)
+{
+	eval("killall", "toad");
+}
+#endif /* __CONFIG_TOAD__ */
+
 int start_bsd(void)
 {
-	int ret = eval("gbsd");
+    #if defined(DUAL_TRI_BAND_HW_SUPPORT)
+    if ( nvram_match("hwver", nvram_get("tri_band_hw_ver")) )
+        nvram_set("gbsd_ifnames", "eth2 eth3");
+    else
+        nvram_set("gbsd_ifnames", "eth1 eth2");
+    #endif
+        
+#ifdef NETGEAR_PATCH
+    system("wl -i eth2 bssload 0");
+    system("wl -i eth3 bssload 0");
+	int ret = eval("/usr/sbin/gbsd");
+#else /* !NETGEAR_PATCH */
+	int ret = eval("/usr/sbin/bsd");
+#endif /* !NETGEAR_PATCH */
 
 	return ret;
 }
 
 int stop_bsd(void)
 {
-	int ret = system("killall gbsd");
+#ifdef NETGEAR_PATCH
+    system("wl -i eth2 bssload 1");
+    system("wl -i eth3 bssload 1");
+	int ret = eval("killall", "gbsd");
+#else /* !NETGEAR_PATCH */
+	int ret = eval("killall", "bsd");
+#endif /* !NETGEAR_PATCH */
+}
+
+int start_5g_bsd(void)
+{
+  int ret=1;
+ 
+	return ret;
+}
+
+int stop_5g_bsd(void)
+{
+	int ret = 1;
 
 	return ret;
 }
+#if defined(BCM_SSD)
+int start_ssd(void)
+{
+	int ret = 0;
+	char *ssd_argv[] = {"/usr/sbin/ssd", NULL};
+	pid_t pid;
+
+	if (nvram_match("ssd_enable", "1"))
+		ret = _eval(ssd_argv, NULL, 0, &pid);
+
+	return ret;
+}
+
+int stop_ssd(void)
+{
+	int ret = eval("killall", "ssd");
+
+	return ret;
+}
+#endif /* BCM_SSD */
+#if defined(__CONFIG_DHDAP__)
+int start_dhd_monitor(void)
+{
+	int ret = eval("killall", "dhd_monitor");
+	usleep(300000);
+	ret = eval("/usr/sbin/dhd_monitor");
+
+	return ret;
+}
+
+int stop_dhd_monitor(void)
+{
+	/* Don't kill dhd_monitor here */
+	return 0;
+}
+#endif /* __CONFIG_DHDAP__ */
 
 
 #if defined(PHYMON)
@@ -1163,7 +1380,12 @@ void enable_gro(int interval)
 	foreach(lan_ifname, lan_ifnames, next) {
 		if (!strncmp(lan_ifname, "vlan", 4)) {
 			sprintf(path, ">>/proc/net/vlan/%s", lan_ifname);
+#if defined(LINUX_2_6_36)
 			sprintf(parm, "-gro %d", interval);
+#else
+			/* 131072 define the max length gro skb can chained */
+			sprintf(parm, "-gro %d %d", interval, 131072);
+#endif /* LINUX_2_6_36 */
 			argv[1] = parm;
 			_eval(argv, path, 0, NULL);
 		}
@@ -1235,11 +1457,11 @@ samba_storage_conf(void)
 			sprintf(share_dir, "[%s]", basename);
 
 		/* Create storage partitions */
-		argv[1] = &share_dir;
+		argv[1] = share_dir;
 		_eval(argv, ">>/tmp/samba/lib/smb.conf", 0, NULL);
 
 		sprintf(path, "path = %s", mount_point);
-		argv[1] = &path;
+		argv[1] = path;
 		_eval(argv, ">>/tmp/samba/lib/smb.conf", 0, NULL);
 
 		argv[1] = "writeable = yes";
@@ -1268,7 +1490,11 @@ start_samba()
 	int taskset_ret = -1;
 #endif	/* LINUX_2_6_36 */
 
+#if defined(LINUX_2_6_36)
 	enable_gro(2);
+#else
+	enable_gro(1);
+#endif	/* LINUX_2_6_36 */
 
 	samba_mode = nvram_safe_get("samba_mode");
 	samba_passwd = nvram_safe_get("samba_passwd");
@@ -1326,6 +1552,10 @@ start_samba()
 	argv[1] = "guest ok = yes";
 	_eval(argv, ">>/tmp/samba/lib/smb.conf", 0, NULL);
 
+#if defined(LINUX_2_6_36)
+	samba_storage_conf();
+#endif /* LINUX_2_6_36 */
+
 	/* Start smbd */
 #if defined(LINUX_2_6_36)
 	if (cpu_num > 1)
@@ -1374,7 +1604,7 @@ restart_samba(void)
 			break;
 	}
 
-	if (retry < 0)
+	if (lock_fd < 0)
 		return -1;
 
 	stop_samba();
@@ -1505,6 +1735,87 @@ int stop_norton(void)
 
 #endif /* __CONFIG_NORTON__ */
 
+#if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
+static int
+start_broadstream_iqos(void)
+{
+	if (!nvram_match("broadstream_iqos_enable", "1"))
+		return 0;
+	eval("bcmiqosd", "start");
+
+	return 0;
+}
+
+static int
+stop_broadstream_iqos(void)
+{
+	eval("bcmiqosd", "stop");
+
+	return 0;
+}
+#endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
+
+#ifdef __CONFIG_AMIXER__
+int
+start_amixer(void)
+{
+	system("amixer cset numid=27 on");
+	system("amixer cset numid=29 on");
+
+	return 0;
+}
+
+int
+stop_amixer(void)
+{
+	/*
+	 * This is not going to stop but just mute the speakers
+	 * Need to find a way to kill this driver. TBD
+	 */
+	system("amixer cset numid=27 off");
+	system("amixer cset numid=29 off");
+
+	return 0;
+}
+#endif /* __CONFIG_AMIXER__ */
+
+#ifdef __CONFIG_MDNSRESPONDER__
+int
+start_mdns(void)
+{
+	system("/etc/init.d/mdns start");
+
+	return 0;
+}
+
+int
+stop_mdns(void)
+{
+	system("/etc/init.d/mdns stop");
+
+	return 0;
+}
+#endif /* __CONFIG_MDNSRESPONDER__ */
+
+#ifdef __CONFIG_AIRPLAY__
+int
+start_airplay(void)
+{
+	/* We do not run as daemon because of a uclibc bug with daemon function */
+	system("/usr/sbin/airplayd&");
+
+	return 0;
+}
+
+int
+stop_airplay(void)
+{
+	eval("killall", "airplayd");
+
+	return 0;
+}
+#endif /* __CONFIG_AIRPLAY__ */
+
 int
 start_services(void)
 {
@@ -1555,12 +1866,25 @@ start_services(void)
 #if defined(PHYMON)
 	start_phymons();
 #endif /* PHYMON */
+#if defined(BCM_BSD)
+	start_bsd();
+#endif
+#if defined(BCM_SSD)
+	start_ssd();
+#endif
 #if defined(BCM_DCS) || defined(EXT_ACS)
 	start_acsd();
 #endif
-			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
+#if defined(__CONFIG_DHDAP__)
+	start_dhd_monitor();
+#endif
+#if defined(INCLULDE_2ND_5G_RADIO)
+		if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlg_wlanstate", "Enable")&& nvram_match("wlh_wlanstate", "Enable"))
 	    start_bsd();
-	    
+#else	
+		if(nvram_match("enable_band_steering", "1") && nvram_match("wlg_wlanstate", "Enable")&& nvram_match("wlh_wlanstate", "Enable"))
+	    start_bsd();
+#endif	    
 #ifdef __CONFIG_SAMBA__
 	start_samba();
 #endif
@@ -1579,6 +1903,10 @@ start_services(void)
 	start_gigled();
 #endif
 
+
+#if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
+	start_broadstream_iqos();
+#endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 	dprintf("done\n");
 	return 0;
 }
@@ -1632,7 +1960,15 @@ stop_services(void)
 #if defined(BCM_DCS) || defined(EXT_ACS)
 	stop_acsd();
 #endif
+#if defined(BCM_BSD)
 	stop_bsd();
+#endif
+#if defined(BCM_SSD)
+	stop_ssd();
+#endif
+#if defined(__CONFIG_DHDAP__)
+	stop_dhd_monitor();
+#endif
 #ifdef __CONFIG_SAMBA__
 	stop_samba();
 #endif
@@ -1651,6 +1987,9 @@ stop_services(void)
 		stop_plcnvm();
 	}
 #endif
+#if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
+	stop_broadstream_iqos();
+#endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 
 #ifdef	__CONFIG_NORTON__
     stop_norton();

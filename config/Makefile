@@ -23,6 +23,11 @@ TOPDIR=../../
 all: ncurses conf mconf
 
 LIBS = -lncurses
+
+ifeq (/usr/lib64/libtinfo.so, $(wildcard /usr/lib64/libtinfo.so))
+        LIBS += -ltinfo
+endif
+
 ifeq (/usr/include/ncurses/ncurses.h, $(wildcard /usr/include/ncurses/ncurses.h))
 	HOSTNCURSES += -I/usr/include/ncurses -DCURSES_LOC="<ncurses.h>"
 else

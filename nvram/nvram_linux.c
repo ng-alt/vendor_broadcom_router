@@ -35,6 +35,10 @@
 
 #include "ambitCfg.h" //Foxconn add, FredPeng, 04/17/2009
 #define PATH_DEV_NVRAM "/dev/nvram"
+#define CODE_BUFF	16
+#define HEX_BASE	16
+
+#define VALIDATE_BIT(bit) do { if ((bit < 0) || (bit > 31)) return NULL; } while (0)
 
 /* wklin added, 12/13/2006 */
 #include <sys/types.h>
@@ -105,7 +109,7 @@ nvram_init(void *unused)
 		goto err;
 	}
 
-	fcntl(nvram_fd, F_SETFD, FD_CLOEXEC);
+	(void)fcntl(nvram_fd, F_SETFD, FD_CLOEXEC);
 
 	return 0;
 
@@ -117,7 +121,7 @@ err:
 char *
 nvram_get(const char *name)
 {
-	size_t count = strlen(name) + 1;
+	ssize_t count = strlen(name) + 1;
 	char tmp[100], *value;
 	unsigned long *off = (unsigned long *) tmp;
 
@@ -146,6 +150,49 @@ nvram_get(const char *name)
 		free(off);
 
 	return value;
+}
+
+
+char *
+nvram_get_bitflag(const char *name, const int bit)
+{
+	VALIDATE_BIT(bit);
+	char *ptr = nvram_get(name);
+	unsigned long nvramvalue = 0;
+	unsigned long bitflagvalue = 1;
+
+	if (ptr) {
+		bitflagvalue = bitflagvalue << bit;
+		nvramvalue = strtoul(ptr, NULL, HEX_BASE);
+		if (nvramvalue) {
+			nvramvalue = nvramvalue & bitflagvalue;
+		}
+	}
+	return ptr ? (nvramvalue ? "1" : "0") : NULL;
+}
+
+int
+nvram_set_bitflag(const char *name, const int bit, const int value)
+{
+	VALIDATE_BIT(bit);
+	char nvram_val[CODE_BUFF];
+	char *ptr = nvram_get(name);
+	unsigned long nvramvalue = 0;
+	unsigned long bitflagvalue = 1;
+
+	memset(nvram_val, 0, sizeof(nvram_val));
+
+	if (ptr) {
+		bitflagvalue = bitflagvalue << bit;
+		nvramvalue = strtoul(ptr, NULL, HEX_BASE);
+		if (value) {
+			nvramvalue |= bitflagvalue;
+		} else {
+			nvramvalue &= (~bitflagvalue);
+		}
+	}
+	snprintf(nvram_val, sizeof(nvram_val)-1, "%lx", nvramvalue);
+	return nvram_set(name, nvram_val);
 }
 
 int

@@ -33,14 +33,16 @@
 #include <bcmconfig.h>
 #include <bcmparams.h>
 #include <wlutils.h>
+#include <bcmgpio.h>
 
-#if defined(__CONFIG_DLNA__)
+#if defined(__CONFIG_DLNA_DMS__)
 #include <bcmnvram.h>
 #endif	
 
 #define WL_DOWNLOADER_4323_VEND_ID "a5c/bd13/1"
 #define WL_DOWNLOADER_43236_VEND_ID "a5c/bd17/1"
 #define WL_DOWNLOADER_43526_VEND_ID "a5c/bd1d/1"
+#define WL_DOWNLOADER_43556_VEND_ID "a5c/bd23/1"
 #define WL_DOWNLOADER_4360_VEND_ID "a5c/bd1d/1"
 
 static int usb_start_services(void);
@@ -127,7 +129,7 @@ retry:
     if ((rval = mount(source, target, "vfat",0, "iocharset=utf8")) == 0)
     {
         /* Foxconn, add-start by MJ., for downsizing WNDR3400v2, 2011.02.21.  */
-#if (defined WNDR3400v2) || (defined R6300v2) || (defined R7000)
+#if (defined WNDR3400v2) || (defined R6300v2) || (defined R7000) || defined(R8000)
         snprintf(buf, 128, "/lib/udev/vol_id %s", source);
 /* Foxconn added start pling 12/26/2011, for WNDR4000AC */
 #elif (defined WNDR4000AC) || defined(R6250) || defined(R6200v2)
@@ -140,7 +142,13 @@ retry:
 #endif
         system(buf);
     }
-
+/*Foxconn added start by Kathy, 08/05/2014 @ support XFS requested by Netgear Bing*/
+    else if ((rval = mount(source, target, "xfs", 0, "")) == 0)
+    {
+        //printf("Mount xfs for '%s' success!\n", target);
+        get_vol_id(source);
+    }
+/*Foxconn added end by Kathy, 08/05/2014 @ support XFS requested by Netgear Bing*/
     /* Foxconn added start pling 05/19/2010 */
     /* Try to mount HFS+ and ext2/ext3 */
     //rval = mount(source, target, "hfsplus", 0, "");
@@ -404,7 +412,7 @@ typedef struct usbEntry_s
 /* Bob added end 04/01/2011, to log usb information */
 
 /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 int usb_mount_block(int major_no, int minor_no, char *mntdev, char *pUsbPort)
 #else /* R6300v2 */
 int usb_mount_block(int major_no, int minor_no, char *mntdev)
@@ -412,7 +420,7 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
 /* Foxconn modified end, Wins, 04/11/2011 */
 {
     char source[128];
-    char target[128];
+    char target[128],target0[128];
     char buf[128];
     FILE *fp = NULL;
     int i;
@@ -435,6 +443,10 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
         snprintf(target, 128, "/tmp/mnt/not_approved%dpart%d", 16*(major_no/64) + minor_no/16, minor_no%16);
         mkdir(target, 0777);
     }
+    
+    snprintf(target0, 128, "/tmp/mnt/usb%d/part0", 16*(major_no/64) + minor_no/16, minor_no);
+    if(minor_no%16)
+    	umount(target0);
 
 #ifdef USB_DEBUG
     cprintf("%s:%d mount source =%s, target=%s\n", __func__, __LINE__, source, target);
@@ -577,7 +589,7 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
     system("killall -SIGHUP httpd"); /* wklin modified, 03/23/2011 */
 #ifdef INCLUDE_USB_LED
     /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
     int nDevice, nPart;
     char usb_device[4], usb_part[4];
     parse_target_path(target, &nDevice, &nPart);
@@ -594,7 +606,7 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
 }
 
 /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 int usb_umount_block(int major_no, int minor_no, char *pUsbPort)
 #else /* R6300v2 */
 int usb_umount_block(int major_no, int minor_no)
@@ -655,7 +667,7 @@ int usb_umount_block(int major_no, int minor_no)
     system("killall -SIGHUP httpd"); /* wklin modified, 03/25/2011 */
 #ifdef INCLUDE_USB_LED
 /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
     char usb_device[4];
     char usb_part[4];
     sprintf(usb_device, "%d", device);
@@ -743,7 +755,7 @@ hotplug_block(void)
 	char *action = NULL, *minor = NULL;
 	char *major = NULL, *driver = NULL;
     /* Foxconn added start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 	char *devpath = NULL;
 #endif /* R6300v2 */
     /* Foxconn added end, Wins, 04/11/2011 */
@@ -760,7 +772,7 @@ hotplug_block(void)
 	    !(minor = getenv("MINOR")) ||
 	    !(driver = getenv("PHYSDEVDRIVER")) ||
         /* Foxconn added start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 	    !(devpath = getenv("PHYSDEVPATH")) ||
 #endif /* R6300v2 */
         /* Foxconn added end, Wins, 04/11/2011 */
@@ -790,11 +802,13 @@ hotplug_block(void)
 
 	if (!retry) {
 		hotplug_dbg("Failed locking LOCK_FILE: %s\n", strerror(errno));
+		close(lock_fd);
+		unlink(LOCK_FILE);
 		return -1;
 	}
 
     /* Foxconn added start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
     devpath = getenv("PHYSDEVPATH");
     char usb_port[512];
     memset(usb_port, 0x0, sizeof(usb_port));    /* Foxconn added, Wins, 06/30/2011 */
@@ -838,15 +852,17 @@ hotplug_block(void)
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
         system("killall -9 bftpd 2> /dev/null");
+#ifndef CONFIG_SAMBA_NO_RESTART
         system("killall -9 smbd 2> /dev/null");
+#endif
         system("killall -9 nmbd 2> /dev/null");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined (R7000)
-		usb_mount_block(major_no, minor_no, mntdev, usb_port);
+#if defined(R6300v2) || defined (R7000) || defined(R8000)
+		err = usb_mount_block(major_no, minor_no, mntdev, usb_port);
 #else /* R6300v2 */
-		usb_mount_block(major_no, minor_no, mntdev);
+		err = usb_mount_block(major_no, minor_no, mntdev);
 #endif /* R6300v2 */
         /* Foxconn modified end, Wins, 04/11/2011 */
 		USB_UNLOCK();
@@ -885,7 +901,7 @@ hotplug_block(void)
                     __func__, __LINE__, devname);
 #endif
             /* Foxconn added start, Wins, 06/30/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
             if ((minor_no%16) > 0)
             {
                 char usb_device[4], usb_part[4];
@@ -909,12 +925,14 @@ hotplug_block(void)
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
         system("killall -9 bftpd 2> /dev/null");
+#ifndef CONFIG_SAMBA_NO_RESTART
         system("killall -9 smbd 2> /dev/null");
+#endif
         system("killall -9 nmbd 2> /dev/null");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 		usb_umount_block(major_no, minor_no, usb_port);
 #else /* R6300v2 */
 		usb_umount_block(major_no, minor_no);
@@ -1010,6 +1028,7 @@ hotplug_usb(void)
 	/* download the firmware and insmod wl_high for USBAP */
 	if ((!strcmp(product, WL_DOWNLOADER_43236_VEND_ID)) ||
 		(!strcmp(product, WL_DOWNLOADER_43526_VEND_ID)) ||
+		(!strcmp(product, WL_DOWNLOADER_43556_VEND_ID)) ||
 		(!strcmp(product, WL_DOWNLOADER_4360_VEND_ID))) {
 		if (!strcmp(action, "add")) {
 			eval("rc", "restart");

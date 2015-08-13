@@ -28,10 +28,28 @@
 
 #define MAX_NO_BRIDGE 1     /* Foxconn modified pling 05/16/2007, 2->1 */
 
+/*foxconn Han edited, 05/18/2015*/
+#ifdef DUAL_TRI_BAND_HW_SUPPORT
+    #define isTriBand() (nvram_match("hwver",AMBIT_PRODUCT_NAME_TRI_BAND))
+#else
+    #define isTriBand() 
+#endif
+
+#ifdef VLAN_SUPPORT
+#define C_MAX_TOKEN_SIZE        128
+#define C_MAX_VLAN_RULE     10
+typedef struct vlan_rule_t{
+    char vlan_name[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE];
+    char vlan_id[6];
+    char vlan_prio[4];
+    char vlan_ports[10];
+    char enable_rule[4];
+}vlan_rule;
+#endif
 /* foxconn modified start, zacker, 01/13/2012, @iptv_igmp */
 #if defined(CONFIG_RUSSIA_IPTV)
 #undef MAX_NO_BRIDGE
-#define MAX_NO_BRIDGE 2
+#define MAX_NO_BRIDGE 10		/*Foxconn modified, edward zhang, 2013/07/03, change 2->10 for vlan support*/
 
 #define NVRAM_IPTV_INTF         "iptv_interfaces"
 #define NVRAM_IPTV_ENABLED      "iptv_enabled"
@@ -41,8 +59,27 @@
 #define IPTV_LAN4               0x08
 #define IPTV_WLAN1              0x10
 #define IPTV_WLAN2              0x20
+#if defined(R8000)
+#define IPTV_WLAN3              0x40
+#define IPTV_WLAN_GUEST1              0x80
+#define IPTV_WLAN_GUEST2              0x100
+#define IPTV_WLAN_GUEST3              0x200
+#define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3)   //0x70
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2 | IPTV_WLAN_GUEST3)   //0x3FF
+
+    /*foxconn Han edited start, 05/13/2015*/
+    #ifdef CONFIG_2ND_SWITCH
+        #define IPTV_LAN5               0x400
+        #define IPTV_LAN6               0x800
+        #define IPTV_EXT_MASK           (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN3 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2 | IPTV_WLAN_GUEST3 | IPTV_LAN5 | IPTV_LAN6)   //0xFFF
+    #endif /*CONFIG_2ND_SWITCH*/
+    /*foxconn Han edited end, 05/13/2015*/
+#else
+#define IPTV_WLAN_GUEST1              0x40
+#define IPTV_WLAN_GUEST2              0x80
 #define IPTV_WLAN_ALL           (IPTV_WLAN1 | IPTV_WLAN2)   //0x30
-#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2)   //0x3F
+#define IPTV_MASK               (IPTV_LAN1 | IPTV_LAN2 | IPTV_LAN3 | IPTV_LAN4 | IPTV_WLAN1 | IPTV_WLAN2 | IPTV_WLAN_GUEST1 | IPTV_WLAN_GUEST2)   //0x3F
+#endif
 
 #define VCFG_PAGE               0xFFFF
 #define VCFG_REG                0xFD
@@ -55,7 +92,11 @@
 #define SET_VLAN                0x80
 #endif /* CONFIG_RUSSIA_IPTV */
 /* foxconn modified end, zacker, 01/13/2012, @iptv_igmp */
-
+/* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+#define NVRAM_ARP_ENABLED        "arp_enable"
+#define C_MAX_TOKEN_SIZE        128
+#define C_MAX_RESERVED_IP       64
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 #ifdef LINUX26
 #define AGLOG_MAJOR_NUM             123
 #define WPS_LED_MAJOR_NUM           253

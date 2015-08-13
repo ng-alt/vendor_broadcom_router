@@ -109,7 +109,7 @@ int usb_sem_init(void)
 #include <fcntl.h>
 
 /* Foxconn added start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
 #define MAX_BUF_LEN     512
 #define USB_MNT_TABLE   "/tmp/usb_mnt_table"
 #define USB_MNT_TABLE2  "/tmp/usb_mnt_table2"
@@ -125,7 +125,24 @@ int get_usb_port(char *pDevPath, char *pUsbPort)
     if ((strPos1 = strstr(pDevPath, "/usb")) != NULL) 
     {
         sscanf(strPos1, "/usb%s", buf);    
-#elif defined(R7000)
+    /*foxconn Han edited start, 04/28/2015
+     *R7800/R8500 has different layout about this.
+     *usb1 means USB3.0 usb2 means USB2.0*/
+#elif defined(R7800)
+    //cprintf("%s %s %d pDevPath=%s\n",__func__,__FILE__,__LINE__,pDevPath?:"none");
+    if ((strstr(pDevPath, "/usb1/1-") != NULL) 
+        || (strstr(pDevPath, "/usb2/2-") != NULL)
+        || (strstr(pDevPath, "/usb3/3-") != NULL)
+        ) 
+    {
+
+        if((strPos1 = strstr(pDevPath, "/usb1/1-")) != NULL)
+            sscanf(strPos1, "/usb1/1-%s", buf);    
+        else if((strPos1 = strstr(pDevPath, "/usb2/2-")) != NULL)
+            sscanf(strPos1, "/usb2/2-%s", buf);    
+        else if((strPos1 = strstr(pDevPath, "/usb3/3-")) != NULL)
+            sscanf(strPos1, "/usb3/3-%s", buf);    
+#elif defined(R7000) || defined(R8000)
     if ((strstr(pDevPath, "/usb1/1-") != NULL) || (strstr(pDevPath, "/usb3/3-") != NULL)) 
     {
 
@@ -143,6 +160,7 @@ int get_usb_port(char *pDevPath, char *pUsbPort)
 
             memcpy(pUsbPort, buf, (strPos2 - buf));
             rtn_val = 1;
+            //cprintf("%s %s %d pUsbPort=%s\n",__func__,__FILE__,__LINE__,pUsbPort?:"none");
         }
     }
 
@@ -182,6 +200,7 @@ int add_into_mnt_file(char *pUsbPort, char *pDevice, char *pPart)
     int rtn_val = 0;
     char buf[128];
 
+    //cprintf("%s %s %d pUsbPort=%s,pDevice=%s, pPart=%s,\n",__func__,__FILE__,__LINE__,pUsbPort,pDevice,pPart);
     /* Foxconn added start, Wins, 06/30/2011 */
     if ((fp = fopen(USB_MNT_TABLE, "r")) != NULL)
     {
@@ -263,7 +282,7 @@ int remove_from_mnt_file(char *pUsbPort, char *pDevice, char *pPart)
 
     return rtn_val;
 } /* remove_from_mnt_file() */
-
+/*USB 3.0*/
 int usb1_led(void)
 {
     int rtn_val = 0;
@@ -309,9 +328,11 @@ int usb1_led(void)
     }
 #endif /* GPIO_EXT_CTRL */
     /* foxconn wklin modified end ,01/19/2011 */
+    //cprintf("%s %s %d has_usb1_dev=%d rtn_val=%d\n",__func__,__FILE__,__LINE__,has_usb1_dev,rtn_val);
     return rtn_val;
 } /* usb1_led() */
 
+/*USB 2.0*/
 int usb2_led(void)
 {
     int rtn_val = 0;
@@ -356,6 +377,7 @@ int usb2_led(void)
     }
 #endif /* GPIO_EXT_CTRL */
     /* foxconn wklin modified end ,01/19/2011 */
+    //cprintf("%s %s %d has_usb2_dev=%d rtn_val=%d\n",__func__,__FILE__,__LINE__,has_usb2_dev,rtn_val);
     return rtn_val;
 } /* usb2_led() */
 
@@ -364,8 +386,9 @@ int usb_dual_led(void)
     int rtn_val = 0;
 
     usb1_led();
+#if (!defined R7900)    /* foxconn added by Kathy @ No USB2 LED for R7900 */
     usb2_led();
-
+#endif
     return rtn_val;
 } /* usb_dual_led() */
 #else /* R6300v2 */
@@ -644,7 +667,7 @@ int usb_mount(void)
     /* USB LED on / off */
 #ifdef INCLUDE_USB_LED
     /* Foxconn modified start, Wins, 04/11/2011 */
-#if defined(R6300v2) || defined(R7000)
+#if defined(R6300v2) || defined(R7000) || defined(R8000)
     usb_dual_led();
 #else /* R6300v2 */
     usb_led();
