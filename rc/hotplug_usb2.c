@@ -304,6 +304,29 @@ int usb1_led(void)
         }
         fclose(fp);
     }
+
+    /* Foxconn added start pling 10/05/2012 */
+    /* Before we turn off USB LED 1, check whether we have
+     * a printer connected or not.
+     */
+    if (!has_usb1_dev)
+    {
+        fp = fopen("/proc/NetUSB/0/device", "r");
+        if (fp)
+        {
+            memset(line, 0, sizeof(line));
+            fgets(line, sizeof(line), fp);
+            fclose(fp);
+            if (strlen(line) > 2)
+            {
+                printf("%s: USB LED1 on!\n", __FUNCTION__);
+                has_usb1_dev = 1;
+            }
+        }
+    }
+    /* Foxconn added end pling 10/05/2012 */
+
+
     /* foxconn wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
 #if (defined GPIO_EXT_CTRL) /* WNDR4000 */
     if (has_usb1_dev)
@@ -353,6 +376,29 @@ int usb2_led(void)
         }
         fclose(fp);
     }
+
+
+    /* Foxconn added start pling 10/05/2012 */
+    /* Before we turn off USB LED 2, check whether we have
+     * a printer connected or not.
+     */
+    if (!has_usb2_dev)
+    {
+        fp = fopen("/proc/NetUSB/1/device", "r");
+        if (fp)
+        {
+            memset(line, 0, sizeof(line));
+            fgets(line, sizeof(line), fp);
+            fclose(fp);
+            if (strlen(line) > 2)
+            {
+                printf("%s: USB LED2 on!\n", __FUNCTION__);
+                has_usb2_dev = 1;
+            }
+        }
+    }
+    /* Foxconn added end pling 10/05/2012 */
+
     /* foxconn wklin modified start, 01/19/2011 @ USB LED for WNDR4000 */
 #if (defined GPIO_EXT_CTRL) /* WNDR4000 */
     if (has_usb2_dev)

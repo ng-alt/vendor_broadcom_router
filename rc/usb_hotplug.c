@@ -1235,3 +1235,102 @@ usb_stop_services(void)
 
 	return 0;
 }
+
+
+#if (defined INCLUDE_USB_LED)
+#include "wps_led.h"
+#include <sys/ioctl.h>
+
+int hotplug_NetUSB(void)
+{
+    char *devpath;
+    char *action;
+    char usb_port[8];
+    int usb_port_num;
+    char command[128];
+    
+    int has_usb1 = 0;
+    int has_usb2 = 0;
+        
+    FILE *fp;
+    int  fd;
+    char line[128];
+    
+    devpath = getenv("PHYSDEVPATH");
+    if (!devpath)
+        return -1;
+
+    sprintf(command, "cat /proc/%d/environ > /dev/console", getpid());
+    system(command);
+
+    action = getenv("ACTION");
+    sprintf(command, "echo 'action = %s' > dev/console", action);
+    system(command);
+
+    memset(usb_port, 0, sizeof(usb_port));
+    get_usb_port(devpath, usb_port);
+    usb_port_num = atoi(usb_port);
+                    
+    if (usb_port_num == 1)
+    {
+        fp = fopen("/proc/NetUSB/0/device", "r");
+        if (fp)
+        {
+            fgets(line, sizeof(line), fp);
+            if (strlen(line) > 2)
+            {
+                has_usb1 = 1;
+            }
+            fclose(fp); /* close /proc/NetUSB/0/device */
+        }
+    }
+    else
+    if (usb_port_num == 2)
+    {
+        fp = fopen("/proc/NetUSB/1/device", "r");
+        if (fp)
+        {
+            fgets(line, sizeof(line), fp);
+            if (strlen(line) > 2)
+            {
+                has_usb2 = 1;
+            }
+            fclose(fp); /* close /proc/NetUSB/1/device */
+        }
+    }
+
+#if (defined GPIO_EXT_CTRL) /* WNDR4000 */
+    if (has_usb1 || has_usb2)
+        system("gpio usbled 1");
+    else
+        system("gpio usbled 0");
+#else
+    fd = open("/dev/wps_led", O_RDWR);
+    if (fd >= 0) {
+        if (has_usb1)
+        {
+            ioctl(fd, USB_LED_STATE_ON, 1);
+        }
+        else
+        {
+            ioctl(fd, USB_LED_STATE_OFF, 1);
+        }
+
+        if (has_usb2)
+        {
+            ioctl(fd, USB2_LED_STATE_ON, 1);
+        }
+        else
+        {
+            ioctl(fd, USB2_LED_STATE_OFF, 1);
+        }
+
+        close(fd);
+    }
+#endif /* GPIO_EXT_CTRL */
+
+    system("killall -SIGHUP httpd"); /*foxconn Han edited, 08/18/2015 SIGHUP httpd trigger PRINTER LED  turn off*/
+    return 0;
+}
+#endif /*INCLUDE_USB_LED*/
+

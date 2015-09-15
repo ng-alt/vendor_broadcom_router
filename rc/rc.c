@@ -4324,9 +4324,9 @@ sysinit(void)
         /* Foxconn Bob added end 07/24/2015, force disable PMF to fix IOT issue with Nexus 5 */
         
         /* Foxconn Bob added start on 08/03/2015, workaround for dongle trap issue */
-        nvram_set("0:cpuclk","720");
-        nvram_set("1:cpuclk","720");
-        nvram_set("2:cpuclk","720");
+        nvram_set("0:cpuclk","800");
+        nvram_set("1:cpuclk","800");
+        nvram_set("2:cpuclk","800");
         /* Foxconn Bob added end on 08/03/2015, workaround for dongle trap issue */
         
 		//modules = nvram_get("kernel_mods") ? : "et bcm57xx wl";
@@ -5774,6 +5774,7 @@ main(int argc, char **argv)
 	/* hotplug [event] */
 	else if (strstr(base, "hotplug")) {
 		if (argc >= 2) {
+            //printf("hotplug argv[1]=%s\n",argv[1]);
 
 			if (!strcmp(argv[1], "net"))
 				return hotplug_net();
@@ -5794,6 +5795,21 @@ main(int argc, char **argv)
 			else if (!strcmp(argv[1], "platform"))
 				return coma_uevent();
 #endif /* LINUX_2_6_36 */
+            /* Foxconn added start pling 10/05/2012 */
+            /* For USB LED after Kcode printer detection */
+#if (defined INCLUDE_USB_LED)
+            else
+            {
+                char *driver = getenv("PHYSDEVDRIVER");
+
+                //printf("hotplug else case driver=%s \n",driver);
+                if (driver && strstr(driver, "NetUSB"))
+                {
+                    hotplug_NetUSB();
+                }
+            }
+#endif
+            /* Foxconn added end pling 10/05/2012 */
 
         /*foxconn modified end, water, @usb porting, 11/11/2008*/
 		} else {
