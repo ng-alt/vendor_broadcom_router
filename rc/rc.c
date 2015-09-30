@@ -4328,6 +4328,45 @@ sysinit(void)
         nvram_set("1:cpuclk","800");
         nvram_set("2:cpuclk","800");
         /* Foxconn Bob added end on 08/03/2015, workaround for dongle trap issue */
+
+        /* Foxconn Bob added start on 09/15/2015, correct WMM parameters */
+        
+        nvram_set("wl_wme_sta_be", "15 1023 3 0 0 off off");
+        nvram_set("wl_wme_sta_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl_wme_sta_vi", "7 15 2 6016 3008 off off");
+        nvram_set("wl_wme_sta_vo", "3 7 2 3264 1504 off off");
+        nvram_set("wl_wme_ap_be", "15 63 3 0 0 off off");
+        nvram_set("wl_wme_ap_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl_wme_ap_vi", "7 15 1 6016 3008 off off");
+        nvram_set("wl_wme_ap_vo", "3 7 1 3264 1504 off off");
+        
+        nvram_set("wl0_wme_sta_be", "15 1023 3 0 0 off off");
+        nvram_set("wl0_wme_sta_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl0_wme_sta_vi", "7 15 2 6016 3008 off off");
+        nvram_set("wl0_wme_sta_vo", "3 7 2 3264 1504 off off");
+        nvram_set("wl0_wme_ap_be", "15 63 3 0 0 off off");
+        nvram_set("wl0_wme_ap_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl0_wme_ap_vi", "7 15 1 6016 3008 off off");
+        nvram_set("wl0_wme_ap_vo", "3 7 1 3264 1504 off off");
+        
+        nvram_set("wl1_wme_sta_be", "15 1023 3 0 0 off off");
+        nvram_set("wl1_wme_sta_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl1_wme_sta_vi", "7 15 2 6016 3008 off off");
+        nvram_set("wl1_wme_sta_vo", "3 7 2 3264 1504 off off");
+        nvram_set("wl1_wme_ap_be", "15 63 3 0 0 off off");
+        nvram_set("wl1_wme_ap_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl1_wme_ap_vi", "7 15 1 6016 3008 off off");
+        nvram_set("wl1_wme_ap_vo", "3 7 1 3264 1504 off off");
+        
+        nvram_set("wl2_wme_sta_be", "15 1023 3 0 0 off off");
+        nvram_set("wl2_wme_sta_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl2_wme_sta_vi", "7 15 2 6016 3008 off off");
+        nvram_set("wl2_wme_sta_vo", "3 7 2 3264 1504 off off");
+        nvram_set("wl2_wme_ap_be", "15 63 3 0 0 off off");
+        nvram_set("wl2_wme_ap_bk", "15 1023 7 0 0 off off");
+        nvram_set("wl2_wme_ap_vi", "7 15 1 6016 3008 off off");
+        nvram_set("wl2_wme_ap_vo", "3 7 1 3264 1504 off off");
+        /* Foxconn Bob added end on 09/15/2015, correct WMM parameters */
         
 		//modules = nvram_get("kernel_mods") ? : "et bcm57xx wl";
 		/*Foxconn modify start by Hank for insert dpsta 08/27/2012*/
