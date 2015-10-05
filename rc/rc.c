@@ -4909,6 +4909,55 @@ static void config_arp_table(void)
 }
 #endif
 /* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+
+/*foxconn Han edited start, 10/01/2015 
+ *when R8500 didn't recognize all 3 interface, then do the software reboot*/
+int isDhdReady()
+{
+    char ifname[32] = "eth1";
+    int flags;
+    unsigned long addr, netmask;
+    int i = 1;
+    int ret = 0;
+    int max = 3;
+    int flag = 0;
+    char *max_pt = NULL;
+
+    if(acosNvramConfig_match("dhd_check_ignore","1"))
+        return 0;
+
+    if((max_pt = nvram_get("dhd_check_max"))!=NULL)
+    {
+        max = atoi(max_pt);
+    }
+
+    printf("\n--------------------isDhdReady()------------------------\n");
+    //system("ifconfig -a");
+    for(i=1; i<= max; i++)
+    {
+        sprintf(ifname,"eth%d",i);
+        ret=ifconfig_get(ifname, &flags, &addr, &netmask);
+        /*ENONET means interface don't have IP address,
+         *EACCES means interface don't exist 
+         *EADDRNOTAVAIL Cannot assign requested address*/
+        if (ret != 0 && ret != EADDRNOTAVAIL)  
+        {
+            printf("%s %d could not found %s ret=0x%X\n",__func__,__LINE__,ifname,ret);
+            flag ++;
+        }
+        else 
+            printf("%s %d found %s ret=0x%X\n",__func__,__LINE__,ifname, ret);
+    }
+    printf("\n-------------------isDhdReady flag=%d-----------------------------\n",flag);
+
+    if(flag)
+    {
+        printf("DHD didn't bring up all the interfaces!\n");
+        system("reboot");
+    }
+    return ret;
+}
+/*foxconn Han edited end, 10/01/2015*/
 /* Main loop */
 static void
 main_loop(void)
@@ -5435,10 +5484,13 @@ main_loop(void)
 				start_bsd();
             /* Now start ACOS services */
 
+            /*foxconn Han edited, 10/02/2015*/
+            isDhdReady();
             /* Foxconn added start pling 06/26/2014 */
             /* R8000 TD99, Link down/up WAN ethernet for Comcast modem IPv6 compatibility issue*/
             abEnableWanEthernetPort();
             /* Foxconn added end pling 06/26/2014 */
+
 
             eval("acos_init");
             eval("acos_service", "start");
