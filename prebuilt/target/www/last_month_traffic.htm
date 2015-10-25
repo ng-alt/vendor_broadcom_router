@@ -37,7 +37,7 @@
 						reflow:true
 					},
 					title: {
-						text: '<%3157%>',
+						text: '<%3229%>',
 						x: -20 ,//center,
 						margin: 25
 					},
@@ -68,7 +68,7 @@
                         max: 100,
                         min:0,
                         title: {
-                        text: '<%3158%>'
+                        text: '<%3230%>'
                         },
                         labels: {
                             formatter :function(){
@@ -96,7 +96,7 @@
 					tooltip: {
 						formatter: function() {
 							return ''+
-								this.x + "   "+ this.y +'<%3159%>';
+								this.x + "   "+ this.y +'<%3231%>';
 						}
 					},
 					plotOptions: {
@@ -113,8 +113,8 @@
 					},
 					series: []
 				};
-				var limit = parseInt("<%2064%>");//0,no limit;1,download limit;2,both limit.
-				 var time_str = "<%1059%>";
+				var limit = parseInt("<%2060%>");//0,no limit;1,download limit;2,both limit.
+				 var time_str = "<%1066%>";
                 var need_time_str = time_str.substring(time_str.indexOf(",")+2);
 
                 var time = new Array();
@@ -122,38 +122,38 @@
 				var year = parseInt(time[2]);
 				if(year < 1900)
 				    year += 1900;
-                if(time[1] == '<%3160%>')
+                if(time[1] == '<%3232%>')
                     var month = 1;
-                else if(time[1] == '<%3161%>')
+                else if(time[1] == '<%3233%>')
                     var month = 2;
-                else if(time[1] == '<%3162%>')
+                else if(time[1] == '<%3234%>')
                     var month = 3;
-                else if(time[1] == '<%3163%>')
+                else if(time[1] == '<%3235%>')
                     var month = 4;
-                else if(time[1] == '<%3164%>')
+                else if(time[1] == '<%3236%>')
                     var month = 5;
-                else if(time[1] == '<%3165%>')
+                else if(time[1] == '<%3237%>')
                     var month = 6;
-                else if(time[1] == '<%3166%>')
+                else if(time[1] == '<%3238%>')
                     var month = 7;
-                else if(time[1] == '<%3167%>')
+                else if(time[1] == '<%3239%>')
                     var month = 8;
-                else if(time[1] == '<%3168%>')
+                else if(time[1] == '<%3240%>')
                     var month = 9;
-                else if(time[1] == '<%3169%>')
+                else if(time[1] == '<%3241%>')
                     var month = 10;
-                else if(time[1] == '<%3170%>')
+                else if(time[1] == '<%3242%>')
                     var month = 11;
-                else if(time[1] == '<%3171%>')
+                else if(time[1] == '<%3243%>')
                     var month = 12;
-				var limit_byte = parseInt("<%2065%>");
-				var limit_hour = parseInt("<%2066%>");
-				var connection_limit = parseInt("<%2063%>");
+				var limit_byte = parseInt("<%2061%>");
+				var limit_hour = parseInt("<%2062%>");
+				var connection_limit = parseInt("<%2059%>");
                 var used_volume_byte = 0;
                 var used_down_byte = 0;
                 var used_hour = 0;
-                var traffic_enable = parseInt("<%2062%>");
-                var start_day = parseInt("<%2186%>");
+                var traffic_enable = parseInt("<%2058%>");
+                var start_day = parseInt("<%2182%>");
                 var days = 0;
                 if(month == 1)
                 {
@@ -197,7 +197,7 @@
 			   if(connection_limit == 1)
 			   {
 			     
-                    options.yAxis.title.text = '<%3172%>';
+                    options.yAxis.title.text = '<%3244%>';
                     
                     for(i = start_day;i <= days;i++)
                     {
@@ -206,67 +206,67 @@
                         var minute = 0;
                         var hour_float = 0.0;
                         if(i == 1)
-                            ctime_string = "<%3173%>";
+                            ctime_string = "<%3245%>";
                         else if(i == 2)
-                            ctime_string = "<%3174%>";
+                            ctime_string = "<%3246%>";
                         else if(i == 3)
-                            ctime_string = "<%3175%>";
+                            ctime_string = "<%3247%>";
                         else if(i == 4)
-                            ctime_string = "<%3176%>";
+                            ctime_string = "<%3248%>";
                         else if(i == 5)
-                            ctime_string = "<%3177%>";    
+                            ctime_string = "<%3249%>";    
                         else if(i == 6)
-                            ctime_string = "<%3178%>";
+                            ctime_string = "<%3250%>";
                         else if(i == 7)
-                            ctime_string = "<%3179%>";
+                            ctime_string = "<%3251%>";
                         else if(i == 8)
-                            ctime_string = "<%3180%>";
+                            ctime_string = "<%3252%>";
                         else if(i == 9)
-                            ctime_string = "<%3181%>";
+                            ctime_string = "<%3253%>";
                          else if(i == 10)
-                            ctime_string = "<%3182%>";
+                            ctime_string = "<%3254%>";
                         else if(i == 11)
-                            ctime_string = "<%3183%>";
+                            ctime_string = "<%3255%>";
                         else if(i == 12)
-                            ctime_string = "<%3184%>";
+                            ctime_string = "<%3256%>";
                         else if(i == 13)
-                            ctime_string = "<%3185%>";    
+                            ctime_string = "<%3257%>";    
                         else if(i == 14)
-                            ctime_string = "<%3186%>";
+                            ctime_string = "<%3258%>";
                         else if(i == 15)
-                            ctime_string = "<%3187%>";
+                            ctime_string = "<%3259%>";
                         else if(i == 16)
-                            ctime_string = "<%3188%>";
+                            ctime_string = "<%3260%>";
                         else if(i == 17)
-                            ctime_string = "<%3189%>";
+                            ctime_string = "<%3261%>";
                          else if(i == 18)
-                            ctime_string = "<%3190%>";
+                            ctime_string = "<%3262%>";
                         else if(i == 19)
-                            ctime_string = "<%3191%>";
+                            ctime_string = "<%3263%>";
                         else if(i == 20)
-                            ctime_string = "<%3192%>";
+                            ctime_string = "<%3264%>";
                         else if(i == 21)
-                            ctime_string = "<%3193%>";    
+                            ctime_string = "<%3265%>";    
                         else if(i == 22)
-                            ctime_string = "<%3194%>";
+                            ctime_string = "<%3266%>";
                         else if(i == 23)
-                            ctime_string = "<%3195%>";
+                            ctime_string = "<%3267%>";
                         else if(i == 24)
-                            ctime_string = "<%3196%>";
+                            ctime_string = "<%3268%>";
                         else if(i == 25)
-                            ctime_string = "<%3197%>";
+                            ctime_string = "<%3269%>";
                          else if(i == 26)
-                            ctime_string = "<%3198%>";
+                            ctime_string = "<%3270%>";
                         else if(i == 27)
-                            ctime_string = "<%3199%>";
+                            ctime_string = "<%3271%>";
                         else if(i == 28)
-                            ctime_string = "<%3200%>";
+                            ctime_string = "<%3272%>";
                         else if(i == 29)
-                            ctime_string = "<%3201%>";    
+                            ctime_string = "<%3273%>";    
                         else if(i == 30)
-                            ctime_string = "<%3202%>";
+                            ctime_string = "<%3274%>";
                         else
-                            ctime_string = "<%3203%>";
+                            ctime_string = "<%3275%>";
                         if(ctime_string == "--:--")
                             break;
                         else if(ctime_string.indexOf(":") != -1)
@@ -281,11 +281,11 @@
                         }    
                         series.data.push(used_hour);
                     }
-                    var subtitle = '<%3204%>'+'<%3205%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3206%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3207%>' + used_hour + '<%3208%>';
+                    var subtitle = '<%3276%>'+'<%3277%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3278%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3279%>' + used_hour + '<%3280%>';
                     options.subtitle.text = subtitle;
                     options.tooltip.formatter = function() {
                     return ''+
-                    	this.x + "   "+ this.y +'<%3208%>';
+                    	this.x + "   "+ this.y +'<%3280%>';
                     }
                     options.yAxis.plotLines[0].value = limit_hour;
 				    options.yAxis.plotLines[0].width = 5;
@@ -310,73 +310,73 @@
                         for(i = start_day;i <= days;i++)
                         {
                             if(i == 1)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3209%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3281%>"));
                             else if(i == 2)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3210%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3282%>"));
                             else if(i == 3)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3211%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3283%>"));
                             else if(i == 4)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3212%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3284%>"));
                             else if(i == 5)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3213%>"));    
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3285%>"));    
                             else if(i == 6)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3214%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3286%>"));
                             else if(i == 7)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3215%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3287%>"));
                             else if(i == 8)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3216%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3288%>"));
                             else if(i == 9)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3217%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3289%>"));
                              else if(i == 10)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3218%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3290%>"));
                             else if(i == 11)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3219%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3291%>"));
                             else if(i == 12)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3220%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3292%>"));
                             else if(i == 13)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3221%>"));    
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3293%>"));    
                             else if(i == 14)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3222%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3294%>"));
                             else if(i == 15)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3223%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3295%>"));
                             else if(i == 16)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3224%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3296%>"));
                             else if(i == 17)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3225%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3297%>"));
                              else if(i == 18)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3226%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3298%>"));
                             else if(i == 19)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3227%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3299%>"));
                             else if(i == 20)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3228%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3300%>"));
                             else if(i == 21)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3229%>"));    
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3301%>"));    
                             else if(i == 22)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3230%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3302%>"));
                             else if(i == 23)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3231%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3303%>"));
                             else if(i == 24)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3232%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3304%>"));
                             else if(i == 25)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3233%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3305%>"));
                              else if(i == 26)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3234%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3306%>"));
                             else if(i == 27)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3235%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3307%>"));
                             else if(i == 28)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3236%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3308%>"));
                             else if(i == 29)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3237%>"));    
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3309%>"));    
                             else if(i == 30)
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3238%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3310%>"));
                             else
-                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3239%>"));
+                                used_down_byte = numAdd(used_down_byte,parseFloat("<%3311%>"));
                             if(used_down_byte > 1000)
                                 series.data.push(parseInt(used_down_byte));
                             else
                                 series.data.push(used_down_byte);
                         }
-                        var subtitle = '<%3204%>'+'<%3205%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3206%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3240%>' + used_down_byte + '<%3159%>';
+                        var subtitle = '<%3276%>'+'<%3277%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3278%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3312%>' + used_down_byte + '<%3231%>';
                         options.subtitle.text = subtitle;
                         options.yAxis.plotLines[0].value = limit_byte;
                         options.yAxis.plotLines[0].width = 5;
@@ -399,73 +399,73 @@
                         for(i = start_day;i <= days;i++)
                         {
                              if(i == 1)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3241%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3313%>"));
                             else if(i == 2)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3242%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3314%>"));
                             else if(i == 3)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3243%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3315%>"));
                             else if(i == 4)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3244%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3316%>"));
                             else if(i == 5)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3245%>"));    
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3317%>"));    
                             else if(i == 6)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3246%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3318%>"));
                             else if(i == 7)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3247%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3319%>"));
                             else if(i == 8)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3248%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3320%>"));
                             else if(i == 9)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3249%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3321%>"));
                              else if(i == 10)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3250%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3322%>"));
                             else if(i == 11)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3251%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3323%>"));
                             else if(i == 12)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3252%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3324%>"));
                             else if(i == 13)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3253%>"));    
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3325%>"));    
                             else if(i == 14)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3254%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3326%>"));
                             else if(i == 15)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3255%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3327%>"));
                             else if(i == 16)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3256%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3328%>"));
                             else if(i == 17)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3257%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3329%>"));
                              else if(i == 18)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3258%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3330%>"));
                             else if(i == 19)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3259%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3331%>"));
                             else if(i == 20)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3260%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3332%>"));
                             else if(i == 21)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3261%>"));    
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3333%>"));    
                             else if(i == 22)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3262%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3334%>"));
                             else if(i == 23)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3263%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3335%>"));
                             else if(i == 24)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3264%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3336%>"));
                             else if(i == 25)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3265%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3337%>"));
                              else if(i == 26)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3266%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3338%>"));
                             else if(i == 27)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3267%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3339%>"));
                             else if(i == 28)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3268%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3340%>"));
                             else if(i == 29)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3269%>"));    
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3341%>"));    
                             else if(i == 30)
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3270%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3342%>"));
                             else
-                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3271%>"));
+                                used_volume_byte = numAdd(used_volume_byte,parseFloat("<%3343%>"));
                             if(used_volume_byte > 1000)
                                 series.data.push(parseInt(used_volume_byte));
                             else
                                 series.data.push(used_volume_byte);
                         }
-                        var subtitle = '<%3204%>'+'<%3205%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3206%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3272%>' + used_volume_byte + '<%3159%>';
+                        var subtitle = '<%3276%>'+'<%3277%>' + ' ' + month + '/' + start_day +'/' +  year + ' '+'<%3278%>'+ ' ' + month + '/' + days + '/' + year +'<br>'+ '<%3344%>' + used_volume_byte + '<%3231%>';
                         options.subtitle.text = subtitle;
 				        if(limit == 0)
 				        {

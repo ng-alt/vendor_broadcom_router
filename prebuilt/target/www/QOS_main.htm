@@ -20,7 +20,7 @@ classes.num.all.fontSize = "10pt" ;
 <%14%>
 <script language="javascript" type="text/javascript">
 <!--
-<%1896%>
+<%1892%>
   
     $(document).ready(function()
     {	
@@ -30,7 +30,7 @@ classes.num.all.fontSize = "10pt" ;
         });
 		
 		/* check whether QoS down streaming feature is enabled */
-		if("<%1897%>"=="1")
+		if("<%1893%>"=="1")
 			location.href = "QOS_down_streaming.htm";
     });
 
@@ -139,7 +139,7 @@ function loadSettings()
         cf.check_bw.disabled = true;
         
         var setButton=document.getElementsByName("setup_qos_rule");
-        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1898%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1894%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
         setButton[0].style.cursor='default';          
 	}
     else
@@ -156,7 +156,7 @@ function loadSettings()
             //cf.check_bw.disabled = true;
             
             var checkButton=document.getElementsByName("check_bw");
-            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1416%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1412%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
             checkButton[0].style.cursor='default';        
             
 
@@ -167,7 +167,7 @@ function loadSettings()
 function checkData()
 {
 	var cf = document.forms[0];
-	var qos_up_bw_limit = "<%1899%>";
+	var qos_up_bw_limit = "<%1895%>";
 	interval = parseInt(cf.bandwidth.value);
 	if ( isNaN(interval) || interval <= 0 ||
 		(cf.rate.selectedIndex == 0 && (interval < 64 || interval > 9999)) ||
@@ -175,7 +175,7 @@ function checkData()
 		cf.bandwidth.value.match(/[^0-9]/g) ||
 		cf.bandwidth.value.match(/^0/))
 	{
-		alert("<%1900%>");
+		alert("<%1896%>");
 		return false;
 	}
 	return true;
@@ -189,11 +189,11 @@ function checkWanIp()
 function loadAlert()
 {
     var cf = document.forms[0];
-    var fromcgi = "<%1901%>";
+    var fromcgi = "<%1897%>";
     
     if (fromcgi == "AlertOk")
     {
-        alert("<%1902%>");
+        alert("<%1898%>");
     }
 }
 
@@ -252,7 +252,7 @@ function check_bw_sel()
 <form id="target"  name="frmRules" method="POST" action="qos_main.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%362%></div>
+<div class="subhead2"> <%364%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -268,35 +268,35 @@ function check_bw_sel()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="wmm_enable" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1903%></b></a></td>
+<td colspan="2"><input type="checkbox" name="wmm_enable" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1899%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1904%></b></a></td>
+<td colspan="2"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1900%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="bwEnable" value="1" onclick="check_bw_sel()"><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1905%></b></a></td>
+<td colspan="2"><input type="checkbox" name="bwEnable" value="1" onclick="check_bw_sel()"><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1901%></b></a></td>
 </tr>
 
 <tr>
 <td colspan="2" ><img src="spacer.gif" width="40" height="12" border="0">
-<input type="radio" name="bw_sel" value="1" onclick="update_bw_sel(1)"><%1906%>&nbsp;<%1907%>
+<input type="radio" name="bw_sel" value="1" onclick="update_bw_sel(1)"><%1902%>&nbsp;<%1903%>
 <input type="text" name="bandwidth" size="6" maxlength="4" value="">
 <select name="rate" size=1>
-<option value="1000"><%1908%></option>
-<option value="1000000"><%1909%></option>
+<option value="1000"><%1904%></option>
+<option value="1000000"><%1905%></option>
 </select>
 </td>
 </tr>
 <tr>
 <td colspan="2" ><img src="spacer.gif" width="40" height="12" border="0">
-<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1910%>  <!><%1911%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1416%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1416%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1416%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1906%>  <!><%1907%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1412%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1412%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1412%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -304,8 +304,8 @@ function check_bw_sel()
 <td colspan="2"></td>
 </tr>
 <tr>
-<td colspan="2" ><b><%1912%></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1898%>" name="setup_qos_rule" class="button-rule" onclick="buttonClick(this,'<%1898%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%1898%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<td colspan="2" ><b><%1908%></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1894%>" name="setup_qos_rule" class="button-rule" onclick="buttonClick(this,'<%1894%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%1894%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 &nbsp;&nbsp;&nbsp;<button type="submit" value="1" name="video_streaming_qos" class="button-rule" onclick="buttonClick(this,'video_streaming_qos');" ><span class="roundleft_button">&nbsp;&nbsp; QoS Video Streaming Tunning</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
@@ -316,14 +316,14 @@ function check_bw_sel()
 <tr>
 <input type="hidden" name="select" value="-1">
 <input type="hidden" name="priority_sel" value="-1">
-<INPUT type="hidden" name=WMM_value value="<%1913%>">
-<input type="hidden" name="qos_enable" value="<%1914%>">
-<input type="hidden" name="qos_bw_enable" value="<%1915%>">
-<input type="hidden" name="uplink_bw" value="<%1916%>">
-<input type="hidden" name="repeater" value="<%429%>">
-<input type="hidden" name="repeater_an" value="<%430%>">
-<input type="hidden" name="bw_set_sel" value="<%1917%>">
-<input type="hidden" name="enable_apmode" value="<%431%>">
+<INPUT type="hidden" name=WMM_value value="<%1909%>">
+<input type="hidden" name="qos_enable" value="<%1910%>">
+<input type="hidden" name="qos_bw_enable" value="<%1911%>">
+<input type="hidden" name="uplink_bw" value="<%1912%>">
+<input type="hidden" name="repeater" value="<%431%>">
+<input type="hidden" name="repeater_an" value="<%432%>">
+<input type="hidden" name="bw_set_sel" value="<%1913%>">
+<input type="hidden" name="enable_apmode" value="<%433%>">
 </tr>
 </table></div></td></tr>
 <tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="QOS_main_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>

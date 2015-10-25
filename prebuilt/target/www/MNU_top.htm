@@ -6,10 +6,10 @@
 function showLoginMsg()
 {
 	var lanip_changed = "<%296%>";
-	var firstTime = "<%1167%>";
+	var firstTime = "<%1176%>";
 	var traffic_warning_state = "<%297%>";
-	var traffic_block_enable = "<%1168%>";
-	var just_refresh = "<%1169%>";
+	var traffic_block_enable = "<%1177%>";
+	var just_refresh = "<%1178%>";
 	if (firstTime == "1" && lanip_changed == "0" && just_refresh == "0" &&
 		(traffic_warning_state == "0" || traffic_warning_state == "2" ||
 		(traffic_warning_state == "4" && traffic_block_enable == "0")))
@@ -68,29 +68,29 @@ function ApplyAction()
 </SCRIPT>        
 <BODY bgColor=#ffffff leftMargin=0 topMargin=0 marginheight="0" marginwidth="0">
 <form name="frmLanguage" method="POST" action="lang_top.cgi">
-<%318%>
-<%319%>
-    <input type="hidden" name="curlang" value="Auto"> 
 <%320%>
 <%321%>
-	<input type="hidden" name="curlang" value="<%9%>"> 
+    <input type="hidden" name="curlang" value="Auto"> 
 <%322%>
 <%323%>
+	<input type="hidden" name="curlang" value="<%9%>"> 
 <%324%>
-	<input type="hidden" name="curlang" value="<%9%>">
 <%325%>
-	<input type="hidden" name="local_srptlang" value="<%326%>">
-	<input type="hidden" name="srptlang" value="<%327%>">
+<%326%>
+	<input type="hidden" name="curlang" value="<%9%>">
+<%327%>
+	<input type="hidden" name="local_srptlang" value="<%328%>">
+	<input type="hidden" name="srptlang" value="<%329%>">
 	<input type="hidden" name="select_region" value=""> 
     <table border="0" cellpadding="3" cellspacing="0" width="100%">
         <tr>
             <td height="12" colspan="2" background="darkblue.gif" width=100%></td>
         </tr>
         <tr>
-            <td width=77% rowspan="4" style="background-repeat:no-repeat" background="<%1170%> "></td>
+            <td width=77% rowspan="5" style="background-repeat:no-repeat" background="<%1179%> "></td>
         </tr>    
         <tr>
-            <td><b  style="FONT-SIZE: 12px;FONT-FAMILY: Arial"><%1171%>:</b></td>
+            <td><b  style="FONT-SIZE: 12px;FONT-FAMILY: Arial"><%1180%>:</b></td>
         </tr> 
         <tr>
             <td >
@@ -100,6 +100,9 @@ function ApplyAction()
         <tr>
             <td height=33%><img src="spacer.gif" width="25" height="18" border="0" alt="">
             <input type="button" name="Apply" value="<%64%>" onclick="ApplyAction();" ></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
         </tr>
     </table>
 </form>

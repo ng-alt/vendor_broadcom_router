@@ -7,23 +7,29 @@
 function do_redirect()
 {
     var gui_language = "<%9%>";
-	<%2924%>
-    <%2925%>
-	<%2926%>
-	<%2927%>
-    <%2928%>
-	<%2929%>
-    window.moveTo(0, 0);
-    window.resizeTo(screen.width, screen.height);
+    var user_agent=window.navigator.userAgent;
+    var msie=user_agent.indexOf("MSIE ");
+	<%3006%>
+    <%3007%>
+	<%3008%>
+	<%3009%>
+    <%3010%>
+	<%3011%>
+    
+    if(msie<=0)
+    {
+        window.moveTo(0, 0);
+        window.resizeTo(screen.width, screen.height);
+    }
     if(gui_language == "Japanese")
         top.window.location.href = "http://www.netgear.jp/";
     else
-	<%2927%>		
-		top.window.location.href = "<%457%>";
-	<%2929%>
-	<%2924%>
-        top.window.location.href = "http://www.netgear.com/success/<%454%>?sn=<%2930%>";
-	<%2926%>
+	<%3009%>		
+		top.window.location.href = "<%459%>";
+	<%3011%>
+	<%3006%>
+        top.window.location.href = "http://www.netgear.com/success/<%456%>?sn=<%3012%>";
+	<%3008%>
 }
 </script>
 </head>

@@ -267,7 +267,15 @@ endif
 ifeq ($(CONFIG_OPENSSL),y)
 export CFLAGS += -DSUPPORT_REMOTE_HTTPS
 endif
-
+ifeq ($(CONFIG_REMOTE_SMB_CONF),y)
+CFLAGS += -DREMOTE_SMB_CONF
+endif
+ifeq ($(CONFIG_REMOTE_USER_CONF),y)
+export CFLAGS += -DREMOTE_USER_CONF
+endif
+ifeq ($(CONFIG_USERSETUP),y)
+CFLAGS += -DUSERSETUP_SUPPORT
+endif
 ifeq ($(CONFIG_CLOUD_XAGENT_CONF),y)
 CFLAGS += -DXAGENT_CLOUD_SUPPORT
 endif
@@ -337,7 +345,7 @@ export CFLAGS += -DAUTO_CONN_24HR
 export CFLAGS += -DIGMP_PROXY
 export CFLAGS += -DAP_MODE
 #added by dennis ,01/02/2013, for ap mode detection
-#export CFLAGS += -DINCLUDE_DETECT_AP_MODE
+export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 export CFLAGS += -D__CONFIG_IGMP_SNOOPING__
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 export CFLAGS += -DLINUX26
@@ -643,7 +651,7 @@ $(SRCBASE)/router/shared/router_version.h: $(SRCBASE)/router/shared/version.h.in
 	[ ! -e $(SRCBASE)/tools/release/linux-router-bom.mk  ] ||  make SRCBASE=$(SRCBASE) -f $(SRCBASE)/tools/release/linux-router-bom.mk version
 ifeq ($(CONFIG_DHDAP),y)
 	$(MAKE) -C $(SRCBASE_DHD)/include
-	$(MAKE) -C $(SRCBASE_FW)/include
+#	$(MAKE) -C $(SRCBASE_FW)/include
 endif
 
 
@@ -718,6 +726,7 @@ ifeq ($(PROFILE),R8000)
 	install usbprinter/KC_PRINT $(TARGETDIR)/usr/bin
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
+	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
