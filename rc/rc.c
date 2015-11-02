@@ -4907,8 +4907,6 @@ static void config_arp_table(void)
     
     return 0;
 }
-#endif
-/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 
 /*foxconn Han edited start, 10/01/2015 
  *when R8500 didn't recognize all 3 interface, then do the software reboot*/
@@ -4957,7 +4955,8 @@ int isDhdReady()
     }
     return ret;
 }
-/*foxconn Han edited end, 10/01/2015*/
+/*foxconn Han edited end, 10/01/2015*/#endif
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 /* Main loop */
 static void
 main_loop(void)
@@ -5483,14 +5482,13 @@ main_loop(void)
 			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
             /* Now start ACOS services */
-
             /*foxconn Han edited, 10/02/2015*/
             isDhdReady();
+
             /* Foxconn added start pling 06/26/2014 */
             /* R8000 TD99, Link down/up WAN ethernet for Comcast modem IPv6 compatibility issue*/
             abEnableWanEthernetPort();
             /* Foxconn added end pling 06/26/2014 */
-
 
             eval("acos_init");
             eval("acos_service", "start");
