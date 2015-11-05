@@ -4907,6 +4907,8 @@ static void config_arp_table(void)
     
     return 0;
 }
+#endif
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 
 /*foxconn Han edited start, 10/01/2015 
  *when R8500 didn't recognize all 3 interface, then do the software reboot*/
@@ -4955,8 +4957,7 @@ int isDhdReady()
     }
     return ret;
 }
-/*foxconn Han edited end, 10/01/2015*/#endif
-/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+/*foxconn Han edited end, 10/01/2015*/
 /* Main loop */
 static void
 main_loop(void)

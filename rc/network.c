@@ -1412,7 +1412,9 @@ start_wl(void)
 	} /* For loop */
 	
 	system("wl -i eth1 txcore -k 0xd -o 0xd -s 1 -c 0xd -s 2 -c 0xd -s 3 -c 0xd");   /* Per NTGR SL suggestion for R8500 */
-	system("wl -i eth3 txcore -o 0xb -s 1 -c 0xb -s 2 -c 0xb -s 3 -c 0xb");     /* Per NTGR SL suggestion for R8500 */
+//	system("wl -i eth3 txcore -o 0xb -s 1 -c 0xb -s 2 -c 0xb -s 3 -c 0xb");     /* Per NTGR SL suggestion for R8500 */
+    system("wl -i eth3 txcore -o 0xf -s 1 -c 0xf -s 2 -c 0xf -s 3 -c 0xf");     /* Modified per NTGR SL suggestion on 20/26/2015 for R8500 */
+    
 	
     system("wl -i eth1 interference 25");
     system("wl -i eth2 interference 25");
