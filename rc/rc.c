@@ -4368,6 +4368,8 @@ sysinit(void)
         nvram_set("wl2_wme_ap_vo", "3 7 1 3264 1504 off off");
         /* Foxconn Bob added end on 09/15/2015, correct WMM parameters */
         
+        nvram_set("gbsd_wait_rssi_intf_idx", "2");  /* Foxconn Bob added on 10/14/2015 to force gbsd rssi interface to wl2 */
+        
 		//modules = nvram_get("kernel_mods") ? : "et bcm57xx wl";
 		/*Foxconn modify start by Hank for insert dpsta 08/27/2012*/
 		/*Foxconn modify start by Hank for insert proxyarp 10/05/2012*/
@@ -4578,7 +4580,7 @@ sysinit(void)
     {
         /*foxconn Han edited 07/24/2015, enable lacp debug when we capture log*/
         if(nvram_match("debug_lacp_enable","1"))
-            nvram_set("lacpdebug","7");
+            nvram_set("lacpdebug","6"); /*foxconn Han edited, 12/03/2015 lower the debug level to 6 from 7*/
         eval("insmod", "lacp");
     }
     /*foxconn Han edited end, 04/28/2015*/
@@ -5161,7 +5163,8 @@ main_loop(void)
 
 			/*Foxconn add start by Hank 06/14/2012*/
 			/*Enable 2.4G auto channel detect, kill acsd for stop change channel*/
-			if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
+			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
+			if(nvram_match("enable_sta_mode","0"))
 				stop_acsd();
 			/*Foxconn add end by Hank 06/14/2012*/
 
@@ -5483,13 +5486,14 @@ main_loop(void)
 			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
             /* Now start ACOS services */
+
             /*foxconn Han edited, 10/02/2015*/
             isDhdReady();
-
             /* Foxconn added start pling 06/26/2014 */
             /* R8000 TD99, Link down/up WAN ethernet for Comcast modem IPv6 compatibility issue*/
             abEnableWanEthernetPort();
             /* Foxconn added end pling 06/26/2014 */
+
 
             eval("acos_init");
             eval("acos_service", "start");
@@ -5607,7 +5611,8 @@ main_loop(void)
             
 			/*Foxconn add start by Hank 06/14/2012*/
 			/*Enable 2.4G auto channel detect, kill acsd stop change channel*/
-			if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
+			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
+			if(nvram_match("enable_sta_mode","0"))
 	            stop_acsd();
 			/*Foxconn add end by Hank 06/14/2012*/
 			eval("read_bd");    /* sync foxconn and brcm nvram params */
@@ -5673,8 +5678,8 @@ main_loop(void)
             start_wps();
             start_eapd();
             start_nas();
-            //if(nvram_match("enable_sta_mode","0") )
-			if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
+            if(nvram_match("enable_sta_mode","0") )
+			//if((nvram_match("wla_channel", "0") || nvram_match("wlg_channel", "0")) && nvram_match("enable_sta_mode","0"))
 				start_acsd();
             sleep(2);           /* Wait for WSC to start */
             start_wl();

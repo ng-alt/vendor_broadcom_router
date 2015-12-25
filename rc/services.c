@@ -1265,6 +1265,8 @@ stop_toads(void)
 
 int start_bsd(void)
 {
+    int ret;
+    
     #if defined(DUAL_TRI_BAND_HW_SUPPORT)
     if ( nvram_match("hwver", nvram_get("tri_band_hw_ver")) )
         nvram_set("gbsd_ifnames", "eth2 eth3");
@@ -1275,9 +1277,25 @@ int start_bsd(void)
 #ifdef NETGEAR_PATCH
     system("wl -i eth2 bssload 0");
     system("wl -i eth3 bssload 0");
-	int ret = eval("/usr/sbin/gbsd");
+    
+    void initial_abfifo(const char *filo_path, const char *dump_out_path, unsigned int max_size);
+    int abfifo_is_running_or_not(const char *filo_path);
+    
+    if(nvram_match("debug_gbsd_enable", "1"))
+    {
+        if (abfifo_is_running_or_not("/tmp/gbsd_debug.fifo")==0) 
+        {
+            initial_abfifo("/tmp/gbsd_debug.fifo", "/tmp/gbsd.log", 5000);
+        }
+        sleep(1);
+        system("/usr/sbin/gbsd > /tmp/gbsd_debug.fifo");
+    }
+    else
+    {
+	    ret = eval("/usr/sbin/gbsd");
+	}
 #else /* !NETGEAR_PATCH */
-	int ret = eval("/usr/sbin/bsd");
+	    ret = eval("/usr/sbin/bsd");
 #endif /* !NETGEAR_PATCH */
 
 	return ret;

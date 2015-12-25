@@ -469,6 +469,7 @@ export CFLAGS += -DARP_PROTECTION
 export CFLAGS += -DCONFIG_2ND_5G_BRIDGE_MODE
 export CFLAGS += -DVLAN_SUPPORT
 export CFLAGS += -DCONFIG_2ND_SWITCH
+export CFLAGS += -DHIDDEN_PAGE_DEBUG
 endif
 
 ifeq ($(FW_TYPE),NA)
@@ -954,9 +955,15 @@ ifeq ($(PROFILE),R7800)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/lacp
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/emf
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/ctf
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/igs
 	install prebuilt/et.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install prebuilt/dhd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
 	install prebuilt/lacp.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/lacp
+	install prebuilt/emf.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/emf
+	install prebuilt/igs.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/igs
+	install prebuilt/ctf.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/ctf
 	install prebuilt/ctf_CB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 
 	$(STRIP) $(TARGETDIR)/lib/libssl.so
