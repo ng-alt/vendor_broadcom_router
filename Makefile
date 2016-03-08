@@ -222,6 +222,10 @@ export CFLAGS += -D__CONFIG_WPS__
 #export CFLAGS += -DWFA_WPS_20_TESTBED
 endif
 
+ifeq ($(CONFIG_BT_IGMP),y)
+export CFLAGS += -DBT_IGMP_SUPPORT
+endif
+
 ifeq ($(CONFIG_NFC),y)
 # WPS_NFC
 export CFLAGS += -D__CONFIG_NFC__

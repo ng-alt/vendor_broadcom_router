@@ -1442,41 +1442,40 @@ start_wl(void)
     if(acosNvramConfig_match("ce_dfs_ch_enable","1") && ((region == 5) || (region == 4)))
     {
         system("wl -i eth2 radar 1");   /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
-
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30");
         system("wl -i eth2 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
+
 #if defined(INCLULDE_2ND_5G_RADIO)
         system("wl -i eth3 radar 1"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6b4 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30");
         system("wl -i eth3 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
 #endif
     }
     else if(acosNvramConfig_match("fcc_dfs_ch_enable","1") && (region == 11))
     {
         system("wl -i eth2 radar 1");   /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
-
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xa800  0x6b4 0x30");
         system("wl -i eth2 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
 #if defined(INCLULDE_2ND_5G_RADIO)
         system("wl -i eth3 radar 1"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6b4 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xa800  0x6b4 0x30");
         system("wl -i eth3 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
 #endif
     }
     else if(acosNvramConfig_match("telec_dfs_ch_enable","1") && (region == 7))
     {
         system("wl -i eth2 radar 1");   /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth2 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xa800  0x6b4 0x30");
         system("wl -i eth2 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
 #if defined(INCLULDE_2ND_5G_RADIO)
         system("wl -i eth3 radar 1");   /*foxconn Han edited, 10/08/2015 per HW MH request*/
-        /*foxconn Han added, 12/04/2015 adjust DFS parameter*/
-        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6ac 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xb000  0x6b4 0x30"); 
+        /*foxconn Han edited, 01/07/2017 adjust DFS parameter*/
+        system("wl -i eth3 radarargs 2 6 45616 6 690 0x6b4 0x30 0x6419 0x7f09 8 700 2000 244 61708 2000 3000000 0x1e 0x8258 30528 65282 34150 5 5 0x31 16 12000000 50000000 2 12 0xa800  0x6b4 0x30");
         system("wl -i eth3 radarthrs 0x6ac 0x30 0x6ac 0x30 0x6ac 0x30 0x6b4 0x30 0x6b4 0x30 0x6b4 0x30"); /*foxconn Han edited, 10/08/2015 per HW MH request*/
 #endif
     }
