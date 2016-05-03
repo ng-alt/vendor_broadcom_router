@@ -61,7 +61,7 @@ function check_wizard_l2tp(check,page)
 	{
 		if(isValidChar(cf.l2tp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2368%>");
+			alert("<%2375%>");
 			return false;
 		}
 	}
@@ -69,13 +69,13 @@ function check_wizard_l2tp(check,page)
 	{
 		if(isValidChar(cf.l2tp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2369%>");
+			alert("<%2376%>");
 			return false;
 		}
 	}
 	if(cf.l2tp_idletime.value.length<=0)
 	{
-		alert("<%2370%>");
+		alert("<%2377%>");
 		return false;
 	}
 	else if(!_isNumeric(cf.l2tp_idletime.value))
@@ -179,7 +179,7 @@ function check_wizard_l2tp(check,page)
 	}
 	if( cf.l2tp_serv_ip.value == cf.l2tp_myip.value )
 	{
-		alert("<%2371%>");
+		alert("<%2378%>");
 		return false;
 	}
 	
@@ -217,7 +217,7 @@ function check_wizard_l2tp(check,page)
 	{
 		if(isValidChar(cf.l2tp_conn_id.value.charCodeAt(i))==false)
 		{
-			alert("<%2372%>");
+			alert("<%2379%>");
 			return false;
 		}
 	}
@@ -418,7 +418,7 @@ function RU_l2tp_user_info()
 	{
 		if(isValidChar(cf.l2tp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2368%>");
+			alert("<%2375%>");
 			return false;
 		}
 	}
@@ -426,7 +426,7 @@ function RU_l2tp_user_info()
 	{
 		if(isValidChar(cf.l2tp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2369%>");
+			alert("<%2376%>");
 			return false;
 		}
 	}
@@ -620,7 +620,7 @@ function RU_check_l2tp_dual()
 		cf.l2tp_dnsaddr2.value="";
 	}
 	if(cf.DualAssign[1].checked == true)
-		alert("<%2367%>");
+		alert("<%2374%>");
 	parent.l2tp_local_ipaddr=cf.l2tp_myip.value;
 	parent.l2tp_local_netmask=cf.l2tp_mynetmask.value;
 	parent.l2tp_local_gateway=cf.l2tp_gateway.value;

@@ -72,10 +72,10 @@ function loadSettings()
      {
         if("1" == cf.enable_ap_mode.value)
         {
-            document.getElementById("ca_15_log").innerHTML = "<%4240%>";
-            document.getElementById("24g_title").innerHTML = "<b><%4241%></b>";
-            document.getElementById("5g_title").innerHTML = "<b><%4242%></b>";
-            document.getElementById("ca_15_log_3").innerHTML = "<%4243%>";
+            document.getElementById("ca_15_log").innerHTML = "<%4246%>";
+            document.getElementById("24g_title").innerHTML = "<b><%4247%></b>";
+            document.getElementById("5g_title").innerHTML = "<b><%4248%></b>";
+            document.getElementById("ca_15_log_3").innerHTML = "<%4249%>";
         }
     }
     if("1" == cf.mode.value)

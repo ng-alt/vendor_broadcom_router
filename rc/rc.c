@@ -3142,6 +3142,8 @@ sysinit(void)
         if(acosNvramConfig_match("x_handler_1002",""))
             acosNvramConfig_set("x_handler_1002", "127.0.0.1:4001");
 #endif
+        nvram_set("wl0.2_dhcp_unicast","0");
+
         /* Foxconn added end,James Hsu, 03/26/2015 */
         /*Foxconn lawrence added start, 2013/03/06, Restore wifi_on_off button for default*/
 	//nvram_set("wifi_on_off", "1"); Tab Tseng removed, 2014/02/27

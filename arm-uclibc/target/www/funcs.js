@@ -2027,7 +2027,7 @@ function printPage()
 	if (window.print)
 		window.print();
 	else
-		alert("<%2364%>");
+		alert("<%2371%>");
 }
 function top_left_nolink()
 {

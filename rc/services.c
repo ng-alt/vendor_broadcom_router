@@ -1139,7 +1139,7 @@ int start_bsd(void)
 	int ret;
         
 //        if (nvram_match("debug_smart_connect", "1"))
-	        system("nvram set gbsd_msglevel=0x800");
+//	        system("nvram set gbsd_msglevel=0x800");
 	        system("nvram set gbsd_rssi_timeout=60");
 
        system("nvram set gbsd_open_timeout=13");

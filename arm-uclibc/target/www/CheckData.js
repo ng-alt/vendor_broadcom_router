@@ -244,7 +244,7 @@ function CheckData_WPA(passphrase, sec_type)
 	}
     if(passphrase.value.length < 8)
     {
-        alert("<%4173%>");
+        alert("<%4179%>");
         passphrase.focus();
         return false;    
     }
@@ -252,7 +252,7 @@ function CheckData_WPA(passphrase, sec_type)
     {
         if ( isHex(passphrase.value) == false)
         {
-            alert("<%4173%>");
+            alert("<%4179%>");
             passphrase.value = "";
             passphrase.focus();
             return false;
@@ -293,7 +293,7 @@ function CheckData_Manual(ssid, security_type, passphrase, wepenc, wep_key_no, k
     
     if (security_type_value == -1) // not selected
     {
-        alert("<%4174%>");
+        alert("<%4180%>");
         security_type.focus();
         return false;
     }

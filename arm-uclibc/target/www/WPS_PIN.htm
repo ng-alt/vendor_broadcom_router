@@ -134,18 +134,18 @@ function check_pin()
 		}
 		else
 		{
-			alert("<%2776%>");
+			alert("<%2783%>");
 			return false;
 		}
 	}
 	else
 	if (lpin.length != 4 && lpin.length != 8) {
-		alert("<%2776%>");
+		alert("<%2783%>");
 		return false;
 	}
 	
 	if (parseInt(cf.PIN.value, 10) != cf.PIN.value) {
-		alert("<%2776%>");
+		alert("<%2783%>");
 		return false;
 	}
 	
@@ -161,7 +161,7 @@ function check_pin()
 		accum += 1 * (parseInt(lpin / 1) % 10);
 
 		if (0 != (accum % 10)) {
-			alert("<%2777%>");
+			alert("<%2784%>");
 			return false;
 		}
 	}
@@ -197,22 +197,22 @@ function check_pin()
 <tr></tr>
 <tr>
 <p class=MsoNormal>
-<td colspan=3><b><%2778%>:</b></td></p>
+<td colspan=3><b><%2785%>:</b></td></p>
 </tr>
 
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2772%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2779%></td></tr>
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2775%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2782%></td></tr>
 <tr>
-<td colspan="3"><p><%2779%></p></td></tr>
+<td colspan="3"><p><%2786%></p></td></tr>
 <TR>
-<TD><p><%2780%>:</p></TD>
-<%2781%>
+<TD><p><%2787%>:</p></TD>
+<%2788%>
 <TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="9" VALUE="" align="left" onkeydown="return getPressEnt(event);"></TD>
-<%2782%>
+<%2789%>
 <TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="8" VALUE="" align="left"></TD>
-<%2783%>
+<%2790%>
 <TD>
 <p class=MsoNormal align=center>
 &nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%1556%>" NAME="Next" class=<%467%> onclick="buttonClick(this,'<%1556%>');isNextButton=1;return check_pin();" ><span class="<%468%>">&nbsp;&nbsp; <%1556%></span><span class="<%469%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;

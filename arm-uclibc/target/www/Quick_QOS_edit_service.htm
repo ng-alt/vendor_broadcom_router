@@ -92,7 +92,7 @@ classes.num.all.fontSize = "10pt" ;
 		var cf = document.forms[0];
 		var quick_qos_edit_new_service;
 		var quick_qos_edit_device;
-		
+
 		if(cf.quick_qos_rule_value.value == "0")
 		{
 			if(cf.service_type.value == "new")
@@ -115,18 +115,32 @@ classes.num.all.fontSize = "10pt" ;
 				cf.custom_qos_priorityList.value = cf.quick_qos_priority_edit.value;
 			}
 			document.getElementById("edit_device").style.display="none";
+			document.getElementById("edit_lan_port").style.display="none";
 		}
 		else if(cf.quick_qos_rule_value.value == "1")
 		{
 			document.getElementById("edit_new_service").style.display="none";
 			document.getElementById("edit_custom_service").style.display="none";
 			document.getElementById("edit_device").style.display="block";
+			document.getElementById("edit_lan_port").style.display="none";
 			quick_qos_edit_device = cf.quick_qos_rule_edit.value;
 			var quick_qos_device_param = quick_qos_edit_device.split("&");
 			cf.qos_mac_address.value = quick_qos_device_param[0];
 			cf.qos_device_policy.value = quick_qos_device_param[1];
 			cf.qos_device_name.value = quick_qos_device_param[2];
 			cf.device_priorityList.value = cf.quick_qos_priority_edit.value;
+		}
+		else if(cf.quick_qos_rule_value.value == "2")
+		{
+			document.getElementById("edit_new_service").style.display="none";
+			document.getElementById("edit_custom_service").style.display="none";
+			document.getElementById("edit_device").style.display="none";
+			document.getElementById("edit_lan_port").style.display="block";
+			quick_qos_edit_device = cf.quick_qos_rule_edit.value;
+			var quick_qos_device_param = quick_qos_edit_device.split("&");
+			cf.qos_lan_port_policy.value = quick_qos_device_param[0];
+			cf.qos_lan_port_num.value = quick_qos_device_param[1];
+			cf.lan_port_priority_list.value = cf.quick_qos_priority_edit.value;
 		}
 		return true;
 	}
@@ -282,8 +296,23 @@ classes.num.all.fontSize = "10pt" ;
 		</select></td></tr>
 	<tr><td colspan=2 background="liteblue.gif" height=12>&nbsp; </td></tr>
 	</table></div></td></tr>
+
+<tr><td colspan="2"><div id="edit_lan_port" style="display: block;">
+<table cellpadding="0" cellspacing="3" width="100%">
+	<tr><td width="50%"><%1940%></td>
+	<td><input type="text" name="qos_lan_port_policy" size="20" maxlength="32"></td></tr>
+	<tr><td width="50%"><%1948%></td>
+	<td><input type="text" name="qos_lan_port_num" size="20" maxlength="32"></td></tr>
+	<tr><td width="50%"><%1939%></td>
+	<td><select name="lan_port_priority_list" size="1" style="height:20px;width:100px">
+		<option value="0"><%1941%></option><option value="1"><%1942%></option><option value="2"><%1943%></option><option value="3"><%1944%></option>
+		</select></td></tr>
+	<tr><td colspan=2 background="liteblue.gif" height=12>&nbsp; </td></tr>
+	</table></div></td></tr>
+
 </table></td></tr>
 </table></div></td></tr>
+
 <tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe"  src="QOS_main_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
 </table>
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
@@ -298,10 +327,10 @@ classes.num.all.fontSize = "10pt" ;
 </div>
 <a name="helpframe-anchor"></a>
 
-<input type="hidden" name="quick_qos_rule_value" value="<%1948%>">
-<input type="hidden" name="service_type" value="<%1949%>">
-<input type="hidden" name="quick_qos_rule_edit" value="<%1950%>">
-<input type="hidden" name="quick_qos_priority_edit" value="<%1951%>">
+<input type="hidden" name="quick_qos_rule_value" value="<%1949%>">
+<input type="hidden" name="service_type" value="<%1950%>">
+<input type="hidden" name="quick_qos_rule_edit" value="<%1951%>">
+<input type="hidden" name="quick_qos_priority_edit" value="<%1952%>">
 <input type="hidden" name="mac1" value="">
 <input type="hidden" name="mac2" value="">
 <input type="hidden" name="mac3" value="">
