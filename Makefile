@@ -421,6 +421,7 @@ endif
 #export CFLAGS += -DPORT_TRUNKING_SUPPORT
 ifeq ($(PROFILE),R7800)
 export CFLAGS += -DU12H315 -DR8000 -DR7800
+export CFLAGS += -DU12H335T21
 export CFLAGS += -DINCLULDE_2ND_5G_RADIO -DDUAL_TRI_BAND_HW_SUPPORT -DPORT_TRUNKING_SUPPORT
 export CFLAGS += -DMULTIPLE_SSID
 export CFLAGS += -DENABLE_ML
@@ -704,13 +705,15 @@ ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
 export IQOS_DIR := $(BASEDIR)/components/vendor/trend/iqos
 obj-$(CONFIG_TREND_IQOS) += iqos
-
-#obj-$(CONFIG_TREND_IQOS) += bcmiqosd
 # Speedtest_cli
 #obj-$(CONFIG_TREND_IQOS) += speedtest-cli
 # curl
 #obj-$(CONFIG_TREND_IQOS) += curl
 export CFLAGS += -D__CONFIG_TREND_IQOS__ -DCONFIG_TREND_IQOS_ENABLED
+ifeq ($(CONFIG_BRCM_GENERIC_IQOS),y)
+#obj-$(CONFIG_TREND_IQOS) += bcmiqosd
+export CFLAGS += -D__BRCM_GENERIC_IQOS__
+endif
 endif
 endif
 #endif /* __CONFIG_TREND_IQOS__ */
@@ -775,7 +778,7 @@ export CONFIG_MFP
 export CONFIG_HSPOT
 export CONFIG_WNM
 
-all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
+all: flag_check acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
         # Also build kernel
         
 acos_shared:
@@ -936,6 +939,10 @@ ifeq ($(PROFILE),R7800)
 	install usbprinter/KC_BONJOUR_R8500 $(TARGETDIR)/usr/bin
 	install usbprinter/KC_PRINT_R7800 $(TARGETDIR)/usr/bin
 	install usbprinter/KC_PRINT_R8500 $(TARGETDIR)/usr/bin
+	install usbprinter/NetUSB_R8300.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	install usbprinter/GPL_NetUSB_R8300.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	install usbprinter/KC_BONJOUR_R8300 $(TARGETDIR)/usr/bin
+	install usbprinter/KC_PRINT_R8300 $(TARGETDIR)/usr/bin
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 #	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
@@ -1297,7 +1304,11 @@ norton-clean:
 #ifdef __CONFIG_TREND_IQOS__
 ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
+ifeq ($(CONFIG_BRCM_GENERIC_IQOS),y)
+IQOS_DIR := $(BASEDIR)/components/vendor/trend_brcm_generic_iqos/iqos
+else
 IQOS_DIR := $(BASEDIR)/components/vendor/trend/iqos
+endif
 
 iqos-install:
 	+$(MAKE) -C $(IQOS_DIR) install INSTALLDIR=$(INSTALLDIR)/iqos
@@ -1912,6 +1923,15 @@ endif
 
 $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 
+flag_check:
+	@echo "============== FLAG CHECK START ===================";
+	@if [ "$(CONFIG_BRCM_GENERIC_IQOS)" = "y" ] && [ "$(CONFIG_TREND_IQOS)" != "y" ]; \
+	then \
+		echo "ERROR: CONFIG_BRCM_GENERIC_IQOS must complier with CONFIG_TREND_IQOS"; \
+		exit 1; \
+	fi
+	@echo "========= FLAG CHECK FINISHED WITHOUT ERROR ===================";
+
 
 .PHONY: all clean distclean mrproper install package
 .PHONY: conf mconf oldconf kconf kmconf config menuconfig oldconfig
@@ -1922,4 +1942,4 @@ $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 .PHONY: libnfnetlink libnfnetlink-install libnfnetlink-clean
 .PHONY: libnetfilter_conntrack libnetfilter_conntrack-install libnetfilter_conntrack-clean
 .PHONY: libnetfilter_queue libnetfilter_queue-install libnetfilter_queue-clean
-.PHONY: libflow libflow-install libflow-clean
+.PHONY: libflow libflow-install libflow-clean flag_check

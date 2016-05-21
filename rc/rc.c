@@ -60,6 +60,9 @@
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 #include <wapi_utils.h>
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */
+#ifdef __BRCM_GENERIC_IQOS__
+#include "bcmIqosDef.h"
+#endif
 
 /* foxconn added start, zacker, 09/17/2009, @wps_led */
 #include <fcntl.h>
@@ -1276,6 +1279,28 @@ int disable_mfp()
 }
 #endif /*MFP*/
 
+/*foxconn Han edited start, 02/23/2016*/
+#ifdef PORT_TRUNKING_SUPPORT
+extern int check_lacp_vlan_conflict(unsigned int intf, int gui);
+/* move to ap/acos/share/lan_util.c
+int check_lacp_vlan_conflict(unsigned int intf)
+{
+    unsigned int flag;
+    printf("%s(%d) intf=0x%X\n",__func__,__LINE__,intf);
+
+    flag = intf & (IPTV_LAN1|IPTV_LAN2);
+
+    if(flag != 0 && flag != (IPTV_LAN1|IPTV_LAN2))
+    {
+        nvram_set("lacp_vlan_conflict","1");
+        return 1;
+    }
+    
+    return 0;
+}*/
+#endif /*PORT_TRUNKING_SUPPORT*/
+/*foxconn Han edited end, 02/23/2016*/
+
 /* foxconn added start, zacker, 01/13/2012, @iptv_igmp */
 #ifdef CONFIG_RUSSIA_IPTV
 static int config_iptv_params(void)
@@ -1352,6 +1377,11 @@ static int config_iptv_params(void)
             #endif /*CONFIG_2ND_SWITCH*/
         }
     }
+    /*foxconn Han edited start, 02/23/2016*/
+#ifdef  PORT_TRUNKING_SUPPORT
+    nvram_set("lacp_vlan_conflict","0");
+#endif  /*PORT_TRUNKING_SUPPORT*/
+    /*foxconn Han edited end, 02/23/2016*/
 
     if (!nvram_match("enable_vlan", "enable") && !nvram_match(NVRAM_IPTV_ENABLED, "1") )
         return 0;
@@ -1365,6 +1395,15 @@ static int config_iptv_params(void)
         strcpy(iptv_intf, nvram_safe_get(NVRAM_IPTV_INTF));
         sscanf(iptv_intf, "0x%04X", &iptv_bridge_intf);
     }
+
+
+    /*foxconn Han edited start, 02/23/2016*/
+#ifdef PORT_TRUNKING_SUPPORT
+    check_lacp_vlan_conflict(iptv_bridge_intf ,0);
+    check_lacp_vlan_conflict(~iptv_bridge_intf ,0);
+#endif /*PORT_TRUNKING_SUPPORT*/
+    /*foxconn Han edited end, 02/23/2016*/
+
 
     /* Foxconn modified start pling 04/03/2012 */
     /* Swap LAN1 ~ LAN4 due to reverse labeling */
@@ -1613,6 +1652,13 @@ Port 4 5 6 is on external switch
             enabled_vlan_ports |= vlan_bridge_intf ;
 
             //printf("%s %d %d vlan_bridge_intf=0x%X enabled_vlan_ports=0x%X\n",__func__,__LINE__,i,vlan_bridge_intf,enabled_vlan_ports);
+
+            /*foxconn Han edited start, 02/23/2016*/
+#ifdef      PORT_TRUNKING_SUPPORT
+            check_lacp_vlan_conflict(vlan_bridge_intf ,0);
+#endif      /*PORT_TRUNKING_SUPPORT*/
+            /*foxconn Han edited end, 02/23/2016*/
+
             if (vlan_bridge_intf & IPTV_LAN1)
                 strcat(vlan_ports, "1 ");
 
@@ -1697,6 +1743,12 @@ Port 4 5 6 is on external switch
             lan_vlan_br++;
         }
         
+        /*foxconn Han edited start, 02/23/2016*/
+#ifdef  PORT_TRUNKING_SUPPORT
+        check_lacp_vlan_conflict(~enabled_vlan_ports ,0);
+#endif  /*PORT_TRUNKING_SUPPORT*/
+        /*foxconn Han edited end, 02/23/2016*/
+
         if (!(enabled_vlan_ports & IPTV_LAN1))
             strcat(lan_ports, "1 ");
 
@@ -4553,6 +4605,27 @@ sysinit(void)
 			system("echo 131072 > /proc/sys/net/ipv4/netfilter/ip_conntrack_max");
             /* contrack table turning for ACOSNAT end */
             nvram_set("brcm_speedtest",   "0");
+            /* Foxconn modified start, Sinclair, 10/22/2015@ BRCM_GENERIC_IQOS */
+#ifdef __BRCM_GENERIC_IQOS__
+			if (stat("/usr/sbin/qos.conf", &file_stat) == 0) {
+				if (mkdir(IQOS_RUNTIME_FOLDER, 0777) < 0 && errno != EEXIST)
+    				perror("IQOS_RUNTIME_FOLDER not created");
+				else {
+					eval("cp", "/lib/modules/tdts.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udb.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udbfw.ko", IQOS_RUNTIME_FOLDER);
+
+					eval("cp", "/usr/sbin/tdts_rule_agent", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/rule.trf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/setup.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/upgrade.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.conf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/sample.bin", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/TmToNtgr_dev_mapping", IQOS_RUNTIME_FOLDER);
+				}
+			}
+#else  /* BRCM_GENERIC_IQOS */
 			if (stat("/usr/sbin/qosd.conf", &file_stat) == 0) {
 				if (mkdir("/tmp/trend", 0777) < 0 && errno != EEXIST)
 				perror("/tmp/trend not created");
@@ -4571,6 +4644,8 @@ sysinit(void)
 					eval("cp", "/usr/sbin/rule.version", "/tmp/trend");
 				}
 			}
+#endif  /* BRCM_GENERIC_IQOS */
+            /* Foxconn modified end, Sinclair, 10/22/2015@ BRCM_GENERIC_IQOS */
 		}
 #endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 	}
@@ -4581,6 +4656,8 @@ sysinit(void)
         /*foxconn Han edited 07/24/2015, enable lacp debug when we capture log*/
         if(nvram_match("debug_lacp_enable","1"))
             nvram_set("lacpdebug","6"); /*foxconn Han edited, 12/03/2015 lower the debug level to 6 from 7*/
+        else
+            nvram_set("lacpdebug","0"); 
         eval("insmod", "lacp");
     }
     /*foxconn Han edited end, 04/28/2015*/
