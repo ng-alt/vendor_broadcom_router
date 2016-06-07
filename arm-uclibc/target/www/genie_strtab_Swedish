@@ -209,6 +209,17 @@ bh_download_info="Hämtar ..."
 bh_download_info_1="Installera genie-appen när hämtningen har slutförts."
 bh_download_info_2="Slutför konfigurationen av routern genom att klicka på Nästa när du har installerat genie-appen."
 
+/* Security GUI change */
+bh_admin_gui_header="Adminkontoinställningar"
+bh_admin_gui_msg="Adminlösenordet används för att logga in på routerns webbgränssnitt. Skydda nätverket genom att ändra adminlösenordet."
+bh_confirm_pass="Bekräfta nytt lösenord"
+bh_new_password="Nytt lösenord"
+bh_admin_user_name="Administratörsanvändarnamn:"
+bh_admin_new_password="Nytt adminlösenord:"
+bh_admin_setting="Inställningar för routeradmin:"
+bh_2G_setting="2.4G Wireless Settings:"
+bh_5G_setting="5G Wireless Settings:"
+
 //help files
 h_DNS_ddns="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px" ><P><font size=4><B>Hjälp för dynamisk DNS</B></font></P><p> (Dynamic DNS Help) Detta är en dynamisk DNS-tjänst (DDNS) som tillhandahåller en central, allmän databas där information (som e-postadresser, värdnamn och IP-adresser) kan lagras och hämtas. Den dynamiska DNS-servern lagrar även lösenordsskyddad information och tar emot e-postadressbaserade förfrågningar. </p><p> Om du vill använda en DDNS-tjänst måste du registrera dig först. Internet-leverantör som tillhandahåller den dynamiska DNS-klienten kommer att förse dig med ett lösenord eller en nyckel.</p><p name=setup id=setup></p><p>Installera DDNS:<ol><li> Om du har registrerat dig hos en DDNS-leverantör markerar du kryssrutan <b>använd en dynamisk DNS-tjänst</b> (Use A Dynamic DNS Service).  </li><li><p name=provider id=provider></p>Välj namnet på leverantören av din dynamiska DNS-tjänst .&nbsp; </li><li>Skriv in värdnamnet som du fått av DNS-leverantören. <br>DDNS-leverantören kanske kallar det för domännamnet. </li><li>Skriv in användarnamnet till ditt DDNS-konto. </li><li>Skriv in lösenordet (eller nyckeln) till ditt DDNS-konto. </li> <li>Klicka på <b>tillämpa</b> (Apply) för att aktivera DDNS-tjänsten.  </li></ol><p name=wildcards id=wildcards></p><p><b>Obs!</b> Routern stöder bara grundläggande DDNS. Inloggningsuppgifter och lösenord kan inte göras säkra. Om du har en privat WAN IP-adress bör du inte använda DDNS-tjänsten eftersom detta kan leda till problem. </p></div></body>"
 h_DNS_ddns_netgear_yes="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>Hjälp för dynamisk DNS</B></font></P><p> (Dynamic DNS Help) Detta är en dynamisk DNS-tjänst (DDNS) som tillhandahåller en central, allmän databas där information (som e-postadresser, värdnamn och IP-adresser) kan lagras och hämtas. Den dynamiska DNS-servern lagrar även lösenordsskyddad information och tar emot e-postadressbaserade förfrågningar. </p><p> Om du vill använda en DDNS-tjänst måste du registrera dig först. Internet-leverantör som tillhandahåller den dynamiska DNS-klienten kommer att förse dig med ett lösenord eller en nyckel.</p><a name=setup></a><p>Installera DDNS: <ol><li>Markera kryssrutan <b>Använd en dynamisk DNS-tjänst </b>för att aktivera funktionen Dynamisk DNS.  </li><li>Om du inte har registrerat dig hos en DDNS-leverantör väljer du <b>NETGEAR</b> í listan över <b>internetleverantörer</b>. Annars väljer du namnet på leverantören av din dynamiska DNS-tjänst i listan.</li><li>Om det är första gången du använder NETGEAR DDNS-tjänsten svarar du <b>Nej</b> på frågan <b>Har du ett NETGEAR DDNS-konto?</b>. Annars klickar du på <b>Ja</b> och anger sedan din kontoinformation.</li><li>Skriv in värdnamnet som du vill använda för enheten. Ibland kallas detta domännamn. </li><li>Skriv in den e-postadress du vill använda för ditt DDNS-konto. </li><li>Skriv in lösenordet (eller nyckeln) till ditt DDNS-konto. </li> <li>Registrera dig för NETGEAR DDNS-tjänsten genom att klicka på <b>Registrera</b>.  </li></ol><a name=wildcards></a><p><b>Obs!</b> Routern stöder bara grundläggande DDNS. Inloggningsuppgifter och lösenord kan inte göras säkra. Om du har en privat WAN IP-adress bör du inte använda DDNS-tjänsten eftersom detta kan leda till problem. </p></div></body>"
@@ -262,3 +273,29 @@ h_up_qos="<body style="margin:0px"><div id="content" style="overflow:auto;scroll
 
 h_down_qos="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>Nedströms QoS-inställningar</B></font></P><hr><b>Nedströms QoS-inställningar</b><P>Det här är en QoS-funktion som utformats särskilt för att förbättra kvaliteten för videoströmning online. Om du kör tung hämtningstrafik kan kvaliteten för onlinevideoströmmar lätt påverkas negativt. Med den här funktionen identifierar systemet automatiskt videoströmmen och ger den hög prioritet. Kvaliteten för onlinevideoströmmar påverkas då inte lika enkelt av hämtningar i bakgrunden.</P><P><B>Aktivera nedströms QoS (förbättrade videoströmmar)</B><br>Aktivera funktionen Nedströms QoS<p><B>Automatisk uppgradering av strömningsdatabasen</B><br>Om du markerar det här alternativet kan enheten uppdatera strömningsdatabasen automatiskt. Servern kontrolleras då dagligen för att se om det finns en ny databas tillgänglig. I så fall hämtas och installeras den i systemet automatiskt. Du kan också klicka på "Manuell uppdatering" om du vill söka efter nya databaser på servern och uppdatera strömningsdatabasen manuellt.</P><P><B>Version av strömningsdatabas</B><br>Här visas vilken version av strömningsdatabasen du använder för närvarande.</P></div></div></body>"
 //
+
+ques1_0="Välj en fråga."
+ques1_1="Vad hette den första NETGEAR-produkt du köpte?"
+ques1_2="Vad hette din första skola?"
+ques1_3="Vad heter din äldsta syster i förnamn?"
+ques1_4="Vad heter din äldsta bror i förnamn?"
+ques1_5="I vilken stad är du född?"
+ques1_6="Vad heter din mormor i förnamn?"
+ques1_7="Vad heter din morfar i förnamn?"
+ques1_8="Vilket år (ÅÅÅÅ) tog du studenten?"
+ques1_9="Vad heter din första arbetsgivare?"
+ques2_0="Välj en fråga."
+ques2_1="Vad heter din yngsta syster i förnamn?"
+ques2_2="Vad heter din yngsta bror i förnamn?"
+ques2_3="Vad heter din far i mellannamn?"
+ques2_4="Vad heter din mor i mellannamn?"
+ques2_5="Vad heter din första chef i förnamn?"
+ques2_6="I vilken stad är din mor född?"
+ques2_7="I vilken stad är din far född?"
+ques2_8="Vad heter din bästa vän i förnamn?"
+
+secure_ques1="Säkerhetsfråga 1"
+secure_answer="Svara"
+secure_ques2="Säkerhetsfråga 2"
+require_info="*=nödvändig information"
+passwd_no_blank="Password cannot be blank"
