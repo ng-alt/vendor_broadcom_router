@@ -429,6 +429,7 @@ export CFLAGS += -DOPEN_SOURCE_SUPPORT
 export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
 export CFLAGS += -DACS_INTF_DETECT_PATCH
+export CFLAGS += -DCONFIG_REMOTE_USB_PROTECT
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
 export CFLAGS +=  -DCONFIG_SAMBA_NO_RESTART
 ifeq ($(CONFIG_GPIO_LED_SWITCH),y)
@@ -704,7 +705,7 @@ endif
 ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
 export IQOS_DIR := $(BASEDIR)/components/vendor/trend/iqos
-obj-$(CONFIG_TREND_IQOS) += iqos
+#obj-$(CONFIG_TREND_IQOS) += iqos
 # Speedtest_cli
 #obj-$(CONFIG_TREND_IQOS) += speedtest-cli
 # curl
