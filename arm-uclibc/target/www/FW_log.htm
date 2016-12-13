@@ -162,7 +162,7 @@ function is_email_on()
     var cf = document.forms[0];
     if(cf.email_on.value == 0)
     {
-        alert("<%928%>");
+        alert("<%932%>");
         return false;
     }
     return true;
@@ -199,7 +199,7 @@ function sendLog()
     var cf = document.forms[0];
     if(cf.log_detail.value < 5)
     {
-        alert("<%929%>");
+        alert("<%933%>");
         return false;
     }
     cf.log_send.value=1;
@@ -217,7 +217,7 @@ function sendLog()
 <form id="target"  action=fwLog.cgi method="POST">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%68%>">
-<div class="subhead2"> <%374%></div>
+<div class="subhead2"> <%375%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -229,13 +229,13 @@ function sendLog()
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 		
-<%930%>
+<%934%>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td colspan="2"><input type="checkbox" name="enable_log" <%931%> onclick="SetEnableValue();"><b>Turn logging on</b>
+ <td colspan="2"><input type="checkbox" name="enable_log" <%935%> onclick="SetEnableValue();"><b>Turn logging on</b>
 </tr>
-<%932%>
+<%936%>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
@@ -243,12 +243,12 @@ function sendLog()
  <td colspan="2" align="center">
  <table border="0" cellspacing="0" cellpadding="0">
  <tr>
- <td colspan="2"><b><%933%>: <%934%></b>
+ <td colspan="2"><b><%937%>: <%938%></b>
  </td>
  </tr>
  <tr>
  <td colspan="2">
-<TEXTAREA NAME="log_detail" class="smallfix" ROWS="15" cols="60" WRAP="vitural" READONLY tabindex="-1"><%935%>
+<TEXTAREA NAME="log_detail" class="smallfix" ROWS="15" cols="60" WRAP="vitural" READONLY tabindex="-1"><%939%>
 </textarea></td>
  </tr>
  </table>
@@ -260,40 +260,40 @@ function sendLog()
 <tr>
  <td colspan="2" align="center" height="35">
     &nbsp;&nbsp;&nbsp;<button type=submit value="<%668%>" name=action_Refresh class="button-rule" onClick="buttonClick(this,'<%668%>');refreshLog()"><span class="roundleft_button">&nbsp;&nbsp; <%668%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button> &nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;<button type=submit value="<%936%>" name=action_Clear class="button-rule" onClick="buttonClick(this,'<%936%>');clearLog()"><span class="roundleft_button">&nbsp;&nbsp; <%936%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button> &nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;<button type=submit value="<%937%>" name=action_Send class="button-rule" onclick="buttonClick(this,'<%937%>');if(!is_email_on()) return false; if(!sendLog()) return false;"><span class="roundleft_button">&nbsp;&nbsp; <%937%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+    &nbsp;&nbsp;&nbsp;<button type=submit value="<%940%>" name=action_Clear class="button-rule" onClick="buttonClick(this,'<%940%>');clearLog()"><span class="roundleft_button">&nbsp;&nbsp; <%940%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button> &nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;<button type=submit value="<%941%>" name=action_Send class="button-rule" onclick="buttonClick(this,'<%941%>');if(!is_email_on()) return false; if(!sendLog()) return false;"><span class="roundleft_button">&nbsp;&nbsp; <%941%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-    <td colspan="2"><b><%938%></b></td></tr>
+    <td colspan="2"><b><%942%></b></td></tr>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_1 type=checkbox value=checkboxValue><%939%></TD></TR>
+        <INPUT name=log_cat_1 type=checkbox value=checkboxValue><%943%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_2 type=checkbox value=checkboxValue><%940%></TD></TR>
+        <INPUT name=log_cat_2 type=checkbox value=checkboxValue><%944%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_3 type=checkbox value=checkboxValue><%941%></TD></TR>
+        <INPUT name=log_cat_3 type=checkbox value=checkboxValue><%945%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_4 type=checkbox value=checkboxValue><%942%></TD></TR>
+        <INPUT name=log_cat_4 type=checkbox value=checkboxValue><%946%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_5 type=checkbox value=checkboxValue><%943%></TD></TR>
+        <INPUT name=log_cat_5 type=checkbox value=checkboxValue><%947%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_6 type=checkbox value=checkboxValue><%944%></TD></TR>
+        <INPUT name=log_cat_6 type=checkbox value=checkboxValue><%948%></TD></TR>
 <TR>
     <TD colSpan=2 colspan="2" >
-        <INPUT name=log_cat_7 type=checkbox value=checkboxValue><%945%></TD></TR>
+        <INPUT name=log_cat_7 type=checkbox value=checkboxValue><%949%></TD></TR>
 <TR>
     <TD colSpan=2>
-        <INPUT name=log_cat_8 type=checkbox value=checkboxValue><%946%></TD></TR>
+        <INPUT name=log_cat_8 type=checkbox value=checkboxValue><%950%></TD></TR>
 <TR>
     <TD colSpan=2>
-        <INPUT name=log_cat_9 type=checkbox value=checkboxValue><%947%></TD></TR>
+        <INPUT name=log_cat_9 type=checkbox value=checkboxValue><%951%></TD></TR>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
@@ -313,12 +313,12 @@ function sendLog()
 
 
 
-    <INPUT name=email_on type=hidden value="<%948%>">
+    <INPUT name=email_on type=hidden value="<%952%>">
     <INPUT name=log_refresh type=hidden value= 0>
-    <INPUT name=log_send type=hidden value= "<%949%>">
+    <INPUT name=log_send type=hidden value= "<%953%>">
     <INPUT name=log_clear type=hidden value= 0>
-    <INPUT name=log_enable type=hidden value= "<%950%>">
-    <INPUT name=log_filter type=hidden value="<%951%>">
+    <INPUT name=log_enable type=hidden value= "<%954%>">
+    <INPUT name=log_filter type=hidden value="<%955%>">
 <a name="helpframe-anchor"></a>
 </form>
 

@@ -46,61 +46,62 @@ function goHome(){
 //-->
 </script>
 </head>
-<body  style="margin:0px;background-color:#e5e5e5">
-<form id="target"  name="formname" method="POST" action="lang_result.cgi">
-<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
-<table border="0"   width="100%">
+<body onLoad="change_size();" style="margin:0px;background-color:#e5e5e5">
+  <form id="target"  name="formname" method="POST" action="lang_result.cgi">
+    <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
+    <table border="0"   width="100%" >
+      <tr>
+        <td class="scrollpane-table-seperate-border" colspan="2">
+        	<div class="scroll-pane" style="height:360px;width:620px;overflow:auto;scrolling:auto">
+        	  <table style="border-collapse:collapse;width:97%">
+        	    <tr>
+        	      <td colspan=2>
+     	            <h1><%1772%></H1>
+                </td>
+              </tr>
+              <tr> 
+                <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="2"><b><%1777%></b></td>
+              </tr>
+              <tr>
+	              <td width="50%"><%2722%>:</td>
+                <td width="50%"><%2723%></td>
+              </tr>
+              <tr>
+	              <td width="50%"><%2724%>:</td>
+                <td width="50%"><%2725%></td>
+              </tr>
+              <tr>
+	              <td width="50%"><%1778%></td>
+                <td width="50%"><%1779%></td>
+              </tr>
+              <tr>
+	              <td width="50%"><%1780%></td>
+                <td width="50%"><%1781%></td>
+              </tr>
+              <tr>
+                <td><b><%2726%>:</b></td>
+              </tr>
+	            <%1783%>
 
-<tr>
-<td colspan="2">
-	<h1><%1769%></H1>
-</td>
-</tr>
-
-<tr> 
- <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
-</tr>
-
-<tr>
-    <td colspan="2"><b><%1774%></b></td>
-</tr>
-<tr></tr>
-<tr>
-	<td width="50%"><%2692%>:</td>
-        <td width="50%"><%2693%></td>
-</tr>
-<tr>
-	<td width="50%"><%2694%>:</td>
-        <td width="50%"><%2695%></td>
-</tr>
-<tr>
-	<td width="50%"><%1775%></td>
-        <td width="50%"><%1776%></td>
-</tr>
-<tr></tr>
-<tr>
-	<td width="50%"><%1777%></td>
-        <td width="50%"><%1778%></td>
-</tr>
-<tr></tr>
-<tr>
-<tr></tr>
-    <td><b><%2696%>:</b></td>
-</tr>
-	<%1780%>
-
-<tr>
- <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
-</tr>
-<tr>
-	<td colspan="2" align="center">
-		&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%426%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%426%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%426%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-		&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%427%>" name="No" class="button-rule" onClick="buttonClick(this,'<%427%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%427%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	</td></tr>
-</table>
-<input type="hidden" name="call_by_genie" value="<%1771%>">
-</form>
-<p></p>
+              <tr>
+                <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
+              </tr>
+              <tr>
+	              <td colspan="2" align="center">
+		              &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%426%>" name="Yes" class="button-rule" onclick="buttonClick(this,'<%426%>');" ><span class="roundleft_button">&nbsp;&nbsp; <%426%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		              &nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%427%>" name="No" class="button-rule" onClick="buttonClick(this,'<%427%>');goHome();"><span class="roundleft_button">&nbsp;&nbsp; <%427%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	              </td>
+  	          </tr>
+            </table>
+          </div>
+        </td>
+      <tr>
+    </table>
+    <input type="hidden" name="call_by_genie" value="<%1774%>">
+  </form>
 </body>
 </html>
 

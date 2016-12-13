@@ -108,8 +108,8 @@ function checkData()
 	var rv_dv_name=cf.reserved_devname.value.split("|");
 	var i, conflict, reply;
 
-	var str_dhcp_start = "<%1076%>";
-	var str_dhcp_end = "<%1077%>"
+	var str_dhcp_start = "<%1080%>";
+	var str_dhcp_end = "<%1081%>"
 	var dhcp_startaddr = str_dhcp_start.split(".");
 	var dhcp_endaddr = str_dhcp_end.split(".");
 
@@ -148,7 +148,7 @@ function checkData()
         i++;
     }
     if (conflict) {
-        reply = confirm("<%1086%>");
+        reply = confirm("<%1090%>");
         if (!reply)
             return false;
     }
@@ -167,7 +167,7 @@ function loadSettings()
 	cf.rsv_ip3.value = rsv_ip[2];
 	cf.rsv_ip4.value = rsv_ip[3];
 
-	cf.rsv_mac.value = "<%1092%>";
+	cf.rsv_mac.value = "<%1096%>";
     cf.orig_rsv_mac.value = cf.rsv_mac.value;
     cf.dv_name.value = cf.orig_dv_name.value;
 }
@@ -183,7 +183,7 @@ function loadSettings()
 <form id="target"  method="POST" action="reserv.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%68%>">
-<div class="subhead2"> <%1068%></div>
+<div class="subhead2"> <%1072%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -230,14 +230,14 @@ function loadSettings()
 
 
 
-<INPUT name=rsv_ip type=hidden value= "<%1093%>">
+<INPUT name=rsv_ip type=hidden value= "<%1097%>">
 <INPUT name=rsv_mode type=hidden value="edit">
-<input type="hidden" name="reserved_ips" value="<%1089%>">
-<input type="hidden" name="reserved_macs" value="<%1090%>">
-<input type="hidden" name="reserved_devname" value="<%1091%>">
+<input type="hidden" name="reserved_ips" value="<%1093%>">
+<input type="hidden" name="reserved_macs" value="<%1094%>">
+<input type="hidden" name="reserved_devname" value="<%1095%>">
 <input type="hidden" name="orig_rsv_ip" value="">
 <input type="hidden" name="orig_rsv_mac" value="">
-<input type="hidden" name="orig_dv_name" value="<%1094%>">
+<input type="hidden" name="orig_dv_name" value="<%1098%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>

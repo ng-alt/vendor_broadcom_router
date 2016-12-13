@@ -344,6 +344,7 @@ export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
 export CFLAGS += -DVIDEO_STREAMING_QOS
 export CFLAGS += -DSPEEDTEST_SUPPORT
+export CFLAGS += -DCONFIG_REMOTE_USB_PROTECT
 ifeq ($(INCLUDE_FBWIFI_FLAG),y)
 export CFLAGS += -DFBWIFI_FLAG
 endif
@@ -385,11 +386,6 @@ export CFLAGS += -DVLAN_SUPPORT
 export CFLAGS += -DARP_PROTECTION
 export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 endif
-
-
-
-
-
 
 
 ifeq ($(FW_TYPE),NA)
@@ -621,7 +617,6 @@ endif
 all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
         # Also build kernel
         
-
         
 linux_kernel:        
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
@@ -747,8 +742,6 @@ ifeq ($(PROFILE),R6400)
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
-#	rm $(TARGETDIR)/usr/bin/soapcpp2
-	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
@@ -757,14 +750,11 @@ ifeq ($(PROFILE),R6400)
 	install prebuilt/ubd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/br_dns_hijack.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/l7_filter.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
-	
-endif
 ifeq ($(CONFIG_IPERF),y)
 	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
 endif
-
-
+endif
 
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")

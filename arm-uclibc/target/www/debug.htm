@@ -23,11 +23,17 @@ function isChecked()
 	var cf1 = document.forms[1];
 	var cf2 = document.forms[2];
 	var cf3 = document.forms[3];
+	var cf4 = document.forms[4];
 
 	if (cf1.Start_When_Boot_Up.value == "On")
 		cf1.action_Start_When_Boot_Up.checked=true;
 	else 
 		cf1.action_Start_When_Boot_Up.checked=false;
+
+	if (cf1.IPv6_debug.value == "On")
+		cf1.ipv6_debug.checked=true;
+	else 
+		cf1.ipv6_debug.checked=false;
 	
 	if (cf2.dump_LAN_WAN_pkt.value == "On")
 		cf2.action_Capture_Packets.checked=true;
@@ -42,7 +48,13 @@ function isChecked()
 	if (cf3.WAN_port_mirror_to_LAN_port.value == "On")
 		cf3.action_Mirror_Port.checked=true;
 	else 
-		cf3.action_Mirror_Port.checked=false;	
+		cf3.action_Mirror_Port.checked=false;
+
+
+	if (cf4.Allow_external_IPv6_hosts_ping_internal_IPv6_hosts.value == "On")
+		cf4.wan_ping_to_lan.checked=true;
+	else 
+		cf4.wan_ping_to_lan.checked=false;
 }
 
 function clickSaveButton()
@@ -61,30 +73,30 @@ function clickSaveButton()
 <form id="cf" action=newdebug.cgi method="POST">
 <img style="position:relative;left:-7px;" src="img/NewNetgeargenie.png" >
 <br>
-<span id="ModuleName"><b><%298%>Nighthawk<%299%> <%12%></b></span>
+<span id="ModuleName"><b><%299%>Nighthawk<%300%> <%12%></b></span>
 <br>
 <div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div>
 <b>Basic Information</b>
 <table width="100%">
 <tr>
 <td width="22%"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPU Load</b><br><br></td>
-<td width="78%"><b>CPU1: <%2612%>% CPU2: <%2613%>%</b><br><br></td>
+<td width="78%"><b>CPU1: <%2640%>% CPU2: <%2641%>%</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Memory Usage (Used/Total)</b><br><br></td>
-<td><b><%2614%>MB/<%2615%>MB</b><br><br></td>
+<td><b><%2642%>MB/<%2643%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flash Usage (Used/Total)</b><br><br></td>
-<td><b><%2616%>MB/<%2617%>MB</b><br><br></td>
+<td><b><%2644%>MB/<%2645%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Network Session (Active/Total)</b><br><br></td>
-<td><b><%2618%></b><br><br></td>
+<td><b><%2646%></b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System Uptime</b><br><br></td>
-<td><b><%2619%></b><br><br></td>
+<td><b><%2647%></b><br><br></td>
 </tr>
 </table>
 </form>
@@ -94,8 +106,12 @@ function clickSaveButton()
 <br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="checkbox" name="action_Start_When_Boot_Up" value="Start_When_Boot_Up" onclick="document.forms[1].submit();" ><b> Start Debug Log Capture when boot up</b>
+&nbsp;&nbsp;&nbsp;&nbsp;
+(<input type="checkbox" name="ipv6_debug" value="IPv6_debug" onclick="document.forms[1].submit();" ><b> IPv6 debug enable</b>)
+
 <br><br>
-<input type="hidden" name="Start_When_Boot_Up" value="<%2620%>">
+<input type="hidden" name="Start_When_Boot_Up" value="<%2648%>">
+<input type="hidden" name="IPv6_debug" value="<%2649%>">
 <input type="hidden" name="form" value="1" >
 </form>
 <form id="cf2" action=newdebug.cgi method="POST">
@@ -107,8 +123,8 @@ function clickSaveButton()
 <b>Store location</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <select name="store_location">
-<option value="memory" <%2621%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-<option value="usb" <%2622%>>USB Storage</option>
+<option value="memory" <%2650%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+<option value="usb" <%2651%>>USB Storage</option>
 </select>
 <br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -121,19 +137,25 @@ function clickSaveButton()
 <span class="roundleft_button">Save Debug Log</span><span class="roundright_button">&nbsp;</span>
 </button> 
 <br><br>
-<input type="hidden" name="capture_in_process" value="<%2623%>">
-<input type="hidden" name="dump_LAN_WAN_pkt" value="<%2624%>">
+<input type="hidden" name="capture_in_process" value="<%2652%>">
+<input type="hidden" name="dump_LAN_WAN_pkt" value="<%2653%>">
 <input type="hidden" name="form" value="2" >
 </form>
 <form id="cf3" action=newdebug.cgi method="POST">
 &nbsp;&nbsp;
 <input type="checkbox" name="action_Enable_Telnet" value="Telnet_Enable" onclick="document.forms[3].submit();"><b> Enable Telnet</b>
-<input type="hidden" name="Enable_Telnet" value="<%2625%>">
+<input type="hidden" name="Enable_Telnet" value="<%2654%>">
 <br><br>
 &nbsp;&nbsp;
 <input type="checkbox" name="action_Mirror_Port" value="Port_mirror" onclick="document.forms[3].submit();"><b> WAN Port mirror to LAN port 1</b>
-<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%2626%>">
+<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%2655%>">
 <input type="hidden" name="form" value="3" >
+</form>
+<form id="cf4"  action="advanced_control.cgi" method="POST">
+<br>
+&nbsp;&nbsp;
+<input type="checkbox" name="wan_ping_to_lan" value="wan_ping_to_lan" onclick="document.forms[4].submit();"><b> Allow external IPv6 hosts ping internal IPv6 hosts</b>
+<input type="hidden" name="Allow_external_IPv6_hosts_ping_internal_IPv6_hosts" value="<%2656%>">
 </form>
 </body>
 </html>

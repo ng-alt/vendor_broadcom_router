@@ -28,7 +28,7 @@ var initRegion;
 var changeMsg = "<%15%>";
 var notShown = true; // only shown region change message once
 var initialized = false;
-var device_id="<%1473%>";
+var device_id="<%1476%>";
   
     $(document).ready(function()
     {	
@@ -215,15 +215,15 @@ function setOpMode()
         if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
             cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1474%>";
+        	cf.opmode.options[0].text = "<%1477%>";
         	cf.opmode.options[0].value = "g and b";
         }
         else
         {
             cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1474%>";
-        	cf.opmode.options[1].text = "<%1475%>";
-        	cf.opmode.options[2].text = "<%1476%>";
+        	cf.opmode.options[0].text = "<%1477%>";
+        	cf.opmode.options[1].text = "<%1478%>";
+        	cf.opmode.options[2].text = "<%1479%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -235,15 +235,15 @@ function setOpMode()
         if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
             cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1474%>";
+        	cf.opmode.options[0].text = "<%1477%>";
         	cf.opmode.options[0].value = "g and b";
         }
         else
         {
             cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1474%>";
-        	cf.opmode.options[1].text = "<%1475%>";
-        	cf.opmode.options[2].text = "<%1476%>";
+        	cf.opmode.options[0].text = "<%1477%>";
+        	cf.opmode.options[1].text = "<%1478%>";
+        	cf.opmode.options[2].text = "<%1479%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -255,16 +255,16 @@ function setOpMode()
     	if ((sec_type_2G == "WEP") || (sec_type_2G == "WPA-PSK"))
         {
         	cf.opmode.options.length = 1;
-        	cf.opmode.options[0].text = "<%1474%>";
+        	cf.opmode.options[0].text = "<%1477%>";
         	cf.opmode.options[0].value = "g and b";                     
         	//cf.opmode.selectedIndex = currentMode;                      
         }                          
         else
         {
         	cf.opmode.options.length = 3;
-        	cf.opmode.options[0].text = "<%1474%>";
-        	cf.opmode.options[1].text = "<%1477%>";
-        	cf.opmode.options[2].text = "<%1478%>";
+        	cf.opmode.options[0].text = "<%1477%>";
+        	cf.opmode.options[1].text = "<%1480%>";
+        	cf.opmode.options[2].text = "<%1481%>";
         	cf.opmode.options[0].value = "g and b";
         	cf.opmode.options[1].value = "130Mbps";
         	cf.opmode.options[2].value = "300Mbps";
@@ -366,14 +366,14 @@ function checkData()
 
     if(cf.passphrase.value.length < 8)
     {
-        alert("<%1490%>");
+        alert("<%1493%>");
         return false;    
     }
     if(cf.passphrase.value.length > 63)
     {
         if ( isHex(cf.passphrase.value) == false)
         {
-            alert("<%1491%>");
+            alert("<%1494%>");
             cf.passphrase.value = "";
             return false;
         }    
@@ -420,7 +420,7 @@ function showWpsAlert()
 <form id="target"  method="POST" action="wireless.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
   <img class="subtop-image" src="<%68%>">
-<div class="subhead2"> <%380%></div>
+<div class="subhead2"> <%381%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -434,19 +434,19 @@ function showWpsAlert()
     
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%1417%></b> </a></td></tr>
+      <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','network')" tabindex="-1"><b><%1421%></b> </a></td></tr>
     <tr>
       <td colspan="2">
-        <input type="checkbox"  <%1481%> name="ssid_bc" value="ssid_bc"> <%137%> </td></tr>
+        <input type="checkbox"  <%1484%> name="ssid_bc" value="ssid_bc"> <%137%> </td></tr>
     <%132%>
     <tr>
       <td nowrap colspan="2">
-        <input type="checkbox"  <%1482%> name="enable_isolation" value="enable_isolation"> <%134%> </td></tr>
+        <input type="checkbox"  <%1485%> name="enable_isolation" value="enable_isolation"> <%134%> </td></tr>
     <%135%>
     <tr>
       <td width="50%" align="left"><%138%>:</td>
       <td width="50%">
-        <input type="text" name="ssid" value="<%1483%>" size="20" maxlength="32"></td></tr>
+        <input type="text" name="ssid" value="<%1486%>" size="20" maxlength="32"></td></tr>
     <tr>
       <td nowrap><%78%>:</td>
       <td align="left">
@@ -489,7 +489,7 @@ function showWpsAlert()
           <select name="w_channel" size=1><option selected><%141%></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option></select></td></tr>
     <tr>
       <td nowrap><%142%>:</td>
-      <td nowrap><select name="opmode" onchange="chgCh(2);"><%1484%></select></td></tr>
+      <td nowrap><select name="opmode" onchange="chgCh(2);"><%1487%></select></td></tr>
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
       <td colspan="2"><a href="javascript:loadhelp('WLG_wireless','security')" tabindex="-1"><b><%148%></b></a></td></tr>
@@ -509,23 +509,23 @@ function showWpsAlert()
     <tr>
     <td colspan="2">
         <div id="wpa_radio_2G" style="display: block;">
-    	<input type="radio" name="security_type" value="WPA-PSK" <%1492%> <%151%> onClick="wpapskCheck();" ><%152%>
+    	<input type="radio" name="security_type" value="WPA-PSK" <%1495%> <%151%> onClick="wpapskCheck();" ><%152%>
         </div>
     </td>
     </tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%151%> <%1493%> onClick="buttonFilter();this.form.submit();" ><%153%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%151%> <%1496%> onClick="buttonFilter();this.form.submit();" ><%153%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%151%> <%1494%> onClick="autopskCheck();" ><%154%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%151%> <%1497%> onClick="autopskCheck();" ><%154%></td></tr>
 </table>
 </td></tr>
 
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     
-    <%1495%>
+    <%1498%>
     
     <tr>
-      <td colspan="2">&nbsp;&nbsp;<%175%>: <input type="text" name="passphrase" size=20 maxLength=64 value="<%1496%>">&nbsp;&nbsp;<%177%></td></tr>
+      <td colspan="2">&nbsp;&nbsp;<%175%>: <input type="text" name="passphrase" size=20 maxLength=64 value="<%1499%>">&nbsp;&nbsp;<%177%></td></tr>
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     
   </table></div></td></tr>
@@ -542,13 +542,13 @@ function showWpsAlert()
 
 
 
-  <input type="hidden" name="initChannel" value="<%1486%>">
+  <input type="hidden" name="initChannel" value="<%1489%>">
   <input type="hidden" name="tempSetting" value="<%248%>">
   <input type="hidden" name="tempRegion" value="<%249%>">
   <input type="hidden" name="wds_enable" value="<%250%>">
   <input type="hidden" name="only_mode" value="0">
   <input type="hidden" name="show_wps_alert" value="<%252%>">
-  <input type="hidden" name="security_type_2G" value="<%1489%>">
+  <input type="hidden" name="security_type_2G" value="<%1492%>">
 <a name="helpframe-anchor"></a>
 </form>
 

@@ -4,7 +4,7 @@ lang_ori_english="Auto English German SimplifiedChinese TraditionalChinese Korea
 ////////////////////////////////Please keep the line below as it is ///////////////////////////////////////////////////////////////
 lang_ori="Auto English Deutsch 简体中文 繁體中文 한국어 Русский Español Polski Français Italiano Svenska Dansk Nederlands Ελληνικά Norsk Čeština Slovenščina Português Magyar Română Suomi Slovenčina Türkçe 日本語"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-version="1.0.0.26_2.1.38.1"
+version="1.0.1.18_2.1.38.1"
 language="English"
 support_url="http://kbserver.netgear.com/main.asp"
 
@@ -392,6 +392,8 @@ email_head="E-mail"
 email_sent_logs="Send alerts and logs through e-mail"
 email_server="Your Outgoing Mail Server"
 email_address="Send to This E-mail Address"
+email_address_1="Primary E-mail Address"
+email_address_2="Secondary E-mail Address (optional)"
 email_turn_on="Turn E-mail Notification On"
 email_sent_immediately="Send Alert Immediately"
 email_visit_block="When someone attempts to visit a blocked site"
@@ -408,7 +410,9 @@ email_auto_adjust="Automatically adjust for daylight savings time"
 email_authen="My mail server requires authentication"
  
 email_port="Outgoing Mail Server Port Number"
-
+email_port_1="Auto Detection"
+email_port_2="Specific Port Number"
+email_port_detect="Detecting SMTP port number for outgoing mail"
 //ntp
 ntp_curtime="Current Time"
 
@@ -881,7 +885,7 @@ invalid_servip="Invalid server address. Please enter it again.\n"
 trigger_length_20="The router can support 20 only port triggering rules."
 trigger_ser_name_null="Service name cannot be null."
 trigger_null=" must not be blank.\n"
-trigger_1_65535=", must be in the range 1-65535.\n"
+trigger_1_65535=", must be in the range 1-65534.\n"
 trigger_invalid="Invalid "
 trigger_invalid_port_rang="Invalid inbound connection port range.\n"
 timeout_null="Port triggering time-out cannot be null."
@@ -1615,33 +1619,8 @@ recovered_admin_passwd="You have successfully recovered the admin password."
 router_admin_user="Router Admin Username"
 router_admin_passwd="Router Admin Password"
 can_login="You can now log into the router using username "admin" and this recovered password."
-ques1_0="Please select a question."
-ques1_1="What was the name of the first NETGEAR product you purchased?"
-ques1_2="What was the name of the first school you attended?"
-ques1_3="What is your oldest sister's first name?"
-ques1_4="What is your oldest brother's first name?"
-ques1_5="In what city were you born?"
-ques1_6="What is your grandmother's first name?"
-ques1_7="What is your grandfather's first name?"
-ques1_8="In what year (YYYY) did you graduate from high school?"
-ques1_9="What is the name of your first employer?"
-ques2_0="Please select a question."
-ques2_1="What is your youngest sister's first name?"
-ques2_2="What is your youngest brother's first name?"
-ques2_3="What is your father's middle name?"
-ques2_4="What is your mother's middle name?"
-ques2_5="What was the first name of your first manager?"
-ques2_6="In what city was your mother born?"
-ques2_7="In what city was your father born?"
-ques2_8="What is your best friend's first name?"
-router_password_recovery="Router Password Recovery"
-complet_secure_questtion="Please complete the answers to the two security questions below and click <b>Continue</b>."
-secure_ques1="Security Question #1"
-secure_answer="Answer"
-secure_ques2="Security Question #2"
-require_info="*=required information"
 check_answer_info="The information you entered does not match what is saved on the router. Please enter it again."
-can_help_recover="We can help you to recover the router’s admin password. Please complete the information below and click <b>Continue</b>."
+can_help_recover="We can help you to recover the router's admin password. Please complete the information below and click <b>Continue</b>."
 enter_serial="Enter the router's Serial Number"
 find_on_label="(You can find it on the router product label.)"
 alert_enable_passwd_revery="If you do not enable password recovery and forget your new password, the only way to recover the password is to reset the device to factory default."
@@ -1707,7 +1686,6 @@ help_center="Help Center"
 show_hide_help="Show/Hide Help Center"
 
 // 110302
-exit_mark="Exit"
 login_change_mark="Login"
 
 
@@ -1815,7 +1793,7 @@ router_pin_mark4="In auto disabled mode, router's WPS LED will keep blinking slo
 wireless_op_mode="use other operation mode"
 wireless_op_mode1="Enable Bridge mode"
 wireless_op_mode2="setup bridge mode wireless settings"
-
+bridge_wireless_settings="Choose a Wireless Networks"
 //access control
 dev_acl_outline="You can use Access Control to allow or block computers or electronic devices from accessing your network. "
 dev_acl_turn_on="Turn on Access Control"
@@ -1879,6 +1857,14 @@ authentication_status="authentication failure"
 registration_status="registration failure"
 Standard_type="Standard"
 Prefessional_type="Prefessional"
+port_type_example="(Specify ports and/or port ranges spilit by commas, example: 30, 50-60, 65500-65510)"
+forward_arrange_service="Arrange by Internal IP"
+msg_invalid_extport="Invalid External Port Range\nPorts must be in the range of 1 - 65534.\nPlease specify ports and port ranges split by commas,\nExample: 30, 50-60, 65500-65510.\n"
+msg_invalid_intport="Invalid Internal Port Range\nPorts must be in the range of 1 - 65534.\nPlease specify ports and port ranges split by commas,\nExample: 30, 50-60, 65500-65510.\n"
+invalid_port_match="Internal and External Port Mismatch\nInternal port ranges must have the same sequence of ports or port ranges as external port ranges.\n"
+ext_port_range="External Port Range"
+int_port_range="Internal Port Range"
+forward_rule_conflict="Custom Service Rule Conflict\nThe new custom service must not conflict with any existing service rule.\n"
 reset_mark="Reset"
 
 //Netgear downloader
@@ -2051,7 +2037,6 @@ access_control_remove_list="Remove from the list"
 
 //2013/11/19
 dlna_enable="Enable DLNA Media Server"
-//attached device r11
 
 //attached device r11
 wireless_dev_2g="2.4G Wireless Devices (Wireless intruders also show up here)"
@@ -2097,8 +2082,8 @@ del_internet_rule_warning="Internet rule should not be deleted"
 vlan_name_error="Group name must consists of printable ASCII characters (ASCII 0x21 ~ 0x7E, space is not allowed) and is up to 10 characters!"
 vlan_name_duplicate_1="Group Name"
 vlan_name_duplicate_2="already exists."
-vlan_id_error="Incorrect VLAN ID value; correct values are from 0 to 4094. 0: VLAN is not used for the group."
-vlan_id_range="(0~4094, 0: VLAN is not used for the group)"
+vlan_id_error="Incorrect VLAN ID value; correct values are from 1 to 4094. 0: VLAN is not used for the group."
+vlan_id_range="(1~4094, 0: VLAN is not used for the group)"
 vlan_prio_error="Incorrect 802.1p value."
 vlan_prio_range="(0~7)"
 vlan_max_enable="No more groups can be enabled; maximum is 6 groups."
@@ -2157,4 +2142,7 @@ vpn_pppoe_dod="If you enable the VPN service on your router, your router’s Int
 vpn_pppoe_manual="If you enable the VPN service on your router, you need to change your router’s Internet connection mode from Manually Connect to Always On in order for a VPN client to connect to your router. Go to the Internet Setup page to make this change."
 readycloud_pppoe_dod="If you register your router with ReadyCLOUD, your router’s Internet connection mode will change from Dial on Demand to Always On. This change is required for ReadyCLOUD to remotely access the connected USB storage device. Do you want to continue?";
 readycloud_pppoe_manual="If you register your router with ReadyCLOUD, you need to change your router’s Internet connection mode from Manually Connect to Always On in order for ReadyCLOUD to remotely access the connected USB storage device. Go to the Internet Setup page to make this change";
+manually_update="Rescan media files"
 readycloud_pppoe_manual_off="Your router or gateway is not connected to the Internet. You need an Internet connection in order to register your router or gateway with ReadyCLOUD. Connect your router or gateway to the Internet and try again.";
+admin_acount_warn="Warning: We strongly recommend that you enable Admin Password Protection to secure your ReadySHARE data. If you did not change the default admin password, we also recommend that you change it to secure your network."
+admin_pw_protect="Admin Password Protection"

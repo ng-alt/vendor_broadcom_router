@@ -84,7 +84,7 @@ static void rc_signal(int sig);
 /* Foxconn added start, Wins, 05/16/2011, @RU_IPTV */
 #if defined(CONFIG_RUSSIA_IPTV)
 static int is_russia_specific_support (void);
-static int is_china_specific_support (void); /* add, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+static int is_china_specific_support (void); /* Foxconn add, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #endif /* CONFIG_RUSSIA_IPTV */
 /* Foxconn added end, Wins, 05/16/2011, @RU_IPTV */
 /*Foxconn add start, edward zhang, 2013/07/03*/
@@ -704,7 +704,42 @@ static void save_wlan_time(void)
     return;
 }
 /* foxconn added end, wklin, 11/02/2006 */
+/* foxconn added start, 04/26/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */
+int get_unused_vlan()
+{
+    char *var;
+    char VlanId[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE];
+    char VlanName[C_MAX_VLAN_RULE][C_MAX_TOKEN_SIZE];
+    int numVlanRule;   
+    int retry_times=0;
+ 
+    if ( (var = acosNvramConfig_get("vlan_id")) != NULL )
+    {
+        getTokens(var, " ", VlanId, C_MAX_VLAN_RULE);
+    }
+    
+    numVlanRule = getVlanname(VlanName);
 
+    while(1)
+    {
+#define RAND_MAX 4095
+        int return_vlan=rand()%4096;
+        int idx;
+        for(idx=0;idx<numVlanRule;idx++)
+        {
+            if(return_vlan==atoi(VlanId[idx]))
+                break;
+        }
+
+        if(idx==numVlanRule)
+            return return_vlan;
+        retry_times++;
+        if(retry_times==10)
+            return 3190;
+    }
+    return 3190;
+}
+/* foxconn added end, 04/26/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */
 /* foxconn added start, zacker, 01/13/2012, @iptv_igmp */
 #ifdef CONFIG_RUSSIA_IPTV
 static int config_iptv_params(void)
@@ -895,6 +930,7 @@ static int config_iptv_params(void)
         char lan_ifname[16] = "";
         int internet_vlan_id;
 
+        int internet_no_vlan_tag=0; //foxconn added, 07/22/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 
         /* always set emf_enable to 0 when vlan is enable*/
         nvram_set("emf_enable", "0");
 
@@ -906,6 +942,19 @@ static int config_iptv_params(void)
             memset(vlan_ports,0,sizeof(vlan_ports));
             if(!strcmp(vlan[i].enable_rule,"0"))
                 continue;
+        /* foxconn added start, 07/22/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */	
+            if(!strcmp(vlan[i].vlan_name, "Internet"))
+            {
+                if(atoi(vlan[i].vlan_id)==0)
+                {
+                    int random_port;
+                    random_port=get_unused_vlan();                    
+
+                    sprintf(vlan[i].vlan_id,"%d",random_port);
+                    internet_no_vlan_tag=1;
+                }
+            }
+            /* foxconn added end, 07/22/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */	
             sprintf(vlan_ifname,"vlan%s ",vlan[i].vlan_id);
             sprintf(wan_vlan_ifname,"vlan%s",vlan[i].vlan_id);
             sprintf(vlan_ifname_ports,"vlan%sports",vlan[i].vlan_id);
@@ -916,11 +965,20 @@ static int config_iptv_params(void)
             
             if(!strcmp(vlan[i].vlan_name, "Internet"))
             {
+                /* foxconn modified start, 07/22/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */	
+                if(!internet_no_vlan_tag)
 #if defined(R7000)
-         	    nvram_set(vlan_ifname_ports,"0t 5");
+                    nvram_set(vlan_ifname_ports,"0t 5");
 #else
-         	    nvram_set(vlan_ifname_ports,"4t 5");
+                    nvram_set(vlan_ifname_ports,"4t 5");
 #endif
+                else
+#if defined(R7000)
+                    nvram_set(vlan_ifname_ports,"0 5");
+#else
+                nvram_set(vlan_ifname_ports,"4 5");
+#endif
+               /* foxconn modified end, 07/22/2016 @ R6400 TD#139-1 Fixed Internet group, cannot configure VLAN ID 0 */	
                 nvram_set("internet_prio",vlan[i].vlan_prio);
                 nvram_set("internet_vlan",vlan[i].vlan_id);
                 nvram_set("wan_ifnames", vlan_ifname);
@@ -1538,7 +1596,7 @@ static int getVlanRule(vlan_rule vlan[C_MAX_VLAN_RULE])
     return numVlanRule;
 }
 #endif
-/*  add start, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+/* Foxconn add start, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 static int is_china_specific_support (void)
 {
     int result = 0;
@@ -1572,7 +1630,7 @@ static int is_china_specific_support (void)
 
     return result;
 }
-/*  add end, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+/* Foxconn add end, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 
 static int send_wps_led_cmd(int cmd, int arg)
 {
@@ -2574,23 +2632,65 @@ sysinit(void)
         if (!nvram_match("pci/2/1/mcsbw205ghpo", "0xBA768600"))
             nvram_set("pci/2/1/mcsbw205ghpo", "0xBA768600");
 #endif
-#if (defined R6400)
 
-		if(acosNvramConfig_match("sku_name", "WW") && acosNvramConfig_match("wla_region","5"))
-		{
-				nvram_set("pci/2/1/mcsbw205gmpo","0x10000000");
-				nvram_set("pci/2/1/mcsbw405gmpo","0x11112222");
-				nvram_set("pci/2/1/mcsbw805gmpo","0x5555AAAA");		
-				nvram_set("pci/2/1/mcsbw805glpo","0x0");
-		}
-		else if(acosNvramConfig_match("sku_name", "NA") && acosNvramConfig_match("wla_region","11"))
-		{
-				nvram_set("pci/2/1/mcsbw205gmpo","0xECA86400");
-				nvram_set("pci/2/1/mcsbw405gmpo","0xECA86400");
-				nvram_set("pci/2/1/mcsbw805gmpo","0xFEA86400");	
-				nvram_set("pci/2/1/mcsbw805glpo","0x5555AAAA");				
-		}
-
+#if (defined R6400) 
+    /*Foxconn added start by Kathy @ according to sku and region to set RF default value */
+        if(acosNvramConfig_match("sku_name", "WW") && acosNvramConfig_match("wla_region","5"))
+        {
+            nvram_set("pci/2/1/mcsbw205gmpo","0x10000000");
+            nvram_set("pci/2/1/mcsbw405gmpo","0x11112222");
+            nvram_set("pci/2/1/mcsbw805gmpo","0x5555AAAA");
+            nvram_set("pci/2/1/mcsbw805glpo","0x0");
+        }
+        else if(acosNvramConfig_match("sku_name", "NA") && acosNvramConfig_match("wla_region","11"))
+        {
+            nvram_set("pci/2/1/mcsbw205gmpo","0xECA86400");
+            nvram_set("pci/2/1/mcsbw405gmpo","0xECA86400");
+            nvram_set("pci/2/1/mcsbw805gmpo","0xFEA86400");
+            nvram_set("pci/2/1/mcsbw805glpo","0x5555AAAA");
+        }
+        else if( acosNvramConfig_match("sku_name", "AU") && acosNvramConfig_match("wla_region","3"))
+        {
+            nvram_set("pci/1/1/maxp2ga0","0x6C");
+            nvram_set("pci/1/1/maxp2ga1","0x6C");
+            nvram_set("pci/1/1/maxp2ga2","0x6C");
+            //nvram_set("pci/1/1/cckbw202gpo","0");
+            //nvram_set("pci/1/1/cckbw20ul2gpo","0");
+            nvram_set("pci/1/1/legofdmbw202gpo","0xCA833333");
+            nvram_set("pci/1/1/legofdmbw20ul2gpo","0xCA833333");
+            nvram_set("pci/1/1/mcsbw202gpo","0xECB85333");
+            nvram_set("pci/1/1/mcsbw20ul2gpo","0xECB85333");
+            nvram_set("pci/1/1/mcsbw402gpo","0xECB85444");
+            nvram_set("pci/2/1/mcsbw205gmpo","0");
+            nvram_set("pci/2/1/mcsbw405gmpo","0");
+            nvram_set("pci/2/1/mcsbw805gmpo","0");
+            nvram_set("pci/2/1/mcsbw805glpo","0x0");
+            nvram_set("pci/2/1/mcsbw805ghpo","0x87659600");
+        }
+        else if( acosNvramConfig_match("sku_name", "PR") && acosNvramConfig_match("wla_region","16"))
+        {
+            acosNvramConfig_set("pci/2/1/mcsbw805ghpo","0x87659600");
+        }
+        else if( acosNvramConfig_match("sku_name", "IN") && acosNvramConfig_match("wla_region","17"))
+        {
+            /* 2.4G parameters of INS sku same as country code AU/994 */
+            nvram_set("pci/1/1/maxp2ga0","0x6C");
+            nvram_set("pci/1/1/maxp2ga1","0x6C");
+            nvram_set("pci/1/1/maxp2ga2","0x6C");
+            //nvram_set("pci/1/1/cckbw202gpo","0");
+            //nvram_set("pci/1/1/cckbw20ul2gpo","0");
+            nvram_set("pci/1/1/legofdmbw202gpo","0xCA833333");
+            nvram_set("pci/1/1/legofdmbw20ul2gpo","0xCA833333");
+            nvram_set("pci/1/1/mcsbw202gpo","0xECB85333");
+            nvram_set("pci/1/1/mcsbw20ul2gpo","0xECB85333");
+            nvram_set("pci/1/1/mcsbw402gpo","0xECB85444");
+            /* provided by HW MH for INS sku 5G country code IN/03 */
+            acosNvramConfig_set("pci/2/1/aga0","0");
+            acosNvramConfig_set("pci/2/1/aga1","0");
+            acosNvramConfig_set("pci/2/1/aga2","0");
+        }
+        acosNvramConfig_save();
+/*Foxconn added end by Kathy @ according to sku and region to set RF default value */
 #endif
         /* foxconn added end by Bob 03/10/2014, BRCM's workaround for bridge mode connect fail issue. */
         
@@ -2909,7 +3009,7 @@ do_timer(void)
 	return 0;
 }
 
-/*  add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+/* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 #ifdef ARP_PROTECTION
 static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE], int maxNumToken)
 {
@@ -2932,10 +3032,10 @@ static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE],
         else 
             field = strtok_r(NULL, delimiter, &ppLast);
 
-        /*  modified start, Wins, 06/27/2010 */
+        /* Foxconn modified start, Wins, 06/27/2010 */
         //if (field == NULL || field[0] == '\0')
         if (field == NULL || (field != NULL && field[0] == '\0'))
-        /*  modified end, Wins, 06/27/2010 */
+        /* Foxconn modified end, Wins, 06/27/2010 */
         {
             for (j=i; j<maxNumToken; j++)
                 token[j][0] = '\0';
@@ -2950,7 +3050,7 @@ static int getTokens(char *str, char *delimiter, char token[][C_MAX_TOKEN_SIZE],
 }
 
 static int getReservedAddr(char reservedMacAddr[][C_MAX_TOKEN_SIZE], char reservedIpAddr[][C_MAX_TOKEN_SIZE])
-/*  modified end, zacker, 10/31/2008, @lan_setup_change */
+/* Foxconn modified end, zacker, 10/31/2008, @lan_setup_change */
 {
     int numReservedMac=0, numReservedIp=0;
     char *var;
@@ -2994,7 +3094,7 @@ static void config_arp_table(void)
     return 0;
 }
 #endif
-/*  add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
 /* Main loop */
 static void
 main_loop(void)
@@ -3008,13 +3108,13 @@ main_loop(void)
 	uint boardflags;
 #endif
 
-    /*  wklin added start, 10/22/2008 */
+    /* foxconn wklin added start, 10/22/2008 */
 	sysinit();
 
-	/*  added start pling 03/20/2014 */
+	/* Foxconn added start pling 03/20/2014 */
 	/* Router Spec Rev 12: disable/enable ethernet interface when dhcp server start */
 	eval("landown");
-	/*  added end pling 03/20/2014 */
+	/* Foxconn added end pling 03/20/2014 */
 
 	/* Add loopback */
 	config_loopback();
@@ -3029,22 +3129,22 @@ main_loop(void)
 
     /* Read ethernet MAC, etc */
     //eval("read_bd"); /* foxconn removed, zacker, 08/06/2010, move to sysinit() */
-    /*  wklin added end, 10/22/2008 */
+    /* foxconn wklin added end, 10/22/2008 */
 
     /* Reset some wps-related parameters */
     nvram_set("wps_start",   "none");
-    /*  added start, zacker, 05/20/2010, @spec_1.9 */
+    /* foxconn added start, zacker, 05/20/2010, @spec_1.9 */
     nvram_set("wps_status", "0"); /* start_wps() */
     nvram_set("wps_proc_status", "0");
-    /*  added end, zacker, 05/20/2010, @spec_1.9 */
+    /* foxconn added end, zacker, 05/20/2010, @spec_1.9 */
     
-    /*  Perry added start, 2011/05/13, for IPv6 router advertisment prefix information */
+    /* Foxconn Perry added start, 2011/05/13, for IPv6 router advertisment prefix information */
     /* reset IPv6 obsolete prefix information after reboot */
     nvram_set("radvd_lan_obsolete_ipaddr", "");
     nvram_set("radvd_lan_obsolete_ipaddr_length", "");
     nvram_set("radvd_lan_new_ipaddr", "");
     nvram_set("radvd_lan_new_ipaddr_length", "");
-    /*  Perry added end, 2011/05/13, for IPv6 router advertisment prefix information */
+    /* Foxconn Perry added end, 2011/05/13, for IPv6 router advertisment prefix information */
     
 #if defined(R7000)
     if (nvram_match("internal_antenna", "1"))
@@ -3059,7 +3159,7 @@ main_loop(void)
     }
 #endif
 
-    /*  added start, zacker, 06/17/2010, @new_tmp_lock */
+    /* Foxconn added start, zacker, 06/17/2010, @new_tmp_lock */
     /* do this in case "wps_aplockdown_forceon" is set to "1" for tmp_lock
      * purpose but then there are "nvram_commit" and "reboot" action
      */
@@ -3067,11 +3167,11 @@ main_loop(void)
         nvram_set("wps_aplockdown_forceon", "1");
     else
         nvram_set("wps_aplockdown_forceon", "0");
-    /*  added end, zacker, 06/17/2010, @new_tmp_lock */
+    /* Foxconn added end, zacker, 06/17/2010, @new_tmp_lock */
 
-    /*  added start, Wins, 04/20/2011, @RU_IPTV */
+    /* Foxconn added start, Wins, 04/20/2011, @RU_IPTV */
 #ifdef CONFIG_RUSSIA_IPTV
-/*  modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
+/* Foxconn modified, Edward zhang, 09/05/2012, @add IPTV support for PR SKU*/
 #if 0
     if ((!is_russia_specific_support()) && (!is_china_specific_support()))
     {
@@ -3080,13 +3180,13 @@ main_loop(void)
     }
 #endif
 #endif /* CONFIG_RUSSIA_IPTV */
-    /*  added end, Wins, 04/20/2011, @RU_IPTV */
-/*  add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+    /* Foxconn added end, Wins, 04/20/2011, @RU_IPTV */
+/* Foxconn add start, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
     if ((!is_russia_specific_support()) && (!is_china_specific_support()))
     {
         nvram_set(NVRAM_ARP_ENABLED, "disable");
     }
-/*  add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
+/* Foxconn add end, Edward zhang, 09/14/2012, @add ARP PROTECTION support for RU SKU*/
     /* Foxconn add start, Max Ding, 02/26/2010 */
 #ifdef RESTART_ALL_PROCESSES
     nvram_unset("restart_all_processes");

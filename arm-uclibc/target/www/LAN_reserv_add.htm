@@ -121,8 +121,8 @@ function checkData()
 	var rv_dv_name=cf.reserved_devname.value.split("|");
 	var i, conflict, reply;
 
-	var str_dhcp_start = "<%1076%>";
-	var str_dhcp_end = "<%1077%>"
+	var str_dhcp_start = "<%1080%>";
+	var str_dhcp_end = "<%1081%>"
 	var dhcp_startaddr = str_dhcp_start.split(".");
 	var dhcp_endaddr = str_dhcp_end.split(".");
 
@@ -136,7 +136,7 @@ function checkData()
 	if (cf.dv_name.value.match( /[^\x20-\x7E]/ ))
 		msg+="<%718%>\n";
 	if((cf.dv_name.value == "UNKNOWN")||(cf.dv_name.value == "UNKNOWN NAME"))
-		msg+="<%1050%>\n";
+		msg+="<%1054%>\n";
 
 	if (msg.length > 1)
 	{
@@ -160,7 +160,7 @@ function checkData()
         i++;
     }
     if (conflict) {
-        reply = confirm("<%1086%>");
+        reply = confirm("<%1090%>");
         if (!reply)
             return false;
     }
@@ -193,7 +193,7 @@ function sel(ipaddr, name, macaddr)
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 
 <img class="subtop-image" src="<%68%>">
-<div class="subhead2"> <%1068%></div>
+<div class="subhead2"> <%1072%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -207,7 +207,7 @@ function sel(ipaddr, name, macaddr)
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
- <td colspan="2" ><a href="javascript:loadhelp('LAN_reserv_add','reserved')" tabindex="-1"><b><%1087%></b></a></td>
+ <td colspan="2" ><a href="javascript:loadhelp('LAN_reserv_add','reserved')" tabindex="-1"><b><%1091%></b></a></td>
 </tr>
 
 
@@ -221,7 +221,7 @@ function sel(ipaddr, name, macaddr)
  <td nowrap align="center" width="30%"><span class="thead"><%670%></span></td>
  <td nowrap align="center" width="30%"><span class="thead"><%671%></span></td>
 </tr>
-<%1088%>
+<%1092%>
 </table></td></tr>
 
 
@@ -270,10 +270,10 @@ function sel(ipaddr, name, macaddr)
 <input type="hidden" name="macaddr" value="">
 <INPUT name=rsv_ip type=hidden value="">
 <INPUT name=rsv_mode type=hidden value="add">
-<input type="hidden" name="reserved_ips" value="<%1089%>">
-<input type="hidden" name="reserved_macs" value="<%1090%>">
-<input type="hidden" name="reserved_devname" value="<%1091%>">
-<input type="hidden" name="lanIP" value="<%906%>">
+<input type="hidden" name="reserved_ips" value="<%1093%>">
+<input type="hidden" name="reserved_macs" value="<%1094%>">
+<input type="hidden" name="reserved_devname" value="<%1095%>">
+<input type="hidden" name="lanIP" value="<%909%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>
