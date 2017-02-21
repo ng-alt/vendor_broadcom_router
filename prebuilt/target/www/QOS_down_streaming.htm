@@ -21,7 +21,7 @@ classes.num.all.fontSize = "10pt" ;
 <%14%>
 <script language="javascript" type="text/javascript">
 <!--
-//<%1892%>
+//<%1910%>
   
     $(document).ready(function()
     {	
@@ -292,7 +292,7 @@ function loadSettings(onCancelClick)
 	else
 		cf.wmm_enable_5g.checked = false;
 
-<%1440%>
+<%1458%>
 
   if(cf.wifi_dual_5g_band.value == "0")
   {
@@ -307,7 +307,7 @@ function loadSettings(onCancelClick)
   }
   
 
-<%1443%>
+<%1461%>
 
 
 	if (cf.qos_enable.value == "1")
@@ -381,7 +381,7 @@ function loadSettings(onCancelClick)
         cf.check_bw.disabled = true;
         
         var setButton=document.getElementsByName("setup_qos_rule");
-        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1894%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1912%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
         setButton[0].style.cursor='default';          
 	}
     else
@@ -398,7 +398,7 @@ function loadSettings(onCancelClick)
             //cf.check_bw.disabled = true;
             
             var checkButton=document.getElementsByName("check_bw");
-            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1412%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1430%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
             checkButton[0].style.cursor='default';        
         }
     }
@@ -434,7 +434,7 @@ var isApply;
 function checkData(btn,value)
 {
     var cf = document.forms[0];
-    var qos_up_bw_limit = "<%1895%>";
+    var qos_up_bw_limit = "<%1913%>";
     var interval_up = parseFloat(cf.bandwidth.value);
     var interval_down = parseFloat(cf.bandwidthDown.value);
     /*
@@ -444,20 +444,20 @@ function checkData(btn,value)
        cf.bandwidth.value.match(/[^0-9]/g) ||
        cf.bandwidth.value.match(/^0/))
        {
-       alert("<%1896%>");
+       alert("<%1914%>");
        return false;
        }
        return true;
      */
     //check wan status
     if ( cf.qosEnable.checked == true && cf.wan_status.value=='down'){
-        alert("<%1952%>");
+        alert("<%1970%>");
         return false;
     }
 
     if (cf.qosEnable.checked == true && cf.qosSetting[0].checked == true && cf.uplink_bw.value == "0 kbps" && cf.downlink_bw.value == "0 kbps"
     && cf.bandwidth_speedtest.value=="" && cf.bandwidth_speedtest.value=="" ){
-        if (confirm("<%1953%>") == true){
+        if (confirm("<%1971%>") == true){
             isApply=1;
             checkWanIp();
         }
@@ -478,7 +478,7 @@ function checkData(btn,value)
             if( (interval_up < 0.10) || (interval_down < 0.10)){
                 alert("Invalid Uplink/Download Bandwidth, the Uplink Bandwidth should be greater than 100Kbps");
             }else{
-                alert("<%1896%>");
+                alert("<%1914%>");
             }
             return false;
         }
@@ -503,7 +503,7 @@ function checkData(btn,value)
         
         if  ( isNaN(interval_up) || isNaN(interval_down) )
         {
-            alert("<%1954%>");
+            alert("<%1972%>");
         }
         else if( (interval_up < 0.10) || (interval_up > qos_up_bw_limit) ||
                 (interval_down < 0.10) || (interval_down > qos_up_bw_limit) ||
@@ -514,7 +514,7 @@ function checkData(btn,value)
             if( (interval_up < 0.10) || (interval_down < 0.10)){
                 alert("Invalid Uplink/Download Bandwidth, the Uplink Bandwidth should be greater than 100Kbps");
             }else{
-                alert("<%1896%>");
+                alert("<%1914%>");
             }
             return false;
         }
@@ -1121,7 +1121,7 @@ function doQosCheck(){
 
 <!--
 <tr>
-<td colspan="3"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1900%></b></a></td>
+<td colspan="3"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1918%></b></a></td>
 </tr>
 
 <tr><td colspan="4" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -1131,22 +1131,22 @@ function doQosCheck(){
 <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;">
 
 <tr style="height:30px">
-<td colspan="2"><input type="checkbox" name="qosEnable" value="1" onClick="doQosCheck();"><b><%1955%></b></td>
+<td colspan="2"><input type="checkbox" name="qosEnable" value="1" onClick="doQosCheck();"><b><%1973%></b></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2" style="height:30px;padding-left:23px"><%1956%></td>
+<td colspan="2" style="height:30px;padding-left:23px"><%1974%></td>
 </tr>
 <tr>
-<td colspan="2" style="height:30px;padding-left:23px"><b><%1957%></b></td>
+<td colspan="2" style="height:30px;padding-left:23px"><b><%1975%></b></td>
 </tr>
 <!-------------------------------------------  auto det---->
 <tr style="height:30px">
-<td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><input type="radio" name="qosSetting" value="1" onClick="chk_qosrule_display();"><b><%1958%></b></td>
+<td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><input type="radio" name="qosSetting" value="1" onClick="chk_qosrule_display();"><b><%1976%></b></td>
 <td></td>
 </tr>
 <tr>
-	<td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><%1959%></td>
+	<td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><%1977%></td>
 	<td></td>
 </tr>
 </table>
@@ -1163,13 +1163,13 @@ function doQosCheck(){
 </div>
 </td>
 <td colspan="2" id="check_info" style="display: none;" valign="middle">
-    <p><%1960%></p>
+    <p><%1978%></p>
     <p><input type="text" name="progress" class="prgbar" value="" style="color: blue" size="20"
     contentEditable="false" onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;"></p>
 </td>
-<td colspan="2" id="check_nowan" style="display: none;"><p>&nbsp;</p><%1961%></td>
-<td colspan="2" id="check_unreach" style="display: none;"><p>&nbsp;</p><%1962%></td>
-<td align="right">&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="Speed Test" name="check_bw" class="button-rule" onclick="buttonClick(this,'Speed Test');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1963%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+<td colspan="2" id="check_nowan" style="display: none;"><p>&nbsp;</p><%1979%></td>
+<td colspan="2" id="check_unreach" style="display: none;"><p>&nbsp;</p><%1980%></td>
+<td align="right">&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="Speed Test" name="check_bw" class="button-rule" onclick="buttonClick(this,'Speed Test');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1981%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 <td>&nbsp;&nbsp;&nbsp;<img src="poweredbyookla.png" border="0" style="margin-top:0px;"></td>
 </tr>
 <tr></tr>
@@ -1177,8 +1177,8 @@ function doQosCheck(){
 <!--
 <tr>
 <td colspan="2" ><img src="spacer.gif" width="40" height="12" border="0">
-<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1906%>  <!><%1907%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1412%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1412%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1412%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1924%>  <!><%1925%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1430%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1430%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1430%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 -->
@@ -1194,7 +1194,7 @@ function doQosCheck(){
 <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;">
 <tr style="height:30px">
 <td><img src="spacer.gif" height="25" width="45" border="0"></td>
-<td colspan="2"><input type="radio" name="qosSetting" value="2" onClick="chk_qosrule_display();alert('<%1964%>');"><b><%1965%></b></td>
+<td colspan="2"><input type="radio" name="qosSetting" value="2" onClick="chk_qosrule_display();alert('<%1982%>');"><b><%1983%></b></td>
 <td></td>
 </tr>
 </table>
@@ -1203,7 +1203,7 @@ function doQosCheck(){
 <tr>
 <td><img src="spacer.gif" height="25" width="80" border="0"></td>
 <td> 
-<label id ="bw_sel" for="bw_sel"><%1966%></label><img src="spacer.gif" height="20" width="30" border="0">
+<label id ="bw_sel" for="bw_sel"><%1984%></label><img src="spacer.gif" height="20" width="30" border="0">
 </td>
 <td>  
 <input type="text" name="bandwidthDown_manual" size="6" maxlength="6" value="">
@@ -1212,7 +1212,7 @@ function doQosCheck(){
 <tr>
 <td><img src="spacer.gif" height="25" width="80" border="0"></td>
 <td> 
-<label id ="bw_sel" for="bw_sel"><%1967%></label><img src="spacer.gif" height="20" width="30" border="0">
+<label id ="bw_sel" for="bw_sel"><%1985%></label><img src="spacer.gif" height="20" width="30" border="0">
 </td><td>
 <input type="text" name="bandwidth_manual" size="6" maxlength="6" value="">
 </td><td></td>
@@ -1222,26 +1222,26 @@ function doQosCheck(){
 <div id="qos_devlist" style="display: block;">
 <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;">
 <tr>
-<td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%1968%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1969%> </b></a>
-&nbsp;&nbsp;&nbsp;<button type="button" id="updateBtn" value="<%1970%>" name="check_update" class="button-rule" onclick="check_start();"><span class="roundleft_button">&nbsp;&nbsp; <%1971%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%1986%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1987%> </b></a>
+&nbsp;&nbsp;&nbsp;<button type="button" id="updateBtn" value="<%1988%>" name="check_update" class="button-rule" onclick="check_start();"><span class="roundleft_button">&nbsp;&nbsp; <%1989%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr>
-<td colspan="2" style="padding-left:35px;"><%1972%></td>
+<td colspan="2" style="padding-left:35px;"><%1990%></td>
 </tr>
 <tr>
-<td colspan="2" style="padding-left:60px;padding-top:10px;"><%1973%>: v<%1974%>,<%1975%></td>
+<td colspan="2" style="padding-left:60px;padding-top:10px;"><%1991%>: v<%1992%>,<%1993%></td>
 </tr>
 <tr>
-<td colspan="2" style="padding-left:60px;padding-top:10px;"><%1976%>:  <%1977%></td>
+<td colspan="2" style="padding-left:60px;padding-top:10px;"><%1994%>:  <%1995%></td>
 </tr>
 <tr style="display: none;">
-<td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="QosAnalyticsEnable" value="1" <%1978%>><b><%1979%></b>
+<td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="QosAnalyticsEnable" value="1" <%1996%>><b><%1997%></b>
 </td>
 </tr>
 <tr>
 <td><img src="spacer.gif" height="30" width="23" border="0"></td>
-<td><a class="linktype" target="_self" href="DEV_redirect.htm"><u><font color="#0000ff"><%1980%></font></u></a></td>
+<td><a class="linktype" target="_self" href="DEV_redirect.htm"><u><font color="#0000ff"><%1998%></font></u></a></td>
 </tr>
 </table>
 </div>
@@ -1254,17 +1254,17 @@ function doQosCheck(){
 
 <!-- content of WMM start -->
 <tr>
-<td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1981%></b></a></td>
+<td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1999%></b></a></td>
 </tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1982%></b></a></td>
+<td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2000%></b></a></td>
 </tr>
 
 <%419%>
 <tr>
 <td colspan="2"><div id="wmm_5g_2">
-<input type="checkbox" name="wmm_enable_5g_2" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1983%></b></a>
+<input type="checkbox" name="wmm_enable_5g_2" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2001%></b></a>
 </div>
 </td>
 </tr>
@@ -1283,10 +1283,10 @@ function doQosCheck(){
 
 <!-- content of downstream start -->
 <tr>
-<td colspan="2"><input type="checkbox" name="qosStreamingEnable" value="1" <%1984%>><b><%1985%> </b></td>
+<td colspan="2"><input type="checkbox" name="qosStreamingEnable" value="1" <%2002%>><b><%2003%> </b></td>
 </tr>
 <tr>
-<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><%1986%><%1974%></b></td>
+<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><%2004%><%1992%></b></td>
 </tr>
 
 
@@ -1296,7 +1296,7 @@ function doQosCheck(){
 <table align="left" border="0" width="100%">
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-<td colspan="2" ><b><%1987%>:</b>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="1" onClick="chgSel();" <%1988%> ><%1989%>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="2" onClick="chgSel();" <%1990%>><%1991%>
+<td colspan="2" ><b><%2005%>:</b>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="1" onClick="chgSel();" <%2006%> ><%2007%>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="2" onClick="chgSel();" <%2008%>><%2009%>
 </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -1309,7 +1309,7 @@ function doQosCheck(){
 <td colspan="2">
 <div id="mac_list" style="display: none;">
 <table align="left" border="0" width="100%">
-<%1992%>
+<%2010%>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 </table>
 </div>
@@ -1321,7 +1321,7 @@ function doQosCheck(){
 <div id="qos_name" style="display: none;">
 <table align="left" border="0" width="100%">
 <tr>
-<td width="15%" size=1><%1993%></td>
+<td width="15%" size=1><%2011%></td>
  <td width="85%"> 
  <input type="text" name="name" size="33" maxlength="32">
 </td>
@@ -1336,7 +1336,7 @@ function doQosCheck(){
 <div id="qos_keyword" style="display: none;">
 <table align="left" border="0" width="100%">
 <tr>
-<td width="15%" size=1><%1994%></td>
+<td width="15%" size=1><%2012%></td>
  <td width="85%"> 
  <input type="text" name="keyword" size="33" maxlength="101">
 </td>
@@ -1375,15 +1375,15 @@ function doQosCheck(){
 &nbsp;&nbsp;&nbsp;<button type="button" value="Reset" name="reset_qos" class="button-rule" onclick="qos_reset();" ><span class="roundleft_button">&nbsp;&nbsp;  Reset</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-<tr><td colspan="2" ><b><%1995%></b></td></tr>
+<tr><td colspan="2" ><b><%2013%></b></td></tr>
 <tr>
 <td colspan="2">
 	<table border="1">
 		<tr><td align="middle">
-			<%1996%>
+			<%2014%>
 		</tr></td>
 		<tr><td>
-	        <select name="QosDatabaseList" size="6" onclick="selectCustomTab();" ><%1997%></select> 
+	        <select name="QosDatabaseList" size="6" onclick="selectCustomTab();" ><%2015%></select> 
 		</tr></td>
 	</table>
 </td>
@@ -1392,7 +1392,7 @@ function doQosCheck(){
 <td colspan="2" align="center">
 &nbsp;&nbsp;&nbsp;<button type="submit" value="Edit" name="edit_qos" class="button-rule" onclick="buttonClick(this,'Edit');return check_data_edit();" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%639%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 &nbsp;&nbsp;&nbsp;<button type="submit" value="Delete" name="delete_qos" class="button-rule" onclick="buttonClick(this,'Delete');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%640%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete All" name="delete_all_qos" class="button-rule" onclick="buttonClick(this,'Delete All');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%1948%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete All" name="delete_all_qos" class="button-rule" onclick="buttonClick(this,'Delete All');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%1966%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 
 </table>
@@ -1404,7 +1404,7 @@ function doQosCheck(){
 <td colspan="2">
 <div id="qos_table_list" style="display: none;">
 <table align="left" border="0" width="100%">
-<%1998%>
+<%2016%>
 </table>
 </div>
 </td>
@@ -1418,38 +1418,38 @@ function doQosCheck(){
 <tr>
 <input type="hidden" name="select" value="-1">
 <input type="hidden" name="priority_sel" value="-1">
-<INPUT type="hidden" name="WMM_value_2g" value="<%1999%>">
-<INPUT type="hidden" name="WMM_value_5g" value="<%2000%>">
-<INPUT type="hidden" name="WMM_value_5g_2" value="<%2001%>">
+<INPUT type="hidden" name="WMM_value_2g" value="<%2017%>">
+<INPUT type="hidden" name="WMM_value_5g" value="<%2018%>">
+<INPUT type="hidden" name="WMM_value_5g_2" value="<%2019%>">
 <input type="hidden" name="wifi_dual_5g_band" value="<%237%>">
-<input type="hidden" name="qos_enable" value="<%2002%>">
-<input type="hidden" name="qos_bw_enable" value="<%1911%>">
-<input type="hidden" name="uplink_bw" value="<%2003%>">
-<input type="hidden" name="downlink_bw" value="<%2004%>">
+<input type="hidden" name="qos_enable" value="<%2020%>">
+<input type="hidden" name="qos_bw_enable" value="<%1929%>">
+<input type="hidden" name="uplink_bw" value="<%2021%>">
+<input type="hidden" name="downlink_bw" value="<%2022%>">
 <input type="hidden" name="repeater" value="<%431%>">
 <input type="hidden" name="repeater_an" value="<%432%>">
-<input type="hidden" name="bw_set_sel" value="<%1913%>">
+<input type="hidden" name="bw_set_sel" value="<%1931%>">
 <input type="hidden" name="enable_apmode" value="<%433%>">
 <input type="hidden" name="enable_stamode" value="<%434%>">
 
-<input type="hidden" name="qos_down_streaming_enable" value="<%2005%>">
-<input type="hidden" name="qos_update_enable" value="<%2006%>">
-<input type="hidden" name="choose_selection" value="<%2007%>">
-<input type="hidden" name="office_idx" value="<%2008%>">
-<input type="hidden" name="custom_idx" value="<%2009%>">
-<input type="hidden" name="custom_mac_idx" value="<%2010%>">
-<input type="hidden" name="apply_page" value="<%2011%>">
-<input type="hidden" name="qos_manual" value="<%2012%>">
-<input type="hidden" name="uplink_bw_manual" value="<%2013%>">
-<input type="hidden" name="downlink_bw_manual" value="<%2014%>">
+<input type="hidden" name="qos_down_streaming_enable" value="<%2023%>">
+<input type="hidden" name="qos_update_enable" value="<%2024%>">
+<input type="hidden" name="choose_selection" value="<%2025%>">
+<input type="hidden" name="office_idx" value="<%2026%>">
+<input type="hidden" name="custom_idx" value="<%2027%>">
+<input type="hidden" name="custom_mac_idx" value="<%2028%>">
+<input type="hidden" name="apply_page" value="<%2029%>">
+<input type="hidden" name="qos_manual" value="<%2030%>">
+<input type="hidden" name="uplink_bw_manual" value="<%2031%>">
+<input type="hidden" name="downlink_bw_manual" value="<%2032%>">
 <input type="hidden" name="bandwidthDown" value="">
 <input type="hidden" name="bandwidth" value="">
 <input type="hidden" name="bandwidthDown_speedtest" value="">
 <input type="hidden" name="bandwidth_speedtest" value="">
 <input type="hidden" name="rate" value="1000000">
 <input type="hidden" name="rateDown" value="1000000">
-<input type="hidden" name="wan_status" value="<%2015%>">
-<%2016%>
+<input type="hidden" name="wan_status" value="<%2033%>">
+<%2034%>
 <!--[if IE 6]>
 <input type="hidden" name="browser_ver" value="ie6">
 <![endif]-->

@@ -103,14 +103,14 @@ function checkData()
 {
  	var cf = document.forms[0];
 	var msg = "";
-	msg+= checkBlank(cf.route_name, "<%1395%>");
+	msg+= checkBlank(cf.route_name, "<%1413%>");
 	
     if(msg.length <= 2)
         msg=" ";
         
     if( cf.route_name.value.match( /[^\x20-\x7E]/ ))
     {
-		alert("<%4%> " + "<%1395%>");
+		alert("<%4%> " + "<%1413%>");
 		cf.route_name.focus();
 		return false;
 	}
@@ -120,14 +120,14 @@ function checkData()
 
 	if(checkIP(cf.SRouteDestAddr1,cf.SRouteDestAddr2,cf.SRouteDestAddr3,cf.SRouteDestAddr4,254)
 		|| (cf.SRouteDestAddr1.value == 127) || (cf.SRouteDestAddr1.value >= 224))
-		msg+= "<%1396%>\n ";
+		msg+= "<%1414%>\n ";
 
 	if(checkIP(cf.SRouteGatewayAddr1,cf.SRouteGatewayAddr2,cf.SRouteGatewayAddr3,cf.SRouteGatewayAddr4,254)
 		|| (cf.SRouteGatewayAddr1.value == 127) || (cf.SRouteGatewayAddr1.value >= 224) 
 		|| (parseInt(cf.SRouteGatewayAddr4.value,10) == 0) )
 		msg+= "<%484%>\n ";
 
-	msg+= checkInt(cf.route_metric, "<%1397%>", 2, 15, true)+"\n ";
+	msg+= checkInt(cf.route_metric, "<%1415%>", 2, 15, true)+"\n ";
 	if (msg.length > 3)
 	{
 		alert(msg);
@@ -223,7 +223,7 @@ function loadSettings()
 	    cf.SRouteGatewayAddr4.value = "";
 	}
 
-	cf.route_metric.value = "<%1398%>";
+	cf.route_metric.value = "<%1416%>";
 }
 
 //-->
@@ -252,17 +252,17 @@ function loadSettings()
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 	<tr>
-		<td width="50%" nowrap><%1395%> </td>
+		<td width="50%" nowrap><%1413%> </td>
 		<td width="50%" align="left"><input type="text" name="route_name" size="31" maxlength="30"></td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="CHECKBOX" name="SRoutePrivate"> <%1399%> </td>
+		<td colspan="2"><input type="CHECKBOX" name="SRoutePrivate"> <%1417%> </td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="CHECKBOX" name="SRouteActive"> <%1389%> </td>
+		<td colspan="2"><input type="CHECKBOX" name="SRouteActive"> <%1407%> </td>
 	</tr>
 	<tr>
-		<td nowrap><%1400%></td>
+		<td nowrap><%1418%></td>
 		<td nowrap align="left" class="num"><input type="text" name="SRouteDestAddr1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 	</tr>
 	<tr>
@@ -274,7 +274,7 @@ function loadSettings()
 		<td nowrap align="left" class="num"><input type="text" name="SRouteGatewayAddr1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 	</tr>
 	<tr>
-		<td nowrap><%1397%></td>
+		<td nowrap><%1415%></td>
 		<td nowrap align="left" class="num"><input type="TEXT" name="route_metric" class="num" size="3" maxlength="2"></td>
 	</tr>
 
@@ -296,12 +296,12 @@ function loadSettings()
 
 
 
-  <INPUT name=route_dest type=hidden value= "<%1401%>">
-  <INPUT name=route_netmask type=hidden value= "<%1402%>">
-  <INPUT name=route_gateway type=hidden value= "<%1403%>">
-  <INPUT name=route_active type=hidden value= "<%1404%>">
-  <INPUT name=route_private type=hidden value= "<%1405%>">
-  <INPUT name=route_name2 type=hidden value= "<%1406%>">
+  <INPUT name=route_dest type=hidden value= "<%1419%>">
+  <INPUT name=route_netmask type=hidden value= "<%1420%>">
+  <INPUT name=route_gateway type=hidden value= "<%1421%>">
+  <INPUT name=route_active type=hidden value= "<%1422%>">
+  <INPUT name=route_private type=hidden value= "<%1423%>">
+  <INPUT name=route_name2 type=hidden value= "<%1424%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>

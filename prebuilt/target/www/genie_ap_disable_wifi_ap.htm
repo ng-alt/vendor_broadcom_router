@@ -56,7 +56,7 @@ function goNextPage()
 
 	  if(cf.choose[0].checked!=true && cf.choose[1].checked!=true)
 	  {
-	       alert("<%2659%>");
+	       alert("<%2681%>");
 	      return false;
 	  }
 	  
@@ -73,8 +73,6 @@ function goNextPage()
             alert("<%38%>");
             return false;
         }
-
-        
     
         if (cf.ssid_5g.value == "")
         {
@@ -88,6 +86,18 @@ function goNextPage()
             return false;
         }
 
+        if (cf.ssid_5g_2.value == "")
+        {
+            alert("<%37%>");
+            return false;
+        }
+
+        if (cf.ssid_5g_2.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%38%>");
+            return false;
+        }
+		
         if(cf.pass_2g.value.length < 8)
         {
             alert("<%44%>");
@@ -109,7 +119,6 @@ function goNextPage()
             cf.pass_2g.focus();
             return false;
         }
-        
         
         if(cf.pass_5g.value.length < 8)
         {
@@ -133,6 +142,29 @@ function goNextPage()
             cf.pass_5g.focus();
             return false;
         }
+		
+        if(cf.pass_5g_2.value.length < 8)
+        {
+            alert("<%44%>");
+            return false;    
+        }
+
+        if(cf.pass_5g_2.value.length > 63)
+        {
+            if ( isHex(cf.pass_5g_2.value) == false)
+            {
+                alert("<%44%>");
+                cf.pass_5g_2.value = "";
+                return false;
+            }    
+        }
+        
+        if (cf.pass_5g_2.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%45%>");
+            cf.pass_5g_2.focus();
+            return false;
+        }
     }
         
     return true;
@@ -149,7 +181,7 @@ function goNextPage()
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><%2660%></td>
+	<td class="centerTd"><%2682%></td>
 	<td>&nbsp;</td>
 </tr>
 <tr style="height:10px">
@@ -157,11 +189,11 @@ function goNextPage()
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><b><%2652%></b></td>
+	<td class="centerTd"><b><%2670%></b></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td>&nbsp;</td><td style="padding-left:20px"  class="centerTd"><input type="radio"  name="choose" value="yes" onClick="selChg(0);"><span style="padding-left:10px;"><%2653%></span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choose" value="no" onClick="selChg(1);"><span style="padding-left:10px;"><%2656%></span></td><td>&nbsp;</td>
+	<td>&nbsp;</td><td style="padding-left:20px"  class="centerTd"><input type="radio"  name="choose" value="yes" onClick="selChg(0);"><span style="padding-left:10px;"><%2671%></span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="choose" value="no" onClick="selChg(1);"><span style="padding-left:10px;"><%2678%></span></td><td>&nbsp;</td>
 </tr>
 <tr style="height:10px">
 	<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
@@ -172,7 +204,7 @@ function goNextPage()
 <table border="0" cellpadding="0" cellspacing="3" width="99%">
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><b><%2654%></b></td>
+	<td class="centerTd"><b><%2672%></b></td>
 	<td>&nbsp;</td>
 </tr>
 </table>
@@ -185,22 +217,32 @@ function goNextPage()
 <table border="0" cellpadding="0" cellspacing="3" width="99%">
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><%1371%><input type="text" name="ssid_2g" value="" size="20" maxlength="32"></td>
+	<td class="centerTd"><%1379%><input type="text" name="ssid_2g" value="" size="20" maxlength="32"></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><%1373%><input type="text" name="pass_2g" value="" size="20" maxlength="64"></td>
+	<td class="centerTd"><%2673%><input type="text" name="pass_2g" value="" size="20" maxlength="64"></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><%1376%><input type="text" name="ssid_5g" value="" size="20" maxlength="32"></td>
+	<td class="centerTd"><%2674%><input type="text" name="ssid_5g" value="" size="20" maxlength="32"></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><%2655%><input type="text" name="pass_5g" value="" size="20" maxlength="64"></td>
+	<td class="centerTd"><%2675%><input type="text" name="pass_5g" value="" size="20" maxlength="64"></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td class="centerTd"><%2676%><input type="text" name="ssid_5g_2" value="" size="20" maxlength="32"></td>
+	<td>&nbsp;</td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td class="centerTd"><%2677%><input type="text" name="pass_5g_2" value="" size="20" maxlength="64"></td>
 	<td>&nbsp;</td>
 </tr>
 <tr style="height:10px">
@@ -212,7 +254,7 @@ function goNextPage()
 <table border="0" cellpadding="0" cellspacing="3" width="99%">
 <tr>
 	<td>&nbsp;</td>
-	<td class="centerTd"><b><%2657%></b></td>
+	<td class="centerTd"><b><%2679%></b></td>
 	<td>&nbsp;</td>
 </tr>
 <tr>
@@ -220,17 +262,22 @@ function goNextPage()
 	<td class="centerTd">
 		<table>
       <tr>
-	      <td class="centerTd" style="width:50%"><%1371%></td>
-	      <td class="centerTd"><b> <%2544%> </b></td>
+	      <td class="centerTd" style="width:50%"><%1379%></td>
+	      <td class="centerTd"><b> <%2562%> </b></td>
       </tr>
       <tr>
-	      <td class="centerTd"><%1376%></td>
-	      <td class="centerTd"><b> <%2545%> </b></td>
+	      <td class="centerTd"><%2674%></td>
+	      <td class="centerTd"><b> <%2563%> </b></td>
       </tr>
       <tr>
-        <td class="centerTd"><%2658%></td>        
-	      <td class="centerTd"><b><%1383%></b></td>
+	      <td class="centerTd"><%2676%></td>
+	      <td class="centerTd"><b> <%2564%> </b></td>
       </tr>
+      <tr>
+        <td class="centerTd"><%2680%></td>        
+	      <td class="centerTd"><b><%1396%></b></td>
+      </tr>
+
       <tr style="height:10px">
 	    <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
       </tr>
@@ -244,9 +291,9 @@ function goNextPage()
 <tr style="height:10px">
 	<td>&nbsp;</td>
 	<td NOWRAP class="inputRow centerTd" align=center tabindex="-1" >
-    <button class = "purpleBtn2"  onclick="goBackPage();" type="button"><span><%2651%> &nbsp;&nbsp;&nbsp;</span></button>
+    <button class = "purpleBtn2"  onclick="goBackPage();" type="button"><span><%2669%> &nbsp;&nbsp;&nbsp;</span></button>
 			<span style="display:-moz-inline-box;display:inline-block;width:300px;"></span>
-		<button value="GenieSubmit" class="purpleBtn2"  name="Apply" type="submit" onClick="return goNextPage();" ><span><%1382%> &nbsp;&nbsp;&nbsp;</span></button>
+		<button value="GenieSubmit" class="purpleBtn2"  name="Apply" type="submit" onClick="return goNextPage();" ><span><%1395%> &nbsp;&nbsp;&nbsp;</span></button>
 		
 	</td>
 	<td>&nbsp;</td>
@@ -254,8 +301,8 @@ function goNextPage()
 
 </table>
 			 <input type="hidden" name="mode" value="ap">
-			 <input type="hidden" name="client" value="<%2661%>">
-			 <input type="hidden" name="back_page" value="<%2662%>">
+			 <input type="hidden" name="client" value="<%2683%>">
+			 <input type="hidden" name="back_page" value="<%2684%>">
 			 
 </form>
 </body>

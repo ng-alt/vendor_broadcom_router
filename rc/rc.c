@@ -3577,6 +3577,7 @@ sysinit(void)
 
 		/* foxconn modified start, zacker, 08/06/2010 */
 		/* Restore defaults if necessary */
+  nvram_set ("wireless_restart", "1");
 		restore_defaults();
 		
 		/* Foxconn Bob added start on 11/12/2014, force enable DFS */
@@ -3599,6 +3600,9 @@ sysinit(void)
 
         /* Read ethernet MAC, RF params, etc */
 		eval("read_bd");
+        nvram_set("0:dy_ed_thresh", "1");   /* dynamic threshold 5G-2 */
+        nvram_set("1:dy_ed_thresh", "1");   /* dynamic threshold 2.4G */
+        nvram_set("2:dy_ed_thresh", "1");   /* dynamic threshold 5G-1*/
         /* foxconn modified end, zacker, 08/06/2010 */
 
 		/* Load ctf */
@@ -4606,11 +4610,16 @@ main_loop(void)
 		case STOP:
 			dprintf("STOP\n");
 			pmon_init();
+			
+      if(nvram_match ("wireless_restart", "1"))
+      {
             stop_wps();
             stop_nas();
             stop_eapd(); 
     				stop_bsd();
-            stop_bcmupnp();
+      }
+      
+      stop_bcmupnp();
 			
 			stop_lan();
 #ifdef __CONFIG_VLAN__
@@ -4725,6 +4734,7 @@ main_loop(void)
                 dup2(fd2, 2);
                 close(fd2);
                 start_lan(); //<-- to hide messages generated here
+      if(nvram_match ("wireless_restart", "1"))
                 start_wlan(); //<-- need it to bring up 5G interface
                 close(2);
                 dup2(fd1, 2);
@@ -4757,7 +4767,9 @@ main_loop(void)
             /* wklin modified end, 10/23/2008 */           
             save_wlan_time();
 			start_bcmupnp();
-			start_wps();
+      if(nvram_match ("wireless_restart", "1"))
+      {
+
             start_eapd();
             start_nas();
             
@@ -4782,9 +4794,7 @@ main_loop(void)
 
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
-
-			if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
-				start_bsd();
+	  }
             /* Now start ACOS services */
 
             /* Foxconn added start pling 06/26/2014 */
@@ -4798,6 +4808,8 @@ main_loop(void)
             eval("acos_service", "start");
 
             /* Start wsc if it is in 'unconfiged' state, and if PIN is not disabled */
+      if(nvram_match ("wireless_restart", "1"))
+      {
             if (nvram_match("wl0_wps_config_state", "0") && !nvram_match("wsc_pin_disable", "1"))
             {
                 /* if "unconfig" to "config" mode, force it to built-in registrar and proxy mode */
@@ -4827,6 +4839,8 @@ main_loop(void)
 #endif
 
 			/* Fall through */
+		  }
+      nvram_set ("wireless_restart", "1");		  
 		case TIMER:
             /* Foxconn removed start pling 07/12/2006 */
 #if 0

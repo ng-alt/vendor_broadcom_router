@@ -317,6 +317,7 @@ export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
 export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
+export CFLAGS += -DCONFIG_REMOTE_USB_PROTECT
 export CFLAGS +=  -DCONFIG_SAMBA_NO_RESTART
 ifeq ($(CONFIG_GPIO_LED_SWITCH),y)
 export CFLAGS += -DLED_GPIO_SWITCH
@@ -731,7 +732,7 @@ ifeq ($(PROFILE),R8000)
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
-	install fbwifi/fbwifi $(TARGETDIR)/bin
+
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib

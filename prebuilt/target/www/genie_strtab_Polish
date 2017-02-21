@@ -194,7 +194,11 @@ bh_copy_wifi_setup="Skopiuj bieżące ustawienia sieci WiFi z istniejącego urz�
 bh_2g_ssid_input="Nazwa sieci bezprzewodowej w paśmie 2,4 GHz (identyfikator SSID): "
 bh_2g_pass_input="Hasło sieci bezprzewodowej w paśmie 2,4 Ghz (klucz sieciowy): "
 bh_5g_ssid_input="Nazwa sieci bezprzewodowej w paśmie 5GHz (identyfikator SSID): "
-bh_5g_pass_input="Hasło sieci bezprzewodowej w paśmie 5 Ghz (klucz sieciowy): "
+bh_5g_pass_input="Hasło sieci bezprzewodowej w paśmie 5Ghz (klucz sieciowy): "
+bh_5g_1_ssid_input="Nazwa sieci bezprzewodowej w paśmie 5GHz-1 (identyfikator SSID): "
+bh_5g_1_pass_input="Hasło sieci bezprzewodowej w paśmie 5Ghz-1 (klucz sieciowy): "
+bh_5g_2_ssid_input="Nazwa sieci bezprzewodowej w paśmie 5GHz-2 (identyfikator SSID): "
+bh_5g_2_pass_input="Hasło sieci bezprzewodowej w paśmie 5Ghz-2 (klucz sieciowy): "
 bh_pass_input="Hasło sieci bezprzewodowej w paśmie (klucz sieciowy): "
 bh_no_copy_wif_setup="Aby uniemożliwić urządzeniom nawiązywanie połączeń z istniejącym urządzeniem bramy, połącz wszystkie urządzenia WiFi z routerem za pomocą następującego identyfikatora SSID i hasła (klucza sieciowego)."
 bh_wifi_change="Ustawienia łączności bezprzewodowej w tym routerze uległy zmianie. Połącz urządzenie WiFi z routerem za pomocą następującego identyfikatora SSID i hasła, a następnie kliknij przycisk <b>Zakończ</b>, aby zakończyć instalację."
@@ -209,6 +213,18 @@ bh_ap_finish_warning="WARNING: Do not click the <b>Finish</b> button until you r
 bh_download_info="Trwa pobieranie…"
 bh_download_info_1="Zainstaluj aplikację genie po zakończeniu pobierania."
 bh_download_info_2="Kliknij przycisk Next (Dalej) po zainstalowaniu aplikacji genie, aby zakończyć konfigurację routera."
+
+/* Security GUI change */
+bh_admin_gui_header="Ustawienia konta administratora"
+bh_admin_gui_msg="Hasło administratora jest używane do zalogowania się do interfejsu sieciowego routera. Zabezpiecz sieć, zmieniając hasło administratora."
+bh_confirm_pass="Potwierdź nowe hasło"
+bh_new_password="Nowe hasło"
+bh_admin_user_name="Nazwa użytkownika administratora:"
+bh_admin_new_password="Nowe hasło administratora:"
+bh_admin_setting="Ustawienia administratora routera:"
+bh_2G_setting="2.4G Wireless Settings:"
+bh_5G_setting="5G Wireless Settings:"
+
 
 //help files
 h_DNS_ddns="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px" ><P><font size=4><B>Dynamiczny DNS — Pomoc</B></font></P><p> Usługa dynamicznego DNS (DDNS) oferuje centralną publiczną bazę danych służącą do przechowywania i pobierania różnych informacji (adresów e-mail, nazw hostów, adresów IP itd.). Serwer dynamicznego DNS przechowuje informacje chronione hasłem oraz akceptuje zapytania na podstawie adresów e-mail. </p><p> Aby korzystać z usługi DDNS, należy ją zasubkrybować. Dostawca usługi klienta dynamicznego DNS dostarczy odpowiednie hasło lub klucz.</p><p name=setup id=setup></p><p>Aby skonfigurować obsługę DDNS:<ol><li>Jeśli masz już rejestrację u dostawcy usługi DDNS, zaznacz pole wyboru <B>Korzystaj z usługi dynamicznego DNS</B>. </li><li><p name=provider id=provider></p>W polu <B>Usługodawca</B> wybierz nazwę swojego dostawcy usługi dynamicznego DNS.&nbsp; </li><li>W polu <B>Nazwa hosta</B> wpisz nazwę hosta podaną przez dostawcę usługi dynamicznego DNS. <BR>Usługodawca może określać tę wartość mianem „nazwy domeny”. </li><li>W polu <B>Nazwa użytkownika</B> wpisz nazwę użytkownika swojego konta w usłudze DDNS. </li><li>W polu <B>Hasło</B> wpisz hasło/klucz dostępu do swojego konta w usłudze DDNS. </li><li>Kliknij przycisk <B>Zastosuj</B>. Usługa DDNS będzie odtąd dostępna. </li></ol><p><B>Uwaga:</B> Router obsługuje tylko podstawowe funkcje usługi DDNS, w związku z czym nazwa logowania i hasło mogą nie być zabezpieczone. Osoby używające adresów IP z prywatnej sieci WAN nie powinny korzystać z tej usługi, ponieważ może to skutkować poważnymi problemami. </p></div></body>"
@@ -263,3 +279,4 @@ h_up_qos="<body style="margin:0px"><div id="content" style="overflow:auto;scroll
 
 h_down_qos="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>Ustawienia QoS odbierania danych</B></font></P><hr><b>Ustawienia QoS odbierania danych</b><P>To jest funkcja QoS specjalnie zaprojektowana w celu poprawy jakości strumieniowego przesyłania plików wideo. Pobieranie dużej ilości danych z Internetu może wpłynąć na jakość strumieniowego przesyłania plików wideo. Po włączeniu tej funkcji system automatycznie wykrywa strumieniowe przesyłanie plików wideo i przypisuje mu wysoki priorytet. Dzięki temu pobieranie danych w tle nie wpływa na jakość strumieniowego przesyłania plików wideo.</P><P><B>Włącz QoS pobierania danych (zwiększona wydajność strumieniowego przesyłania plików wideo).</B><br>Włącz funkcję QoS odbierania danych.<p><B>Automatyczna aktualizacja bazy danych przesyłania.</B><br>Zaznacz tę opcję, aby umożliwić automatyczne aktualizowanie przez urządzenie bazy danych przesyłania. Serwer będzie sprawdzany codziennie pod kątem dostępności nowej bazy danych. Dostępna nowa baza danych będzie przez system pobierana i instalowana automatycznie. Możesz również kliknąć opcję „Aktualizacja ręczna”, aby ręcznie sprawdzać dostępność nowej bazy danych na serwerze i ręcznie aktualizować bazę danych przesyłania, jeśli dostępna jest nowa baza danych.</P><P><B>Wersja bazy danych przesyłania</B><br>Za pomocą tej funkcji możesz wyświetlić wersję aktualnie używanej bazy danych przesyłania.</P></div></div></body>"
 //
+passwd_no_blank="Hasło nie może być wartością pustą!"
