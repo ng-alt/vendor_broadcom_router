@@ -134,18 +134,18 @@ function check_pin()
 		}
 		else
 		{
-			alert("<%2798%>");
+			alert("<%2900%>");
 			return false;
 		}
 	}
 	else
 	if (lpin.length != 4 && lpin.length != 8) {
-		alert("<%2798%>");
+		alert("<%2900%>");
 		return false;
 	}
 	
 	if (parseInt(cf.PIN.value, 10) != cf.PIN.value) {
-		alert("<%2798%>");
+		alert("<%2900%>");
 		return false;
 	}
 	
@@ -161,7 +161,7 @@ function check_pin()
 		accum += 1 * (parseInt(lpin / 1) % 10);
 
 		if (0 != (accum % 10)) {
-			alert("<%2799%>");
+			alert("<%2901%>");
 			return false;
 		}
 	}
@@ -185,7 +185,7 @@ function check_pin()
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"><%1214%></div>
+<div class="subhead2"><%1198%></div>
 <table  border=0    style="height:370px"  class="subhead2-table">
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:410px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
@@ -197,25 +197,25 @@ function check_pin()
 <tr></tr>
 <tr>
 <p class=MsoNormal>
-<td colspan=3><b><%2800%>:</b></td></p>
+<td colspan=3><b><%2902%>:</b></td></p>
 </tr>
 
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2794%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2896%></td></tr>
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2797%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2899%></td></tr>
 <tr>
-<td colspan="3"><p><%2801%></p></td></tr>
+<td colspan="3"><p><%2903%></p></td></tr>
 <TR>
-<TD><p><%2802%>:</p></TD>
-<%2803%>
+<TD><p><%2904%>:</p></TD>
+<%2905%>
 <TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="9" VALUE="" align="left" onkeydown="return getPressEnt(event);"></TD>
-<%2804%>
+<%2906%>
 <TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="8" VALUE="" align="left"></TD>
-<%2805%>
+<%2907%>
 <TD>
 <p class=MsoNormal align=center>
-&nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%1556%>" NAME="Next" class=<%467%> onclick="buttonClick(this,'<%1556%>');isNextButton=1;return check_pin();" ><span class="<%468%>">&nbsp;&nbsp; <%1556%></span><span class="<%469%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%1540%>" NAME="Next" class=<%467%> onclick="buttonClick(this,'<%1540%>');isNextButton=1;return check_pin();" ><span class="<%468%>">&nbsp;&nbsp; <%1540%></span><span class="<%469%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;
 </p></TD>
 </TR>
 

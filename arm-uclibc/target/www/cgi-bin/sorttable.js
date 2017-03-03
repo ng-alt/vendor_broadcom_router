@@ -17,7 +17,7 @@
 
  
 var stIsIE = /*@cc_on!@*/false;
-
+var reverseOrder = 0;
 sorttable = {
   init: function() {
     // quit if this function has already been called
@@ -89,7 +89,7 @@ sorttable = {
 	      // make it clickable to sort
 	      headrow[i].sorttable_columnindex = i;
 	      headrow[i].sorttable_tbody = table.tBodies[0];
-	      dean_addEvent(headrow[i],"click", function(e) {
+	      dean_addEvent(headrow[i],"click", sorttable.innerSortFunction = function(e) {
 
           if (this.className.search(/\bsorttable_sorted\b/) != -1) {
             // if we're already sorted by this column, just 
@@ -153,7 +153,10 @@ sorttable = {
 	        //sorttable.shaker_sort(row_array, this.sorttable_sortfunction);
 	        /* and comment out this one */
 	        row_array.sort(this.sorttable_sortfunction);
-	        
+                if(reverseOrder==1){
+		    row_array.reverse();
+		    reverseOrder=0;
+		}
 	        tb = this.sorttable_tbody;
 	        for (var j=0; j<row_array.length; j++) {
 	          tb.appendChild(row_array[j][1]);
@@ -178,6 +181,13 @@ sorttable = {
         }
       
         if (text.match(/^-?[¢G$?]?[\d,.]+%?$/)) {
+          return sorttable.sort_numeric;
+        }
+        if (text.match(/bps/)) {
+	  reverseOrder=1;
+          return sorttable.sort_numeric;
+        }
+        if (text.match(/prio/)) {
           return sorttable.sort_numeric;
         }
         // check for a date: dd/mm/yyyy or dd/mm/yy 

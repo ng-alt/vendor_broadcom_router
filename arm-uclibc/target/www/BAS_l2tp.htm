@@ -25,7 +25,7 @@ var DisableFixedDNS = false;
 var DisableFixedMAC = false;
 var MacAddress;
 var DodDisable = false;
-var DodIndex = <%906%>;
+var DodIndex = <%890%>;
 var SkipParentalControlCheck=1;
 var CurrentDodIndex;
 
@@ -246,7 +246,7 @@ function checkData()
 	var cf = document.forms[0];
 	var msg = "";
 	var region_gui = cf.gui_region.value;
-	var wan_ip  = "<%1189%>";
+	var wan_ip  = "<%1173%>";
 	var openvpnEnable = "<%509%>";
     var conn_mode = cf.l2tp_dod.selectedIndex;
 	
@@ -471,7 +471,7 @@ function loadSettings()
     var wan_hwaddr_sel = cf.wan_hwaddr_sel.value;
 
     // Get l2tp_dod (nvram)
-    cf.l2tp_dod.selectedIndex = <%906%>;
+    cf.l2tp_dod.selectedIndex = <%890%>;
     CurrentDodIndex=cf.l2tp_dod.selectedIndex;
     if (cf.l2tp_dod.selectedIndex == 1)
         DodDisable = false;
@@ -654,13 +654,13 @@ function pw_onfocus()
 
 <tr>
 	<td><a href="javascript:loadhelp('BAS_l2tp','login')" tabindex="-1"><b><%579%></b></a></td>
-	<td align="left"><input type="text" name="l2tp_username" size="15" style="width:180px" maxlength="63" value="<%3418%>"></td>
+	<td align="left"><input type="text" name="l2tp_username" size="15" style="width:180px" maxlength="63" value="<%3519%>"></td>
 </tr>
 <tr>
 	<td><a href="javascript:loadhelp('BAS_l2tp','password')" tabindex="-1"><b><%581%></b></a></td>
 	<td align="left">
 	<div id="passwdEnterStatus" style ="visibility:visible">
-	<input type="password" name="l2tp_passwd" size="15"  style="width:180px" maxlength="63" value="<%3419%>" onfocus="pw_onfocus();">
+	<input type="password" name="l2tp_passwd" size="15"  style="width:180px" maxlength="63" value="<%3520%>" onfocus="pw_onfocus();">
 	</div>
 	</td>
 </tr>
@@ -675,7 +675,7 @@ function pw_onfocus()
 </tr>
 <tr>
 	<td nowrap><a href="javascript:loadhelp('BAS_l2tp','idletime')" tabindex="-1"><%589%></a></td>
-	<td align="left"><input type="text" class="num" name="l2tp_idletime" size="3" maxlength="3" value="<%3420%>"></td>
+	<td align="left"><input type="text" class="num" name="l2tp_idletime" size="3" maxlength="3" value="<%3521%>"></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -781,9 +781,9 @@ function pw_onfocus()
 
 <input type="hidden" name="runtest" value="<%545%>">
 <INPUT name=wan_ipaddr type=hidden value= "<%292%>">
-<INPUT name=l2tp_localip type=hidden value= "<%3421%>">
-<INPUT name=l2tp_user_ip type=hidden value= "<%1189%>">
-<INPUT name=serv_ip type=hidden value= "<%1190%>">
+<INPUT name=l2tp_localip type=hidden value= "<%3522%>">
+<INPUT name=l2tp_user_ip type=hidden value= "<%1173%>">
+<INPUT name=serv_ip type=hidden value= "<%1174%>">
 <INPUT name=wan_dns_sel type=hidden value= "<%547%>">
 <INPUT name=wan_dns1_pri type=hidden value= "<%548%>">
 <INPUT name=wan_dns1_sec type=hidden value= "<%549%>">
@@ -791,11 +791,11 @@ function pw_onfocus()
 <INPUT name=wan_hwaddr_def type=hidden value= "<%551%>">
 <INPUT name=wan_hwaddr2 type=hidden value= "<%552%>">
 <INPUT name=wan_hwaddr_pc type=hidden value= "<%553%>">
-<INPUT name=l2tp_gateway type=hidden value="<%3422%>">
+<INPUT name=l2tp_gateway type=hidden value="<%3523%>">
 <INPUT name=gui_region type=hidden value="<%608%>">
-<INPUT name=l2tp_user_netmask type=hidden value="<%3423%>">
-<INPUT name=static_l2tp_enable type=hidden value= "<%3424%>">
-<INPUT name=l2tp_ip_sel type=hidden value= "<%3425%>">
+<INPUT name=l2tp_user_netmask type=hidden value="<%3524%>">
+<INPUT name=static_l2tp_enable type=hidden value= "<%3525%>">
+<INPUT name=l2tp_ip_sel type=hidden value= "<%3526%>">
 <INPUT name=ipv6_proto type=hidden value= "<%556%>">
 <INPUT name=ipv6_proto_auto type=hidden value= "<%613%>">
 <input name=dial_on_demand_warning type=hidden value= "<%614%>">

@@ -149,12 +149,12 @@ function extender_mode_click()
 	  
     if(cf.enable_smart_mesh.value=="1")
     {
-        if(confirm(" <%4095%> ")!=true)
+        if(confirm(" <%4151%> ")!=true)
             return false;
     }
     else if(cf.enable_band_steering.value=="1")
     {
-        if(confirm(" <%4096%> ")!=true)
+        if(confirm(" <%4152%> ")!=true)
             return false;
     }
     
@@ -188,7 +188,7 @@ function checkData(){
 <tr align="left" valign="top">
 <td   align="center" colspan="2" class="table-seperate-border2">
 <input class="new_cancel_bt ui-corner-all" type="reset" name="Cancel" value="<%83%>" onClick="location.href='WLG_opmode_main.htm';">
-<input <%4083%> type="button" name="Apply" value="<%78%>" onClick="return select_type();">
+<input <%4139%> type="button" name="Apply" value="<%78%>" onClick="return select_type();">
 
 </td>
 </tr>
@@ -197,15 +197,15 @@ function checkData(){
 <tr><td>    
 <div class="boxline">
 	<div class="box ui-corner-all router">
-		<div class="radio_box"><input type="radio" name="operation_type" onclick="select_type(0)" value=0> <%4084%></div>
+		<div class="radio_box"><input type="radio" name="operation_type" onclick="select_type(0)" value=0> <%4140%></div>
 		<div id="router" class="icon" onclick="select_type(0)"><img src="img/opmode_router.gif"></div>
 	</div>
 	<div class="box ui-corner-all ap">
-		<div class="radio_box"><input type="radio" name="operation_type" onclick="select_type(1)" value=1> <%1651%></div>
+		<div class="radio_box"><input type="radio" name="operation_type" onclick="select_type(1)" value=1> <%1635%></div>
 		<div id="ap" class="icon" onclick="select_type(1)"><img src="img/opmode_ap.gif"></div>
 	</div>
 	<div class="box ui-corner-all extender">
-		<div class="radio_box"><input type="radio" name="operation_type" onclick="return extender_mode_click();" value=2> <%4097%></div>
+		<div class="radio_box"><input type="radio" name="operation_type" onclick="return extender_mode_click();" value=2> <%4153%></div>
 		<div id="extender" class="icon" onclick="return extender_mode_click();"><img src="img/opmode_extender.gif"></div>
 	</div>
 </div>
@@ -218,8 +218,8 @@ function checkData(){
 
 
 
-<INPUT type="hidden" name="pre_mode" value="<%4087%>" >
-<INPUT type="hidden" name="enable_smart_mesh" value="<%4088%>" >
+<INPUT type="hidden" name="pre_mode" value="<%4143%>" >
+<INPUT type="hidden" name="enable_smart_mesh" value="<%4144%>" >
 <INPUT type="hidden" name="enable_band_steering" value="<%285%>" >
 
 <a name="helpframe-anchor"></a>

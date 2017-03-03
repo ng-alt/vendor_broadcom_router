@@ -305,7 +305,7 @@ export CFLAGS += -DBCM53125
 export CFLAGS += -DBCM5301X
 export CFLAGS += -DACS_INTF_DETECT_PATCH
 export CFLAGS +=  -DCONFIG_RUSSIA_IPTV
-export CFLAGS += -DVIDEO_STREAMING_QOS
+#export CFLAGS += -DVIDEO_STREAMING_QOS
 export CFLAGS += -DCONFIG_REMOTE_USB_PROTECT
 ifeq ($(INCLUDE_FBWIFI_FLAG),y)
 export CFLAGS += -DFBWIFI_FLAG
@@ -546,6 +546,22 @@ export CFLAGS += -D__CONFIG_PLC__ -D__CONFIG_URE__
 CFLAGS	+= -DPLC -DWPS_LONGPUSH_DISABLE
 endif
 
+#ifdef __CONFIG_TREND_IQOS__
+ifeq ($(LINUX_VERSION),2_6_36)
+ifeq ($(CONFIG_TREND_IQOS),y)
+obj-$(CONFIG_TREND_IQOS) += iqos
+
+# Speedtest_cli
+obj-$(CONFIG_TREND_IQOS) += speedtest-cli
+# curl
+#obj-$(CONFIG_TREND_IQOS) += curl
+export CFLAGS += -D__CONFIG_TREND_IQOS__
+ifeq ($(CONFIG_BRCM_GENERIC_IQOS),y)
+export CFLAGS += -D__BRCM_GENERIC_IQOS__
+endif
+endif
+endif
+#endif /* __CONFIG_TREND_IQOS__ */
 # always build eap dispatcher
 obj-y += eapd/linux
 obj-y += parser
@@ -1055,6 +1071,29 @@ norton-install:
 norton-clean:
 	+$(MAKE) -C $(NORTON_DIR) clean
 
+#ifdef __CONFIG_TREND_IQOS__
+ifeq ($(LINUX_VERSION),2_6_36)
+ifeq ($(CONFIG_TREND_IQOS),y)
+IQOS_DIR := $(BASEDIR)/components/vendor/trend_brcm_generic_iqos/iqos
+
+iqos-install:
+#	+$(MAKE) -C $(IQOS_DIR) install INSTALLDIR=$(INSTALLDIR)/iqos
+.PHONY: iqos-install
+
+CURL_DIR := $(OPENSOURCE_BASE_DIR)/curl
+curl:
+	+$(MAKE) -C $(CURL_DIR)
+curl-install:
+	+$(MAKE) -C $(CURL_DIR) install INSTALLDIR=$(INSTALLDIR)/curl
+curl-clean:
+	+$(MAKE) -C $(CURL_DIR) clean
+.PHONY: curl curl-install curl-clean
+endif
+endif
+#endif /* __CONFIG_TREND_IQOS__ */
+
+
+
 
 
 
@@ -1434,6 +1473,7 @@ else
 endif
 
 ifneq ($(PROFILE),)
+	ln -fs ../../../src/include/bcmIqosDef.h $(BASEDIR)/ap/acos/include/bcmIqosDef.h
 	cp $(LINUXDIR)/.config_$(PROFILE) $(LINUXDIR)/.config
 endif
 

@@ -835,7 +835,7 @@ function do_search()
 {
 	var key = document.getElementById("search_text").value.replace(/ /g,"%20");
 	var winoptions = "width=960,height=800,menubar=yes,scrollbars=yes,toolbar=yes,status=yes,location=yes,resizable=yes";
-	var url="http://kb.netgear.com/app/answers/list/kw/"+key;
+	var url="http://www.netgear.com/search.aspx?q=r7000 "+key;
 
 	window.open(url,null,winoptions);
 }

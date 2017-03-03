@@ -58,6 +58,9 @@
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 #include <wapi_utils.h>
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */
+#ifdef __BRCM_GENERIC_IQOS__
+#include "bcmIqosDef.h"
+#endif
 
 /* foxconn added start, zacker, 09/17/2009, @wps_led */
 #include <fcntl.h>
@@ -3049,14 +3052,14 @@ sysinit(void)
 #endif
 
 #ifdef BCMQOS
-	mkdir("/tmp/qos", 0777);
+	if (mkdir("/tmp/qos", 0777) < 0 && errno != EEXIST) perror("/tmp/qos not created");
 #endif
 	/* Setup console */
 	if (console_init())
 		noconsole = 1;
 
 #ifdef LINUX26
-	mkdir("/dev/shm", 0777);
+	if (mkdir("/dev/shm", 0777) < 0 && errno != EEXIST) perror("/dev/shm not created");
 	eval("/sbin/hotplug2", "--coldplug");
 #endif /* LINUX26 */
 
@@ -3305,8 +3308,10 @@ sysinit(void)
 			sprintf(arg6, "qtdc1_ep=%d", atoi(nvram_safe_get("qtdc1_ep")));
 			sprintf(arg7, "qtdc1_sz=%d", atoi(nvram_safe_get("qtdc1_sz")));
 
-			eval("insmod", "ehci-hcd", arg1, arg2, arg3, arg4, arg5,
-				arg6, arg7);
+
+			eval("insmod", "xhci-hcd");
+			eval("insmod", "ehci-hcd");
+			eval("insmod", "ohci-hcd");
 
 			/* Search for existing PCI wl devices and the max unit number used.
 			 * Note that PCI driver has to be loaded before USB hotplug event.
@@ -3369,6 +3374,70 @@ sysinit(void)
 		mknod("/dev/snd/pcmC0D0p", S_IRWXU|S_IFCHR, makedev(116, 16));
 		mknod("/dev/snd/timer", S_IRWXU|S_IFCHR, makedev(116, 33));
 #endif
+#if defined(LINUX_2_6_36) && defined(__CONFIG_TREND_IQOS__)
+		if(1){
+			struct stat file_stat;
+            /* contrack table turning for ACOSNAT start */
+			/*
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_generic_timeout");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_recv");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_sent2");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_sent");
+			system("echo 60 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait");
+			*/
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout");
+			system("echo 300 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream");
+			system("echo 1800 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established");
+			system("echo 131072 > /proc/sys/net/ipv4/netfilter/ip_conntrack_max");
+            /* contrack table turning for ACOSNAT end */
+            nvram_set("brcm_speedtest",   "0");
+#ifdef __BRCM_GENERIC_IQOS__
+			if (stat("/usr/sbin/qos.conf", &file_stat) == 0) {
+				if (mkdir(IQOS_RUNTIME_FOLDER, 0777) < 0 && errno != EEXIST)
+    				perror("IQOS_RUNTIME_FOLDER not created");
+				else {
+					eval("cp", "/lib/modules/tdts.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udb.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udbfw.ko", IQOS_RUNTIME_FOLDER);
+
+					eval("cp", "/usr/sbin/tdts_rule_agent", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/rule.trf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/setup.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/upgrade.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.conf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/sample.bin", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/TmToNtgr_dev_mapping", IQOS_RUNTIME_FOLDER);
+				}
+			}
+#else  /* BRCM_GENERIC_IQOS */
+			if (stat("/usr/sbin/qosd.conf", &file_stat) == 0) {
+				if (mkdir("/tmp/trend", 0777) < 0 && errno != EEXIST)
+				perror("/tmp/trend not created");
+				else {
+					eval("cp", "/lib/modules/IDP.ko", "/tmp/trend");
+					eval("cp", "/lib/modules/bw_forward.ko", "/tmp/trend");
+					eval("cp", "/lib/modules/tc_cmd.ko", "/tmp/trend");
+					eval("cp", "/usr/sbin/bwdpi-rule-agent", "/tmp/trend");
+					eval("cp", "/usr/sbin/rule.trf", "/tmp/trend");
+					eval("cp", "/usr/sbin/setup.sh", "/tmp/trend");
+					eval("cp", "/usr/sbin/upgrade.sh", "/tmp/trend");
+					eval("cp", "/usr/sbin/qosd.conf", "/tmp/trend");
+					eval("cp", "/usr/sbin/idpfw", "/tmp/trend");
+					eval("cp", "/usr/sbin/tmdbg", "/tmp/trend");
+					eval("cp", "/usr/sbin/TmToNtgr_dev_mapping", "/tmp/trend");
+					eval("cp", "/usr/sbin/rule.version", "/tmp/trend");
+				}
+			}
+#endif  /* BRCM_GENERIC_IQOS */
+		}
+#endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
+
 	}
 	/*Foxconn add start by Hank for enable WAN LED amber 12/07/2012*/
 	/*Foxconn add start by Hank for disable WAN LED blinking 12/07/2012*/
@@ -3379,8 +3448,6 @@ sysinit(void)
 #else
 	system("/usr/sbin/et robowr 0x0 0x10 0x0022");
 #endif
-	/*Foxconn add end by Hank for disable WAN LED blinking 11/08/2012*/
-	/*Foxconn add end by Hank for enable WAN LED amber 12/07/2012*/
 
 	if (memcmp(lx_rel, "2.6.36", 6) == 0) {
 		int fd;

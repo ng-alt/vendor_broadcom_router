@@ -91,29 +91,29 @@
 
 function apply_check()
 {
-	var pingEnable = "<%864%>";
-	var ntp_sync = "<%865%>";
-	var ddns_enable_check = "<%824%>";
-	var old_protocol = "<%866%>";
+	var pingEnable = "<%848%>";
+	var ntp_sync = "<%849%>";
+	var ddns_enable_check = "<%808%>";
+	var old_protocol = "<%850%>";
 	var new_protocol;
-	var service_port = "<%867%>";
-	var old_protocol_tun = "<%868%>";
+	var service_port = "<%851%>";
+	var old_protocol_tun = "<%852%>";
 	var new_protocol_tun;
-	var service_port_tun = "<%869%>";
-	var redirectGW = "<%870%>";
+	var service_port_tun = "<%853%>";
+	var redirectGW = "<%854%>";
 	var ipv6_protocol = "<%556%>";
 	var new_redirectGW;
 	var cf = document.forms[0];
 /*	
 	if(pingEnable == 0)
 	{
-		alert("<%871%>");
+		alert("<%855%>");
 	}else{
 	//do noting
 	}
 
 	if(ntp_sync == 0){
-		alert("<%872%>");
+		alert("<%856%>");
 	}
 */
 
@@ -123,7 +123,7 @@ function apply_check()
       {
           if(cf.pppoe_dod.value==1)
           {
-              if(!confirm("<%873%>"))
+              if(!confirm("<%857%>"))
               {
                   return false;
               }
@@ -132,7 +132,7 @@ function apply_check()
           }
           else if(cf.pppoe_dod.value==2)
           {
-              alert("<%874%>");
+              alert("<%858%>");
           }
       }
 
@@ -143,7 +143,7 @@ function apply_check()
       {
           if(cf.l2tp_dod.value==1)
           {
-              if(!confirm("<%873%>"))
+              if(!confirm("<%857%>"))
               {
                   return false;
               }
@@ -152,7 +152,7 @@ function apply_check()
           }
           else if(cf.l2tp_dod.value==2)
           {
-              alert("<%874%>");
+              alert("<%858%>");
           }
       }
 
@@ -163,7 +163,7 @@ function apply_check()
       {
           if(cf.pptp_dod.value==1)
           {
-              if(!confirm("<%873%>"))
+              if(!confirm("<%857%>"))
               {
                   return false;
               }
@@ -172,20 +172,20 @@ function apply_check()
           }
           else if(cf.pptp_dod.value==2)
           {
-              alert("<%874%>");
+              alert("<%858%>");
           }
       }
 
   }
 
 	if (isNumeric(cf.openvpn_service_port, 65535) || (cf.openvpn_service_port.value < 1) || (cf.openvpn_service_port.value >= 65535)){
-		alert("<%875%>");
+		alert("<%859%>");
 		cf.openvpn_service_port.focus();
 		return false;
 	}
 
 	if(isNumeric(cf.openvpn_service_port_tun, 65535) || (cf.openvpn_service_port_tun.value < 1) || (cf.openvpn_service_port_tun.value >= 65535)){
-		alert("<%875%>");
+		alert("<%859%>");
 		cf.openvpn_service_port_tun.focus();
 		return false;
 	}
@@ -200,7 +200,7 @@ function apply_check()
 		new_protocol_tun = 'tcp';
 		
 	if ((new_protocol == new_protocol_tun) && (cf.openvpn_service_port.value == cf.openvpn_service_port_tun.value)){
-		alert("<%876%>");
+		alert("<%860%>");
 		cf.openvpn_service_port_tun.focus();
 		return false;
 	}
@@ -210,7 +210,7 @@ function apply_check()
 	
     /*
 	if(ipv6_protocol != "disable"){
-		alert("<%877%>");
+		alert("<%861%>");
 		cf.openvpnActive.focus();
 		return false;
 	}
@@ -224,32 +224,32 @@ function apply_check()
 		new_redirectGW = 'auto';
 
 	if(ddns_enable_check == 0){
-		alert("<%878%>");
+		alert("<%862%>");
 	}
 
 	if((new_protocol != old_protocol) || (new_protocol_tun != old_protocol_tun) 
 	    || (cf.openvpn_service_port.value != service_port) || (cf.openvpn_service_port_tun.value != service_port_tun) 
 	    || (new_redirectGW != redirectGW)){
-		alert("<%879%>");
+		alert("<%863%>");
 	}
 	return true;
 }
 
 function ddns_check()
 {
-	var ddns_enable_check = "<%824%>";
+	var ddns_enable_check = "<%808%>";
 	var openvpnEnable = "<%509%>";
 	
 	var cf = document.forms[0];
 
 	if(openvpnEnable == "disable"){
-		alert("<%880%>");
+		alert("<%864%>");
 		cf.openvpnActive.focus();
 		return false;
 	}
 
 	if(ddns_enable_check == 0){
-		alert("<%881%>");
+		alert("<%865%>");
 	}
 
 	return true;
@@ -268,7 +268,7 @@ function ddns_check()
 <img class="subtop-image" src="<%76%>">
 <div class="subhead2"> <%432%></div>
 
-<%882%>
+<%866%>
 
 <table border="0"    style="height:370px"  class="subhead2-table">
 
@@ -285,14 +285,14 @@ function ddns_check()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
     <td colspan="2">
-    <input type="checkbox" name="openvpnActive" value="openvpnEnable" <%883%>> <b><%884%></b>
+    <input type="checkbox" name="openvpnActive" value="openvpnEnable" <%867%>> <b><%868%></b>
     </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
 
-	<td align="left"><b><%885%></b></td>
+	<td align="left"><b><%869%></b></td>
 </tr>
 
 <tr>
@@ -307,47 +307,47 @@ function ddns_check()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-	<td align="left"><b><%886%></b></td>
+	<td align="left"><b><%870%></b></td>
 </tr>
 <tr>
 	<td colspan="4" align="left" style="padding-left:10px;">
-	<button type="BUTTON" value="windows_zip" name="windows" class="button-rule" onclick="buttonClick(this,'windows_zip'); if(!ddns_check()) return false; window.location.href = 'windows.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%887%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;<button type="BUTTON" value="nonwindows_zip" name="non-windows" class="button-rule" onclick="buttonClick(this,'nonwindows_zip'); if(!ddns_check()) return; window.location.href = 'nonwindows.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%888%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;<button type="BUTTON" value="smartphone_zip" name="smartphone" class="button-rule" onclick="buttonClick(this,'smartphone_zip'); if(!ddns_check()) return; window.location.href = 'smartphone.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%889%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	<button type="BUTTON" value="windows_zip" name="windows" class="button-rule" onclick="buttonClick(this,'windows_zip'); if(!ddns_check()) return false; window.location.href = 'windows.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%871%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;<button type="BUTTON" value="nonwindows_zip" name="non-windows" class="button-rule" onclick="buttonClick(this,'nonwindows_zip'); if(!ddns_check()) return; window.location.href = 'nonwindows.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%872%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;<button type="BUTTON" value="smartphone_zip" name="smartphone" class="button-rule" onclick="buttonClick(this,'smartphone_zip'); if(!ddns_check()) return; window.location.href = 'smartphone.zip';"><span class="roundleft_button">&nbsp;&nbsp; <%873%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td>
 	
 </tr>
     
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td align="left"><b><%890%></b></td>
+	<td align="left"><b><%874%></b></td>
 </tr>
 
 <TR>
-    <TD nowrap style="padding-left:10px;"><%891%> <%892%>
-    <input type="radio" name="openvpn_protocol_tun" value="udp" <%893%> > <%693%> 
-    <input type="radio" name="openvpn_protocol_tun" value="tcp" <%894%> > <%692%> </TD>
+    <TD nowrap style="padding-left:10px;"><%875%> <%876%>
+    <input type="radio" name="openvpn_protocol_tun" value="udp" <%877%> > <%693%> 
+    <input type="radio" name="openvpn_protocol_tun" value="tcp" <%878%> > <%692%> </TD>
 </TR>
 
 <tr>
-    <td width="50%" align="left" nowrap style="padding-left:10px;"><%891%> <%895%> &nbsp; <input type="text" name="openvpn_service_port_tun" value = "<%869%>" size="6" height="12" maxlength="8"></td>
+    <td width="50%" align="left" nowrap style="padding-left:10px;"><%875%> <%879%> &nbsp; <input type="text" name="openvpn_service_port_tun" value = "<%853%>" size="6" height="12" maxlength="8"></td>
 </tr>
 
 <TR>
-    <TD nowrap style="padding-left:10px;"><%896%> <%892%>
-<input type="radio" name="openvpn_protocol" value="udp" <%897%> > <%693%> 
-<input type="radio" name="openvpn_protocol" value="tcp" <%898%> > <%692%> </TD>
+    <TD nowrap style="padding-left:10px;"><%880%> <%876%>
+<input type="radio" name="openvpn_protocol" value="udp" <%881%> > <%693%> 
+<input type="radio" name="openvpn_protocol" value="tcp" <%882%> > <%692%> </TD>
 </TR>
 
 <tr>
-    <td width="50%" align="left" nowrap style="padding-left:10px;"><%896%> <%895%> &nbsp; <input type="text" name="openvpn_service_port" value = "<%867%>" size="6" height="12" maxlength="8"></td>
+    <td width="50%" align="left" nowrap style="padding-left:10px;"><%880%> <%879%> &nbsp; <input type="text" name="openvpn_service_port" value = "<%851%>" size="6" height="12" maxlength="8"></td>
 </tr>
 
 <TR>
-    <TD nowrap style="padding-left:10px;"><%899%>
-<input type="radio" name="openvpn_redirectGW" value="all" <%900%> > <%901%> 
-<input type="radio" name="openvpn_redirectGW" value="onlylan" <%902%> > <%903%>
-<input type="radio" name="openvpn_redirectGW" value="auto" <%904%> > <%905%> </TD>
+    <TD nowrap style="padding-left:10px;"><%883%>
+<input type="radio" name="openvpn_redirectGW" value="all" <%884%> > <%885%> 
+<input type="radio" name="openvpn_redirectGW" value="onlylan" <%886%> > <%887%>
+<input type="radio" name="openvpn_redirectGW" value="auto" <%888%> > <%889%> </TD>
 </TR>
 
 
@@ -374,7 +374,7 @@ function ddns_check()
 <a name="helpframe-anchor"></a>
 <INPUT name="wan_protocol" type=hidden value= "<%483%>">
 <INPUT name="pppoe_dod" type=hidden value= "<%558%>">
-<INPUT name="l2tp_dod" type=hidden value= "<%906%>">
+<INPUT name="l2tp_dod" type=hidden value= "<%890%>">
 <INPUT name="pptp_dod" type=hidden value= "<%616%>">
 <INPUT name="dod_type_change" type=hidden value= "0">
 </form>

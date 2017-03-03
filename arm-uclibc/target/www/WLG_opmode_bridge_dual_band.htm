@@ -200,14 +200,14 @@ function checkData()
         
     if (cf.device_name2.value == "")
     {
-        alert("<%1161%>");
+        alert("<%1145%>");
         return false;
     }
 
     if (cf.device_name2.value.match( /[^\x20-\x7E]/ ))
     {
         cf.device_name2.focus();
-        alert("<%790%>");
+        alert("<%774%>");
         return false;
     }
     
@@ -304,7 +304,7 @@ function checkData()
         cf.stamode_dns1_sec.value = cf.SPDAddr1.value+'.'+cf.SPDAddr2.value+'.'+cf.SPDAddr3.value+'.'+cf.SPDAddr4.value;
     }
 
-    alert("<%1163%>");
+    alert("<%1147%>");
 
     
     if (msg.length > 1)
@@ -332,7 +332,7 @@ function checkData()
         <tr align="left" valign="top">
           <td   align="center" colspan="2" class="table-seperate-border2">
             <input class="new_cancel_bt ui-corner-all" type="reset" name="Cancel" value="<%83%>" onClick="location.href='WLG_opmode_main.htm';">
-            <input <%4083%> type="submit" name="Apply" value="<%78%>" onClick="return checkData();">
+            <input <%4139%> type="submit" name="Apply" value="<%78%>" onClick="return checkData();">
 
           </td>
         </tr>
@@ -343,20 +343,20 @@ function checkData()
                 <tr >
                   <td>    
 		                  <div class="box ui-corner-all router">
-			                  <div class="radio_box"><input type="radio" name="operation_type" value=0 onclick="select_type(0)"> <%4084%></div>
-			                  <div class="<%4089%>" style="margin-left:20px" onclick="select_type(0)"><img src="img/opmode_router.gif"></div>
+			                  <div class="radio_box"><input type="radio" name="operation_type" value=0 onclick="select_type(0)"> <%4140%></div>
+			                  <div class="<%4145%>" style="margin-left:20px" onclick="select_type(0)"><img src="img/opmode_router.gif"></div>
 		                  </div>
 		                  <div class="box ui-corner-all ap">
-			                  <div class="radio_box"><input type="radio" name="operation_type" value=1 onclick="select_type(1)"> <%1651%></div>
-			                  <div class="<%4090%>" style="margin-left:20px" onclick="select_type(1)"><img src="img/opmode_ap.gif"></div>
+			                  <div class="radio_box"><input type="radio" name="operation_type" value=1 onclick="select_type(1)"> <%1635%></div>
+			                  <div class="<%4146%>" style="margin-left:20px" onclick="select_type(1)"><img src="img/opmode_ap.gif"></div>
 		                  </div>
 		                  <div class="box_select ui-corner-all bridge">
-			                  <div class="radio_box"><input type="radio" name="operation_type" value=2 checked> <%4085%> </div>
-			                  <div class="<%4091%>" style="margin-left:20px" onclick="select_type(2);"><img src="img/opmode_bridge.gif"></div>
+			                  <div class="radio_box"><input type="radio" name="operation_type" value=2 checked> <%4141%> </div>
+			                  <div class="<%4147%>" style="margin-left:20px" onclick="select_type(2);"><img src="img/opmode_bridge.gif"></div>
 		                  </div>
 		                  <div class="box ui-corner-all repeating">
-			                  <div class="radio_box"><input type="radio" name="operation_type" value=3 onclick="select_type(3);"> <%4086%> </div>
-			                  <div class="<%4092%>" style="margin-left:20px" onclick="select_type(3);"><img src="img/opmode_extender.gif"></div>
+			                  <div class="radio_box"><input type="radio" name="operation_type" value=3 onclick="select_type(3);"> <%4142%> </div>
+			                  <div class="<%4148%>" style="margin-left:20px" onclick="select_type(3);"><img src="img/opmode_extender.gif"></div>
 		                  </div>
                   </td>
                 </tr>
@@ -364,16 +364,16 @@ function checkData()
                 	<td style='width:500px' style="padding-left:50px">
             	      <table border="0" cellpadding="0" cellspacing="3" >
 	                    <tr>
-		                    <button value="bridge_page" onClick="openBridgeWindow();" type="button" name="bridge_page" class="button-rule" ><span class="roundleft_button"><span class ="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%2652%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		                    <button value="bridge_page" onClick="openBridgeWindow();" type="button" name="bridge_page" class="button-rule" ><span class="roundleft_button"><span class ="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%2659%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                       </tr>
                       <tr>
     	                  <td nowrap><%730%></td>
-                        <td width="60%" align="right"><INPUT TYPE="text" MAXLENGTH="12" SIZE="24" NAME="device_name2" value="<%1165%>"></td>
+                        <td width="60%" align="right"><INPUT TYPE="text" MAXLENGTH="12" SIZE="24" NAME="device_name2" value="<%1149%>"></td>
                       </tr>
                       <tr>
                         <td colspan=2>
-                          <INPUT TYPE="checkbox" NAME="StaIpAssign" value="dyn_ip" <%1654%> onclick="setIP_sta();">
-                          <%1655%>
+                          <INPUT TYPE="checkbox" NAME="StaIpAssign" value="dyn_ip" <%1638%> onclick="setIP_sta();">
+                          <%1639%>
                         </td>
                       </tr>
                       <tr>
@@ -390,8 +390,8 @@ function checkData()
                       </tr>
                       <tr>
                         <td colspan=2>
-                          <INPUT TYPE="checkbox" NAME="StaDnsAssign" value="dyn_dns" <%1656%> onclick="setDNS_sta();">
-                          <%1657%>
+                          <INPUT TYPE="checkbox" NAME="StaDnsAssign" value="dyn_dns" <%1640%> onclick="setDNS_sta();">
+                          <%1641%>
                         </td>
                       </tr>
                       <tr>
@@ -421,13 +421,13 @@ function checkData()
       </div>
     </div>
 
-<input type="hidden" name="pre_mode" value="<%4087%>" >
+<input type="hidden" name="pre_mode" value="<%4143%>" >
 <input type="hidden" name="enable_operation_mode" value="bridge" >
-<INPUT name="stamode_ipaddr" type="hidden" value= "<%1398%>">
-<INPUT name="stamode_netmask" type="hidden" value= "<%1399%>">
-<INPUT name="stamode_gateway" type="hidden" value= "<%1401%>">
-<INPUT name="stamode_dns1_pri" type="hidden" value= "<%1406%>">
-<INPUT name="stamode_dns1_sec" type="hidden" value= "<%1407%>">
+<INPUT name="stamode_ipaddr" type="hidden" value= "<%1382%>">
+<INPUT name="stamode_netmask" type="hidden" value= "<%1383%>">
+<INPUT name="stamode_gateway" type="hidden" value= "<%1385%>">
+<INPUT name="stamode_dns1_pri" type="hidden" value= "<%1390%>">
+<INPUT name="stamode_dns1_sec" type="hidden" value= "<%1391%>">
 <a name="helpframe-anchor"></a>
 
   </form>

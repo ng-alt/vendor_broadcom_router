@@ -68,7 +68,7 @@ function check_static_ip_mask_gtw()
 	}
 	if(isSameSubNet(cf.pppoe_dual_ipaddr.value,cf.pppoe_dual_subnet.value,cf.pppoe_dual_gateway.value,cf.pppoe_dual_subnet.value) == false)
 	{
-		alert("<%2372%>");
+		alert("<%2379%>");
 		return false;
 	}
 	*/
@@ -89,14 +89,14 @@ function check_wizard_pppoe(check,servername,page)
 	var form=document.forms[0];
 	if(form.pppoe_username.value=="")
 	{
-		alert("<%812%>");
+		alert("<%796%>");
 		return false;
 	}
 	for(i=0;i<form.pppoe_username.value.length;i++)
 	{
 		if(isValidChar(form.pppoe_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2375%>");
+			alert("<%2382%>");
 			return false;
 		}
 	}
@@ -104,7 +104,7 @@ function check_wizard_pppoe(check,servername,page)
 	{
 		if(isValidChar(form.pppoe_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2376%>");
+			alert("<%2383%>");
 			return false;
 		}
 	}
@@ -112,13 +112,13 @@ function check_wizard_pppoe(check,servername,page)
 	{
 		if(isValidChar(servername.charCodeAt(i))==false)
 		{
-			alert("<%1023%>");
+			alert("<%1007%>");
 			return false;
 		}
 	}
 	if(form.pppoe_idletime.value.length<=0)
 	{
-		alert("<%2377%>");
+		alert("<%2384%>");
 		return false;
 	}
 	else if(!_isNumeric(form.pppoe_idletime.value))
@@ -401,14 +401,14 @@ function RU_pppoe_user_info()
 	var cf=document.forms[0];
 	if(cf.pppoe_username.value=="")
 	{
-		alert("<%812%>");
+		alert("<%796%>");
 		return false;
 	}
 	for(i=0;i<cf.pppoe_username.value.length;i++)
 	{
 		if(isValidChar(cf.pppoe_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2375%>");
+			alert("<%2382%>");
 			return false;
 		}
 	}
@@ -416,7 +416,7 @@ function RU_pppoe_user_info()
 	{
 		if(isValidChar(cf.pppoe_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2376%>");
+			alert("<%2383%>");
 			return false;
 		}
 	}
@@ -424,7 +424,7 @@ function RU_pppoe_user_info()
 	{
 		if(isValidChar(cf.pppoe_servername.value.charCodeAt(i))==false)
 		{
-			alert("<%1023%>");
+			alert("<%1007%>");
 			return false;
 		}
 	}
@@ -582,7 +582,7 @@ function RU_check_pppoe_dual()
 		{
 			cf.conflict_wanlan.value=1;
 		}
-		alert("<%2374%>");
+		alert("<%2381%>");
 	}
 	else
 	{

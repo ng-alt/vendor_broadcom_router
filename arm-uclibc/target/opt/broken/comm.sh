@@ -14,9 +14,10 @@ URL=`readycloud_nvram get readycloud_fetch_url`
 NAS_NAME=`readycloud_nvram get readycloud_hostname`
 NAS_PASS=`readycloud_nvram get readycloud_password`
 
+LOG_FILE="/tmp/readycloud_register.log"
+
 # construct comm exec
 COMM_EXEC="curl --basic -k --user ${NAS_NAME}:${NAS_PASS} --url ${URL}"
-
 
 #
 # arg: <data> [<store.path>]
@@ -63,9 +64,10 @@ do_register()
 	USER_NAME=$1
 	USER_PASS=$2
 	temp_dir=$3
-	XAGENT_ID=$(readycloud_nvram get x_agent_id)
-	MODEL=$(remote_smb_conf -get_model_name)
-	USE_XCLOUD=$(readycloud_nvram get readycloud_use_xcloud)
+	XAGENT_ID=$(readycloud_nvram get x_agent_id | tr -d '[[:space:]]')
+	MODEL=$(remote_smb_conf -get_model_name | tr -d '[[:space:]]')
+	USE_XCLOUD=$(readycloud_nvram get readycloud_use_xcloud | tr -d '[[:space:]]')
+	SERIAL_NUMBER=$(system get serial_number | tr -d '[[:space:]]')
 
 	FIRMWARE_VERSION=`version | sed -n 2p | awk -F "/" '{print $2}' | sed -r 's/^.{1}//'`
 	#get second line of "version" command output
@@ -77,13 +79,13 @@ do_register()
 	DATA="${DATA}<request moniker=\"/root/devices\" method=\"register\">"
 	DATA="${DATA}<body type=\"registration\">"
 	DATA="${DATA}<username>${USER_NAME}</username>"
-	DATA="${DATA}<password>${USER_PASS}</password>"
+	DATA="${DATA}<password><![CDATA[${USER_PASS}]]></password>"
 	DATA="${DATA}<model>${MODEL}</model>"
 	DATA="${DATA}<firmware_id>${FIRMWARE_VERSION}</firmware_id>"
 	if [ $USE_XCLOUD -eq 1 ]; then 
 		DATA="${DATA}<x_agent_id>${XAGENT_ID}</x_agent_id>"
 	fi
-	DATA="${DATA}<license><LicenseKey>sdfsfgjsflkj</LicenseKey><hardwareSN>`burnsn 2>&1 | sed 's/[a-z -]//g'`</hardwareSN><StartTime>0</StartTime><ExpiredTime>999</ExpiredTime><valid>true</valid></license>"
+	DATA="${DATA}<license><LicenseKey>sdfsfgjsflkj</LicenseKey><hardwareSN>${SERIAL_NUMBER}</hardwareSN><StartTime>0</StartTime><ExpiredTime>999</ExpiredTime><valid>true</valid></license>"
 	DATA="${DATA}</body></request>"
 
 	comm_post "${DATA}" && {
