@@ -105,7 +105,7 @@ function setKeys()
 function wpapskCheck()
 {
     var cf = document.forms[0];
-    var wlan_mode = "<%1655%>";
+    var wlan_mode = "<%1657%>";
     if (wlan_mode != "g&#32;and&#32;b")
     {
         alert("<%43%>");
@@ -117,7 +117,7 @@ function wpapskCheck()
 function autopskCheck()
 {
     var cf = document.forms[0];
-    var wlan_mode = "<%1655%>";
+    var wlan_mode = "<%1657%>";
     if (wlan_mode != "g&#32;and&#32;b")
     {
         alert("<%46%>");
@@ -245,7 +245,7 @@ function checkKey(evt)
     if ((lastkeypressed != 13) && (lastkeypressed != 8) && ( keyTooBig ))
     {
         keyTooBig = false;
-        alert("<%1482%> " + keysize + " <%1483%>");
+        alert("<%1484%> " + keysize + " <%1485%>");
         chkSize(lastObj); // for NS 6/7
         return false;
     }
@@ -284,88 +284,88 @@ function keyCheck(fobj)
 <tr>
 <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
 <tr>
-<td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wireless')" tabindex="-1"><b><%191%> - <%1634%></b></a></td>
+<td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wireless')" tabindex="-1"><b><%192%> - <%1636%></b></a></td>
 </tr>
 <tr>
-<td align="left"><input type="checkbox" name="enable_bssid_an" value="1"><%1635%></td>
+<td align="left"><input type="checkbox" name="enable_bssid_an" value="1"><%1637%></td>
 </tr>
 
 <tr>
-<td align="left"><input type="checkbox" name="enable_ssid_bc_an" value="1"><%137%></td>
+<td align="left"><input type="checkbox" name="enable_ssid_bc_an" value="1"><%138%></td>
 </tr>
 
-<%132%>
-<td align="left"><input type="checkbox" name="allow_see_access_an" value="1"><%1636%></td>
+<%133%>
+<td align="left"><input type="checkbox" name="allow_see_access_an" value="1"><%1638%></td>
 </tr>
-<%135%>
+<%136%>
 
 <tr>
-<td width="50%" align="left"><%1637%>:</td>
+<td width="50%" align="left"><%1639%>:</td>
 <td width="50%">
-<input type="text" name="ssid_an" value="<%1656%>" size="20" maxlength="32"></td>
+<input type="text" name="ssid_an" value="<%1658%>" size="20" maxlength="32"></td>
 </tr>
 
 <tr>
     <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
 <tr>
-    <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','security')" tabindex="-1"><b><%148%> - <%1634%></b></a></td></tr>
+    <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','security')" tabindex="-1"><b><%149%> - <%1636%></b></a></td></tr>
 
 <tr><td colspan="2">
 <table cellpadding="0" cellspacing="3" width="100%">
 <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" onClick="buttonFilter();this.form.submit();" ><%149%><td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="Disable" onClick="buttonFilter();this.form.submit();" ><%150%><td></tr>
 <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="WEP" checked ><%150%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="WEP" checked ><%151%></td></tr>
 <tr>
-    <td colspan="2"><input type="radio" name="security_type_an" value="WPA-PSK" <%234%> onClick="wpapskCheck();" ><%152%></td></tr>
+    <td colspan="2"><input type="radio" name="security_type_an" value="WPA-PSK" <%235%> onClick="wpapskCheck();" ><%153%></td></tr>
 <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%234%> onClick="buttonFilter();this.form.submit();" ><%153%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%235%> onClick="buttonFilter();this.form.submit();" ><%154%></td></tr>
 <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="AUTO-PSK" <%234%> onClick="autopskCheck();" ><%154%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="AUTO-PSK" <%235%> onClick="autopskCheck();" ><%155%></td></tr>
 </table>
 </td></tr>
 
     <tr>
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wep')" tabindex="-1"><b><%156%></b></a></td></tr>
+      <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wep')" tabindex="-1"><b><%157%></b></a></td></tr>
     <tr>
-      <td nowrap><%157%>:</td>
+      <td nowrap><%158%>:</td>
       <td>
-          <select name="authAlgm_an" size=1><option value="automatic"><%158%></option><!--<option selected value="opensystem">Open System</option>--><option value="sharedkey"><%159%></option></select></td></tr>
+          <select name="authAlgm_an" size=1><option value="automatic"><%159%></option><!--<option selected value="opensystem">Open System</option>--><option value="sharedkey"><%160%></option></select></td></tr>
     <tr>
-      <td nowrap><%160%>:</td>
-	  <td><select name="wepenc_an" size=1 onchange="setKeys();"><option <%1657%> value="1"><%162%></option><option <%1658%> value="2"><%164%></option></select></td></tr>
+      <td nowrap><%161%>:</td>
+	  <td><select name="wepenc_an" size=1 onchange="setKeys();"><option <%1659%> value="1"><%163%></option><option <%1660%> value="2"><%165%></option></select></td></tr>
     <tr>
       <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     <tr>
-      <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wepkey')" tabindex="-1"><b><%165%></b></a></td></tr>
+      <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wepkey')" tabindex="-1"><b><%166%></b></a></td></tr>
     <tr>
       <td colspan="2">
         <table>
           <tr>
-            <td><%166%>:<input type="radio"  checked name="wep_key_no_an" value="1"></td>
-            <td align=left><input type="text" name="KEY1_an" autocomplete="off" maxLength=32 size=34 value="<%1659%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
+            <td><%167%>:<input type="radio"  checked name="wep_key_no_an" value="1"></td>
+            <td align=left><input type="text" name="KEY1_an" autocomplete="off" maxLength=32 size=34 value="<%1661%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
           <tr>
-            <td><%168%>:<input type="radio" name="wep_key_no_an" value="2"></td>
-            <td align=left><input type="text" name="KEY2_an" autocomplete="off" maxLength=32 size=34 value="<%1660%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
+            <td><%169%>:<input type="radio" name="wep_key_no_an" value="2"></td>
+            <td align=left><input type="text" name="KEY2_an" autocomplete="off" maxLength=32 size=34 value="<%1662%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
           <tr>
-            <td><%170%>:<input type="radio" name="wep_key_no_an" value="3"></td>
-            <td align=left><input type="text" name="KEY3_an" autocomplete="off" maxLength=32 size=34 value="<%1661%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td>
+            <td><%171%>:<input type="radio" name="wep_key_no_an" value="3"></td>
+            <td align=left><input type="text" name="KEY3_an" autocomplete="off" maxLength=32 size=34 value="<%1663%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td>
             <td></td></tr>
           <tr>
-            <td><%172%>:<input type="radio" name="wep_key_no_an" value="4"></td>
-            <td align=left><input type="text" name="KEY4_an" autocomplete="off" maxLength=32 size=34 value="<%1662%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
+            <td><%173%>:<input type="radio" name="wep_key_no_an" value="4"></td>
+            <td align=left><input type="text" name="KEY4_an" autocomplete="off" maxLength=32 size=34 value="<%1664%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
         </table></td></TR>
   </table>
-  <input type="hidden" name="initAuthType" value="<%1663%>">
-  <input type="hidden" name="initDefaultKey" value="<%1664%>">
+  <input type="hidden" name="initAuthType" value="<%1665%>">
+  <input type="hidden" name="initDefaultKey" value="<%1666%>">
   <input type="hidden" name="only_mode" value="0">
-  <input type="hidden" name="bssid_enable" value="<%1665%>">
-  <input type="hidden" name="ssid_bc_enable" value="<%1666%>">
+  <input type="hidden" name="bssid_enable" value="<%1667%>">
+  <input type="hidden" name="ssid_bc_enable" value="<%1668%>">
  
-  <input type="hidden" name="enable_allow_see_access" value="<%1667%>">
-  <input type="hidden" name="enable_apmode" value="<%409%>">
+  <input type="hidden" name="enable_allow_see_access" value="<%1669%>">
+  <input type="hidden" name="enable_apmode" value="<%410%>">
 </form>
 </body>
 </html>

@@ -2527,6 +2527,7 @@ sysinit(void)
 
 		/* foxconn modified start, zacker, 08/06/2010 */
 		/* Restore defaults if necessary */
+  nvram_set ("wireless_restart", "1");
 		restore_defaults();
 
 
@@ -2754,9 +2755,11 @@ sysinit(void)
 			sprintf(arg6, "qtdc1_ep=%d", atoi(nvram_safe_get("qtdc1_ep")));
 			sprintf(arg7, "qtdc1_sz=%d", atoi(nvram_safe_get("qtdc1_sz")));
 
-			eval("insmod", "ehci-hcd", arg1, arg2, arg3, arg4, arg5,
-				arg6, arg7);
-
+            /* Added start, CSP #1059143 @ use dynamic load module to init sequence xhci->ehci->ohci*/
+			eval("insmod", "xhci-hcd");
+			eval("insmod", "ehci-hcd");
+			eval("insmod", "ohci-hcd");
+            /* Added end, CSP #1059143 @ use dynamic load module to init sequence xhci->ehci->ohci*/
 			/* Search for existing PCI wl devices and the max unit number used.
 			 * Note that PCI driver has to be loaded before USB hotplug event.
 			 * This is enforced in rc.c
@@ -3405,11 +3408,16 @@ main_loop(void)
 		case STOP:
 			dprintf("STOP\n");
 			pmon_init();
+			
+      if(nvram_match ("wireless_restart", "1"))
+      {
             stop_wps();
             stop_nas();
             stop_eapd(); 
     				stop_bsd();
-            stop_bcmupnp();
+      }
+      
+      stop_bcmupnp();
 			
 			stop_lan();
 #ifdef __CONFIG_VLAN__
@@ -3500,6 +3508,7 @@ main_loop(void)
                 dup2(fd2, 2);
                 close(fd2);
                 start_lan(); //<-- to hide messages generated here
+      if(nvram_match ("wireless_restart", "1"))
                 start_wlan(); //<-- need it to bring up 5G interface
                 close(2);
                 dup2(fd1, 2);
@@ -3532,6 +3541,9 @@ main_loop(void)
             /* wklin modified end, 10/23/2008 */           
             save_wlan_time();
 			start_bcmupnp();
+      if(nvram_match ("wireless_restart", "1"))
+      {
+
             start_eapd();
             start_nas();
             start_wps();
@@ -3560,11 +3572,14 @@ main_loop(void)
 
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
+	  }
             /* Now start ACOS services */
             eval("acos_init");
             eval("acos_service", "start");
 
             /* Start wsc if it is in 'unconfiged' state, and if PIN is not disabled */
+      if(nvram_match ("wireless_restart", "1"))
+      {
             if (nvram_match("wl0_wps_config_state", "0") && !nvram_match("wsc_pin_disable", "1"))
             {
                 /* if "unconfig" to "config" mode, force it to built-in registrar and proxy mode */
@@ -3596,6 +3611,8 @@ main_loop(void)
 #endif
 
 			/* Fall through */
+		  }
+      nvram_set ("wireless_restart", "1");		  
 		case TIMER:
             /* Foxconn removed start pling 07/12/2006 */
 #if 0
@@ -3665,6 +3682,7 @@ main_loop(void)
             /* Foxconn added start pling 06/14/2007 */
             /* We come here only if user press "apply" in Wireless GUI */
 		case WLANRESTART:
+                    dprintf("WLANRESTART\n");
 		
 		    stop_wps(); 
 		    stop_nas();

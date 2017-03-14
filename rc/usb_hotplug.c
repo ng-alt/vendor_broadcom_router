@@ -119,7 +119,7 @@ retry:
 #ifdef USB_DEBUG
         cprintf("target %s not available wait another seconds..\n", target);
 #endif
-        if (++wait_count < 20) /* wait for 20 seconds at most */
+        if (++wait_count < 50) /* wait for 50 seconds at most */
             goto retry;
     } 
     /* foxconn wklin added end, 03/16/2011 */

@@ -21,9 +21,9 @@ classes.num.all.fontSize = "10pt" ;
 <%14%>
 <script language="javascript" type="text/javascript">
 <!--
-<%1887%>
-<%1827%>
-<%1888%>
+<%1891%>
+<%1829%>
+<%1892%>
   
     $(document).ready(function()
     {	
@@ -306,7 +306,7 @@ function loadSettings(onCancelClick)
 		
 	if(onCancelClick==0)
 		document.getElementById("qosHelpFile").innerHTML="<iframe id=helpframe  src=QOS_WMM_h.htm class=help-iframe scrolling=no name=helpframe frameborder=0  onload=showHelpIframe();></iframe>";;
-    <%1887%>
+    <%1891%>
 	if (cf.qos_bw_enable.value == "1")
 	{
 		cf.bwEnable.checked = true;
@@ -324,46 +324,46 @@ function loadSettings(onCancelClick)
 		cf.rate.selectedIndex = 0;
 	else if (bw[1] == "Mbps")
 		cf.rate.selectedIndex = 1;
-	<%1888%>
-	<%1889%>
+	<%1892%>
+	<%1893%>
 	getBdUnit(cf.uplink_bw.value);
-	<%1890%>
+	<%1894%>
     if (cf.enable_apmode.value == "1" || (cf.enable_stamode.value == "1")) {
 		cf.qosEnable.disabled = true;
-		<%1887%>
+		<%1891%>
 		cf.bwEnable.disabled = true;
-		<%1888%>
+		<%1892%>
 		cf.bandwidth.disabled = true;
 		cf.rate.disabled = true;
 		cf.setup_qos_rule.disabled = true;
-		<%1887%>
+		<%1891%>
 		cf.bw_sel[0].disabled = true;
 		cf.bw_sel[1].disabled = true;
-		<%1888%>
+		<%1892%>
         cf.check_bw.disabled = true;
         
         var setButton=document.getElementsByName("setup_qos_rule");
-        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1829%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1831%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
         setButton[0].style.cursor='default';          
 	}
     else
     {
         if (cf.repeater.value == "1" || cf.repeater_an.value == "1") {
             cf.qosEnable.disabled = true;
-			<%1887%>
+			<%1891%>
             cf.bwEnable.disabled = true;
-			<%1888%>
+			<%1892%>
             cf.bandwidth.disabled = true;
             cf.rate.disabled = true;
             cf.setup_qos_rule.disabled = true;
-			<%1887%>
+			<%1891%>
             cf.bw_sel[0].disabled = true;
             cf.bw_sel[1].disabled = true;
-			<%1888%>
+			<%1892%>
             //cf.check_bw.disabled = true;
             
             var checkButton=document.getElementsByName("check_bw");
-            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1364%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanIp();"><span class="roundleft_grey">&nbsp;&nbsp; <%1366%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
             checkButton[0].style.cursor='default';        
             
 
@@ -392,21 +392,26 @@ function loadSettings(onCancelClick)
 function checkData(btn,value)
 {
 	var cf = document.forms[0];
-	var qos_up_bw_limit = "<%1830%>";
+	var qos_up_bw_limit = "<%1832%>";
 	interval = parseInt(cf.bandwidth.value);
-	<%1887%>
+	<%1891%>
 	if ( isNaN(interval) || interval <= 0 ||
 		(cf.rate.selectedIndex == 0 && (interval < 64 || interval > 9999)) ||
 		(cf.rate.selectedIndex == 1 && interval > qos_up_bw_limit )||
 		cf.bandwidth.value.match(/[^0-9]/g) ||
 		cf.bandwidth.value.match(/^0/))
 	{
-		alert("<%1831%>");
+		alert("<%1833%>");
 		return false;
 	}
 	//return true;
-	<%1888%>
-	<%1889%>
+	<%1892%>
+	<%1893%>
+	if((cf.qosEnable.checked) && ((cf.bandwidth.value) == "0"))
+	{
+	    cf.buttonHit.value = value;
+		checkWanIp();
+	}else
 	if  ( isNaN(interval) ||
 		((cf.rate.selectedIndex == 0) && (interval < 100)) ||
 		((cf.rate.selectedIndex == 1) && (interval > qos_up_bw_limit) ) ||
@@ -417,16 +422,12 @@ function checkData(btn,value)
             if((cf.rate.selectedIndex == 0) && (interval < 100)){
                 alert("Invalid Uplink Bandwidth, the Uplink Bandwidth should be greater than 100Kbps");
             }else{
-                alert("<%1831%>");
+                alert("<%1833%>");
             }
 		return false;
 	}
 	else
-	if((cf.qosEnable.checked) && ((cf.bandwidth.value) == "0"))
-	{
-		checkWanIp();
-	}else
-	<%1890%>
+	<%1894%>
 	{
 		if(value=='Apply'){
             buttonClick(btn,'Apply');
@@ -438,7 +439,7 @@ function checkData(btn,value)
 	return true;
 
 }
- <%1889%>
+ <%1893%>
 function getBdUnit(bw)
 {
 	var cf = document.forms[0];
@@ -457,10 +458,10 @@ var maxchars = 75;
 var delay_time=360; // msecs
 var charcount = 0; 
 
- <%1890%>
+ <%1894%>
 function checkWanIp()
 {
-    <%1889%>
+    <%1893%>
 	var cf = document.forms[0];
 	var ckbandwidth=cf.bandwidth.value;
 	var check_bw = "check_bw=check";
@@ -484,9 +485,8 @@ function checkWanIp()
 			{ 
 				if((xmlHttp.readyState==4) && (xmlHttp.status == 200))
 				{
-				var msg = xmlHttp.responseText;
-				
-			
+				    var msg = xmlHttp.responseText;
+		
 					if(msg == "unreachServer")
 					{
 							document.getElementById("check_result").style.display="none";
@@ -513,17 +513,15 @@ function checkWanIp()
 							document.getElementById("check_result").style.display="block";
 							document.getElementById("check_info").style.display="none";
 							document.getElementById("check_nowan").style.display="none";
-							document.getElementById("check_unreach").style.display="none";
-							if(cf.buttonHit.value == "apply")
-								cf.submit();
-						
+							document.getElementById("check_unreach").style.display="none";						
 					}
 					
-									
-				}
-				ungrayout_allBtn();
-			
-				
+				    ungrayout_allBtn();	
+				    if(cf.buttonHit.value == "Apply")
+				    {
+					    return checkData('apply','Apply');
+				    }	
+				}				
 			}
 			xmlHttp.open("POST","qos_uplink_check.php",true);
 			xmlHttp.send(check_bw);
@@ -535,13 +533,13 @@ function checkWanIp()
 			document.getElementById("check_nowan").style.display="none";
 			document.getElementById("check_unreach").style.display="none";
 		}
-		<%1890%>
+		<%1894%>
 		return true;		
 	
 }
 
 
-<%1889%>
+<%1893%>
 function makeStr(strsize, fillchar)
 {
 	var temp = "";
@@ -583,21 +581,21 @@ function ungrayout_allBtn()
 	ungrayout_button("setup_qos_ruleBtn");
 	
 }
-<%1890%>
+<%1894%>
 function loadAlert()
 {
     var cf = document.forms[0];
-	<%1887%>
-    var fromcgi = "<%1832%>";
+	<%1891%>
+    var fromcgi = "<%1834%>";
     
     if (fromcgi == "AlertOk")
     {
-        alert("<%1833%>");
+        alert("<%1835%>");
     }
-	<%1888%>
+	<%1892%>
 }
 
-<%1889%>
+<%1893%>
 function GetXmlHttpObject()
 {
    var xmlHttp=null;
@@ -618,8 +616,8 @@ function GetXmlHttpObject()
     }
 	return xmlHttp;
 }
- <%1890%>
- <%1887%>
+ <%1894%>
+ <%1891%>
 function update_bw_sel(index)
 {
     var cf = document.forms[0];
@@ -664,7 +662,7 @@ function check_bw_sel()
             update_bw_sel(1);
     }
 }
- <%1888%>
+ <%1892%>
 function loadSettings2()
 {
 	var cf = document.forms[0];
@@ -1039,9 +1037,9 @@ function setQosTabWidth(){
 <td>
 <!-- tabs -->
 <ul class="tabs" width="100%" >
-    <li><a id="WMMTab" onFocus="this.blur()" href="#"><span><%1891%></span></a></li>
-    <li><a id="UpstreamTab" onFocus="this.blur()" href="#"><span><font size='2'><%1892%></font></span></a></li>    
-    <li><a id="DownstreamTab" onFocus="this.blur()" href="#"><span><font size='2'><%1893%></font></span></a></li>    
+    <li><a id="WMMTab" onFocus="this.blur()" href="#"><span><%1895%></span></a></li>
+    <li><a id="UpstreamTab" onFocus="this.blur()" href="#"><span><font size='2'><%1896%></font></span></a></li>    
+    <li><a id="DownstreamTab" onFocus="this.blur()" href="#"><span><font size='2'><%1897%></font></span></a></li>    
 </ul>
 <p></p><p></p><p></p>
 <div align="center">
@@ -1057,15 +1055,15 @@ function setQosTabWidth(){
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr> <td colspan="2"><div style="font-family:Arial;font-size:16px;color:#ADA7D7;font-weight:bold;vertical-align:middle;">
-<%1891%></div><p></p></td></tr>
+<%1895%></div><p></p></td></tr>
 
 <!-- content of WMM start -->
 <tr>
-<td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1894%></b></a></td>
+<td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1898%></b></a></td>
 </tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1895%></b></a></td>
+<td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%1899%></b></a></td>
 </tr>
 <!-- content of WMM end -->
 
@@ -1078,38 +1076,38 @@ function setQosTabWidth(){
 <tr><td colspan="4" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr> <td colspan="2"><div style="font-family:Arial;font-size:16px;color:#ADA7D7;font-weight:bold;vertical-align:middle;">
-<%1892%></div><p></p></td></tr>
+<%1896%></div><p></p></td></tr>
 
 <!-- content of upstream start -->
 </table>
 
- <%1896%>
+ <%1900%>
  <table  width="100%" CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;border:0;">
  <tr>
-<td colspan="3"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1835%></b></a></td>
+<td colspan="3"><input type="checkbox" name="qosEnable" value="1" checked><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1838%></b></a></td>
 </tr>
 
 <tr><td colspan="4" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="3"><input type="checkbox" name="bwEnable" value="1" onclick="check_bw_sel()"><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1836%></b></a></td>
+<td colspan="3"><input type="checkbox" name="bwEnable" value="1" onclick="check_bw_sel()"><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1840%></b></a></td>
 </tr>
 
 <tr>
 <td colspan="3" ><img src="spacer.gif" width="40" height="12" border="0">
-<input type="radio" name="bw_sel" value="1" onclick="update_bw_sel(1)"><%1837%>&nbsp;<%1838%>
+<input type="radio" name="bw_sel" value="1" onclick="update_bw_sel(1)"><%1841%>&nbsp;<%1842%>
 <input type="text" name="bandwidth" size="6" maxlength="4" value="">
 <select name="rate" size=1>
-<option value="1000"><%1839%></option>
-<option value="1000000"><%1840%></option>
+<option value="1000"><%1843%></option>
+<option value="1000000"><%1844%></option>
 </select>
 </td>
 </tr>
- <%1897%>
- <%1898%>
+ <%1901%>
+ <%1902%>
  <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;border:0;">
 <tr>
-<td colspan="3"><input type="checkbox" name="qosEnable" value="1"> <b><%1835%></b></td>
+<td colspan="3"><input type="checkbox" name="qosEnable" value="1"> <b><%1838%></b></td>
 
 <td rowspan="2">&nbsp;&nbsp;&nbsp;<img src="poweredbyookla.png" border="0"></td>
 </tr>
@@ -1117,49 +1115,49 @@ function setQosTabWidth(){
 <tr>
 <td><img src="spacer.gif" height="30" width="23" border="0"></td>
 <td> 
-<label id ="bw_sel" for="bw_sel"><b><%1837%>:&nbsp;<%1838%></b></label>
+<label id ="bw_sel" for="bw_sel"><b><%1841%>:&nbsp;<%1842%></b></label>
 <input type="text" name="bandwidth" size="6" maxlength="6" value="">
 <select name="rate" size=1>
-<option value="1000"><%1839%></option>
-<option value="1000000"><%1840%></option>
+<option value="1000"><%1843%></option>
+<option value="1000000"><%1844%></option>
 </select>
 
-&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="<%1899%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1899%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1899%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="<%1903%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1903%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1903%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 </table>
 <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;border:0;">
 <tr>
 <td><img src="spacer.gif" height="12" width="23" border="0"></td>
-<td colspan="3" id="check_info" style="display: none;"><%1900%>
+<td colspan="3" id="check_info" style="display: none;"><%1904%>
 <input type="text" name="progress" class="prgbar" value="" style="color: blue" size="20"
     contentEditable="false" onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;">	
 </td>
 
 <td colspan="3" id="check_result" style="display: none;">
-<%1901%>&nbsp;<font color=#ADA7D7><b id="uplink_bd"></b></font>
+<%1905%>&nbsp;<font color=#ADA7D7><b id="uplink_bd"></b></font>
 </td>
 
-<td colspan="3" id="check_nowan" style="display: none;"><%1902%></td>
-<td colspan="3" id="check_unreach" style="display: none;"><%1903%></td>
+<td colspan="3" id="check_nowan" style="display: none;"><%1906%></td>
+<td colspan="3" id="check_unreach" style="display: none;"><%1907%></td>
 
 </tr>
- <%1904%>
- <%1896%>
+ <%1908%>
+ <%1900%>
 <tr>
 <td colspan="3" ><img src="spacer.gif" width="40" height="12" border="0">
-<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1841%>  <!><%1842%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1364%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1364%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1364%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<input type="radio" name="bw_sel" value="2" onclick="update_bw_sel(2)"><%1845%>  <!><%1846%><!>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%1366%>" name="check_bw" class="button-rule" onclick="buttonClick(this,'<%1366%>');return checkWanIp();"><span class="roundleft_button">&nbsp;&nbsp; <%1366%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr><td colspan="4" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
- <%1897%>
+ <%1901%>
 <tr>
 	<td colspan="3"></td>
 </tr>
 <tr>
-<td colspan="3" ><b><%1843%></b>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<button id="setup_qos_ruleBtn" type="submit" value="Setup QoS rule" name="setup_qos_rule" class="button-rule" onclick="buttonClick(this,'Setup QoS rule');" ><span class="roundleft_button">&nbsp;&nbsp; <%1829%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<td colspan="3" ><b><%1847%></b>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;<button id="setup_qos_ruleBtn" type="submit" value="Setup QoS rule" name="setup_qos_rule" class="button-rule" onclick="buttonClick(this,'Setup QoS rule');" ><span class="roundleft_button">&nbsp;&nbsp; <%1831%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 <!--
 &nbsp;&nbsp;&nbsp;<button type="submit" value="1" name="video_streaming_qos" class="button-rule" onclick="buttonClick(this,'video_streaming_qos');" ><span class="roundleft_button">&nbsp;&nbsp; QoS Video Streaming Tunning</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 -->
@@ -1175,20 +1173,20 @@ function setQosTabWidth(){
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr> <td colspan="2"><div style="font-family:Arial;font-size:16px;color:#ADA7D7;font-weight:bold;vertical-align:middle;">
-<%1893%></div><p></p></td></tr>
+<%1897%></div><p></p></td></tr>
 
 <!-- content of downstream start -->
 <tr>
-<td colspan="2"><input type="checkbox" name="qosStreamingEnable" value="1" <%1905%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1906%> </b></a></td>
+<td colspan="2"><input type="checkbox" name="qosStreamingEnable" value="1" <%1909%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1910%> </b></a></td>
 </tr>
 
 <tr>
-<td colspan="2">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%1907%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1908%> </b></a>
-&nbsp;&nbsp;&nbsp;<button type="button" value="<%1909%>" name="check_update" class="button-rule" onclick="check_start();"><span class="roundleft_button">&nbsp;&nbsp; <%1909%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<td colspan="2">&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%1911%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%1912%> </b></a>
+&nbsp;&nbsp;&nbsp;<button type="button" value="<%1913%>" name="check_update" class="button-rule" onclick="check_start();"><span class="roundleft_button">&nbsp;&nbsp; <%1913%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr>
-<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><%1910%><%1911%></b></td>
+<td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><%1914%><%1915%></b></td>
 </tr>
 
 
@@ -1198,7 +1196,7 @@ function setQosTabWidth(){
 <table align="left" border="0" width="100%">
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-<td colspan="2" ><b><%1912%>:</b>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="1" onClick="chgSel();" <%1913%> ><%1914%>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="2" onClick="chgSel();" <%1915%>><%1916%>
+<td colspan="2" ><b><%1916%>:</b>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="1" onClick="chgSel();" <%1917%> ><%1918%>&nbsp;&nbsp;<input type="radio" name="ruleSelect" value="2" onClick="chgSel();" <%1919%>><%1920%>
 </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -1211,7 +1209,7 @@ function setQosTabWidth(){
 <td colspan="2">
 <div id="mac_list" style="display: none;">
 <table align="left" border="0" width="100%">
-<%1917%>
+<%1921%>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 </table>
 </div>
@@ -1223,7 +1221,7 @@ function setQosTabWidth(){
 <div id="qos_name" style="display: none;">
 <table align="left" border="0" width="100%">
 <tr>
-<td width="15%" size=1><%1918%></td>
+<td width="15%" size=1><%1922%></td>
  <td width="85%"> 
  <input type="text" name="name" size="33" maxlength="32">
 </td>
@@ -1238,7 +1236,7 @@ function setQosTabWidth(){
 <div id="qos_keyword" style="display: none;">
 <table align="left" border="0" width="100%">
 <tr>
-<td width="15%" size=1><%1919%></td>
+<td width="15%" size=1><%1923%></td>
  <td width="85%"> 
  <input type="text" name="keyword" size="33" maxlength="101">
 </td>
@@ -1252,12 +1250,12 @@ function setQosTabWidth(){
 <td colspan="2">
 <div id="qos_macaddress" style="display: none;">
 <table align="left" border="0" width="100%">
-<td width="15%" size=1><%671%></td>
+<td width="15%" size=1><%672%></td>
  <td width="85%"> 
  <input type="text" name="mac" size="33" maxlength="17">
 </td>
 </tr>
-<td width="15%" size=1><%670%></td>
+<td width="15%" size=1><%671%></td>
  <td width="85%"> 
  <input type="text" name="device_name" size="33" maxlength="32">
 </td>
@@ -1273,28 +1271,28 @@ function setQosTabWidth(){
 <table align="left" border="0" width="100%">
 <tr>
 <td colspan="2" align="center">
-&nbsp;&nbsp;&nbsp;<button type="submit" value="Add" name="add_qos" class="button-rule" onclick="buttonClick(this,'Add');return check_data_add();"><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%614%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="Add" name="add_qos" class="button-rule" onclick="buttonClick(this,'Add');return check_data_add();"><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%615%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 &nbsp;&nbsp;&nbsp;<button type="button" value="Reset" name="reset_qos" class="button-rule" onclick="qos_reset();" ><span class="roundleft_button">&nbsp;&nbsp;  Reset</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-<tr><td colspan="2" ><b><%1920%></b></td></tr>
+<tr><td colspan="2" ><b><%1924%></b></td></tr>
 <tr>
 <td colspan="2">
 	<table border="1">
 		<tr><td align="middle">
-			<%1921%>
+			<%1925%>
 		</tr></td>
 		<tr><td>
-	        <select name="QosDatabaseList" size="6" onclick="selectCustomTab();" ><%1922%></select> 
+	        <select name="QosDatabaseList" size="6" onclick="selectCustomTab();" ><%1926%></select> 
 		</tr></td>
 	</table>
 </td>
 </tr>
 <tr>
 <td colspan="2" align="center">
-&nbsp;&nbsp;&nbsp;<button type="submit" value="Edit" name="edit_qos" class="button-rule" onclick="buttonClick(this,'Edit');return check_data_edit();" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%615%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete" name="delete_qos" class="button-rule" onclick="buttonClick(this,'Delete');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%616%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete All" name="delete_all_qos" class="button-rule" onclick="buttonClick(this,'Delete All');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%1883%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="Edit" name="edit_qos" class="button-rule" onclick="buttonClick(this,'Edit');return check_data_edit();" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%616%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete" name="delete_qos" class="button-rule" onclick="buttonClick(this,'Delete');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%617%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="Delete All" name="delete_all_qos" class="button-rule" onclick="buttonClick(this,'Delete All');" ><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%1887%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 
 </table>
@@ -1306,7 +1304,7 @@ function setQosTabWidth(){
 <td colspan="2">
 <div id="qos_table_list" style="display: none;">
 <table align="left" border="0" width="100%">
-<%1923%>
+<%1927%>
 </table>
 </div>
 </td>
@@ -1320,24 +1318,24 @@ function setQosTabWidth(){
 <tr>
 <input type="hidden" name="select" value="-1">
 <input type="hidden" name="priority_sel" value="-1">
-<INPUT type="hidden" name="WMM_value_2g" value="<%1924%>">
-<INPUT type="hidden" name="WMM_value_5g" value="<%1925%>">
-<input type="hidden" name="qos_enable" value="<%1845%>">
-<input type="hidden" name="qos_bw_enable" value="<%1846%>">
-<input type="hidden" name="uplink_bw" value="<%1847%>">
-<input type="hidden" name="repeater" value="<%407%>">
-<input type="hidden" name="repeater_an" value="<%408%>">
-<input type="hidden" name="bw_set_sel" value="<%1848%>">
-<input type="hidden" name="enable_apmode" value="<%409%>">
-<input type="hidden" name="enable_stamode" value="<%410%>">
+<INPUT type="hidden" name="WMM_value_2g" value="<%1928%>">
+<INPUT type="hidden" name="WMM_value_5g" value="<%1929%>">
+<input type="hidden" name="qos_enable" value="<%1849%>">
+<input type="hidden" name="qos_bw_enable" value="<%1850%>">
+<input type="hidden" name="uplink_bw" value="<%1851%>">
+<input type="hidden" name="repeater" value="<%408%>">
+<input type="hidden" name="repeater_an" value="<%409%>">
+<input type="hidden" name="bw_set_sel" value="<%1852%>">
+<input type="hidden" name="enable_apmode" value="<%410%>">
+<input type="hidden" name="enable_stamode" value="<%411%>">
 
-<input type="hidden" name="qos_down_streaming_enable" value="<%1926%>">
-<input type="hidden" name="qos_update_enable" value="<%1927%>">
-<input type="hidden" name="choose_selection" value="<%1928%>">
-<input type="hidden" name="office_idx" value="<%1929%>">
-<input type="hidden" name="custom_idx" value="<%1930%>">
-<input type="hidden" name="custom_mac_idx" value="<%1931%>">
-<input type="hidden" name="apply_page" value="<%1932%>">
+<input type="hidden" name="qos_down_streaming_enable" value="<%1930%>">
+<input type="hidden" name="qos_update_enable" value="<%1931%>">
+<input type="hidden" name="choose_selection" value="<%1932%>">
+<input type="hidden" name="office_idx" value="<%1933%>">
+<input type="hidden" name="custom_idx" value="<%1934%>">
+<input type="hidden" name="custom_mac_idx" value="<%1935%>">
+<input type="hidden" name="apply_page" value="<%1936%>">
 <!--[if IE 6]>
 <input type="hidden" name="browser_ver" value="ie6">
 <![endif]-->
@@ -1348,10 +1346,10 @@ function setQosTabWidth(){
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%246%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%247%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%247%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%248%> </span>
       </div>
 
 <a name="helpframe-anchor"></a>

@@ -1304,7 +1304,7 @@ start_wl(void)
     }
     /*Foxconn add start by Antony end 09/13/2013 */
 #if (defined R6400)
-    system("wl -i eth1 interference 4");
+    system("wl -i eth1 interference_override 4"); /* CSP#1043477 BRCM Blake Kuan confirmed change the wl command to set the fix interference*/
 #endif  
 }
 

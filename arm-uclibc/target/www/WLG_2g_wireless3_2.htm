@@ -24,7 +24,7 @@ var initialized = false;
 function displayWepRadio()
 {
     var cf = document.forms[0];
-    var wlan_mode = "<%1633%>";
+    var wlan_mode = "<%1635%>";
     
     if (wlan_mode == "g&#32;and&#32;b")//Up to 54Mbps
     {
@@ -70,7 +70,7 @@ function initScrn()
 function wpapskCheck()
 {
     var cf = document.forms[0];
-    var wlan_mode = "<%1633%>";
+    var wlan_mode = "<%1635%>";
     if (wlan_mode != "g&#32;and&#32;b")
     {
         alert("<%43%>");
@@ -82,7 +82,7 @@ function wpapskCheck()
 function autopskCheck()
 {
     var cf = document.forms[0];
-    var wlan_mode = "<%1633%>";
+    var wlan_mode = "<%1635%>";
     if (wlan_mode != "g&#32;and&#32;b")
     {
         alert("<%46%>");
@@ -150,60 +150,60 @@ function checkData()
 <tr>
 <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
 <tr>
-<td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wireless')" tabindex="-1"><b><%131%> - <%1634%></b></a></td>
+<td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','wireless')" tabindex="-1"><b><%132%> - <%1636%></b></a></td>
 </tr>
 <tr>
-<td align="left"><input type="checkbox" name="enable_bssid" value="1"><%1635%></td>
-</tr>
-
-<tr>
-<td align="left"><input type="checkbox" name="enable_ssid_bc" value="1"><%137%></td>
+<td align="left"><input type="checkbox" name="enable_bssid" value="1"><%1637%></td>
 </tr>
 
-<%132%>
 <tr>
-<td align="left"><input type="checkbox" name="allow_see_access" value="1"><%1636%></td>
+<td align="left"><input type="checkbox" name="enable_ssid_bc" value="1"><%138%></td>
 </tr>
-<%135%>
+
+<%133%>
+<tr>
+<td align="left"><input type="checkbox" name="allow_see_access" value="1"><%1638%></td>
+</tr>
+<%136%>
 
 <tr>
-<td width="50%" align="left"><%1637%>:</td>
+<td width="50%" align="left"><%1639%>:</td>
 <td width="50%">
-<input type="text" name="ssid" value="<%1638%>" size="20" maxlength="32"></td>
+<input type="text" name="ssid" value="<%1640%>" size="20" maxlength="32"></td>
 </tr>
 
 <tr>
     <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
 <tr>
-    <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','security')" tabindex="-1"><b><%148%> - <%1634%></b></a></td></tr>
+    <td colspan="2"><a href="javascript:parent.loadhelp('WLG_wireless_2','security')" tabindex="-1"><b><%149%> - <%1636%></b></a></td></tr>
 
 <tr><td colspan="2">
 <table cellpadding="0" cellspacing="3" width="100%">
 <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="Disable" checked ><%149%><td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="Disable" checked ><%150%><td></tr>
 <tr>
         <td colspan="2">
             <div id="wep_radio_2G" style="display: block;">
-            <input type="radio" name="security_type" value="WEP" onClick="buttonFilter();this.form.submit();" ><%150%>
+            <input type="radio" name="security_type" value="WEP" onClick="buttonFilter();this.form.submit();" ><%151%>
             </div>    
         </td></tr>
 <!--
 <tr>
-    <td colspan="2"><input type="radio" name="security_type" value="WPA-PSK" <%151%> onClick="wpapskCheck();" ><%152%></td></tr>
+    <td colspan="2"><input type="radio" name="security_type" value="WPA-PSK" <%152%> onClick="wpapskCheck();" ><%153%></td></tr>
 -->    
 <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%151%> onClick="buttonFilter();this.form.submit();" ><%153%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="WPA2-PSK" <%152%> onClick="buttonFilter();this.form.submit();" ><%154%></td></tr>
 <tr>
-        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%151%> onClick="autopskCheck();" ><%154%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type" value="AUTO-PSK" <%152%> onClick="autopskCheck();" ><%155%></td></tr>
 </table>
 </td></tr>
   </table>
   <input type="hidden" name="only_mode" value="0">
-  <input type="hidden" name="bssid_enable" value="<%1647%>">
-  <input type="hidden" name="ssid_bc_enable" value="<%1648%>">
+  <input type="hidden" name="bssid_enable" value="<%1649%>">
+  <input type="hidden" name="ssid_bc_enable" value="<%1650%>">
 
-<input type="hidden" name="enable_allow_see_access" value="<%1649%>"> 
-  <input type="hidden" name="enable_apmode" value="<%409%>">
+<input type="hidden" name="enable_allow_see_access" value="<%1651%>"> 
+  <input type="hidden" name="enable_apmode" value="<%410%>">
 </form>
 </body>
 </html>

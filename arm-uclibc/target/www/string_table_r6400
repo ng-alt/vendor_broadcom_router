@@ -4,7 +4,7 @@ lang_ori_english="Auto English German SimplifiedChinese TraditionalChinese Korea
 ////////////////////////////////Please keep the line below as it is ///////////////////////////////////////////////////////////////
 lang_ori="Auto English Deutsch 简体中文 繁體中文 한국어 Русский Español Polski Français Italiano Svenska Dansk Nederlands Ελληνικά Norsk Čeština Slovenščina Português Magyar Română Suomi Slovenčina Türkçe 日本語"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-version="1.0.1.18_2.1.38.1"
+version="1.0.1.22_2.1.38.1"
 language="English"
 support_url="http://kbserver.netgear.com/main.asp"
 
@@ -203,7 +203,7 @@ info_mark_mac="MAC Address"
 info_mark_reg="Region"
 info_mark_ver="Firmware Version"
 info_mark_cur="LAN Port"
-info_mark_mask="Subnet Mask"
+
 info_mark_ssid="Name (SSID)"
 //For 3400
 info_mark_2g_ssid="Name (2.4G SSID)"
@@ -312,7 +312,7 @@ basic_pppoe_login="Login"
 basic_pppoe_passwd="Password"
 basic_pppoe_serv_name="<b>Service Name</b> (If Required)"
 //pptp
-basic_pptp_myip="My IP Address"
+
 basic_pptp_servip="Server Address"
 basic_pptp_connection_id="Connection ID/Name"
 //bpa
@@ -461,7 +461,7 @@ adva_wlan_router="Enable Wireless Router Radio"
 adva_wlan_pream="Preamble Mode"
 adva_wlan_pream_long="Long Preamble"
 adva_wlan_pream_short="Short Preamble"
-
+wl_hwbutton="(This action is currently disabled until wireless On/Off button is pressed)"
 adva_wlan_acl_on="Turn Access Control On"
 adva_wlan_acl_entry="Wireless Card Entry"
 adva_wlan_acl_cards="Available Wireless Cards"
@@ -510,7 +510,6 @@ ddns_head="Dynamic DNS"
 ddns_use_dnsser="Use a Dynamic DNS Service"
 ddns_serpro="Service Provider"
 ddns_hostname="Host Name"
-ddns_username="User Name"
 ddns_use_wildcards="Use Wildcards"
 
 //Dynamic DNS Netgear
@@ -884,19 +883,14 @@ invalid_servip="Invalid server address. Please enter it again.\n"
 //trigger
 trigger_length_20="The router can support 20 only port triggering rules."
 trigger_ser_name_null="Service name cannot be null."
-trigger_null=" must not be blank.\n"
+
 trigger_1_65535=", must be in the range 1-65534.\n"
 trigger_invalid="Invalid "
 trigger_invalid_port_rang="Invalid inbound connection port range.\n"
 timeout_null="Port triggering time-out cannot be null."
 //forward
 invalid_ser_name="Invalid service name."
-//block site
-//email
 error_email_addr="Error: Invalid e-mail address."
-//change password
-newpas_notmatch="The password you typed does not match. Please enter it again."
-//ddns
 hostname_null="Host name can not be blank."
 password_null="Password cannot be blank."
 status0="Dynamic DNS service is not enabled."
@@ -934,7 +928,6 @@ all_mac_null="Please enter a repeater MAC address."
 //backup setting
 filename_null="File name cannot be blank."
 not_cfg="Please assign the correct file. (File format is *.cfg.)"
-ask_for_restore="Warning! \nRestoring settings from a configuration file will erase all of the current settings. \nAre you sure you want to do this?"
 
 //upgrade
 upgrade_turnoff_auto="The firmware upgrade can contain valuable enhancements.\n Are you sure you want to turn off automatic checking?\n After you turn it off, you can reenable it through the Router Upgrade screen."
@@ -1357,7 +1350,7 @@ file_sys="File System"
 browse_folder="Browse for Folder"
 usb_apro_dev="USB Drive Approved Devices"
 via_internet="via internet"
-usb_httpvia_port="http port via internet should be 80 or in the range [1024 ~ 65534] ."
+usb_httpvia_port="https port via internet should be 80, 443, or in the range [1024 ~ 65534] ."
 usb_ftpvia_port="ftp port via internet should be 21 or in the range [1024 ~ 65534] ."
 folder_notExist="This folder not exist,please input correct folder path."
 folder_NULL="Folder can not be NULL!"
@@ -1624,7 +1617,6 @@ can_help_recover="We can help you to recover the router's admin password. Please
 enter_serial="Enter the router's Serial Number"
 find_on_label="(You can find it on the router product label.)"
 alert_enable_passwd_revery="If you do not enable password recovery and forget your new password, the only way to recover the password is to reset the device to factory default."
-enter_ans_each_question="Please enter your answer for each question."
 select_a_question="Please select a question."
 enable_password_recovery="Enable Password Recovery"
 lastime_password_recovered="Last time password was recovered"
@@ -1828,7 +1820,7 @@ tivo_mark="Enable TiVo<sup>&reg;</sup> support."
 arp_head="ARP Protection / IP MAC Binding"
 arp_enable="Enable IP-MAC Binding"
 arp_des="This function is designed to protect your router from ARP attacks.With this function enabled,Address Reservation table will be used as the static ARP table,no more ARP response from LAN ports will be processed.Devices not registed in the table will not have internet access.<br/><br/>Enable this feature by checking the checkbox above, and clicking "Apply" button. Once enabled, use the "Edit" button below to manually configure the IP-MAC binding pairs."
-h_arp="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>ARP Protection/IP-MAC Binding Help</B></font></p><p>IP-MAC binding protects your router from ARP attacks. With this function enabled, your router uses the address reservation table under LAN setup as the static ARP table. You can add, remove, or edit the IP-MAC binding pairs in the address reservation table. WARNING! Devices that are not registered in this table will NOT have internet access. Ensure that at least one LAN device?™s IP and MAC address pair is registered in this table. You can use the Edit button on this screen to directly access the address reservation table.<br><br><br><br></div></body>"
+h_arp="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><P><font size=4><B>ARP Protection/IP-MAC Binding Help</B></font></p><p>IP-MAC binding protects your router from ARP attacks. With this function enabled, your router uses the address reservation table under LAN setup as the static ARP table. You can add, remove, or edit the IP-MAC binding pairs in the address reservation table. WARNING! Devices that are not registered in this table will NOT have internet access. Ensure that at least one LAN device's IP and MAC address pair is registered in this table. You can use the Edit button on this screen to directly access the address reservation table.<br><br><br><br></div></body>"
 arp_edit_mark="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 ipmac_edit_warning="If the rule is configured wrong, no device would be able to access the router interface."
 ipmac_delete_warning="If the last device is deleted, no device will be able to access the router interface."
@@ -2130,7 +2122,7 @@ guest_over_num="At most 8 Guest access sessions are allowed at a time and that n
 6rd="6rd Tunnel"
 6rd_br="6rd (IPv6 Rapid Deployment) Configuration"
 6rd_prefix="6rd Prefix"
-6rd_prefix_length = "6rd Prefix Length"
+6rd_prefix_length="6rd Prefix Length"
 6rd_masklen="6rd IPv4 Address Mask Length"
 6rd_ipv4br_address="6rd IPv4 Border Relay Address"
 intranet_fixed_ip="Fixed IP"

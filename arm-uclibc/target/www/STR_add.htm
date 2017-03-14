@@ -103,31 +103,31 @@ function checkData()
 {
  	var cf = document.forms[0];
 	var msg = "";
-	msg+= checkBlank(cf.route_name, "<%1347%>");
+	msg+= checkBlank(cf.route_name, "<%1349%>");
 	
     if(msg.length <= 2)
         msg=" ";
         
     if( cf.route_name.value.match( /[^\x20-\x7E]/ ))
     {
-		alert("<%4%> " + "<%1347%>");
+		alert("<%4%> " + "<%1349%>");
 		cf.route_name.focus();
 		return false;
 	}
 
 	if(checkIP(cf.SRouteSubnetMask1,cf.SRouteSubnetMask2,cf.SRouteSubnetMask3,cf.SRouteSubnetMask4,255))
-		msg+= "<%458%> ";
+		msg+= "<%459%> ";
 
 	if(checkIP(cf.SRouteDestAddr1,cf.SRouteDestAddr2,cf.SRouteDestAddr3,cf.SRouteDestAddr4,254)
 		|| (cf.SRouteDestAddr1.value == 127) || (cf.SRouteDestAddr1.value >= 224))
-		msg+= "<%1348%>\n ";
+		msg+= "<%1350%>\n ";
 
 	if(checkIP(cf.SRouteGatewayAddr1,cf.SRouteGatewayAddr2,cf.SRouteGatewayAddr3,cf.SRouteGatewayAddr4,254)
 		|| (cf.SRouteGatewayAddr1.value == 127) || (cf.SRouteGatewayAddr1.value >= 224) 
 		|| (parseInt(cf.SRouteGatewayAddr4.value,10) == 0) )
-		msg+= "<%459%>\n ";
+		msg+= "<%460%>\n ";
 
-	msg+= checkInt(cf.route_metric, "<%1349%>", 2, 15, true)+"\n ";
+	msg+= checkInt(cf.route_metric, "<%1351%>", 2, 15, true)+"\n ";
 	if (msg.length > 3)
 	{
 		alert(msg);
@@ -223,7 +223,7 @@ function loadSettings()
 	    cf.SRouteGatewayAddr4.value = "";
 	}
 
-	cf.route_metric.value = "<%1350%>";
+	cf.route_metric.value = "<%1352%>";
 }
 
 //-->
@@ -237,7 +237,7 @@ function loadSettings()
 	<form id="target"  method="POST" action="routinfo.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%68%>">
-<div class="subhead2"> <%389%></div>
+<div class="subhead2"> <%390%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -252,29 +252,29 @@ function loadSettings()
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 	<tr>
-		<td width="50%" nowrap><%1347%> </td>
+		<td width="50%" nowrap><%1349%> </td>
 		<td width="50%" align="left"><input type="text" name="route_name" size="31" maxlength="30"></td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="CHECKBOX" name="SRoutePrivate"> <%1351%> </td>
+		<td colspan="2"><input type="CHECKBOX" name="SRoutePrivate"> <%1353%> </td>
 	</tr>
 	<tr>
-		<td colspan="2"><input type="CHECKBOX" name="SRouteActive"> <%1341%> </td>
+		<td colspan="2"><input type="CHECKBOX" name="SRouteActive"> <%1343%> </td>
 	</tr>
 	<tr>
-		<td nowrap><%1352%></td>
+		<td nowrap><%1354%></td>
 		<td nowrap align="left" class="num"><input type="text" name="SRouteDestAddr1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteDestAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 	</tr>
 	<tr>
-		<td nowrap><%476%></td>
+		<td nowrap><%477%></td>
 		<td nowrap align="left" class="num"><input type="text" name="SRouteSubnetMask1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteSubnetMask2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteSubnetMask3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteSubnetMask4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 	</tr>
 	<tr>
-		<td nowrap><%565%> 	</td>
+		<td nowrap><%566%> 	</td>
 		<td nowrap align="left" class="num"><input type="text" name="SRouteGatewayAddr1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="SRouteGatewayAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 	</tr>
 	<tr>
-		<td nowrap><%1349%></td>
+		<td nowrap><%1351%></td>
 		<td nowrap align="left" class="num"><input type="TEXT" name="route_metric" class="num" size="3" maxlength="2"></td>
 	</tr>
 
@@ -288,20 +288,20 @@ function loadSettings()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%246%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%247%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%247%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%248%> </span>
       </div>
 
 
 
-  <INPUT name=route_dest type=hidden value= "<%1353%>">
-  <INPUT name=route_netmask type=hidden value= "<%1354%>">
-  <INPUT name=route_gateway type=hidden value= "<%1355%>">
-  <INPUT name=route_active type=hidden value= "<%1356%>">
-  <INPUT name=route_private type=hidden value= "<%1357%>">
-  <INPUT name=route_name2 type=hidden value= "<%1358%>">
+  <INPUT name=route_dest type=hidden value= "<%1355%>">
+  <INPUT name=route_netmask type=hidden value= "<%1356%>">
+  <INPUT name=route_gateway type=hidden value= "<%1357%>">
+  <INPUT name=route_active type=hidden value= "<%1358%>">
+  <INPUT name=route_private type=hidden value= "<%1359%>">
+  <INPUT name=route_name2 type=hidden value= "<%1360%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>
