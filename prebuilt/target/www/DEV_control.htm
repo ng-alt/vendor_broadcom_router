@@ -378,13 +378,13 @@ function block_devices()
     for(i=0;i<checkboxElements.length;i++) {
 		if (checkboxElements[i].checked == true) {
 			if(block_checked==0) {
-				if(!confirm("<%723%>"))
+				if(!confirm("<%727%>"))
 					return false;
 				else 
 					block_checked = 1;
 			}
 			if(router_user==rule_ip[i].innerHTML && ip_checked==0) {
-				alert("<%724%>");
+				alert("<%728%>");
 				ip_checked = 1;
 			}
 		}
@@ -555,25 +555,25 @@ function edit_items(type)
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-  <td colspan="2"><a href="javascript:loadhelp('LAN_lan','device_name')" tabindex="-1"><b><%725%></b></a></td>
+  <td colspan="2"><a href="javascript:loadhelp('LAN_lan','device_name')" tabindex="-1"><b><%729%></b></a></td>
 </tr>
     
 <tr>
 	<td colspan="2" nowrap>
         <input type="checkbox" id="enable_acl" name="enable_acl" value="enable_acl" onclick="handle_all_items(this);">
-	    <a href="javascript:loadhelp('LAN_lan','dhcp')" tabindex="-1"><%726%></a> 
+	    <a href="javascript:loadhelp('LAN_lan','dhcp')" tabindex="-1"><%730%></a> 
 	</td>
 </tr>
 <tr>
-<td nowrap><%727%></td>
+<td nowrap><%731%></td>
 <td nowrap align="right" class="num"></td>
 </tr>
 <tr>
-<td nowrap><input type="radio" id="allow_all" name="access_all" value="allow_all"><%728%></td>
+<td nowrap><input type="radio" id="allow_all" name="access_all" value="allow_all"><%732%></td>
 <td nowrap align="right" class="num"></td>
 </tr>
 <tr>
-<td nowrap><input type="radio" id="block_all" name="access_all" value="block_all"><%729%></td>
+<td nowrap><input type="radio" id="block_all" name="access_all" value="block_all"><%733%></td>
 <td nowrap align="right" class="num"></td>
 </tr>
 
@@ -584,9 +584,9 @@ function edit_items(type)
 
 <tr>
 <td >
-	&nbsp;&nbsp;&nbsp;<button type="submit" value="allow" id="allow" name="allow" class="button-rule" onclick="buttonClick(this,'allow');allow_devices();return checkData();" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%730%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="submit" value="allow" id="allow" name="allow" class="button-rule" onclick="buttonClick(this,'allow');allow_devices();return checkData();" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%734%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;<button type="submit" value="block" id="block" name="block" class="button-rule" onclick="buttonClick(this,'block');if(block_devices())return checkData();" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%731%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+    &nbsp;&nbsp;&nbsp;<button type="submit" value="block" id="block" name="block" class="button-rule" onclick="buttonClick(this,'block');if(block_devices())return checkData();" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%735%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	<input type="hidden" name="select" value="-1">
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
@@ -609,9 +609,9 @@ function edit_items(type)
 		<td nowrap align="left" width="35%"><span class="subheadtext"><%704%></span></td>
 		<td nowrap align="left" width="20%"><span class="subheadtext"><%499%></span></td>
 		<td nowrap align="left" width="20%"><span class="subheadtext"><%703%></span></td>
-		<td nowrap align="left" width="10%"><span class="subheadtext"><%732%></span></td>
+		<td nowrap align="left" width="10%"><span class="subheadtext"><%736%></span></td>
 	</tr>
-<%733%>
+<%737%>
 	
 	</table>
 </td>
@@ -622,7 +622,7 @@ function edit_items(type)
 	<td colspan="2">
 		<span onClick="handle_white_list_table();"  style="cursor:pointer">
 			<img id="barrow_white" src="img/barrow_nobackground.gif">
-			<%734%>
+			<%738%>
 		</span>
 	</td>
 </tr>
@@ -630,7 +630,7 @@ function edit_items(type)
 <tr><td colspan="2" ><div height="12" id="white_list_line" style="background-image:url('liteblue.gif');width:100%;display:none">&nbsp;</div></td></tr>
 <tr >
 <td colspan="2"  id="white_list_body" style="display:none" width="100%">
-    &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="Delete" id="delete_white" name="delete_white" class="button-rule" onclick="buttonClick(this,'Delete');delete_items('white');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%735%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+    &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="Delete" id="delete_white" name="delete_white" class="button-rule" onclick="buttonClick(this,'Delete');delete_items('white');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%739%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="add" id="add_white" name="add_white" class="button-rule" onclick="buttonClick(this,'add_white');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%638%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -644,9 +644,9 @@ function edit_items(type)
         </td>
 		<td nowrap align="left" width="50%"><span class="subheadtext"><%704%></span></td>
 		<td nowrap align="left" width="30%"><span class="subheadtext"><%703%></span></td>
-		<td nowrap align="left" width="15%"><span class="subheadtext"><%732%></span></td>
+		<td nowrap align="left" width="15%"><span class="subheadtext"><%736%></span></td>
 	</tr>
-<%736%>
+<%740%>
 
 	</table>
 </td>
@@ -658,7 +658,7 @@ function edit_items(type)
 	<td >
 		<span onClick="handle_black_list_table();" style="cursor:pointer">
 			<img id="barrow_black" src="img/barrow_nobackground.gif">
-			<%737%>
+			<%741%>
 		</span>
 	</td>
 </tr>
@@ -666,7 +666,7 @@ function edit_items(type)
 <tr><td colspan="2" ><div height="12" id="black_list_line" style="background-image:url('liteblue.gif');width:100%;display:none">&nbsp;</div></td></tr>
 <tr>
 <td colspan="2" id="black_list_body" style="display:none" width="100%">
-    &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="Delete" id="delete_black" name="delete_black" class="button-rule" onclick="buttonClick(this,'Delete');delete_items('black');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%735%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+    &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="Delete" id="delete_black" name="delete_black" class="button-rule" onclick="buttonClick(this,'Delete');delete_items('black');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%739%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="add" id="add_black" name="add_black" class="button-rule" onclick="buttonClick(this,'add_black');" ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;<%638%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -678,9 +678,9 @@ function edit_items(type)
         </td>
 		<td nowrap align="left" width="50%"><span class="subheadtext"><%704%></span></td>
 		<td nowrap align="left" width="30%"><span class="subheadtext"><%703%></span></td>
-		<td nowrap align="left" width="15%"><span class="subheadtext"><%732%></span></td>
+		<td nowrap align="left" width="15%"><span class="subheadtext"><%736%></span></td>
 	</tr>
-<%738%>
+<%742%>
 
 	</table>
 </td>
@@ -701,15 +701,15 @@ function edit_items(type)
       </div>
 
 
-    <input name="enable_access_control" type="hidden" value= "<%716%>">
-    <input name="access_all_setting" type="hidden" value= "<%739%>">
-	<input name="allowed_text" type="hidden" value="<%740%>">
-	<input name="blocked_text" type="hidden" value="<%741%>">
+    <input name="enable_access_control" type="hidden" value= "<%720%>">
+    <input name="access_all_setting" type="hidden" value= "<%743%>">
+	<input name="allowed_text" type="hidden" value="<%744%>">
+	<input name="blocked_text" type="hidden" value="<%745%>">
 	<input name="rule_settings" type="hidden" value="">
 	<input name="delete_white_lists" type="hidden" value="">
 	<input name="delete_black_lists" type="hidden" value="">
  	<input name="edit_lists" type="hidden" value=""> 
-	<input name="router_access_user" type="hidden" value="<%742%>">
+	<input name="router_access_user" type="hidden" value="<%746%>">
 	<input name="is_edit_itself" type="hidden" value="">
 
 </form>
