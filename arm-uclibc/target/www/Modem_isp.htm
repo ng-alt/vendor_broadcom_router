@@ -1,7 +1,7 @@
 <html>
 <head>
 <%11%>
-<title><%3273%></title>
+<title><%3361%></title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <%14%>
 <script language="JavaScript" type="text/javascript">
@@ -11,201 +11,201 @@ var countryArr = new Array();
 
 
 countryArr['1000'] = [ 
-<%3108%>
+<%3196%>
 ];
 
 
 countryArr['0'] = [ 
-<%3109%>
+<%3197%>
 ]; 
 
 /* Australia country code: 61 */
 countryArr['61'] = [ 
-<%3110%>
+<%3198%>
 ]; 
 
 /* Austria country code: 43 */
 countryArr['43'] = [ 
-<%3111%>
+<%3199%>
 ]; 
 
 /* Belgium country code: 32 */
 countryArr['32'] = [ 
-<%3112%>
+<%3200%>
 ]; 
 
 /* Brazil country code: 55 */
 countryArr['55'] = [ 
-<%3113%>
+<%3201%>
 ]; 
 
 /* Canada country code: 1001 */
 countryArr['1001'] = [ 
-<%3114%>
+<%3202%>
 ];
 
 /* Chile country code: 56 */
 countryArr['56'] = [ 
-<%3115%>
+<%3203%>
 ]; 
 
 /* Czech country code: 420 */
 countryArr['420'] = [ 
-<%3116%>
+<%3204%>
 ]; 
 
 /* Denmark country code: 45 */
 countryArr['45'] = [ 
-<%3117%>
+<%3205%>
 ]; 
 
 /* Dubai country code: 971 */
 countryArr['971'] = [ 
-<%3118%>
+<%3206%>
 ]; 
 
 /* Finland   */
 countryArr['358'] = [ 
-<%3119%>
+<%3207%>
 ]; 
 
 /* France  */
 countryArr['33'] = [ 
-<%3120%>
+<%3208%>
 ]; 
 
 /* Germany  */
 countryArr['49'] = [ 
-<%3121%>
+<%3209%>
 ]; 
 
 /* Hong Kong  */
 countryArr['852'] = [ 
-<%3122%>
+<%3210%>
 ]; 
 
 /*  Hungary   */
 countryArr['36'] = [ 
-<%3123%>
+<%3211%>
 ]; 
 
 /*  India   */
 countryArr['91'] = [ 
-<%3124%>
+<%3212%>
 ]; 
 
 /*  Indonesia   */
 countryArr['62'] = [ 
-<%3125%>
+<%3213%>
 ]; 
 
 /*  Italy  */
 countryArr['39'] = [ 
-<%3126%>
+<%3214%>
 ]; 
 
 /*  Malaysia  */
 countryArr['60'] = [ 
-<%3127%>
+<%3215%>
 ]; 
 
 /*  Mexico  */
 countryArr['521'] = [ 
-<%3128%>
+<%3216%>
 ]; 
 
 /* Netherlands */
 countryArr['31'] = [ 
-<%3129%>
+<%3217%>
 ]; 
 
 /* New Zealand  */
 countryArr['64'] = [ 
-<%3130%>
+<%3218%>
 ]; 
 
 /* Norway */
 countryArr['47'] = [ 
-<%3131%>
+<%3219%>
 ]; 
 
 /*   Peru   */
 countryArr['51'] = [ 
-<%3132%>
+<%3220%>
 ]; 
 
 /*  Philippines    */
 countryArr['63'] = [ 
-<%3133%>
+<%3221%>
 ]; 
 
 /*  Poland    */
 countryArr['48'] = [ 
-<%3134%>
+<%3222%>
 ];
 
 /* Portugal */
 countryArr['351'] = [ 
-<%3135%>
+<%3223%>
 ]; 
 
 /* Russia */
 countryArr['7'] = [ 
-<%3136%>
+<%3224%>
 ]; 
 
 /*  Singapore   */
 countryArr['65'] = [ 
-<%3137%>
+<%3225%>
 ]; 
 
 /*  Slovakia   */
 countryArr['421'] = [ 
-<%3138%>
+<%3226%>
 ]; 
 
 /* South Africa */
 countryArr['27'] = [ 
-<%3139%>
+<%3227%>
 ]; 
 
 /* Spain */
 countryArr['34'] = [ 
-<%3140%>
+<%3228%>
 ]; 
 
 /*   Sweden   */
 countryArr['46'] = [ 
-<%3141%>
+<%3229%>
 ]; 
 
 /* Switzerland */
 countryArr['41'] = [ 
-<%3142%>
+<%3230%>
 ]; 
 
 /*   Taiwan   */
 countryArr['886'] = [ 
-<%3143%>
+<%3231%>
 ]; 
 
 /*   Thailand   */
 countryArr['66'] = [ 
-<%3144%>
+<%3232%>
 ]; 
 
 /* UK */
 countryArr['44'] = [ 
-<%3145%>
+<%3233%>
 ]; 
 
 /* U.S.A. */
 countryArr['1'] = [ 
-<%3146%>
+<%3234%>
 ]; 
 
 countryArr['9999'] = [ 
-<%3148%>
+<%3236%>
 ]; 
 
 function CloseWindow()
@@ -216,16 +216,16 @@ function CloseWindow()
 
 function msg_close()
 {
- alert("<%3274%>");
+ alert("<%3362%>");
  CloseWindow();
 }
 
 function checkCPINData()
 {
 	  var cf = document.forms[0];
-    var pukEnable = "<%3341%>";
-    var puk2Enable = "<%3342%>";
-    var pin2Enable = "<%3343%>";
+    var pukEnable = "<%3429%>";
+    var puk2Enable = "<%3430%>";
+    var pin2Enable = "<%3431%>";
     var state = cf.runtime_status.value;
 	
     if(state == "PIN Required" || state == "PIN Number Error" ||
@@ -236,7 +236,7 @@ function checkCPINData()
     	  cf.reboot_options.value = "yes";
         if (cf.sysNewPIN.value.length < 4 || cf.sysNewPIN.value.length > 8) 
         {
-            alert("<%3149%>");
+            alert("<%3237%>");
             return false;
         }
 	    
@@ -244,21 +244,21 @@ function checkCPINData()
         {
             if (cf.sysNewPIN.value.match(/[^\x30-\x39]/))
             {
-                alert("<%3149%>");
+                alert("<%3237%>");
                 return false;
             }
         }
 	    
         if (cf.sysNewPIN.value != cf.sysNewPINconfirm.value)  
         {    
-            alert("<%3344%>");
+            alert("<%3432%>");
             return false;
         }
         if(pin2Enable == "1")
         {
             if (cf.sysNewPIN2.value.length < 4 || cf.sysNewPIN2.value.length > 8) 
             {
-                alert("<%3345%>");
+                alert("<%3433%>");
                 return false;
             }
 	    
@@ -266,13 +266,13 @@ function checkCPINData()
             {
                 if (cf.sysNewPIN2.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3345%>");
+                    alert("<%3433%>");
                     return false;
                 }
             }
             if (cf.sysNewPIN2.value != cf.sysNewPIN2confirm.value)  
             {    
-                alert("<%3346%>");
+                alert("<%3434%>");
                 return false;
             }
         }
@@ -281,7 +281,7 @@ function checkCPINData()
         {
             if (cf.sysNewPUK.value.length != 8) 
             {
-                alert("<%3347%>");
+                alert("<%3435%>");
                 return false;
             }
 	    
@@ -289,14 +289,14 @@ function checkCPINData()
             {
                 if (cf.sysNewPUK.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3347%>");
+                    alert("<%3435%>");
                     return false;
                 }
             }		
 	    	
             if (cf.sysNewPUK.value != cf.sysNewPUKconfirm.value)  
             {    
-                alert("<%3348%>");
+                alert("<%3436%>");
                 return false;
             }		
         }
@@ -305,7 +305,7 @@ function checkCPINData()
         {
             if (cf.sysNewPUK2.value.length != 8) 
             {
-                alert("<%3349%>");
+                alert("<%3437%>");
                 return false;
             }
 	    
@@ -313,13 +313,13 @@ function checkCPINData()
             {
                 if (cf.sysNewPUK2.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3349%>");
+                    alert("<%3437%>");
                     return false;
                 }
             }	
             if (cf.sysNewPUK2.value != cf.sysNewPUK2Confirm.value)  
             {    
-                alert("<%3350%>");
+                alert("<%3438%>");
                 return false;
             }	
         }	
@@ -331,7 +331,7 @@ function checkCPINData()
         cf.reboot_options.value = "yes";
         if (cf.sysUnlockCode.value.match(/[^\x30-\x39]/))
         {
-            alert("<%3351%>");	
+            alert("<%3439%>");	
         	  return false;
         }	
     }    	
@@ -358,8 +358,8 @@ function restore_username_passwd()
 function username_passwd_convert()
 {
     var cf = document.forms[0];
-    var username = "<%3152%>";
-    var passwd = "<%3153%>";
+    var username = "<%3240%>";
+    var passwd = "<%3241%>";
     if (username == "guest")
         cf.ppp_username.value = "<none>";
 	
@@ -655,7 +655,7 @@ function ispChk()
 {
     var cf = document.forms[0];	
     var mode = cf.sys_mode.value;
-    var cidValue = "<%3150%>";
+    var cidValue = "<%3238%>";
 
     if(mode == "HSDPA")
     {
@@ -685,10 +685,10 @@ function loadSettings()
     var cf = document.forms[0];
     var mode = cf.sys_mode.value;
     var pdp_type = cf.pdp_type_org.value;
-    var cidValue = "<%3150%>";
+    var cidValue = "<%3238%>";
     var country_index = cf.country_select_index.value;
-    cf.ppp_username.value = "<%3152%>";
-    cf.ppp_passwd.value = "<%3153%>";
+    cf.ppp_username.value = "<%3240%>";
+    cf.ppp_passwd.value = "<%3241%>";
 	
     init_username_passwd_EnableOrNot();
     username_passwd_convert();
@@ -706,7 +706,7 @@ function connectCheck()
 {
        var cf = document.forms[0];
        var Conn = cf.runtime_status.value;
-       var msg ="<%3154%>";
+       var msg ="<%3242%>";
       
        if(Conn == "connected" || Conn == "Connected")
                alert(msg);
@@ -759,7 +759,7 @@ function setSelectOption(selectObj, optionList, firstOption, selected)
 function setCountry(province) 
 { 
     var cf = document.forms[0];
-    var isp_index = "<%3155%>";
+    var isp_index = "<%3243%>";
     var mode = cf.sys_mode.value;
     if(mode == "HSDPA")
     {	
@@ -775,7 +775,7 @@ function setCountry(province)
 
 function region_init() 
 { 
-    var country_index = "<%3151%>";
+    var country_index = "<%3239%>";
     setSelectOption('wwan_country_setting_index', '1000', null,country_index); 
 } 
 
@@ -784,23 +784,23 @@ function init()
     var cf = document.forms[0];
     var state = cf.runtime_status.value;
     var mode;
-    cf.wwan_isp_setting.value = "<%3155%>";
-    cf.wwan_country_setting.value = "<%3151%>";
+    cf.wwan_isp_setting.value = "<%3243%>";
+    cf.wwan_country_setting.value = "<%3239%>";
     cf.wwan_isp_setting_index.value = cf.wwan_isp_setting.value;
     cf.wwan_country_setting_index.value = cf.wwan_country_setting.value;
 	
     cf.wireless_mode.value= cf.sys_mode.value;
     mode = cf.wireless_mode.value;
-    cf.cid.value= "<%3150%>";
-    cf.apn.value= "<%3214%>";
-    cf.pdp_type.value= "<%3194%>";
+    cf.cid.value= "<%3238%>";
+    cf.apn.value= "<%3302%>";
+    cf.pdp_type.value= "<%3282%>";
     cf.select_other_isp.value= "";
     cf.reboot_options.value="";
-    cf.sysNewPIN.value= "<%3156%>";
-    cf.sysNewPIN2.value= "<%3389%>";
-    cf.sysNewPUK.value= "<%3390%>";
-    cf.sysNewPIN2.value= "<%3391%>";
-    cf.sysUnlockCode.value= "<%3392%>";
+    cf.sysNewPIN.value= "<%3244%>";
+    cf.sysNewPIN2.value= "<%3477%>";
+    cf.sysNewPUK.value= "<%3478%>";
+    cf.sysNewPIN2.value= "<%3479%>";
+    cf.sysUnlockCode.value= "<%3480%>";
 
     if(state == "USB Device Not Support" || state == "NO USB Device Attached")
     {
@@ -809,8 +809,8 @@ function init()
         return true;
     }
 	
-    //cf.ppp_username.value = "<%3152%>";
-    //cf.ppp_passwd.value = "<%3153%>";
+    //cf.ppp_username.value = "<%3240%>";
+    //cf.ppp_passwd.value = "<%3241%>";
 	
     region_init	();	  
     setCountry(cf.wwan_country_setting.value);	
@@ -884,137 +884,137 @@ function do_submit()
 <table border="0" cellpadding="0" cellspacing="3" width="100%">
 <tr>
    <td colspan="2" align="center">
-     <h1><%3393%></h1>
+     <h1><%3481%></h1>
    </td>
  </tr>
-<%3394%>
+<%3482%>
  <tr>
   <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
   <tr>
    <td colspan="2" valign="top" align="left"><ul><ul>
-     <p><%3395%>.
-     <p><%3396%>
+     <p><%3483%>.
+     <p><%3484%>
      </ul></ul>
    </td>
    </tr>
-<%3397%>  
-    <%3398%>
+<%3485%>  
+    <%3486%>
     <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3399%><%3400%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3487%><%3488%></ul></ul></td>
       </tr>      
-     <%3401%>
+     <%3489%>
     
-     <%3402%>
+     <%3490%>
      <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3399%><%3403%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3487%><%3491%></ul></ul></td>
       </tr>
        <tr>         
-     <%3404%>
+     <%3492%>
       
-     <%3405%>
+     <%3493%>
        <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3399%><%3406%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3487%><%3494%></ul></ul></td>
       </tr>
-     <%3407%>
+     <%3495%>
         
-     <%3408%>
+     <%3496%>
        <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3399%><%3409%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3487%><%3497%></ul></ul></td>
       </tr>
-     <%3410%>       
-<%3356%>
+     <%3498%>       
+<%3444%>
   <tr>
    <td colspan="2" valign="top" align="left">
-     <ul><ul><br><%3411%></br></ul></ul>
+     <ul><ul><br><%3499%></br></ul></ul>
    </td>
   </tr>  
-<%3412%>   
+<%3500%>   
   </tr>  
 <tr>
-<td><ul><ul><b><%3413%></ul></ul></td>
+<td><ul><ul><b><%3501%></ul></ul></td>
 <td valign="top" align="left">
-<%3394%>
+<%3482%>
 <select name="wwan_country_setting_index" id="wwan_country_setting_index" onchange="setCountry(this.options[this.selectedIndex].value);ispChk();"> 
-<%3397%>
-<%3414%>
+<%3485%>
+<%3502%>
 <select name="wwan_country_setting_index" id="wwan_country_setting_index" onchange="setCountry(this.options[this.selectedIndex].value);ispChk();" disabled> 
-<%3415%>
+<%3503%>
 </select>             
 </td></tr>
 <tr>
-<td><ul><ul><b><%3231%></ul></ul></td>
+<td><ul><ul><b><%3319%></ul></ul></td>
 <td valign="top" align="left">
 <select name="wwan_isp_setting_index" id="wwan_isp_setting_index" onchange="ispChk();"> 
 </select></td></tr>
 
 <tr>
 <td><ul><ul><b><%579%></ul></ul></td>
-<td align="left" class="text"><input type="text" name="ppp_username" size="15" maxlength="60" value="<%3152%>"></td>
+<td align="left" class="text"><input type="text" name="ppp_username" size="15" maxlength="60" value="<%3240%>"></td>
 </tr>
 <tr>
 <td><ul><ul><b><%581%></ul></ul></td>
-<td align="left" class="text"><input type="text" name="ppp_passwd" size="15" maxlength="50" value="<%3153%>"></td>
+<td align="left" class="text"><input type="text" name="ppp_passwd" size="15" maxlength="50" value="<%3241%>"></td>
 </tr>
 
-    <%3398%>
+    <%3486%>
        <tr>
-         <td><ul><ul><strong><%3362%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3450%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN" size="8" maxlength="8"></td>
       </tr>      
         <tr>
-         <td><ul><ul><strong><%3363%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3451%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPINconfirm" size="8" maxlength="8"></td>
         </tr>        
-     <%3401%>
+     <%3489%>
     
-     <%3402%>
+     <%3490%>
        <tr>
-         <td><ul><ul><strong><%3366%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3454%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN2" size="8" maxlength="8"></td>
         </tr>
         <tr>
-         <td><ul><ul><strong><%3367%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3455%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN2confirm" size="8" maxlength="8"></td>
         </tr>
-     <%3404%>
+     <%3492%>
       
-     <%3405%>
+     <%3493%>
        <tr>
-         <td><ul><ul><strong><%3369%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3457%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK" size="8" maxlength="8"></td>
         </tr>
         <tr>
-         <td><ul><ul><strong><%3370%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3458%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUKconfirm" size="8" maxlength="8"></td>
         </tr>
-     <%3407%>
+     <%3495%>
         
-     <%3408%>
+     <%3496%>
        <tr>
-         <td><ul><ul><strong><%3371%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3459%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK2" size="8" maxlength="8"></td>
         </tr>
        <tr>
-         <td><ul><ul><strong><%3372%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3460%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK2Confirm" size="8" maxlength="8"></td>
         </tr>
-     <%3410%>     
-<%3356%>
+     <%3498%>     
+<%3444%>
        <tr>
-         <td><ul><ul><strong><%3373%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3461%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysUnlockCode" size="16" maxlength="8"></td>
         </tr>
-<%3412%>
+<%3500%>
 <tr>
   <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
@@ -1022,42 +1022,42 @@ function do_submit()
     <td colspan="2" align="center"> 
     <input type="button" name="Quit" value="    <%1432%>   " onClick="msg_close()">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="Next" value="   <%1540%>   " onclick="return checkData()">
+	<input type="submit" name="Next" value="   <%1549%>   " onclick="return checkData()">
 	</td>
  </tr>
 <tr>
  <input type="hidden" name="wan_way" value="1500">
 </tr>
 </table>
-<INPUT name=sys_mode type=hidden value= "<%3416%>">
-<INPUT name=runtime_status type=hidden value= "<%3213%>">
-<INPUT name=pdp_type_org type=hidden value= "<%3194%>">
-<INPUT name=apn_org type=hidden value= "<%3214%>">
+<INPUT name=sys_mode type=hidden value= "<%3504%>">
+<INPUT name=runtime_status type=hidden value= "<%3301%>">
+<INPUT name=pdp_type_org type=hidden value= "<%3282%>">
+<INPUT name=apn_org type=hidden value= "<%3302%>">
 <INPUT name=wireless_mode type=hidden>
 <INPUT name=select_other_isp type=hidden>
 <INPUT name=reboot_options type=hidden> 
-<%3417%>
+<%3505%>
 <INPUT name=sysNewPIN type=hidden>
-<%3418%>
-<%3419%>
+<%3506%>
+<%3507%>
 <INPUT name=sysNewPIN2 type=hidden>
-<%3420%>
-<%3421%>
+<%3508%>
+<%3509%>
 <INPUT name=sysNewPUK type=hidden>
-<%3422%>
-<%3423%>
+<%3510%>
+<%3511%>
 <INPUT name=sysNewPUK2 type=hidden>
-<%3424%>
-<%3425%>
+<%3512%>
+<%3513%>
 <INPUT name=sysUnlockCode  type=hidden>
-<%3426%>
+<%3514%>
 <input type=hidden name=apn>
 <input type=hidden name=cid>
 <input type=hidden name=pdp_type>
-<%3427%>
+<%3515%>
 <input type=hidden name=wwan_isp_setting_index>
 <input type=hidden name=wwan_country_setting_index>
-<%3428%>
+<%3516%>
 <input type=hidden name=wwan_isp_setting>
 <input type=hidden name=wwan_country_setting>
 <input type=hidden name=submit_type value="0">

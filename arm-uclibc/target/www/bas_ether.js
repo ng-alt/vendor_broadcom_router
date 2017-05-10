@@ -95,7 +95,7 @@ function check_static_ip_mask_gtw()
 	}
 	if(isSameSubNet(cf.ether_ipaddr.value,cf.ether_subnet.value,cf.ether_gateway.value,cf.ether_subnet.value) == false)
 	{
-		alert("<%2379%>");
+		alert("<%2388%>");
 		return false;
 	}
 	return true;
@@ -130,22 +130,22 @@ function check_ether_samesubnet()
 	cf.ether_gateway.value=cf.WGateway1.value+'.'+cf.WGateway2.value+'.'+cf.WGateway3.value+'.'+cf.WGateway4.value;
 	if(isSameSubNet(cf.ether_ipaddr.value,cf.ether_subnet.value,lan_ip,lan_subnet) == true)
 	{
-		alert("<%2380%>");
+		alert("<%2389%>");
 		return false;
 	}
 	if(isSameSubNet(cf.ether_ipaddr.value,lan_subnet,lan_ip,lan_subnet) == true)
 	{
-		alert("<%2380%>");
+		alert("<%2389%>");
 		return false;
 	}
 	if(isSameSubNet(cf.ether_ipaddr.value,cf.ether_subnet.value,lan_ip,cf.ether_subnet.value) == true)
 	{
-		alert("<%2380%>");
+		alert("<%2389%>");
 		return false;
 	}
 	if(isSameIp(cf.ether_ipaddr.value,lan_ip) == true)
 	{
-		alert("<%2380%>");
+		alert("<%2389%>");
 		return false;
 	}
 	return true;
@@ -394,7 +394,7 @@ function RU_welcome_static()
 	}
 	else if(parent.isp_type=="6")
 	{
-		alert("<%2381%>");
+		alert("<%2390%>");
 		cf.pppoe_dual_ipaddr.value=cf.ether_ipaddr.value;
 		cf.pppoe_dual_subnet.value=cf.ether_subnet.value;
 		cf.pppoe_dual_gateway.value="";
@@ -403,7 +403,7 @@ function RU_welcome_static()
 	}
 	else if(parent.isp_type=="14")
 	{
-		alert("<%2381%>");
+		alert("<%2390%>");
 		cf.l2tp_myip.value=cf.ether_ipaddr.value;
 		cf.l2tp_mynetmask.value=cf.ether_subnet.value;
 		cf.l2tp_gateway.value=cf.ether_gateway.value;
@@ -417,7 +417,7 @@ function RU_welcome_static()
 	}
 	else if(parent.isp_type=="10")
 	{
-		alert("<%2381%>");
+		alert("<%2390%>");
 		cf.pptp_myip.value=cf.ether_ipaddr.value;
 		cf.pptp_mynetmask.value=cf.ether_subnet.value;
 		cf.pptp_gateway.value=cf.ether_gateway.value;
@@ -479,7 +479,7 @@ function RU_welcome_pppoe_static()
 
 	if(parent.isp_type=="6")
 	{
-		alert("<%2381%>");
+		alert("<%2390%>");
 		cf.pppoe_dual_ipaddr.value=cf.ether_ipaddr.value;
 		cf.pppoe_dual_subnet.value=cf.ether_subnet.value;
 		cf.pppoe_dual_gateway.value=cf.ether_gateway.value;
@@ -499,7 +499,7 @@ function RU_welcome_pppoe_static()
 	}
 	else if(parent.isp_type=="88")
 	{
-		alert("<%2381%>");
+		alert("<%2390%>");
 		cf.pppoe_dual_ipaddr.value=cf.ether_ipaddr.value;
 		cf.pppoe_dual_subnet.value=cf.ether_subnet.value;
 		cf.pppoe_dual_gateway.value=cf.ether_gateway.value;

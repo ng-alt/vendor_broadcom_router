@@ -126,11 +126,13 @@ int get_usb_port(char *pDevPath, char *pUsbPort)
     {
         sscanf(strPos1, "/usb%s", buf);    
 #elif defined(R7000)
-    if ((strstr(pDevPath, "/usb1/1-") != NULL) || (strstr(pDevPath, "/usb3/3-") != NULL)) 
+    if ((strstr(pDevPath, "/usb1/1-") != NULL) || (strstr(pDevPath, "/usb2/2-") != NULL) || (strstr(pDevPath, "/usb3/3-") != NULL)) 
     {
 
         if((strPos1 = strstr(pDevPath, "/usb1/1-")) != NULL)
             sscanf(strPos1, "/usb1/1-%s", buf);    
+        else if((strPos1 = strstr(pDevPath, "/usb2/2-")) != NULL)
+            sscanf(strPos1, "/usb2/2-%s", buf);    
         else if((strPos1 = strstr(pDevPath, "/usb3/3-")) != NULL)
             sscanf(strPos1, "/usb3/3-%s", buf);    
 #else

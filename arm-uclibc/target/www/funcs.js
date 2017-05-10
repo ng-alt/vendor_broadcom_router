@@ -870,7 +870,7 @@ function checkpsk(passphrase, passphrase_len)
 	if ( len == 64 )
 	{
 		//Don't enable Hex passphrase support
-		alert("<%1590%>");
+		alert("<%1599%>");
 		return false;
 
 		for(i=0;i<len;i++)
@@ -886,12 +886,12 @@ function checkpsk(passphrase, passphrase_len)
 	{
 		if(len < 8 )
 		{
-			alert("<%1589%>");
+			alert("<%1598%>");
 			return false;
 		}
 		if(len > 63)
 		{
-			alert("<%1590%>");
+			alert("<%1599%>");
 			return false;
 		}
 		for(i=0;i<passphrase.value.length;i++)
@@ -2027,7 +2027,7 @@ function printPage()
 	if (window.print)
 		window.print();
 	else
-		alert("<%2378%>");
+		alert("<%2387%>");
 }
 function top_left_nolink()
 {
