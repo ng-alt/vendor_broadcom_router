@@ -12,7 +12,6 @@ readycloud_nvram set remote_path="/opt/remote"
 readycloud_nvram set leafp2p_path="/opt/leafp2p"
 readycloud_nvram set readydrop_path="/opt/readydrop"
 
-readycloud_nvram set readycloud_use_xcloud=1
 readycloud_nvram set readycloud_use_lantry=1
 readycloud_nvram set rcagent_log_to_console=0
 readycloud_nvram set rcagent_log_level=error

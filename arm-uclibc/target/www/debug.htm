@@ -66,23 +66,23 @@ function clickSaveButton()
 <table width="100%">
 <tr>
 <td width="22%"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPU Load</b><br><br></td>
-<td width="78%"><b>CPU1: <%3012%>% CPU2: <%3013%>%</b><br><br></td>
+<td width="78%"><b>CPU1: <%2995%>% CPU2: <%2996%>%</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Memory Usage (Used/Total)</b><br><br></td>
-<td><b><%3014%>MB/<%3015%>MB</b><br><br></td>
+<td><b><%2997%>MB/<%2998%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flash Usage (Used/Total)</b><br><br></td>
-<td><b><%3016%>MB/<%3017%>MB</b><br><br></td>
+<td><b><%2999%>MB/<%3000%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Network Session (Active/Total)</b><br><br></td>
-<td><b><%3018%></b><br><br></td>
+<td><b><%3001%></b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System Uptime</b><br><br></td>
-<td><b><%3019%></b><br><br></td>
+<td><b><%3002%></b><br><br></td>
 </tr>
 </table>
 </form>
@@ -93,7 +93,7 @@ function clickSaveButton()
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="checkbox" name="action_Start_When_Boot_Up" value="Start_When_Boot_Up" onclick="document.forms[1].submit();" ><b> Start Debug Log Capture when boot up</b>
 <br><br>
-<input type="hidden" name="Start_When_Boot_Up" value="<%3020%>">
+<input type="hidden" name="Start_When_Boot_Up" value="<%3003%>">
 <input type="hidden" name="form" value="1" >
 </form>
 <form id="cf2" action=newdebug.cgi method="POST">
@@ -105,8 +105,8 @@ function clickSaveButton()
 <b>Store location</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <select name="store_location">
-<option value="memory" <%3021%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-<option value="usb" <%3022%>>USB Storage</option>
+<option value="memory" <%3004%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+<option value="usb" <%3005%>>USB Storage</option>
 </select>
 <br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -119,19 +119,19 @@ function clickSaveButton()
 <span class="roundleft_button">Save Debug Log</span><span class="roundright_button">&nbsp;</span>
 </button> 
 <br><br>
-<input type="hidden" name="capture_in_process" value="<%3023%>">
-<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3024%>">
+<input type="hidden" name="capture_in_process" value="<%3006%>">
+<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3007%>">
 <input type="hidden" name="form" value="2" >
 </form>
 <form id="cf3" action=newdebug.cgi method="POST">
 &nbsp;&nbsp;
 <!--
 <input type="checkbox" name="action_Enable_Telnet" value="Telnet_Enable" onclick="document.forms[3].submit();"><b> Enable Telnet</b>
-<input type="hidden" name="Enable_Telnet" value="<%3025%>">
+<input type="hidden" name="Enable_Telnet" value="<%3008%>">
 <br><br>-->
 &nbsp;&nbsp;
 <input type="checkbox" name="action_Mirror_Port" value="Port_mirror" onclick="document.forms[3].submit();"><b> WAN Port mirror to LAN port 1</b>
-<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3026%>">
+<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3009%>">
 <input type="hidden" name="form" value="3" >
 </form>
 </body>

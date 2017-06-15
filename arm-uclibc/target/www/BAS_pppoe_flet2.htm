@@ -357,8 +357,8 @@ function loadSettings()
 	var wan_dns2_pri = cf.wan_dns2_pri.value.split(".");
 	var wan_dns2_sec = cf.wan_dns2_sec.value.split(".");
 
-	cf.pppoe_idletime.value = <%3027%> / 60;
-	//cf.pppoe2_idletime.value = <%3028%> / 60;
+	cf.pppoe_idletime.value = <%3010%> / 60;
+	//cf.pppoe2_idletime.value = <%3011%> / 60;
 	
 	// Get pppoe_dod (nvram)
 	cf.pppoe_dod.selectedIndex = <%558%>;
@@ -567,16 +567,16 @@ function SetPPPoETest(index)
 
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','login')" tabindex="-1"><b><%579%></b></a></td>
-	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="64" value="<%3029%>"></td>
+	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="64" value="<%3012%>"></td>
 </tr>
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','password')" tabindex="-1"><b><%581%></b></a></td>
-	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="64" value="<%3030%>"></td>
+	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="64" value="<%3013%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('BAS_pppoe','serv_name')" tabindex="-1"><%583%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%3031%>"></td>
+	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%3014%>"></td>
 </tr>
 <tr>
 <td width="50%" nowrap><a href="javascript:loadhelp('BAS_pppoe','conn_mode')" tabindex="-1"><b><%585%></b></a></td>
@@ -646,11 +646,11 @@ function SetPPPoETest(index)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td width="50%"><b><%1568%></b></td>
+ <td width="50%"><b><%1571%></b></td>
  <td width="50%" align="right"><select name="session_type" onChange="setSession()">
-        <OPTION <%3035%>><%1569%></OPTION>
-        <OPTION <%3036%>><%1570%></OPTION>
-        <OPTION <%3037%>><%574%></OPTION>
+        <OPTION <%3018%>><%1572%></OPTION>
+        <OPTION <%3019%>><%1573%></OPTION>
+        <OPTION <%3020%>><%574%></OPTION>
       </select></td>
 </tr>
 
@@ -658,16 +658,16 @@ function SetPPPoETest(index)
 
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','login')" tabindex="-1"><b><%579%></b></a></td>
-	<td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="64" value="<%3053%>"></td>
+	<td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="64" value="<%3036%>"></td>
 </tr>
 <tr>
 	<td><a href="javascript:loadhelp('BAS_pppoe','password')" tabindex="-1"><b><%581%></b></a></td>
-	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="64" value="<%3054%>"></td>
+	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="64" value="<%3037%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('BAS_pppoe','serv_name')" tabindex="-1"><%583%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%3040%>"></td>
+	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%3023%>"></td>
 </tr>
 
 
@@ -723,22 +723,22 @@ function SetPPPoETest(index)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td colspan="2" ><b><%3041%></b></td>
+ <td colspan="2" ><b><%3024%></b></td>
 </tr>
 
 <tr>
 <td colspan="2">
 	<table border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr><td  width="5%" align="center"><span class="thead"> &nbsp;</span></td>
-		<td width="15%" align="center"><b><span class="thead"><%3042%></span></b></td>
-		<td width="20%" align="center"><b><span class="thead"><%3043%></span></b></td>
+		<td width="15%" align="center"><b><span class="thead"><%3025%></span></b></td>
+		<td width="20%" align="center"><b><span class="thead"><%3026%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%533%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%671%></span></b></td>
 		<td width="20%" align="center"><b><span class="thead"><%691%></span></b></td>
     </tr>
     
 	<tr><td width="5%" align="center"><span class="thead"><input type="RADIO" name="NTT_WEST" checked onclick="1"></span></td>
-		<td width="15%" align="center"><b><span class="ttext"><%1570%></span></b></td>
+		<td width="15%" align="center"><b><span class="ttext"><%1573%></span></b></td>
 		<td width="20%" align="center"><b><span class="ttext">*.flets</span></b></td>
 		<td width="20%" align="center"><b><span class="ttext">---</span></b></td>
 		<td width="20%" align="center"><b><span class="ttext">---</span></b></td>
@@ -767,15 +767,15 @@ function SetPPPoETest(index)
 
 <input type="hidden" name="runtest" value="<%545%>">
 <INPUT name=wan_ipaddr type=hidden value= "<%292%>">
-<INPUT name=wan2_ipaddr type=hidden value= "<%3044%>">
-<INPUT name=pppoe_localip type=hidden value= "<%3045%>">
-<INPUT name=wan_dns_sel type=hidden value= "<%3046%>">
-<INPUT name=wan_dns1_pri type=hidden value= "<%3047%>">
-<INPUT name=wan_dns1_sec type=hidden value= "<%3048%>">
-<INPUT name=pppoe2_localip type=hidden value= "<%3049%>">
-<INPUT name=wan2_dns_sel type=hidden value= "<%3050%>">
-<INPUT name=wan_dns2_pri type=hidden value= "<%3051%>">
-<INPUT name=wan_dns2_sec type=hidden value= "<%3052%>">
+<INPUT name=wan2_ipaddr type=hidden value= "<%3027%>">
+<INPUT name=pppoe_localip type=hidden value= "<%3028%>">
+<INPUT name=wan_dns_sel type=hidden value= "<%3029%>">
+<INPUT name=wan_dns1_pri type=hidden value= "<%3030%>">
+<INPUT name=wan_dns1_sec type=hidden value= "<%3031%>">
+<INPUT name=pppoe2_localip type=hidden value= "<%3032%>">
+<INPUT name=wan2_dns_sel type=hidden value= "<%3033%>">
+<INPUT name=wan_dns2_pri type=hidden value= "<%3034%>">
+<INPUT name=wan_dns2_sec type=hidden value= "<%3035%>">
 <INPUT name=FletType type=hidden value= "1">
 <INPUT name=ToDisable type=hidden value= "">
 <INPUT name=whichTest type=hidden value= "">

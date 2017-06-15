@@ -66,7 +66,6 @@ do_register()
 	temp_dir=$3
 	XAGENT_ID=$(readycloud_nvram get x_agent_id | tr -d '[[:space:]]')
 	MODEL=$(remote_smb_conf -get_model_name | tr -d '[[:space:]]')
-	USE_XCLOUD=$(readycloud_nvram get readycloud_use_xcloud | tr -d '[[:space:]]')
 	SERIAL_NUMBER=$(system get serial_number | tr -d '[[:space:]]')
 
 	FIRMWARE_VERSION=`version | sed -n 2p | awk -F "/" '{print $2}' | sed -r 's/^.{1}//'`
@@ -82,9 +81,7 @@ do_register()
 	DATA="${DATA}<password><![CDATA[${USER_PASS}]]></password>"
 	DATA="${DATA}<model>${MODEL}</model>"
 	DATA="${DATA}<firmware_id>${FIRMWARE_VERSION}</firmware_id>"
-	if [ $USE_XCLOUD -eq 1 ]; then 
-		DATA="${DATA}<x_agent_id>${XAGENT_ID}</x_agent_id>"
-	fi
+    DATA="${DATA}<x_agent_id>${XAGENT_ID}</x_agent_id>"
 	DATA="${DATA}<license><LicenseKey>sdfsfgjsflkj</LicenseKey><hardwareSN>${SERIAL_NUMBER}</hardwareSN><StartTime>0</StartTime><ExpiredTime>999</ExpiredTime><valid>true</valid></license>"
 	DATA="${DATA}</body></request>"
 
