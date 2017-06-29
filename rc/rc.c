@@ -4769,7 +4769,7 @@ main_loop(void)
 			start_bcmupnp();
       if(nvram_match ("wireless_restart", "1"))
       {
-			start_wps();
+
             start_eapd();
             start_nas();
             
@@ -4795,8 +4795,6 @@ main_loop(void)
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
 	  }
-	  		if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
-				start_bsd();
             /* Now start ACOS services */
 
             /* Foxconn added start pling 06/26/2014 */
