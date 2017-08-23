@@ -1,7 +1,7 @@
 <html>
 <head>
 <%11%>
-<title><%3344%></title>
+<title><%3370%></title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <script language="JavaScript" type="text/javascript">
 <!--
@@ -12,15 +12,15 @@ function CloseWindow()
 }
 function msg_close()
 {
- alert("<%3345%>");
+ alert("<%3371%>");
  CloseWindow();
 }
 function checkData()
 {
-	var pukEnable = "<%3412%>";
-	var puk2Enable = "<%3413%>";
-	var pin2Enable = "<%3414%>";
-	var state = "<%3284%>";
+	var pukEnable = "<%3438%>";
+	var puk2Enable = "<%3439%>";
+	var pin2Enable = "<%3440%>";
+	var state = "<%3310%>";
 	var cf = document.forms[0];
 	
 	if(state == "PIN Required" || state == "PIN Number Error" ||
@@ -31,7 +31,7 @@ function checkData()
 		  cf.reboot_options.value = "yes";
 	    if (cf.sysNewPIN.value.length < 4 || cf.sysNewPIN.value.length > 8) 
 	    {
-	    	alert("<%3220%>");
+	    	alert("<%3246%>");
 	    	return false;
 	    }
 	    
@@ -39,14 +39,14 @@ function checkData()
 	    {
         if (cf.sysNewPIN.value.match(/[^\x30-\x39]/))
 	    	{
-	    		alert("<%3220%>");
+	    		alert("<%3246%>");
 	    		return false;
 	    	}
 	    }
 	    
       if (cf.sysNewPIN.value != cf.sysNewPINconfirm.value)  
 	    {
-           alert("<%3415%>");
+           alert("<%3441%>");
 	    	   return false;
 	    }   
 
@@ -55,7 +55,7 @@ function checkData()
         
 	    	if (cf.sysNewPIN2.value.length < 4 || cf.sysNewPIN2.value.length > 8) 
 	    	{
-          alert("<%3416%>");
+          alert("<%3442%>");
 	    		return false;
 	    	}
 	    
@@ -63,13 +63,13 @@ function checkData()
 	    	{
           if (cf.sysNewPIN2.value.match(/[^\x30-\x39]/))
 	    		{
-	    			alert("<%3416%>");
+	    			alert("<%3442%>");
 	    			return false;
 	    		}
 	    	}	
         if (cf.sysNewPIN2.value != cf.sysNewPIN2confirm.value)  
 	      {
-          alert("<%3417%>");
+          alert("<%3443%>");
 	    	  return false;
 	      } 
 	    }
@@ -78,7 +78,7 @@ function checkData()
 	    {
 	    	if (cf.sysNewPUK.value.length != 8) 
 	    	{
-	    		alert("<%3418%>");
+	    		alert("<%3444%>");
 	    		return false;
 	    	}
 	    
@@ -86,14 +86,14 @@ function checkData()
 	    	{
                         if (cf.sysNewPUK.value.match(/[^\x30-\x39]/))
 	    		{
-	    			alert("<%3418%>");
+	    			alert("<%3444%>");
 	    			return false;
 	    		}
 	    	}	
 	    	
         if (cf.sysNewPUK.value != cf.sysNewPUKconfirm.value)  
 	      {
-                alert("<%3419%>");
+                alert("<%3445%>");
 	    	  return false;
 	      } 
 	    }
@@ -103,7 +103,7 @@ function checkData()
         
 	    	if (cf.sysNewPUK2.value.length != 8) 
 	    	{
-	    		alert("<%3420%>");
+	    		alert("<%3446%>");
 	    		return false;
 	    	}
 	    
@@ -111,13 +111,13 @@ function checkData()
 	    	{
           if (cf.sysNewPUK2.value.match(/[^\x30-\x39]/))
 	    		{
-	    			alert("<%3420%>");
+	    			alert("<%3446%>");
 	    			return false;
 	    		}
 	    	}	
         if (cf.sysNewPUK2.value != cf.sysNewPUK2Confirm.value)  
 	      {
-                alert("<%3421%>");
+                alert("<%3447%>");
 	    	  return false;
 	      }
 	    }	
@@ -129,7 +129,7 @@ function checkData()
 	    
 	    if (cf.sysUnlockCode.value.match(/[^\x30-\x39]/))
 	    {
-	        alert("<%3422%>");
+	        alert("<%3448%>");
 	        return false;	
 	    }
 	}	
@@ -145,104 +145,104 @@ function checkData()
 <p>
 <div align="center">
 <table border="0" cellpadding="0" cellspacing="3" width="100%">
-<%3423%>	
+<%3449%>	
   <tr>
    <td colspan="2" align="center">
-	 <h1><%3424%> <strong><%3379%></strong> <%3425%>
+	 <h1><%3450%> <strong><%3405%></strong> <%3451%>
      </h1>
 </td>
   </tr>
-<%3426%>  
-  <%3427%>
-<%3423%>  
+<%3452%>  
+  <%3453%>
+<%3449%>  
 <tr>
    <td colspan="2" align="center"><h1>
-     <%3428%></ul></ul></ul></ul>
+     <%3454%></ul></ul></ul></ul>
    </h1>
    </td>
   </tr> 
-<%3426%>
-<%3429%>  
+<%3452%>
+<%3455%>  
 <tr>
    <td colspan="2" align="center"><h1>
-     <%3428%></ul></ul></ul></ul>
+     <%3454%></ul></ul></ul></ul>
    </h1>
    </td>
   </tr> 
-<%3430%>         
-<%3431%>
+<%3456%>         
+<%3457%>
 <tr>  <!-- RULE -->
   <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>  
    
-    <%3432%>
+    <%3458%>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3433%></strong>
+         <td><ul><ul><ul><ul><strong><%3459%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPIN" size="8" maxlength="8"></ul></ul></ul></ul></td>
       </tr>      
         <tr>
-         <td><ul><ul><ul><ul><strong><%3434%></strong>
+         <td><ul><ul><ul><ul><strong><%3460%></strong>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPINconfirm" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>        
-     <%3435%>
+     <%3461%>
     
-     <%3436%>
+     <%3462%>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3437%></strong>
+         <td><ul><ul><ul><ul><strong><%3463%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPIN" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
         <tr>
-         <td><ul><ul><ul><ul><strong><%3438%></strong>
+         <td><ul><ul><ul><ul><strong><%3464%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPINconfirm" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
-     <%3439%>
+     <%3465%>
       
-     <%3381%>
+     <%3407%>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3440%></strong>
+         <td><ul><ul><ul><ul><strong><%3466%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPUK" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
         <tr>
-         <td><ul><ul><ul><ul><strong><%3441%></strong>
+         <td><ul><ul><ul><ul><strong><%3467%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPUKconfirm" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
-     <%3384%>
+     <%3410%>
         
-     <%3385%>
+     <%3411%>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3442%></strong>
+         <td><ul><ul><ul><ul><strong><%3468%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPUK2" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3443%></strong>
+         <td><ul><ul><ul><ul><strong><%3469%></strong>
          &nbsp;&nbsp;&nbsp;&nbsp;
          <input type="password" name="sysNewPUK2Confirm" size="8" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
-     <%3387%>     
-<%3427%>
+     <%3413%>     
+<%3453%>
        <tr>
-         <td><ul><ul><ul><ul><strong><%3444%></strong>
+         <td><ul><ul><ul><ul><strong><%3470%></strong>
          &nbsp;&nbsp;
          <input type="password" name="sysUnlockCode" size="16" maxlength="8"></ul></ul></ul></ul></td>
         </tr>
-<%3431%>
+<%3457%>
 <tr>  <!-- RULE -->
   <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
 </table>
  <tr>
     <td> 
-    <input type="hidden" name="Back" value="   <%1566%>   " onclick="location.href='Modem_dual_wan_welcome.htm'">
-    <input type="button" name="Quit" value="   <%1435%>   " onclick="msg_close()">
+    <input type="hidden" name="Back" value="   <%1581%>   " onclick="location.href='Modem_dual_wan_welcome.htm'">
+    <input type="button" name="Quit" value="   <%1450%>   " onclick="msg_close()">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="Next" value="   <%1552%>   " onclick="return checkData()">
+	<input type="submit" name="Next" value="   <%1567%>   " onclick="return checkData()">
 	</td>
  </tr>
 

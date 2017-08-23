@@ -357,6 +357,9 @@ endif
 ifeq ($(CONFIG_ARLO),y)
 export CFLAGS += -DARLO_SUPPORT
 endif
+ifeq ($(CONFIG_CIRCLE_PARENTAL_CONTROL),y)
+export CFLAGS += -DCIRCLE_PARENTAL_CONTROL
+endif
 endif
 
 
@@ -1283,17 +1286,13 @@ iptables:
 	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 
 iptables-install:
-ifeq ($(CONFIG_IPTABLES),y)
-	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
-	install iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables
-	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/iptables/*.so
-	cp -rf iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
+	install -d $(INSTALLDIR)/iptables/usr/lib/xtables
+	cp -rf $(TOP)/iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/xtables
+	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/xtables/*.so
+	cp -rf $(TOP)/iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
 	install -d $(INSTALLDIR)/iptables/usr/lib
-	cp -f iptables-1.4.12/src/install/lib/libip* $(INSTALLDIR)/iptables/usr/lib
-else
-	# So that generic rule does not take precedence
-	@true
-endif
+	cp -f $(TOP)/iptables-1.4.12/src/install/lib/libip* $(INSTALLDIR)/iptables/usr/lib
+	cp -f $(TOP)/iptables-1.4.12/src/install/lib/libxt* $(INSTALLDIR)/iptables/usr/lib
 iptables-clean:
 	-$(MAKE) -C iptables-1.4.12 KERNEL_DIR=$(LINUXDIR) DO_IPV6=1 clean
 
@@ -1319,16 +1318,11 @@ iptables:
 	$(MAKE) -C iptables BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUXDIR)
 
 iptables-install:
-ifeq ($(CONFIG_IPTABLES),y)
 	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
 	install iptables/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables
 	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/iptables/*.so
 	install -D iptables/iptables $(INSTALLDIR)/iptables/usr/sbin/iptables
 	$(STRIP) $(INSTALLDIR)/iptables/usr/sbin/iptables
-else
-	# So that generic rule does not take precedence
-	@true
-endif
 iptables-clean:
 	-$(MAKE) -C iptables KERNEL_DIR=$(LINUXDIR) clean
 endif # linux-2.6

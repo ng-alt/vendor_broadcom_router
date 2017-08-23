@@ -65,12 +65,12 @@ function checkData()
 	var cf = document.forms[0];
 	var msg = "";
 
-	msg+= checkBlank(cf.bpa_username, "<%567%>");
-	msg+= checkBlank(cf.bpa_server, "<%1577%>");
+	msg+= checkBlank(cf.bpa_username, "<%582%>");
+	msg+= checkBlank(cf.bpa_server, "<%1592%>");
 	if(cf.bpa_idletime.value.length<=0)
-	 msg+= "<%563%>";
+	 msg+= "<%578%>";
 	else if(!_isNumeric(cf.bpa_idletime.value))
-	 msg+= "<%564%>";
+	 msg+= "<%579%>";
 	if (msg.length > 1)
 	{
 		alert(msg);
@@ -83,7 +83,7 @@ function loadSettings()
 {
 	var cf = document.forms[0];
 
-	//cf.bpa_idletime.value = "<%1578%>";
+	//cf.bpa_idletime.value = "<%1593%>";
 }
 
 //-->
@@ -93,17 +93,17 @@ function loadSettings()
 </head>
 
 <body  onload="loadSettings();loadcheck();goTestApply();" style="margin:0px;background-color:#e5e5e5">
-<%1558%>
+<%1573%>
 <form id="target"  name="formname" method="POST" action="wiz_bpa.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
-<%1559%>
-<%1560%>
+<%1574%>
+<%1575%>
 <form id="target"  name="formname" method="POST" action="bsw_bpa.cgi">
-<%1561%>
+<%1576%>
 <table border="0"   width="99%">
 
 <tr>
-	<td colspan="2"><h1><%1579%></h1></td>
+	<td colspan="2"><h1><%1594%></h1></td>
 </tr>
 
 <tr> <!-- RULE -->
@@ -111,21 +111,21 @@ function loadSettings()
 </tr>
 
 <tr>
-	<td><a href="javascript:loadhelp('WIZ_bpa','login')" tabindex="-1"><b><%579%></b></a></td>
-	<td align="right"><input type="text" name="bpa_username" size="15" maxlength="60" value="<%1580%>"></td>
+	<td><a href="javascript:loadhelp('WIZ_bpa','login')" tabindex="-1"><b><%594%></b></a></td>
+	<td align="right"><input type="text" name="bpa_username" size="15" maxlength="60" value="<%1595%>"></td>
 </tr>
 <tr>
-	<td><a href="javascript:loadhelp('WIZ_bpa','password')" tabindex="-1"><b><%581%></b></a></td>
-	<td align="right"><input type="password" name="bpa_passwd" size="15" maxlength="50" value="<%1581%>"></td>
+	<td><a href="javascript:loadhelp('WIZ_bpa','password')" tabindex="-1"><b><%596%></b></a></td>
+	<td align="right"><input type="password" name="bpa_passwd" size="15" maxlength="50" value="<%1596%>"></td>
 </tr>
 
 <tr>
- <td nowrap><a href="javascript:loadhelp('WIZ_bpa','server')" tabindex="-1"><b><%1577%></b></a></td>
- <td align="right"><input type="text" name="bpa_server" size="15" maxlength="128" value="<%1582%>"></td>
+ <td nowrap><a href="javascript:loadhelp('WIZ_bpa','server')" tabindex="-1"><b><%1592%></b></a></td>
+ <td align="right"><input type="text" name="bpa_server" size="15" maxlength="128" value="<%1597%>"></td>
 </tr>
 <tr>
-	<td nowrap><a href="javascript:loadhelp('WIZ_bpa','idletime')" tabindex="-1"><%589%></a></td>
-	<td align="right"><input type="text" class="num" name="bpa_idletime" size="4" maxlength="3" value="<%1578%>"></td>
+	<td nowrap><a href="javascript:loadhelp('WIZ_bpa','idletime')" tabindex="-1"><%604%></a></td>
+	<td align="right"><input type="text" class="num" name="bpa_idletime" size="4" maxlength="3" value="<%1593%>"></td>
 </tr>
 <tr> <!-- RULE -->
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
@@ -133,17 +133,17 @@ function loadSettings()
 
 <tr>
 <td colspan="2" align="center"><div ID="buttons" onmouseover="loadhelp('WIZ_bpa','buttons')">
-<%1558%>
+<%1573%>
 &nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%78%>" name="apply" class="button-rule" onClick="buttonClick(this,'<%78%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%78%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 &nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%83%>" name="Cancel" class="button-rule" onClick="buttonClick(this,'<%83%>');reset();loadSettings();"><span class="roundleft_button">&nbsp;&nbsp; <%83%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%522%>" name="Test" class="button-rule" onClick="buttonClick(this,'<%522%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%522%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%1559%>
-<%1560%>
-&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1552%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1552%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1552%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%1561%>
+&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%535%>" name="Test" class="button-rule" onClick="buttonClick(this,'<%535%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%535%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%1574%>
+<%1575%>
+&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1567%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1567%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1567%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%1576%>
 </div></td></tr>
 </table>
-<input type="hidden" name="runtest" value="<%545%>">
+<input type="hidden" name="runtest" value="<%558%>">
 </form>
 <p></p>
 </body>

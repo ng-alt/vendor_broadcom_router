@@ -448,6 +448,12 @@ function initScrn()
 
   Tpc5GOrigSelectIdx=fm.enable_tpc_an.selectedIndex;
 
+<%38%>
+    if((fm.wifi_2g_enable.value == "Disable") || (fm.wifi_5g_enable.value == "Disable" ))
+        fm.enable_band_steering.disabled=true;;   /*don't grey out when doing post*/
+<%39%>
+
+
 
     initialized=true;
     
@@ -498,7 +504,7 @@ function checkRegion()
     if(cf.WRegion.selectedIndex == 0)
     {
         cf.WRegion.focus();
-        return alert("<%38%>");
+        return alert("<%40%>");
     }
     if (notShown)
         notShown = false;
@@ -632,7 +638,7 @@ function setChannel()
     var i=0, chMatch_an=0;
     var b0=0, b1=0, b2=0, b3=0, b4=0;  
 	var wlaRegion = "<%20%>";
-    var sku = "<%39%>";
+    var sku = "<%41%>";
 	
     /* 2G part start */
     var sku_name = cf.fw_sku.value;
@@ -649,7 +655,7 @@ function setChannel()
         cf.w_channel.options.length = FinishChannel[index] - StartChannel[index]+2;
     }
 
-    cf.w_channel.options[0].text = "<%40%>";
+    cf.w_channel.options[0].text = "<%42%>";
     cf.w_channel.options[0].value = 0;
     
     for (var i = StartChannel[index]; i <= FinishChannel[index]; i++) {
@@ -725,7 +731,7 @@ function setChannel()
     if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 6 && index != 8 && index != 9 
         && index != 15 && index != 17))		/// No band 4 channels for Africa, Europe, Israel, Japan, Middel East(Turkey/Tunisia/Kuwait), Middel East(United Arab Emirates) 
     {
-        cf.w_channel_an.options[0].text = "<%40%>";
+        cf.w_channel_an.options[0].text = "<%42%>";
         cf.w_channel_an.options[0].value = 0;
         b0 = 1;
     }
@@ -1112,7 +1118,7 @@ function checkChannel()
                new_channel_an_value == "124" || new_channel_an_value == "128" ||
                new_channel_an_value == "132" || new_channel_an_value == "136" ||
                new_channel_an_value == "140")
-                if (!confirm("<%41%>"))
+                if (!confirm("<%43%>"))
                 {
                     cf.w_channel_an.selectedIndex = curr_channel_an_index;
                     return false;
@@ -1138,7 +1144,7 @@ function checkChannel()
                     (new_channel_an_value != "165") )
                 {
                     ch_selected = new_channel_an_value;
-                    if (!confirm("<%42%>"))
+                    if (!confirm("<%44%>"))
                     {
                         cf.w_channel_an.selectedIndex = curr_channel_an_index;
                         return false;
@@ -1280,7 +1286,7 @@ function securityCheck(band)
                    following warning alert wouldn't appear twice */
                 cf.opmode.selectedIndex = 0;
 				setTimeout(function(){
-                alert("<%43%>");
+                alert("<%45%>");
 				},10);   
                 cf.opmode.selectedIndex = 0;
                 document.getElementById("wep_radio_2G").style.display="block";
@@ -1306,7 +1312,7 @@ function securityCheck(band)
             {
                 selected2=cf.opmode.selectedIndex;
 				setTimeout(function(){
-                alert("<%43%>");
+                alert("<%45%>");
 				},10);   
             }
             document.getElementById("wpa_2G").style.display="block";
@@ -1322,7 +1328,7 @@ function securityCheck(band)
             {
                 selected2=cf.opmode.selectedIndex;
                 setTimeout(function(){
-                alert("<%44%>");
+                alert("<%46%>");
                 },10);
             }
             document.getElementById("wpa_en_2G").style.display="block";
@@ -1372,7 +1378,7 @@ function securityCheck(band)
                    following warning alert wouldn't appear twice */
                 cf.opmode_an.selectedIndex = 0;
                 setTimeout(function(){
-                alert("<%43%>");
+                alert("<%45%>");
                 },10);
                 setChannel();
                 document.getElementById("wep_radio_5G").style.display="block";
@@ -1400,7 +1406,7 @@ function securityCheck(band)
             {
                 selected3=cf.opmode_an.selectedIndex;
                 setTimeout(function(){
-                alert("<%45%>");
+                alert("<%47%>");
                 },10);
             }
             else
@@ -1408,7 +1414,7 @@ function securityCheck(band)
             {
                 selected3=cf.opmode_an.selectedIndex;
                 setTimeout(function(){
-                alert("<%46%>");
+                alert("<%48%>");
                 },10);
             }
             document.getElementById("wpa_5G").style.display="block";
@@ -1424,18 +1430,18 @@ function securityCheck(band)
             if ((cf.support_ac_mode.value == "1") && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                //alert("<%45%>");
+                //alert("<%47%>");
                 setTimeout(function(){
-				alert("<%44%>");
+				alert("<%46%>");
                 },10);
             }
             else
             if ((cf.opmode_an.selectedIndex != 0) && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                //alert("<%46%>");
+                //alert("<%48%>");
                 setTimeout(function(){
-				alert("<%44%>");
+				alert("<%46%>");
                 },10);
             }
             document.getElementById("wpa_5G").style.display="none";
@@ -1463,10 +1469,10 @@ function securityCheck(band)
 function checkData()
 {
     var cf = document.forms[0];
-    var msg_key64_type = "<%47%>" ;
-    var msg_key128_type = "<%48%>";
+    var msg_key64_type = "<%49%>" ;
+    var msg_key128_type = "<%50%>";
     var show_wep_or_wps_msg = false;
-    var wps_version = "<%49%>";  
+    var wps_version = "<%51%>";  
     //var show_wep_or_wps_v20_msg = false;
     var show_tkip_or_wps_v20_msg = false;
     var show_ssid_bc_or_wps_v20_msg = false;
@@ -1486,19 +1492,19 @@ function checkData()
 	else
 	{
 		if(cf.gui_security_type_5G.value=="")
-			cf.security_type_5G.value="<%50%>";
+			cf.security_type_5G.value="<%52%>";
 		else
 			cf.security_type_5G.value=cf.gui_security_type_5G.value;
 	}
     if(!checkRegion()) return false;
 
-<%51%>
+<%38%>
     if(cf.enable_band_steering.checked == true)
     {
         sync_wifi_settings_from_2G();
         band_steering_greyout(0);   /*don't grey out when doing post*/
     }
-<%52%>
+<%39%>
 
  /*   
     if(cf.ssid.value==cf.ssid_an.value)
@@ -1991,7 +1997,7 @@ function getkey(e)
 	return false;
 }
 
-<%51%>
+<%38%>
 
 function band_steering_greyout(greyout)
 {
@@ -2190,7 +2196,7 @@ function is_dual_ssid_same()
 }
 
 
-<%52%>
+<%39%>
 
 function checkSuperWifi()
 {
@@ -2379,7 +2385,7 @@ function update_settings()
       <td nowrap><%164%>:</td>
       <td nowrap><select name="opmode" onchange="chgCh(2);"><%165%></select></td></tr>
     <tr>
-      <td align=left><%166%></td>
+      <td align=left><%166%>:</td>
       <td align=left>
         <select name="enable_tpc" onChange="checkSuperWifi();">
           <%167%>
@@ -2611,7 +2617,7 @@ function update_settings()
       <td nowrap><%164%>:</td>
       <td nowrap><select name="opmode_an" onchange="chgCh(3);"><%253%></select></td></tr>
     <tr>
-      <td align=left><%166%></td>
+      <td align=left><%166%>:</td>
       <td align=left>
         <select name="enable_tpc_an" onChange="check5GSuperWifi();">
             <%167%>
@@ -2734,17 +2740,17 @@ function update_settings()
       <td nowrap="nowrap"><%205%>:</td>
       <td nowrap="nowrap"><input type="text" name="wpa_en_gk_int_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%263%>">&nbsp;&nbsp;<%207%></td></tr>    
     <tr>
-    <td nowrap><%208%></td>
+    <td nowrap><%208%>:</td>
     <td nowrap  class="num">
         <input type="text" name="RADIUSAddr1_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr2_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr3_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
         <input type="text" name="RADIUSAddr4_wlg" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td></tr>
     <tr>
-      <td nowrap="nowrap"><%209%></td>
+      <td nowrap="nowrap"><%209%>:</td>
       <td nowrap="nowrap"><input type="text" name="wpa_en_radius_port_wlg" onKeyUp="return ValidateNumber(this,value)" size=10 maxLength=5 value="<%264%>"></td></tr>    
     <tr>
-      <td nowrap="nowrap"><%211%></td>
+      <td nowrap="nowrap"><%211%>:</td>
       <td nowrap="nowrap"><input type="text" name="wpa_en_radius_ss_wlg" size=20 maxLength=130 value="<%265%>"></td></tr>    
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
@@ -2775,10 +2781,10 @@ function update_settings()
   <input type="hidden" name="only_mode" value="0">
   <input type="hidden" name="show_wps_alert" value="<%272%>">
   <input type="hidden" name="security_type_2G" value="<%273%>">
-  <input type="hidden" name="security_type_5G" value="<%50%>">
+  <input type="hidden" name="security_type_5G" value="<%52%>">
   <input type="hidden" name="gui_security_type_5G" value="">
   <input type="hidden" name="init_security_type_2G" value="<%273%>">
-  <input type="hidden" name="init_security_type_5G" value="<%50%>">
+  <input type="hidden" name="init_security_type_5G" value="<%52%>">
   <input type="hidden" name="initChannel" value="<%274%>">
   <input type="hidden" name="initAuthType" value="<%275%>">
   <input type="hidden" name="initDefaultKey" value="<%276%>">
@@ -2806,6 +2812,8 @@ function update_settings()
   <INPUT type="hidden" name="wan_netmask" value= "<%293%>">  
   <input type="hidden" name="select_2g_tpc" value="<%294%>">
   <input type="hidden" name="select_5g_tpc" value="<%295%>">
+  <input type="hidden" name="wifi_2g_enable" value="<%68%>">
+  <input type="hidden" name="wifi_5g_enable" value="<%69%>">
 <a name="helpframe-anchor"></a>
 </form>
 

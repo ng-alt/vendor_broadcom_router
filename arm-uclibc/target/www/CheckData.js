@@ -1,6 +1,6 @@
 /* for WPS 2.0 checking */
 var show_wep_or_wps_msg = false;
-var wps_version = "<%49%>";  
+var wps_version = "<%51%>";  
 var show_tkip_or_wps_v20_msg = false;
 var show_ssid_bc_or_wps_v20_msg = false;
 var show_open_or_wps_v20_msg = false;
@@ -23,7 +23,7 @@ function checkKey(evt)
     if ((lastkeypressed != 13) && (lastkeypressed != 8) && ( keyTooBig ))
     {
         keyTooBig = false;
-        alert("<%1590%> " + keysize + " <%1591%>");
+        alert("<%1605%> " + keysize + " <%1606%>");
         chkSize(lastObj); // for NS 6/7
         return false;
     }
@@ -62,8 +62,8 @@ function CheckData_NONE()
 }
 function CheckData_WEP(wepenc, wep_key_no, key, key1, key2, key3, key4)
 {
-    var msg_key64_type = "<%47%>";
-    var msg_key128_type = "<%48%>";
+    var msg_key64_type = "<%49%>";
+    var msg_key128_type = "<%50%>";
     
     var cf = document.forms[0];
     var msg = ""; var blankFlag = false; var sizeOK = false; var i;
@@ -95,7 +95,7 @@ function CheckData_WEP(wepenc, wep_key_no, key, key1, key2, key3, key4)
 	if (wps_version == "2.0")
 	{
 		if (!show_tkip_or_wps_v20_msg) {
-			if (!confirm("<%1702%>")){
+			if (!confirm("<%1717%>")){
 				return false;
 			}
 		}
@@ -234,7 +234,7 @@ function CheckData_WPA(passphrase, sec_type)
 		if (sec_type == "WPA-PSK")
 		{
 			if (!show_tkip_or_wps_v20_msg) {
-				if (!confirm("<%1702%>")){
+				if (!confirm("<%1717%>")){
 					return false;
 				}
 			}
@@ -244,7 +244,7 @@ function CheckData_WPA(passphrase, sec_type)
 	}
     if(passphrase.value.length < 8)
     {
-        alert("<%4330%>");
+        alert("<%4356%>");
         passphrase.focus();
         return false;    
     }
@@ -252,7 +252,7 @@ function CheckData_WPA(passphrase, sec_type)
     {
         if ( isHex(passphrase.value) == false)
         {
-            alert("<%4330%>");
+            alert("<%4356%>");
             passphrase.value = "";
             passphrase.focus();
             return false;
@@ -271,8 +271,8 @@ function CheckData_WPA(passphrase, sec_type)
 
 function CheckData_Manual(ssid, security_type, passphrase, wepenc, wep_key_no, key, key1, key2, key3, key4)
 {
-    var msg_key64_type = "<%47%>";
-    var msg_key128_type = "<%48%>";
+    var msg_key64_type = "<%49%>";
+    var msg_key128_type = "<%50%>";
 
     var security_type_value = security_type.value;    
     var msg = "";
@@ -293,7 +293,7 @@ function CheckData_Manual(ssid, security_type, passphrase, wepenc, wep_key_no, k
     
     if (security_type_value == -1) // not selected
     {
-        alert("<%4331%>");
+        alert("<%4357%>");
         security_type.focus();
         return false;
     }

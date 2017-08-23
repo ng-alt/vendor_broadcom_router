@@ -124,10 +124,10 @@ function loadvalue()
 <td colspan="2"></td>
 </tr>
 
-<TR><TD colspan="2" class="left_text"><h2><%2405%></h2></TD></TR>
+<TR><TD colspan="2" class="left_text"><h2><%2424%></h2></TD></TR>
 
 <TR>
-	<TD colspan="2" class="left_text"><%2436%></TD>
+	<TD colspan="2" class="left_text"><%2455%></TD>
 </TR>
 </TABLE>
 
@@ -146,19 +146,19 @@ function loadvalue()
         <td colspan="2"></td>
         </tr>
  		<TR>
-			<TD nowrap class="centerTd"><%533%></TD>
+			<TD nowrap class="centerTd"><%546%></TD>
 			<script>document.write("<TD nowrap>"+parent.static_ip+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%534%></TD>
+			<TD nowrap class="centerTd"><%547%></TD>
 			<script>document.write("<TD nowrap>"+parent.static_subnet+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%623%></TD>
+			<TD nowrap class="centerTd"><%638%></TD>
 			<script>	document.write("<TD nowrap>"+parent.static_gateway+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2437%></TD>
+			<TD nowrap class="centerTd"><%2456%></TD>
 			<script>
 				if(parent.static_dns1 == "" && parent.static_dns2 != "")
 					document.write("<TD nowrap>"+parent.static_dns2+"</TD></TR>");
@@ -171,12 +171,12 @@ function loadvalue()
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%541%></TD>
+			<TD nowrap class="centerTd"><%554%></TD>
 			<script>
 				if(parent.mac_spoof == '0')
-					document.write("<TD nowrap><%2438%></TD>");
+					document.write("<TD nowrap><%2457%></TD>");
 				else if(parent.mac_spoof == '1')
-					document.write("<TD nowrap><%2439%></TD>");
+					document.write("<TD nowrap><%2458%></TD>");
 				else
 					document.write("<TD nowrap>"+parent.Spoofmac+"</TD>");
 			</script>
@@ -192,14 +192,14 @@ function loadvalue()
         </tr>
         
 		<TR>
-			<TD nowrap class="centerTd"><%530%></TD>
-			<TD nowrap><%531%></TD>
+			<TD nowrap class="centerTd"><%543%></TD>
+			<TD nowrap><%544%></TD>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2437%></TD>
+			<TD nowrap class="centerTd"><%2456%></TD>
 			<script>
 				if(parent.static_dns1 == "" && parent.static_dns2 == "")
-					document.write("<TD nowrap><%537%></TD></TR>");
+					document.write("<TD nowrap><%550%></TD></TR>");
 				else if(parent.static_dns1 == "" && parent.static_dns2 != "")
 					document.write("<TD nowrap>"+parent.static_dns2+"</TD></TR>");
 				else if(parent.static_dns1 != "" && parent.static_dns2 == "")
@@ -211,12 +211,12 @@ function loadvalue()
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%541%></TD>
+			<TD nowrap class="centerTd"><%554%></TD>
 			<script>
 				if(parent.mac_spoof == '0')
-					document.write("<TD nowrap><%2438%></TD>");
+					document.write("<TD nowrap><%2457%></TD>");
 				else if(parent.mac_spoof == '1')
-					document.write("<TD nowrap><%2439%></TD>");
+					document.write("<TD nowrap><%2458%></TD>");
 				else
 					document.write("<TD nowrap>"+parent.Spoofmac+"</TD>");
 			</script>
@@ -232,19 +232,19 @@ function loadvalue()
         </tr>
         
 		<TR>
-			<TD nowrap class="centerTd"><%2440%></TD>
-			<TD nowrap><%574%></TD>
+			<TD nowrap class="centerTd"><%2459%></TD>
+			<TD nowrap><%589%></TD>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%579%></TD>
+			<TD nowrap class="centerTd"><%594%></TD>
 			<script>document.write("<TD nowrap>"+parent.pppoe_username+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%581%></TD>
+			<TD nowrap class="centerTd"><%596%></TD>
 			<script>document.write("<TD nowrap>"+parent.pppoe_password+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%985%></TD>
+			<TD nowrap class="centerTd"><%1000%></TD>
 			<script>
 			if(parent.pppoe_server == "")
 				document.write("<TD nowrap><%171%></TD>");
@@ -253,7 +253,7 @@ function loadvalue()
 			</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2433%></TD>
+			<TD nowrap class="centerTd"><%2452%></TD>
 			<script>
 				if(parent.pppoe_static_ip == "")
 					document.write("<TD nowrap><%163%></TD>");
@@ -262,30 +262,30 @@ function loadvalue()
 			</script>
 		</TR>
 		<TR>
-			<TD class="centerTd"><%2441%></TD>
+			<TD class="centerTd"><%2460%></TD>
 			<script>
 				if(parent.dual_access == "0")
-					document.write("<TD nowrap><%481%></TD>");
+					document.write("<TD nowrap><%494%></TD>");
 				else
 				{
-					document.write("<TD nowrap><%480%></TD>");
+					document.write("<TD nowrap><%493%></TD>");
 					if(parent.pppoe_dual_assign == '0')
 					{
-						document.write("<TR><TD nowrap><%2415%></TD>");
-						document.write("<TD nowrap><%531%></TD></TR>");
+						document.write("<TR><TD nowrap><%2434%></TD>");
+						document.write("<TD nowrap><%544%></TD></TR>");
 					}
 					else
 					{
-						document.write("<TR><TD nowrap><%2415%></TD>");
+						document.write("<TR><TD nowrap><%2434%></TD>");
 						document.write("<TD nowrap>"+parent.pppoe_eth_ip+"</TD></TR>");
-						document.write("<TR><TD nowrap><%534%></TD>");
+						document.write("<TR><TD nowrap><%547%></TD>");
 						document.write("<TD nowrap>"+parent.pppoe_eth_netmask+"</TD></TR>");
-						document.write("<TR><TD nowrap><%623%></TD>");
+						document.write("<TR><TD nowrap><%638%></TD>");
 						document.write("<TD nowrap>"+parent.pppoe_eth_gateway+"</TD></TR>");
 					}
-					document.write("<TR><TD nowrap><%2437%></TD>");
+					document.write("<TR><TD nowrap><%2456%></TD>");
 					if(parent.pppoe_dns1 == "" && parent.pppoe_dns2 == "")
-						document.write("<TD nowrap><%531%></TD></TR>");
+						document.write("<TD nowrap><%544%></TD></TR>");
 					else if(parent.pppoe_dns1 == "" && parent.pppoe_dns2 != "")
 						document.write("<TD nowrap>"+parent.pppoe_dns2+"</TD></TR>");
 					else if(parent.pppoe_dns1 != "" && parent.pppoe_dns2 == "")
@@ -298,12 +298,12 @@ function loadvalue()
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%541%></TD>
+			<TD nowrap class="centerTd"><%554%></TD>
 			<script>
 				if(parent.mac_spoof == '0')
-					document.write("<TD nowrap><%2438%></TD>");
+					document.write("<TD nowrap><%2457%></TD>");
 				else if(parent.mac_spoof == '1')
-					document.write("<TD nowrap><%2439%></TD>");
+					document.write("<TD nowrap><%2458%></TD>");
 				else
 					document.write("<TD nowrap>"+parent.Spoofmac+"</TD>");
 			</script>
@@ -319,41 +319,41 @@ function loadvalue()
         </tr>
         
 		<TR>
-			<TD nowrap class="centerTd"><%2440%></TD>
-			<TD nowrap><%573%></TD>
+			<TD nowrap class="centerTd"><%2459%></TD>
+			<TD nowrap><%588%></TD>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%567%></TD>
+			<TD nowrap class="centerTd"><%582%></TD>
 			<script>document.write("<TD nowrap>"+parent.pptp_username+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2442%></TD>
+			<TD nowrap class="centerTd"><%2461%></TD>
 			<script>document.write("<TD nowrap>"+parent.pptp_password+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%622%></TD>
+			<TD nowrap class="centerTd"><%637%></TD>
 			<script>document.write("<TD nowrap>"+parent.pptp_server_ipaddr+"</TD>");</script>
 		</TR>
-		<TR><TD class="centerTd"><%2441%></TD><TD>Yes</TD></TR>
+		<TR><TD class="centerTd"><%2460%></TD><TD>Yes</TD></TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2415%></TD>
+			<TD nowrap class="centerTd"><%2434%></TD>
 			<script>
 				if(parent.pptp_wan_assign == '0')
-					document.write("<TD nowrap><%531%></TD></TR>");
+					document.write("<TD nowrap><%544%></TD></TR>");
 				else
 				{
 					document.write("<TD nowrap>"+parent.pptp_local_ipaddr+"</TD></TR>");
-					document.write("<TR><TD nowrap><%534%></TD>");
+					document.write("<TR><TD nowrap><%547%></TD>");
 					document.write("<TD nowrap>"+parent.pptp_local_netmask+"</TD></TR>");
-					document.write("<TR><TD nowrap><%623%></TD>");
+					document.write("<TR><TD nowrap><%638%></TD>");
 					document.write("<TD nowrap>"+parent.pptp_local_gateway+"</TD></TR>");
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%2437%></TD>
+			<TD nowrap class="centerTd"><%2456%></TD>
 			<script>
 				if(parent.pptp_dns1 == "" && parent.pptp_dns2 == "")
-					document.write("<TD nowrap><%531%></TD></TR>");
+					document.write("<TD nowrap><%544%></TD></TR>");
 				else if(parent.pptp_dns1 == "" && parent.pptp_dns2 != "")
 					document.write("<TD nowrap>"+parent.pptp_dns2+"</TD></TR>");
 				else if(parent.pptp_dns1 != "" && parent.pptp_dns2 == "")
@@ -365,12 +365,12 @@ function loadvalue()
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%541%></TD>
+			<TD nowrap class="centerTd"><%554%></TD>
 			<script>
 				if(parent.mac_spoof == '0')
-					document.write("<TD nowrap><%2438%></TD>");
+					document.write("<TD nowrap><%2457%></TD>");
 				else if(parent.mac_spoof == '1')
-					document.write("<TD nowrap><%2439%></TD>");
+					document.write("<TD nowrap><%2458%></TD>");
 				else
 					document.write("<TD nowrap>"+parent.Spoofmac+"</TD>");
 			</script>
@@ -386,41 +386,41 @@ function loadvalue()
         </tr>
         
 		<TR>
-			<TD nowrap class="centerTd"><%2440%></TD>
-			<TD nowrap><%575%></TD>
+			<TD nowrap class="centerTd"><%2459%></TD>
+			<TD nowrap><%590%></TD>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%567%></TD>
+			<TD nowrap class="centerTd"><%582%></TD>
 			<script>document.write("<TD nowrap>"+parent.l2tp_username+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%581%></TD>
+			<TD nowrap class="centerTd"><%596%></TD>
 			<script>document.write("<TD nowrap>"+parent.l2tp_password+"</TD>");</script>
 		</TR>
 		<TR>
-			<TD nowrap class="centerTd"><%622%></TD>
+			<TD nowrap class="centerTd"><%637%></TD>
 			<script>document.write("<TD nowrap>"+parent.l2tp_server_ipaddr+"</TD>");</script>
 		</TR>
-		<TR><TD class="centerTd"><%2441%></TD><TD>Yes</TD></TR>
+		<TR><TD class="centerTd"><%2460%></TD><TD>Yes</TD></TR>
 		<TR>
-			<TD nowrap class="centerTd"><%2415%></TD>
+			<TD nowrap class="centerTd"><%2434%></TD>
 			<script>
 				if(parent.l2tp_wan_assign == '0')
-					document.write("<TD nowrap><%531%></TD></TR>");
+					document.write("<TD nowrap><%544%></TD></TR>");
 				else
 				{
 					document.write("<TD nowrap>"+parent.l2tp_local_ipaddr+"</TD></TR>");
-					document.write("<TR><TD nowrap><%534%></TD>");
+					document.write("<TR><TD nowrap><%547%></TD>");
 					document.write("<TD nowrap>"+parent.l2tp_local_netmask+"</TD></TR>");
-					document.write("<TR><TD nowrap><%623%></TD>");
+					document.write("<TR><TD nowrap><%638%></TD>");
 					document.write("<TD nowrap>"+parent.l2tp_local_gateway+"</TD></TR>");
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%2437%></TD>
+			<TD nowrap class="centerTd"><%2456%></TD>
 			<script>
 				if(parent.l2tp_dns1 == "" && parent.l2tp_dns2 == "")
-					document.write("<TD nowrap><%531%></TD></TR>");
+					document.write("<TD nowrap><%544%></TD></TR>");
 				else if(parent.l2tp_dns1 == "" && parent.l2tp_dns2 != "")
 					document.write("<TD nowrap>"+parent.l2tp_dns2+"</TD></TR>");
 				else if(parent.l2tp_dns1 != "" && parent.l2tp_dns2 == "")
@@ -432,12 +432,12 @@ function loadvalue()
 				}
 			</script>
 		<TR>
-			<TD nowrap class="centerTd"><%541%></TD>
+			<TD nowrap class="centerTd"><%554%></TD>
 			<script>
 				if(parent.mac_spoof == '0')
-					document.write("<TD nowrap><%2438%></TD>");
+					document.write("<TD nowrap><%2457%></TD>");
 				else if(parent.mac_spoof == '1')
-					document.write("<TD nowrap><%2439%></TD>");
+					document.write("<TD nowrap><%2458%></TD>");
 				else
 					document.write("<TD nowrap>"+parent.Spoofmac+"</TD>");
 			</script>
@@ -454,7 +454,7 @@ function loadvalue()
 </tr>
 
 <TR> 
-	<TD colspan="2" class="left_text"><script>document.write("<%2443%>")</script></a>
+	<TD colspan="2" class="left_text"><script>document.write("<%2462%>")</script></a>
 </TD>
 
 </TR>
@@ -465,8 +465,8 @@ function loadvalue()
 
 <TR>
 	<td colspan="2" align="center" class="text-align:center;">
-		<button class="purpleBtn" type="button" style="width:100px" name="back" value="submit" onClick='location.href="RU_manual_spoof.htm";'><span><%1566%></span></button>
-        <button class="purpleBtn" type="button" style="width:200px" name="connect" value="submit" onClick='RU_manual_check_summary();'><span><%2444%></span></button>
+		<button class="purpleBtn" type="button" style="width:100px" name="back" value="submit" onClick='location.href="RU_manual_spoof.htm";'><span><%1581%></span></button>
+        <button class="purpleBtn" type="button" style="width:200px" name="connect" value="submit" onClick='RU_manual_check_summary();'><span><%2463%></span></button>
 
 	</td>
 

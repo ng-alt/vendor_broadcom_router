@@ -4,12 +4,12 @@ function check_DNS(dnsaddr1,dnsaddr2,wan_assign,wan_ip)
 	{
 		if(checkipaddr(dnsaddr1)==false)
 		{
-			alert("<%518%>");
+			alert("<%531%>");
 			return false;
 		}
 		if( wan_assign == true && isSameIp(dnsaddr1,wan_ip))
 		{
-			alert("<%518%>");
+			alert("<%531%>");
 			return false;
 		}
 	}
@@ -17,19 +17,19 @@ function check_DNS(dnsaddr1,dnsaddr2,wan_assign,wan_ip)
 	{
 		if(checkipaddr(dnsaddr2)==false)
 		{
-			alert("<%518%>");
+			alert("<%531%>");
 			return false;
 		}
 		if( wan_assign == true && isSameIp(dnsaddr2,wan_ip))
 		{
-			alert("<%518%>");
+			alert("<%531%>");
 			return false;
 		}
 	}
 
 	if(dnsaddr1=="" && dnsaddr2=="" )
 	{
-		alert("<%518%>");
+		alert("<%531%>");
 		return false;
 	}
 	return true;
@@ -870,7 +870,7 @@ function checkpsk(passphrase, passphrase_len)
 	if ( len == 64 )
 	{
 		//Don't enable Hex passphrase support
-		alert("<%1602%>");
+		alert("<%1617%>");
 		return false;
 
 		for(i=0;i<len;i++)
@@ -886,12 +886,12 @@ function checkpsk(passphrase, passphrase_len)
 	{
 		if(len < 8 )
 		{
-			alert("<%1601%>");
+			alert("<%1616%>");
 			return false;
 		}
 		if(len > 63)
 		{
-			alert("<%1602%>");
+			alert("<%1617%>");
 			return false;
 		}
 		for(i=0;i<passphrase.value.length;i++)
@@ -907,8 +907,8 @@ function checkpsk(passphrase, passphrase_len)
 	return true;
 }
 
-var wep_128="<%48%>";
-var wep_64="<%47%>";
+var wep_128="<%50%>";
+var wep_64="<%49%>";
 
 function checkwep(form)
 {
@@ -1949,7 +1949,7 @@ function goTestApply()
 {
 	var winoptions = "width=640,height=480,menubar=yes,scrollbars=yes,toolbar=yes,status=yes,location=yes,resizable=yes"
 	if( run_test == "test")
-		window.open('http://www.netgear.com/success/<%485%>',null,winoptions);
+		window.open('http://www.netgear.com/success/<%498%>',null,winoptions);
 		//window.open('BAS_testpage.htm',null,winoptions);
 }
 
@@ -2027,7 +2027,7 @@ function printPage()
 	if (window.print)
 		window.print();
 	else
-		alert("<%2390%>");
+		alert("<%2409%>");
 }
 function top_left_nolink()
 {

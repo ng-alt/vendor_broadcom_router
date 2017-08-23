@@ -132,9 +132,9 @@ function loadcheck()
 {
 	//loadhelp('BAS_ether');
 	if(isIE()){
-	<%506%>
+	<%519%>
 		document.formname.system_name.size="24";
-	<%507%>
+	<%520%>
 
 		document.formname.domain_name.size="24";
 	}
@@ -159,7 +159,16 @@ function setIP()
 function isParentalControlEnable()
 {
 	var cf = document.forms[0];
-    if((cf.parental_control.value=='1') && (SkipParentalControlCheck==0))
+    if(((cf.parental_control.value=='1') ) && (SkipParentalControlCheck==0))
+        return true;
+    else
+        return false;
+}
+
+function isCircleControlEnable()
+{
+	var cf = document.forms[0];
+    if(( (cf.parental_circle.value=='1')) && (SkipParentalControlCheck==0))
         return true;
     else
         return false;
@@ -169,19 +178,19 @@ function setDNS()
 {
 	var cf = document.forms[0];
 	var dflag = cf.DNSAssign[0].checked;
-  if(isParentalControlEnable() && cf.DNSAssign[0].checked)
+	if(isParentalControlEnable() && cf.DNSAssign[0].checked)
   {
-  	alert('<%508%>');
+  	alert('<%521%>');
 		cf.DNSAssign[1].checked=true;
     dflag=false;      
   }
   
-	if (cf.WANAssign[1].checked && cf.DNSAssign[0].checked)
-	{
-		cf.DNSAssign[1].checked=true;
-		dflag = false;
-	}
-
+  if(isCircleControlEnable() && cf.DNSAssign[1].checked)
+  {
+  	alert('<%521%>');
+		cf.DNSAssign[0].checked=true;
+  }
+  
 	setDisabled(dflag,cf.DAddr1,cf.DAddr2,cf.DAddr3,cf.DAddr4,cf.PDAddr1,cf.PDAddr2,cf.PDAddr3,cf.PDAddr4);
 	DisableFixedDNS = dflag;
 }
@@ -225,27 +234,27 @@ function checkData()
 	var w_ipaddr = (cf.WPethr1.value << 24) | (cf.WPethr2.value << 16) | (cf.WPethr3.value << 8)| (cf.WPethr4.value);
 	var w_netmask = (cf.WMask1.value<< 24) | (cf.WMask2.value<< 16) | (cf.WMask3.value<< 8)| (cf.WMask4.value);
 	var wan_ip  = "<%292%>";
-	var openvpnEnable = "<%509%>";
+	var openvpnEnable = "<%522%>";
 
-    var wan_proto = "<%483%>";
-    var pppoe_single_login = "<%510%>";
+    var wan_proto = "<%496%>";
+    var pppoe_single_login = "<%523%>";
     if (wan_proto == "pppoe" && cf.ipv6_proto.value == "pppoe" && pppoe_single_login == 1)
     {
-        if (!confirm("<%511%>"))
+        if (!confirm("<%524%>"))
             return false;
     }
 
-	<%506%>
+	<%519%>
     if (cf.system_name.value.match( /[^\x20-\x7E]/ ))
     {
-		alert("<%512%>");
+		alert("<%525%>");
 		return false;
 	}
-	<%507%>
+	<%520%>
 	
     if (cf.domain_name.value.match( /[^\x20-\x7E]/ ))
     {
-		alert("<%513%>");
+		alert("<%526%>");
 		return false;
 	}
 
@@ -261,7 +270,7 @@ function checkData()
 			cf.WPethr4.value = parseInt(cf.WPethr4.value,10);
 		}
 		if(checkIP(cf.WMask1,cf.WMask2,cf.WMask3,cf.WMask4,255))
-			msg+= "<%514%>";
+			msg+= "<%527%>";
 		else
 		{
 			cf.WMask1.value = parseInt(cf.WMask1.value,10);
@@ -270,7 +279,7 @@ function checkData()
 			cf.WMask4.value = parseInt(cf.WMask4.value,10);
 		}
 		if(checkIP(cf.WGateway1,cf.WGateway2,cf.WGateway3,cf.WGateway4,255))
-			msg+= "<%515%>";
+			msg+= "<%528%>";
 		else
 		{
 			cf.WGateway1.value = parseInt(cf.WGateway1.value,10);
@@ -284,14 +293,14 @@ function checkData()
 		var tmpgwip = cf.WGateway1.value+'.'+cf.WGateway2.value+'.'+cf.WGateway3.value+'.'+cf.WGateway4.value;
 		//if((w_ipaddr&w_netmask) != (w_gateway&w_netmask))
 		//{
-		//	alert("<%516%>" + tmpip + "<%517%>" + tmpgwip);
+		//	alert("<%529%>" + tmpip + "<%530%>" + tmpgwip);
 		//	return false;
 		//}
 	}
 	if(cf.DNSAssign[1].checked)
 	{
 		if(checkIP(cf.DAddr1,cf.DAddr2,cf.DAddr3,cf.DAddr4,254)||(parseInt(cf.DAddr4.value,10)==0))
-			msg+= "<%518%>";
+			msg+= "<%531%>";
 		else
 		{
 			cf.DAddr1.value = parseInt(cf.DAddr1.value,10);
@@ -302,7 +311,7 @@ function checkData()
 		if(cf.PDAddr1.value.length>0 || cf.PDAddr2.value.length>0 || cf.PDAddr3.value.length>0 || cf.PDAddr4.value.length>0)
 		{
 			if(checkIP(cf.PDAddr1,cf.PDAddr2,cf.PDAddr3,cf.PDAddr4,254)||(parseInt(cf.PDAddr4.value,10)==0))
-				msg+= "<%519%>";
+				msg+= "<%532%>";
 			else
 			{
 				cf.PDAddr1.value = parseInt(cf.PDAddr1.value,10);
@@ -321,13 +330,13 @@ function checkData()
 		alert(msg);
 		return false;
 	}
-	<%506%>
+	<%519%>
 	if (!isValidStr(cf.system_name.value, ' ', '~') || !isValidStr(cf.domain_name.value, '!', '~'))
 	{
-		if (!confirm("<%520%>"))
+		if (!confirm("<%533%>"))
 			return false;
 	}
-	<%507%>
+	<%520%>
 	
 	if ((w_ipaddr != 0) && 
 	    (((l_netmask & w_netmask ) & l_ipaddr) == ((l_netmask & w_netmask ) & w_ipaddr)))
@@ -338,7 +347,7 @@ function checkData()
 	cf.wan_ipaddr.value = cf.WPethr1.value+'.'+cf.WPethr2.value+'.'+cf.WPethr3.value+'.'+cf.WPethr4.value;
 	if(openvpnEnable == "enable"){
 		if(wan_ip != cf.wan_ipaddr.value){
-			alert("<%521%>");
+			alert("<%534%>");
 		}
 	}
 	cf.wan_netmask.value = cf.WMask1.value+'.'+cf.WMask2.value+'.'+cf.WMask3.value+'.'+cf.WMask4.value;
@@ -359,6 +368,8 @@ function loadSettings()
 	var wan_dns_sel = cf.wan_dns_sel.value;
 	var wan_dns1_pri = cf.wan_dns1_pri.value.split(".");
 	var wan_dns1_sec = cf.wan_dns1_sec.value.split(".");
+	var wan_dns_pri = cf.wan_dns_pri.value.split(".");
+	var wan_dns_sec = cf.wan_dns_sec.value.split(".");
 	var wan_hwaddr_sel = cf.wan_hwaddr_sel.value;
 
 	if (wan_proto == "static")
@@ -381,21 +392,42 @@ function loadSettings()
 
 	cf.DNSAssign[wan_dns_sel].checked = true;
 	setDNS();
-	if (cf.wan_dns1_pri.value != "")
+	
+	if(wan_dns_sel=="1")
 	{
-		cf.DAddr1.value = wan_dns1_pri[0];
-		cf.DAddr2.value = wan_dns1_pri[1];
-		cf.DAddr3.value = wan_dns1_pri[2];
-		cf.DAddr4.value = wan_dns1_pri[3];
-	}
-	if (cf.wan_dns1_sec.value != "")
+    if (cf.wan_dns1_pri.value != "")
+	  {
+		  cf.DAddr1.value = wan_dns1_pri[0];
+		  cf.DAddr2.value = wan_dns1_pri[1];
+		  cf.DAddr3.value = wan_dns1_pri[2];
+		  cf.DAddr4.value = wan_dns1_pri[3];
+	  }
+	  if (cf.wan_dns1_sec.value != "")
+	  {
+		  cf.PDAddr1.value = wan_dns1_sec[0];
+		  cf.PDAddr2.value = wan_dns1_sec[1];
+		  cf.PDAddr3.value = wan_dns1_sec[2];
+		  cf.PDAddr4.value = wan_dns1_sec[3];
+	  }
+  }
+  else
 	{
-		cf.PDAddr1.value = wan_dns1_sec[0];
-		cf.PDAddr2.value = wan_dns1_sec[1];
-		cf.PDAddr3.value = wan_dns1_sec[2];
-		cf.PDAddr4.value = wan_dns1_sec[3];
-	}
-
+    if (cf.wan_dns_pri.value != "")
+	  {
+		  cf.DAddr1.value = wan_dns_pri[0];
+		  cf.DAddr2.value = wan_dns_pri[1];
+		  cf.DAddr3.value = wan_dns_pri[2];
+		  cf.DAddr4.value = wan_dns_pri[3];
+	  }
+	  if (cf.wan_dns_sec.value != "")
+	  {
+		  cf.PDAddr1.value = wan_dns_sec[0];
+		  cf.PDAddr2.value = wan_dns_sec[1];
+		  cf.PDAddr3.value = wan_dns_sec[2];
+		  cf.PDAddr4.value = wan_dns_sec[3];
+	  }
+  }
+  
     if (wan_hwaddr_sel == 0)
         cf.Spoofmac.value = cf.wan_hwaddr_def.value;
     else if (wan_hwaddr_sel == 2)
@@ -415,13 +447,13 @@ function loadSettings()
 <form id="target"  name="formname" method="POST" action="ether.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%374%></div>
+<div class="subhead2"> <%379%></div>
 <table border="0"     class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
 <button type="submit" value="SUBMIT"  onClick="buttonClick(this,'<%78%>');return checkData()" name="apply" class=<%79%> style="padding-left:10px"> <span class="<%80%>" ><%81%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button>
-<button type="button" value="BUTTON"  onClick="buttonClick(this,'<%83%>');reset();loadSettings();loadcheck();" name="Cancel" class="button-rule" style="padding-left:10px" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button><button type="submit" value="SUBMIT"  onClick="buttonClick(this,'<%522%>');return checkData()" name="Test" class=<%79%> style="padding-left:10px"> <span class="<%80%>" ><%522%> &nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button>
+<button type="button" value="BUTTON"  onClick="buttonClick(this,'<%83%>');reset();loadSettings();loadcheck();" name="Cancel" class="button-rule" style="padding-left:10px" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button><button type="submit" value="SUBMIT"  onClick="buttonClick(this,'<%535%>');return checkData()" name="Test" class=<%79%> style="padding-left:10px"> <span class="<%80%>" ><%535%> &nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button>
 
 </td>
 </tr>
@@ -430,80 +462,80 @@ function loadSettings()
 <tr><td colspan="2" class="scrollpane-table-seperate-border"><div class="scroll-pane" style="height:260px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
 <tr>
-	<td nowrap><a href="javascript:loadhelp('BAS_ether','accountname')" tabindex="-1"><%523%></a></td>
-	<%524%>
-	<td align="left"><input type="text" name="system_name" maxlength="60" size="15" value="<%525%>"></td>
-	<%526%>
-	<%381%>
+	<td nowrap><a href="javascript:loadhelp('BAS_ether','accountname')" tabindex="-1"><%536%></a></td>
+	<%537%>
+	<td align="left"><input type="text" name="system_name" maxlength="60" size="15" value="<%538%>"></td>
+	<%539%>
+	<%386%>
 	<td align="left">
-		<%525%> 
-		&nbsp;&nbsp;&nbsp;<button type="button" value="<%527%>" name="Edit" class="button-rule" onClick="location.href='DEV_name.htm';"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%527%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		<%538%> 
+		&nbsp;&nbsp;&nbsp;<button type="button" value="<%540%>" name="Edit" class="button-rule" onClick="location.href='DEV_name.htm';"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%540%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td>
-	<%383%>
+	<%388%>
 </tr>
 
 <tr>
-	<td nowrap><a href="javascript:loadhelp('BAS_ether','Domain')" tabindex="-1"><%528%></a></td>
-	<td align="left"><input type="text" name="domain_name" maxlength="60" size="15" value="<%529%>"></td>
+	<td nowrap><a href="javascript:loadhelp('BAS_ether','Domain')" tabindex="-1"><%541%></a></td>
+	<td align="left"><input type="text" name="domain_name" maxlength="60" size="15" value="<%542%>"></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2" nowrap><a href="javascript:loadhelp('BAS_ether','InternetIP')" tabindex="-1"><b><%530%></b></a></td>
+	<td colspan="2" nowrap><a href="javascript:loadhelp('BAS_ether','InternetIP')" tabindex="-1"><b><%543%></b></a></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="WANAssign" value="dhcp" onClick="setIP()"><%531%></td>
+	<td colspan="2" nowrap><input type="radio" name="WANAssign" value="dhcp" onClick="setIP()"><%544%></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="WANAssign" value="static" onClick="setIP()"><%532%></td>
+	<td colspan="2" nowrap><input type="radio" name="WANAssign" value="static" onClick="setIP()"><%545%></td>
 </tr>
 <tr>
-	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%533%></td>
+	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%546%></td>
 	<td nowrap align="left" class="num"><input type="text" name="WPethr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WPethr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)" >.<input type="text" name="WPethr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WPethr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr>
-	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%534%></td>
+	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%547%></td>
 	<td align="left" class="num"><input type="text" name="WMask1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr>
-	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%535%></td>
+	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%548%></td>
 	<td align="left" class="num"><input type="text" name="WGateway1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td nowrap colspan="2"><a href="javascript:loadhelp('BAS_ether','DNSaddress')" tabindex="-1"><b><%536%></b></a></td>
+	<td nowrap colspan="2"><a href="javascript:loadhelp('BAS_ether','DNSaddress')" tabindex="-1"><b><%549%></b></a></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="DNSAssign" value="0" onClick="setDNS()"><%537%></td>
+	<td colspan="2" nowrap><input type="radio" name="DNSAssign" value="0" onClick="setDNS()"><%550%></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="DNSAssign" value="1" onClick="setDNS()"><%538%></td>
+	<td colspan="2" nowrap><input type="radio" name="DNSAssign" value="1" onClick="setDNS()"><%551%></td>
 </tr>
 <tr>
-	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%539%></td>
-	<td nowrap align="left" class="num"><input type="text" name="DAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,1)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="DAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="DAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="DAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,1)"></td>
+	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%552%></td>
+	<td nowrap align="left" class="num"><input type="text" name="DAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,1)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="DAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="DAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="DAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,1)"></td>
 </tr>
 <tr>
-	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%540%></td>
-	<td nowrap align="left" class="num"><input type="text" name="PDAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,1)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="PDAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="PDAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,0)">.
-		                                   <input type="text" name="PDAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%508%>');return false;} jumpcheck(this,1)"></td>
+	<td nowrap><img src="spacer.gif" width="20" height="12" border="0"><%553%></td>
+	<td nowrap align="left" class="num"><input type="text" name="PDAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,1)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="PDAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="PDAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,0)">.
+		                                   <input type="text" name="PDAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedDNS) this.blur()" onkeydown="if(isParentalControlEnable()) return false;bscheck(event,this,0)" onkeyup="if(isParentalControlEnable()){ alert('<%521%>');return false;} jumpcheck(this,1)"></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td nowrap colspan="2"><a href="javascript:loadhelp('BAS_ether','localaddress')" tabindex="-1"><b><%541%></b></a></td>
+	<td nowrap colspan="2"><a href="javascript:loadhelp('BAS_ether','localaddress')" tabindex="-1"><b><%554%></b></a></td>
 </tr>
 <tr>
-	<td nowrap colspan="2"><input type="radio" name="MACAssign" value="0" onClick="setMAC()"><%542%></td>
+	<td nowrap colspan="2"><input type="radio" name="MACAssign" value="0" onClick="setMAC()"><%555%></td>
 </tr>
 <tr>
-	<td nowrap colspan="2"><input type="radio" name="MACAssign" value="1" onClick="setMAC()"><%543%></td>
+	<td nowrap colspan="2"><input type="radio" name="MACAssign" value="1" onClick="setMAC()"><%556%></td>
 </tr>
 <tr>
-	<td nowrap align="left"><input type="radio" name="MACAssign" value="2" onClick="setMAC()"><%544%></td>
+	<td nowrap align="left"><input type="radio" name="MACAssign" value="2" onClick="setMAC()"><%557%></td>
 	<td nowrap align="left" class="num"><input type="text" class="num" name="Spoofmac" size="17" maxlength="17" value="" onFocus="if(DisableFixedMAC) this.blur()">
 	</td>
 </tr>
@@ -525,22 +557,25 @@ function loadSettings()
 
 
 
-<input type="hidden" name="runtest" value="<%545%>">
-<INPUT name=wan_proto type=hidden value= "<%483%>">
+<input type="hidden" name="runtest" value="<%558%>">
+<INPUT name=wan_proto type=hidden value= "<%496%>">
 <INPUT name=wan_ipaddr type=hidden value= "<%292%>">
 <INPUT name=wan_netmask type=hidden value= "<%293%>">
-<INPUT name=wan_gateway type=hidden value= "<%546%>">
-<INPUT name=wan_dns_sel type=hidden value= "<%547%>">
-<INPUT name=wan_dns1_pri type=hidden value= "<%548%>">
-<INPUT name=wan_dns1_sec type=hidden value= "<%549%>">
-<INPUT name=wan_hwaddr_sel type=hidden value= "<%550%>">
-<INPUT name=wan_hwaddr_def type=hidden value= "<%551%>">
-<INPUT name=wan_hwaddr2 type=hidden value= "<%552%>">
-<INPUT name=wan_hwaddr_pc type=hidden value= "<%553%>">
+<INPUT name=wan_gateway type=hidden value= "<%559%>">
+<INPUT name=wan_dns_sel type=hidden value= "<%560%>">
+<INPUT name=wan_dns1_pri type=hidden value= "<%561%>">
+<INPUT name=wan_dns1_sec type=hidden value= "<%562%>">
+<INPUT name=wan_dns_pri type=hidden value= "<%563%>">
+<INPUT name=wan_dns_sec type=hidden value= "<%564%>">
+<INPUT name=wan_hwaddr_sel type=hidden value= "<%565%>">
+<INPUT name=wan_hwaddr_def type=hidden value= "<%566%>">
+<INPUT name=wan_hwaddr2 type=hidden value= "<%567%>">
+<INPUT name=wan_hwaddr_pc type=hidden value= "<%568%>">
 <INPUT name=lan_ipaddr type=hidden value= "<%300%>">
-<INPUT name=lan_netmask type=hidden value= "<%554%>">
-<INPUT name=parental_control type=hidden value= "<%555%>">
-<INPUT name=ipv6_proto type=hidden value= "<%556%>">
+<INPUT name=lan_netmask type=hidden value= "<%569%>">
+<INPUT name=parental_control type=hidden value= "<%570%>">
+<INPUT name=parental_circle type=hidden value= "<%470%>">
+<INPUT name=ipv6_proto type=hidden value= "<%571%>">
 <a name="helpframe-anchor"></a>
 </form>
 

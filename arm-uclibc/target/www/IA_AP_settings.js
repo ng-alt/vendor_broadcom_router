@@ -261,7 +261,7 @@ function CheckData()
     {
         if(cf.ssid.value==cf.ssid_5g.value)
         {
-            alert("<%4327%>");
+            alert("<%4353%>");
             return false;
         }
         if (cf.ssid.value == "")
@@ -321,22 +321,22 @@ function CheckData()
         {
             if (cf.ap_24g_sec.value == "WPA-PSK")
             {
-                alert("<%43%>");
+                alert("<%45%>");
             }
             else if (cf.ap_24g_sec.value == "WPA-AUTO-PSK")
             {
-                alert("<%46%>");
+                alert("<%48%>");
             }    
         }
         else 
         {
             if (cf.ap_5g_sec.value == "WPA-PSK")
             {
-                alert("<%43%>");
+                alert("<%45%>");
             }
             else if (cf.ap_5g_sec.value == "WPA-AUTO-PSK")
             {
-                alert("<%46%>");
+                alert("<%48%>");
             }    
         }
     }
@@ -344,11 +344,11 @@ function CheckData()
     {
         if ((cf.ap_24g_sec.value == "WPA-PSK" && cf.ap_5g_sec.value == "WPA-AUTO-PSK") || 
             (cf.ap_24g_sec.value == "WPA-AUTO-PSK" && cf.ap_5g_sec.value == "WPA-PSK") )
-            alert("<%43%>");
+            alert("<%45%>");
         else if(cf.ap_24g_sec.value == "WPA-PSK" || cf.ap_5g_sec.value == "WPA-PSK")
-            alert("<%43%>");
+            alert("<%45%>");
         else if(cf.ap_24g_sec.value == "WPA-AUTO-PSK" || cf.ap_5g_sec.value == "WPA-AUTO-PSK")
-            alert("<%46%>");
+            alert("<%48%>");
     }
     
     if(cf.use_same_sec.checked)

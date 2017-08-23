@@ -107,17 +107,17 @@ function checkRemoteMG()
 	{
 		if (checkIP(cf.start_ip_1, cf.start_ip_2, cf.start_ip_3, cf.start_ip_4, 254))
 		{
-			alert("<%1048%>");
+			alert("<%1063%>");
 			return false;
 		}
 		else if (checkIP(cf.fin_ip_1, cf.fin_ip_2, cf.fin_ip_3, cf.fin_ip_4, 254))
 		{
-			alert("<%1049%>");
+			alert("<%1064%>");
 			return false;
 		}
 		else if (cp_ip(cf.start_ip_1,cf.start_ip_2,cf.start_ip_3,cf.start_ip_4,cf.fin_ip_1,cf.fin_ip_2,cf.fin_ip_3,cf.fin_ip_4))
 		{
-			alert("<%1050%>");
+			alert("<%1065%>");
 			return false;
 		}
 		else
@@ -163,7 +163,7 @@ function checkRemoteMG()
 	   parseInt(cf.http_rmport.value,10) > 65534 ||
 	   cf.http_rmport.value.indexOf(".") != -1)
 	{
-	    alert("<%1051%>");
+	    alert("<%1066%>");
 	    cf.http_rmport.focus();
 	    return false;
 	}
@@ -295,7 +295,7 @@ function clearData3()
 <form id="target"  name="remotemg" action="fwRemote.cgi" method="post">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%434%></div>
+<div class="subhead2"> <%439%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -310,18 +310,18 @@ function clearData3()
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         <tr>
             <td nowrap colspan="2">
-                <input type="checkbox"  name="remote_mg_enable" value="remote_mg"><a href="javascript:loadhelp('FW_remote','turnon')" tabindex="-1"><b><%1052%></b></a></td></tr>
+                <input type="checkbox"  name="remote_mg_enable" value="remote_mg"><a href="javascript:loadhelp('FW_remote','turnon')" tabindex="-1"><b><%1067%></b></a></td></tr>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         <tr>
-            <td nowrap colspan="2"><a href="javascript:loadhelp('FW_remote','address')" tabindex="-1"><b><%1053%>:</b></a></td></tr>
+            <td nowrap colspan="2"><a href="javascript:loadhelp('FW_remote','address')" tabindex="-1"><b><%1068%>:</b></a></td></tr>
         <tr>
-            <td nowrap colspan="2"><%1054%></td></tr>
+            <td nowrap colspan="2"><%1069%></td></tr>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         <tr>
-            <td valign="top" colspan="2"><A href="javascript:loadhelp('FW_remote','access')" tabindex="-1"><B><%1055%>:</b></a></td></tr>
+            <td valign="top" colspan="2"><A href="javascript:loadhelp('FW_remote','access')" tabindex="-1"><B><%1070%>:</b></a></td></tr>
         <tr>
             <td nowrap width="50%">
-                <input type="radio" name="rm_access" value="ip_single" onClick="clearData3()"> <%1056%>:</td>
+                <input type="radio" name="rm_access" value="ip_single" onClick="clearData3()"> <%1071%>:</td>
             <td nowrap width="50%" align="left" class="num">
                 <input type="text" class="num" size="4" maxlength="3" name="local_ip_1" value="" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="local_ip_2" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
@@ -331,15 +331,15 @@ function clearData3()
             <td colspan="2">&nbsp;</td></tr>
         <tr>
             <td nowrap>
-                <input type="radio" name="rm_access" value="ip_range" onClick="clearData2()"> <%703%>:</td>
-            <td nowrap align="left"><%1057%> <span class="num">
+                <input type="radio" name="rm_access" value="ip_range" onClick="clearData2()"> <%718%>:</td>
+            <td nowrap align="left"><%1072%> <span class="num">
                 <input type="text" class="num" size="4" maxlength="3" name="start_ip_1" value="" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="start_ip_2" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="start_ip_3" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="start_ip_4" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></span></td></tr>
         <tr>
             <td nowrap>&nbsp;</td>
-            <td nowrap align="left"> <%1058%> <span class="num">
+            <td nowrap align="left"> <%1073%> <span class="num">
                 <input type="text" class="num" size="4" maxlength="3" name="fin_ip_1" value="" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="fin_ip_2" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
                 <input type="text" class="num" size="4" maxlength="3" name="fin_ip_3" value="" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
@@ -348,12 +348,12 @@ function clearData3()
             <td colspan="2">&nbsp;</td></tr>
         <tr>
             <td nowrap colspan="2">
-                <input type="radio"  checked name="rm_access" value="all" onClick="clearData1()"> <%1059%></td></tr>
+                <input type="radio"  checked name="rm_access" value="all" onClick="clearData1()"> <%1074%></td></tr>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         <tr>
-            <td nowrap><a href="javascript:loadhelp('FW_remote','port')" tabindex="-1"><b><%1060%>:</b></a></td>
+            <td nowrap><a href="javascript:loadhelp('FW_remote','port')" tabindex="-1"><b><%1075%>:</b></a></td>
             <td nowrap align="left">
-                <input type="text" class="num" name="http_rmport" value="<%1061%>" size=6 maxlength=5></td></tr>
+                <input type="text" class="num" name="http_rmport" value="<%1076%>" size=6 maxlength=5></td></tr>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         
     </table></div></td></tr>
@@ -370,10 +370,10 @@ function clearData3()
 
 
 
-    <INPUT name=http_rmenable type=hidden value= "<%1062%>">
-    <INPUT name=http_rmstartip type=hidden value= "<%1063%>">
-    <INPUT name=http_rmendip type=hidden value= "<%1064%>">
-    <INPUT name=http_wanipaddr type=hidden value= "<%1065%>">
+    <INPUT name=http_rmenable type=hidden value= "<%1077%>">
+    <INPUT name=http_rmstartip type=hidden value= "<%1078%>">
+    <INPUT name=http_rmendip type=hidden value= "<%1079%>">
+    <INPUT name=http_wanipaddr type=hidden value= "<%1080%>">
 <a name="helpframe-anchor"></a>
 </form>
 

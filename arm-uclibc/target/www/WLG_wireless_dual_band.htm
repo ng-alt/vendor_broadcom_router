@@ -405,7 +405,7 @@ function checkRegion()
     if(cf.WRegion.selectedIndex == 0)
     {
         cf.WRegion.focus();
-        return alertR("<%38%>");
+        return alertR("<%40%>");
     }
     if (notShown)
         notShown = false;
@@ -553,7 +553,7 @@ function setChannel()
     else
         cf.w_channel.options.length = FinishChannel[index] - StartChannel[index] + 2;
 
-    cf.w_channel.options[0].text = "<%40%>";
+    cf.w_channel.options[0].text = "<%42%>";
     cf.w_channel.options[0].value = 0;
     if ((cf.auto_channel_5G.value == "1") && (index != 1 && index != 4 && index != 5 && index != 6 && index != 3
         <%16%>
@@ -561,7 +561,7 @@ function setChannel()
         <%17%>
         ))		// No band 4 channels for Africa, Australia,Europe, Israel, Japan, Russia; Canada & USA are represented as North America
     {
-        cf.w_channel_an.options[0].text = "<%40%>";
+        cf.w_channel_an.options[0].text = "<%42%>";
         cf.w_channel_an.options[0].value = 0;
         b0 = 1;
     }
@@ -882,7 +882,7 @@ function checkChannel()
                     (new_channel_an_value != "165") )
                 {
                     ch_selected = new_channel_an_value;
-                    if (!confirm("<%42%>"))
+                    if (!confirm("<%44%>"))
                     {
                         cf.w_channel_an.selectedIndex = curr_channel_an_index;
                         return false;
@@ -1008,7 +1008,7 @@ function securityCheck(band)
                 /* we add a redundant assignment here so that the 
                    following warning alert wouldn't appear twice */
                 cf.opmode.selectedIndex = 0;
-                alert("<%43%>");
+                alert("<%45%>");
                 cf.opmode.selectedIndex = 0;
              //   document.getElementById("wep_radio_2G").style.display="block";
             }
@@ -1029,7 +1029,7 @@ function securityCheck(band)
             if ((cf.opmode.selectedIndex != 0) && (cf.opmode.selectedIndex!=selected2))
             {
                 selected2=cf.opmode.selectedIndex;
-                alert("<%43%>");
+                alert("<%45%>");
             }
             document.getElementById("wpa_2G").style.display="block";
             document.getElementById("wep_2G").style.display="none";
@@ -1061,7 +1061,7 @@ function securityCheck(band)
                 /* we add a redundant assignment here so that the 
                    following warning alert wouldn't appear twice */
                 cf.opmode_an.selectedIndex = 0;
-                alert("<%43%>");
+                alert("<%45%>");
                 setChannel();
                // document.getElementById("wep_radio_5G").style.display="block";
                 cf.opmode_an.selectedIndex = 0;
@@ -1083,13 +1083,13 @@ function securityCheck(band)
             if ((cf.support_ac_mode.value == "1") && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                alert("<%45%>");
+                alert("<%47%>");
             }
             else
             if ((cf.opmode_an.selectedIndex != 0) && (cf.opmode_an.selectedIndex!=selected3))
             {
                 selected3=cf.opmode_an.selectedIndex;
-                alert("<%46%>");
+                alert("<%48%>");
             }
             document.getElementById("wpa_5G").style.display="block";
             document.getElementById("wep_5G").style.display="none";
@@ -1103,10 +1103,10 @@ function securityCheck(band)
 function checkData()
 {
     var cf = document.forms[0];
-    var msg_key64_type = "<%47%>" ;
-    var msg_key128_type = "<%48%>";
+    var msg_key64_type = "<%49%>" ;
+    var msg_key128_type = "<%50%>";
     var show_wep_or_wps_msg = false;
-    var wps_version = "<%49%>";  
+    var wps_version = "<%51%>";  
     //var show_wep_or_wps_v20_msg = false;
     var show_tkip_or_wps_v20_msg = false;
     var show_ssid_bc_or_wps_v20_msg = false;
@@ -1240,7 +1240,7 @@ function checkData()
         if (wps_version == "2.0")
         {   
 	    /* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */
-            if (!confirm("<%1702%>")){
+            if (!confirm("<%1717%>")){
                 return false;
             }
             show_tkip_or_wps_v20_msg = true;
@@ -1314,7 +1314,7 @@ function checkData()
         {
 	    /* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */
             if (!show_tkip_or_wps_v20_msg) {
-                if (!confirm("<%1702%>")){
+                if (!confirm("<%1717%>")){
                     return false;
                 }
             }
@@ -1368,7 +1368,7 @@ function checkData()
         {
             if (cf.security_type_2G.value == "WPA-PSK")
             {
-                if (!confirm("<%1702%>")){
+                if (!confirm("<%1717%>")){
                     return false;
                 }
                 show_tkip_or_wps_v20_msg = true;
@@ -1410,15 +1410,15 @@ function checkData()
         {
             cf.ssid_bc.value = "";
         }
-        if("<%1603%>" == "checked")
+        if("<%1618%>" == "checked")
         {
             cf.security_type.value = "WPA-PSK";
         }
-        else if("<%1604%>" == "checked")
+        else if("<%1619%>" == "checked")
         {
             cf.security_type.value = "WPA2-PSK";
         }
-        else if("<%1605%>" == "checked")
+        else if("<%1620%>" == "checked")
         {
             cf.security_type.value = "AUTO-PSK";
         }
@@ -1434,7 +1434,7 @@ function checkData()
             if (cf.security_type_5G.value == "WPA-PSK")
             {
                 if (!show_tkip_or_wps_v20_msg) {
-                    if (!confirm("<%1702%>")){
+                    if (!confirm("<%1717%>")){
                         return false;
                     }
                 }
@@ -1480,15 +1480,15 @@ function checkData()
         {
             cf.ssid_bc_an.value = "";
         }
-        if("<%1703%>" == "checked")
+        if("<%1718%>" == "checked")
         {
             cf.security_type_an.value = "WPA-PSK";
         }
-        else if("<%1704%>" == "checked")
+        else if("<%1719%>" == "checked")
         {
             cf.security_type_an.value = "WPA2-PSK";
         }
-        else if("<%1705%>" == "checked")
+        else if("<%1720%>" == "checked")
         {
             cf.security_type_an.value = "AUTO-PSK";
         }
@@ -1515,7 +1515,7 @@ function showWpsAlert()
 
 function ShowWEPAlert()
 {
-	alert("<%1706%>");
+	alert("<%1721%>");
 }
 
 // -->
@@ -1681,7 +1681,7 @@ function ShowWEPAlert()
     <tr>
       <td nowrap colspan="2">
         <%197%>: <input type="text" autocomplete="off" name="passphraseStr" size="14" maxlength="32" value=""> &nbsp;
-        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1596%>" name="keygen" class="button-rule" onClick="buttonClick(this,'<%1596%>');calcPassphrase(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1596%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
+        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1611%>" name="keygen" class="button-rule" onClick="buttonClick(this,'<%1611%>');calcPassphrase(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1611%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
@@ -1844,7 +1844,7 @@ function ShowWEPAlert()
     <tr>
       <td nowrap colspan="2">
         <%197%>: <input type="text" name="passphraseStr_an" autocomplete="off" size="14" maxlength="32" value=""> &nbsp;
-        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1596%>" name="Generate_an" class="button-rule" onClick="buttonClick(this,'<%1596%>');calcPassphrase_an(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1596%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
+        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1611%>" name="Generate_an" class="button-rule" onClick="buttonClick(this,'<%1611%>');calcPassphrase_an(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1611%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
@@ -1905,9 +1905,9 @@ function ShowWEPAlert()
   <input type="hidden" name="only_mode" value="0">
   <input type="hidden" name="show_wps_alert" value="<%272%>">
   <input type="hidden" name="security_type_2G" value="<%273%>">
-  <input type="hidden" name="security_type_5G" value="<%50%>">
+  <input type="hidden" name="security_type_5G" value="<%52%>">
   <input type="hidden" name="init_security_type_2G" value="<%273%>">
-  <input type="hidden" name="init_security_type_5G" value="<%50%>">
+  <input type="hidden" name="init_security_type_5G" value="<%52%>">
   <input type="hidden" name="initChannel" value="<%274%>">
   <input type="hidden" name="initAuthType" value="<%275%>">
   <input type="hidden" name="initDefaultKey" value="<%276%>">

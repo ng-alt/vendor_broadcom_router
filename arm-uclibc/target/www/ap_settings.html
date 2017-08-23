@@ -23,7 +23,7 @@
 <script language="javascript" type="text/javascript">
 <!-- 
 var have_alert=0;
-var keep_ssid_warning="<%4276%>";
+var keep_ssid_warning="<%4302%>";
 
 
 function checkAlert()
@@ -45,7 +45,7 @@ function checkAlert()
 <form id="target"  method="POST" action="ia_ap_setting.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%352%></div>
+<div class="subhead2"> <%353%></div>
 
 <table border="0"    style="height:370px"  class="subhead2-table">
 <tr align="left" valign="middle">
@@ -66,8 +66,8 @@ function checkAlert()
       <td colspan="2" ><b><%85%></b> </a></td></tr>
     <tr>
       <td colspan="2"><%89%>:
-        <select name="WRegion" size="1" onchange="chgCh(1)" <%4277%>>
-        <%4278%>
+        <select name="WRegion" size="1" onchange="chgCh(1)" <%4303%>>
+        <%4304%>
         </select>
       </td>
     </tr>
@@ -82,7 +82,7 @@ function checkAlert()
 
 
     <tr id="ether_port_row" style="display:none">
-        <td colspan=2><%4279%> 
+        <td colspan=2><%4305%> 
             <input type="radio" name="ether_port" value="2.4g" onclick="select_ether_band()">2.4GHz
             <input type="radio" name="ether_port" value="5g" onclick="select_ether_band()">5GHz 
         </td>
@@ -90,18 +90,18 @@ function checkAlert()
 <!--
     <tr>
       <td><%164%>:</td>
-      <td><select name="opmode" onchange="chgCh(2);"><%1595%></select></td></tr>
+      <td><select name="opmode" onchange="chgCh(2);"><%1610%></select></td></tr>
 -->      
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
     <tr><td colspan="2">
         <div id="24g_network">
         <table border="0" cellpadding="0" cellspacing="5" width="100%">
-        <tr><td colspan="2" ><b><%1529%> (2.4HGz)</b></td></tr>
+        <tr><td colspan="2" ><b><%1544%> (2.4HGz)</b></td></tr>
   
             <tr id="ssid_24g_row" style="width:100%;">
             <td width="30%" align="left"><%160%>:</td>
-            <td width="70%" align="left"><input type="text" name="ssid" value="<%4234%>" size="33" maxlength="32" onClick="if( have_alert==0 ){ alert(keep_ssid_warning); this.select(); have_alert = 1; }"></td>
+            <td width="70%" align="left"><input type="text" name="ssid" value="<%4260%>" size="33" maxlength="32" onClick="if( have_alert==0 ){ alert(keep_ssid_warning); this.select(); have_alert = 1; }"></td>
             </tr>
 
             <tr id="channel_24g_row" style="width:100%;">
@@ -112,7 +112,7 @@ function checkAlert()
 
             <tr id="opmode_24g_row" style="width:100%;">
             <td><%164%></td>
-            <td><select name="opmode" onchange="chgCh(2);"><%4280%></select></td>
+            <td><select name="opmode" onchange="chgCh(2);"><%4306%></select></td>
             </tr>
         </table>
         </div>
@@ -128,17 +128,17 @@ function checkAlert()
         <table border="0" cellpadding="0" cellspacing="5" width="100%">
             <tr><td colspan="2"><b><%170%> (2.4GHz)</b></td></tr>
             <tr><td colspan="2">
-                <input name="security_type" value="None" <%4281%> onClick="change_sec(this.name, this.value);" type="radio"><%171%></td></tr>
+                <input name="security_type" value="None" <%4307%> onClick="change_sec(this.name, this.value);" type="radio"><%171%></td></tr>
             
             <tr id="wep_radio_2G" style="display:none">
             <td colspan="2">
-                <input name="security_type" value="WEP" <%4282%> onClick="change_sec(this.name, this.value);" type="radio"><%172%>
+                <input name="security_type" value="WEP" <%4308%> onClick="change_sec(this.name, this.value);" type="radio"><%172%>
             </td>
             </tr>
             <tr><td colspan="2">
-                <input name="security_type" value="WPA2-PSK" <%4283%> onClick="change_sec(this.name, this.value);" type="radio"><%175%></td></tr>
+                <input name="security_type" value="WPA2-PSK" <%4309%> onClick="change_sec(this.name, this.value);" type="radio"><%175%></td></tr>
             <tr><td colspan="2">
-                <input name="security_type" value="WPA-AUTO-PSK" <%4284%> onClick="change_sec(this.name, this.value);" type="radio"><%176%></td></tr>
+                <input name="security_type" value="WPA-AUTO-PSK" <%4310%> onClick="change_sec(this.name, this.value);" type="radio"><%176%></td></tr>
         </table>
         </div>
 
@@ -151,8 +151,8 @@ function checkAlert()
           <td width="30%" align="left"><%182%>:</td>
           <td width="70%" align="left">
               <select name="wepenc" size=1 onchange="setKeys(wepenc, KEY1, KEY2, KEY3, KEY4);">
-                <option <%4285%> value="1"><%184%></option>
-                <option <%4286%> value="2"><%186%></option>
+                <option <%4311%> value="1"><%184%></option>
+                <option <%4312%> value="2"><%186%></option>
               </select></td></tr>
         <tr>
           <td colspan="2"><a href="javascript:loadhelp('ap_settings','wepkey')" tabindex="-1"><b><%187%></b></a></td></tr>
@@ -160,17 +160,17 @@ function checkAlert()
           <td colspan="2">
             <table>
               <tr>
-                <td><%188%><input type="radio" <%4287%> name="wep_key_no" value="1"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY1" maxLength=32 size=34 value="<%4288%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[0].checked=true;"></td></tr>
+                <td><%188%><input type="radio" <%4313%> name="wep_key_no" value="1"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY1" maxLength=32 size=34 value="<%4314%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[0].checked=true;"></td></tr>
               <tr>
-                <td><%190%><input type="radio" <%4289%> name="wep_key_no" value="2"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY2" maxLength=32 size=34 value="<%4290%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[1].checked=true;"></td></tr>
+                <td><%190%><input type="radio" <%4315%> name="wep_key_no" value="2"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY2" maxLength=32 size=34 value="<%4316%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[1].checked=true;"></td></tr>
               <tr>
-                <td><%192%><input type="radio" <%4291%> name="wep_key_no" value="3"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY3" maxLength=32 size=34 value="<%4292%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[2].checked=true;"></td></tr>
+                <td><%192%><input type="radio" <%4317%> name="wep_key_no" value="3"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY3" maxLength=32 size=34 value="<%4318%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[2].checked=true;"></td></tr>
               <tr>
-                <td><%194%><input type="radio" <%4293%> name="wep_key_no" value="4"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY4" maxLength=32 size=34 value="<%4294%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[3].checked=true;"></td></tr>
+                <td><%194%><input type="radio" <%4319%> name="wep_key_no" value="4"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY4" maxLength=32 size=34 value="<%4320%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no[3].checked=true;"></td></tr>
             </table>
           </td>
         </tr>
@@ -187,7 +187,7 @@ function checkAlert()
         <b><%170%> <span id="24g_wpa_str"></span></b></td></tr> 
           
         <tr>
-          <td colspan="2"><%4295%> <input type="text" autocomplete="off" name="passphrase" size=20 maxLength=64 value="<%4296%>">&nbsp;&nbsp;<%199%></td>
+          <td colspan="2"><%4321%> <input type="text" autocomplete="off" name="passphrase" size=20 maxLength=64 value="<%4322%>">&nbsp;&nbsp;<%199%></td>
         </tr>
         </table>
         </div>
@@ -201,10 +201,10 @@ function checkAlert()
     <tr><td colspan="2">
         <div id="5g_network">
         <table border="0" cellpadding="0" cellspacing="5" width="100%">
-            <tr><td colspan="2" ><b><%1529%> (5GHz)</b></td></tr>    
+            <tr><td colspan="2" ><b><%1544%> (5GHz)</b></td></tr>    
             <tr id="ssid_5g_row" style="width:100%;">
                 <td width="30%" align="left"><%160%>:</td>
-                <td width="70%" align="left"><input type="text" name="ssid_5g" value="<%4235%>" size="33" maxlength="32" onClick="if( have_alert==0 ){ alert(keep_ssid_warning); this.select(); have_alert = 1; }"></td>
+                <td width="70%" align="left"><input type="text" name="ssid_5g" value="<%4261%>" size="33" maxlength="32" onClick="if( have_alert==0 ){ alert(keep_ssid_warning); this.select(); have_alert = 1; }"></td>
             </tr>
             <tr id="channel_5g_row" style="width:100%;">
                 <td><%162%>:</td>
@@ -213,7 +213,7 @@ function checkAlert()
     
             <tr id="opmode_5g_row" style="width:100%;">
                 <td><%164%></td>
-                <td><select name="opmode_5g" onchange="chgCh(3);"><%4297%></select></td>
+                <td><select name="opmode_5g" onchange="chgCh(3);"><%4323%></select></td>
             </tr>
         </table>
         </div>
@@ -228,17 +228,17 @@ function checkAlert()
         <table border="0" cellpadding="0" cellspacing="5" width="100%">
             <tr><td colspan="2"><b><%170%> (5GHz)</b></td></tr>
             <tr><td colspan="2">
-                <input name="security_type_5g" value="None" <%4298%> onClick="change_sec(this.name, this.value);" type="radio"><%171%></td></tr>
+                <input name="security_type_5g" value="None" <%4324%> onClick="change_sec(this.name, this.value);" type="radio"><%171%></td></tr>
             
             <tr id="wep_radio_5G" style="display:none">
             <td colspan="2">
-                <input name="security_type_5g" value="WEP" <%4299%> onClick="change_sec(this.name, this.value);" type="radio"><%172%>
+                <input name="security_type_5g" value="WEP" <%4325%> onClick="change_sec(this.name, this.value);" type="radio"><%172%>
             </td>
             </tr>
             <tr><td colspan="2">
-                <input name="security_type_5g" value="WPA2-PSK" <%4300%> onClick="change_sec(this.name, this.value);" type="radio"><%175%></td></tr>
+                <input name="security_type_5g" value="WPA2-PSK" <%4326%> onClick="change_sec(this.name, this.value);" type="radio"><%175%></td></tr>
             <tr><td colspan="2">
-                <input name="security_type_5g" value="WPA-AUTO-PSK" <%4301%> onClick="change_sec(this.name, this.value);" type="radio"><%176%></td></tr>
+                <input name="security_type_5g" value="WPA-AUTO-PSK" <%4327%> onClick="change_sec(this.name, this.value);" type="radio"><%176%></td></tr>
         </table>
         </div>
 
@@ -251,8 +251,8 @@ function checkAlert()
           <td width="30%" align="left"><%182%>:</td>
           <td width="70%" align="left">
               <select name="wepenc_5g" size=1 onchange="setKeys(wepenc_5g, KEY_5g1, KEY_5g2, KEY_5g3, KEY_5g4);">
-                <option <%4302%> value="1"><%184%></option>
-                <option <%4303%> value="2"><%186%></option>
+                <option <%4328%> value="1"><%184%></option>
+                <option <%4329%> value="2"><%186%></option>
               </select></td></tr>
         <tr>
           <td colspan="2"><a href="javascript:loadhelp('ap_settings','wepkey')" tabindex="-1"><b><%187%></b></a></td></tr>
@@ -260,17 +260,17 @@ function checkAlert()
           <td colspan="2">
             <table>
               <tr>
-                <td><%188%><input type="radio"  <%4304%> name="wep_key_no_5g" value="1"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY_5g1" maxLength=32 size=34 value="<%4305%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[0].checked=true;"></td></tr>
+                <td><%188%><input type="radio"  <%4330%> name="wep_key_no_5g" value="1"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY_5g1" maxLength=32 size=34 value="<%4331%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[0].checked=true;"></td></tr>
               <tr>
-                <td><%190%><input type="radio" <%4306%> name="wep_key_no_5g" value="2"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY_5g2" maxLength=32 size=34 value="<%4307%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[1].checked=true;"></td></tr>
+                <td><%190%><input type="radio" <%4332%> name="wep_key_no_5g" value="2"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY_5g2" maxLength=32 size=34 value="<%4333%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[1].checked=true;"></td></tr>
               <tr>
-                <td><%192%><input type="radio" <%4308%> name="wep_key_no_5g" value="3"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY_5g3" maxLength=32 size=34 value="<%4309%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[2].checked=true;"></td></tr>
+                <td><%192%><input type="radio" <%4334%> name="wep_key_no_5g" value="3"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY_5g3" maxLength=32 size=34 value="<%4335%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[2].checked=true;"></td></tr>
               <tr>
-                <td><%194%><input type="radio" <%4310%> name="wep_key_no_5g" value="4"></td>
-                <td align=left><input type="text" autocomplete="off" name="KEY_5g4" maxLength=32 size=34 value="<%4311%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[3].checked=true;"></td></tr>
+                <td><%194%><input type="radio" <%4336%> name="wep_key_no_5g" value="4"></td>
+                <td align=left><input type="text" autocomplete="off" name="KEY_5g4" maxLength=32 size=34 value="<%4337%>" onkeydown="keyCheck(this)" onfocus="this.form.wep_key_no_5g[3].checked=true;"></td></tr>
             </table>
           </td>
         </tr>
@@ -287,7 +287,7 @@ function checkAlert()
         <b><%170%> <span id="5g_wpa_str"></span></b></td></tr>    
           
         <tr>
-          <td colspan="2"><%4295%> <input type="text" autocomplete="off" name="passphrase_5g" size=20 maxLength=64 value="<%4312%>">&nbsp;&nbsp;<%199%></td>
+          <td colspan="2"><%4321%> <input type="text" autocomplete="off" name="passphrase_5g" size=20 maxLength=64 value="<%4338%>">&nbsp;&nbsp;<%199%></td>
         </tr>
         </table>
         </div>
@@ -330,20 +330,20 @@ function checkAlert()
 
 <input type="hidden" name="wl_same_sec" value="0">
 <input type="hidden" name="current_flow" value="WirelessSetting">
-<input type="hidden" name="ap_24g_sec" value="<%4253%>">
-<input type="hidden" name="ap_5g_sec" value="<%4254%>">
-<input type="hidden" name="enable_ap_mode" value="<%4313%>">
-<input type="hidden" name="mode" value="<%4314%>">
-<input type="hidden" name="ap_band" value="<%4315%>">
-<input type="hidden" name="eth_bind_band" value="<%4316%>">
-<input type="hidden" name="sta_band" value="<%4317%>">
-<input type="hidden" name="initChannel" value="<%4318%>">
-<input type="hidden" name="initChannel_5g" value="<%4319%>">
+<input type="hidden" name="ap_24g_sec" value="<%4279%>">
+<input type="hidden" name="ap_5g_sec" value="<%4280%>">
+<input type="hidden" name="enable_ap_mode" value="<%4339%>">
+<input type="hidden" name="mode" value="<%4340%>">
+<input type="hidden" name="ap_band" value="<%4341%>">
+<input type="hidden" name="eth_bind_band" value="<%4342%>">
+<input type="hidden" name="sta_band" value="<%4343%>">
+<input type="hidden" name="initChannel" value="<%4344%>">
+<input type="hidden" name="initChannel_5g" value="<%4345%>">
 <input type="hidden" name="tempSetting" value="<%268%>">
 <input type="hidden" name="tempRegion" value="<%269%>">
 <input type="hidden" name="setRegion" value="<%20%>">
-<input type="hidden" name="dfs_ch_enable" value="<%4320%>">  
-<input type="hidden" name="dfs_ch_enable_default" value="<%4321%>">
+<input type="hidden" name="dfs_ch_enable" value="<%4346%>">  
+<input type="hidden" name="dfs_ch_enable_default" value="<%4347%>">
 <input type="hidden" name="show_wps_alert" value="<%272%>">
 <input type="hidden" name="auto_channel_5G" value="<%282%>">  
 <input type="hidden" name="support_ac_mode" value="<%283%>">

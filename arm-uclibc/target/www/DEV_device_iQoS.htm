@@ -190,19 +190,19 @@ function loadSettings()
 	var iqos_bw;
 	var bandwidthUp;
 	var bandwidthDown;
-	if("1"=="<%2092%>"){
+	if("1"=="<%2111%>"){
 	//uplink
-    iqos_bw = parseFloat(<%2093%>/1000000);
+    iqos_bw = parseFloat(<%2112%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2095%>/1000000);
+	iqos_bw = parseFloat(<%2114%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   
 	}else{
 	//uplink
-    iqos_bw = parseFloat(<%2694%>/1000000);
+    iqos_bw = parseFloat(<%2713%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2695%>/1000000);
+	iqos_bw = parseFloat(<%2714%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   	
 	}
     document.getElementById('uplink_bd').innerHTML = bandwidthUp + " Mbps";	
@@ -251,21 +251,21 @@ function handle_checkboxElements(checkbox)
 <form id="target"  method="post" action="devices.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%353%></div>
+<div class="subhead2"> <%354%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-    <td nowrap colspan="2" align="right"><%2696%></td>
+    <td nowrap colspan="2" align="right"><%2715%></td>
 </tr>
 <tr>
     <td>
     <table border="0" cellpadding="3" cellspacing="0" width="100%">
         <tr>
             <td width="10%" align="left">
-            <button value="Edit" onclick="buttonClick(this,'Edit');"  type="SUBMIT" name="edit" id="edit" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%527%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+            <button value="Edit" onclick="buttonClick(this,'Edit');"  type="SUBMIT" name="edit" id="edit" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%540%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
             </td>   
             <td width="40%" align="left">
             <div id="ookla">
@@ -275,21 +275,21 @@ function handle_checkboxElements(checkbox)
             </div>
             </td>             
             <td width="30%" align="left">
-                <%399%>:
+                <%404%>:
 				<!-- access_control_mode: 1: enabled 0: disabled -->
-				<%2697%>
-                <%2698%>
-				<%2699%>
-				<%2700%>
-                <%2701%>
-				<%2702%>
+				<%2716%>
+                <%2717%>
+				<%2718%>
+				<%2719%>
+                <%2720%>
+				<%2721%>
 				<br>
 				<!-- access_all_new_devices: 1: allow all 0: block all -->
-				<%2703%>
+				<%2722%>
 
             </td>
             <td width="20%" align="right">
-                &nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="buttonClick(this,'Refresh');"  type="SUBMIT" name="refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%728%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                &nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="buttonClick(this,'Refresh');"  type="SUBMIT" name="refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%743%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
             </td>
         </tr>        
     </table>
@@ -300,14 +300,14 @@ function handle_checkboxElements(checkbox)
 	<table class="sortable" border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr class="table_header">
 		<td nowrap align="center" width="5%"><span class="subheadtext"></span></td>
-		<td nowrap align="center" width="9%" name="show_status"><span class="subheadtext"><%755%></span></td>
-		<td nowrap align="center" width="10%"><span class="subheadtext"><%1935%></span></td>
-		<td nowrap align="center" width="10%"><span class="subheadtext"><%756%></span></td>
-		<td nowrap align="center" width="20%"><span class="subheadtext"><%730%></span></td>
-		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2704%></span></td>
-		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2705%></span></td>
+		<td nowrap align="center" width="9%" name="show_status"><span class="subheadtext"><%770%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%1953%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%771%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%745%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2723%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2724%></span></td>
 	</tr>
-        <%2706%>
+        <%2725%>
 	</table>
 	</td>
 </tr>
@@ -333,7 +333,7 @@ function handle_checkboxElements(checkbox)
 
     <input name="select_dev" type="hidden" value= "0">
     <input name="page_submit" type="hidden" value= "">
-    <input name="enable_access_control" type="hidden" value= "<%763%>">
+    <input name="enable_access_control" type="hidden" value= "<%778%>">
 <a name="helpframe-anchor"></a>
 </form>
 

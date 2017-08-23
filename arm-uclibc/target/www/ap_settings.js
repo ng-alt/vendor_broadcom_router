@@ -5,8 +5,8 @@ var changeMsg = "<%15%>";
 var notShown = true; // only shown region change message once
 var initialized = false;
 // "--",Africa,Asia,Australia,Canada,Europe,Israel,Japan,Korea,Mexico,Middle East,South America,USA
-var StartChannel = new Array(<%4322%>);
-var FinishChannel = new Array(<%4323%>);
+var StartChannel = new Array(<%4348%>);
+var FinishChannel = new Array(<%4349%>);
 
 /* region define:
  * value    -- region
@@ -38,15 +38,15 @@ var FinishChannel = new Array(<%4323%>);
  */
 var Channel_All_20M = 
     new Array (
-    <%4324%>
+    <%4350%>
         );
 var Channel_All_40M = 
     new Array (
-    <%4325%>
+    <%4351%>
         );
 var Channel_All_80M = 
     new Array (
-    <%4326%>
+    <%4352%>
         );
 
 var OpMode_BG_TEXT;
@@ -67,15 +67,15 @@ var OpMode_5G_80M_VALUE;
 var selected2=100,selected3=100, ch_selected=100;
 
 var curr_region = "<%20%>"
-var curr_channel_5g_value = "<%1841%>"
-var curr_channel_2g_value = "<%1821%>"
+var curr_channel_5g_value = "<%1856%>"
+var curr_channel_2g_value = "<%1836%>"
 
 
 var chgCh_cnt = 0;  
 
 var block_str = "block";
 var show_wep_or_wps_msg = false;
-var wps_version = "<%49%>";  
+var wps_version = "<%51%>";  
 var show_tkip_or_wps_v20_msg = false;
 var show_ssid_bc_or_wps_v20_msg = false;
 var show_open_or_wps_v20_msg = false;
@@ -430,7 +430,7 @@ function change_sec(radio_name, sec_type)
                     /* we add a redundant assignment here so that the 
                        following warning alert wouldn't appear twice */
                     cf.opmode.selectedIndex = 0;
-                    alert("<%43%>");
+                    alert("<%45%>");
                     cf.opmode.selectedIndex = 0;
                 }
             //}
@@ -451,7 +451,7 @@ function change_sec(radio_name, sec_type)
                 if ((cf.opmode.selectedIndex != 0) && (cf.opmode.selectedIndex!=selected2))
                 {
                     selected2=cf.opmode.selectedIndex;
-                    alert("<%43%>");
+                    alert("<%45%>");
                 }
             //}
             document.getElementById("24g_wep").style.display = "none";
@@ -486,7 +486,7 @@ function change_sec(radio_name, sec_type)
                     /* we add a redundant assignment here so that the 
                        following warning alert wouldn't appear twice */
                     cf.opmode_5g.selectedIndex = 0;
-                    alert("<%43%>");
+                    alert("<%45%>");
                     setChannel();
                     cf.opmode_5g.selectedIndex = 0;
                 }
@@ -511,7 +511,7 @@ function change_sec(radio_name, sec_type)
                 if ((cf.opmode_5g.selectedIndex != 0) && (cf.opmode_5g.selectedIndex!=selected3))
                 {
                     selected3=cf.opmode_5g.selectedIndex;
-                    alert("<%46%>");
+                    alert("<%48%>");
                 }
             //}
             document.getElementById("5g_wep").style.display = "none";
@@ -539,7 +539,7 @@ function CheckData()
     {
         if(cf.ssid.value==cf.ssid_5g.value)
         {
-            alert("<%4327%>");
+            alert("<%4353%>");
             return false;
         }    
         
@@ -670,14 +670,14 @@ function setChannel()
 function setAutoChannel_24g()
 {
     var cf = document.forms[0];
-    cf.w_channel.options[0].text = "<%40%>";
+    cf.w_channel.options[0].text = "<%42%>";
     cf.w_channel.options[0].value = 0;
 }
 
 function setAutoChannel_5g()
 {
     var cf = document.forms[0];
-    cf.w_channel_5g.options[0].text = "<%40%>";
+    cf.w_channel_5g.options[0].text = "<%42%>";
     cf.w_channel_5g.options[0].value = 0;
 }
 
@@ -695,7 +695,7 @@ function setChannel_24g()
     else
         cf.w_channel.options.length = FinishChannel[index] - StartChannel[index] + 2;
 
-    cf.w_channel.options[0].text = "<%40%>";
+    cf.w_channel.options[0].text = "<%42%>";
     cf.w_channel.options[0].value = 0;
 
     for (var i = StartChannel[index]; i <= FinishChannel[index]; i++) {
@@ -713,7 +713,7 @@ function setChannel_5g()
     var ch_list = cf.w_channel_5g;
     //var index = cf.WRegion.options[cf.WRegion.selectedIndex].value;
     var index = cf.WRegion.selectedIndex;
-    var currChVal_5g = "<%4319%>";
+    var currChVal_5g = "<%4345%>";
     var len=0, i=0;
 
     ch_list.options.length = 100;
@@ -723,7 +723,7 @@ function setChannel_5g()
         {
             if (Channel_All_80M[index][0] == 0)
             {
-                ch_list.options[len].text = "<%40%>";
+                ch_list.options[len].text = "<%42%>";
                 ch_list.options[len].value = Channel_All_80M[index][0];
                 len++;
             }
@@ -743,7 +743,7 @@ function setChannel_5g()
         {
             if (Channel_All_40M[index][0] == 0)
             {
-                ch_list.options[len].text = "<%40%>";
+                ch_list.options[len].text = "<%42%>";
                 ch_list.options[len].value = Channel_All_40M[index][0];
                 len++;
             }
@@ -763,7 +763,7 @@ function setChannel_5g()
         {
             if (Channel_All_20M[index][0] == 0)
             {
-                ch_list.options[len].text = "<%40%>";
+                ch_list.options[len].text = "<%42%>";
                 ch_list.options[len].value = Channel_All_20M[index][0];
                 len++;
             }
@@ -796,7 +796,7 @@ function checkRegion()
     if(cf.WRegion.selectedIndex == 0)
     {
         cf.WRegion.focus();
-        return alertR("<%38%>");
+        return alertR("<%40%>");
     }
     if (notShown)
         notShown = false;
@@ -918,8 +918,8 @@ function setOpMode_24g_psr()
     {
         cf.opmode.disabled = false;
         cf.opmode.options.length = 2;
-        cf.opmode.options[0].text = "<%4328%>";
-        cf.opmode.options[1].text = "<%4329%>";
+        cf.opmode.options[0].text = "<%4354%>";
+        cf.opmode.options[1].text = "<%4355%>";
         cf.opmode.options[0].value = "145Mbps";
         cf.opmode.options[1].value = "300Mbps";
         cf.opmode.selectedIndex = currentMode;
@@ -928,7 +928,7 @@ function setOpMode_24g_psr()
     {
         cf.opmode.disabled = true;
         cf.opmode.options.length = 1;
-        cf.opmode.options[0].text = "<%40%>";
+        cf.opmode.options[0].text = "<%42%>";
         cf.opmode.options[0].value = "g and b";
     }
     return;
