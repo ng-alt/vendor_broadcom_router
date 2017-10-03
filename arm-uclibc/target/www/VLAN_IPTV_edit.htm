@@ -103,17 +103,17 @@ function checkData()
 
     if (cf.vlan_name.value == "" || (cf.vlan_name.value.match( /[^\x21-\x7E]/ )))
     {
-        msg+="<%3842%>\n";
+        msg+="<%3844%>\n";
         alert(msg);
         return false;
     }
     if ((!_isNumeric(cf.vlan_id.value)) || isNaN(vlan_id) || vlan_id > 4094 || vlan_id < 1) {
-        alert("<%3843%>");
+        alert("<%3845%>");
         return false;
     }
         
     if ((!_isNumeric(cf.vlan_prio.value)) || isNaN(vlan_prio) || vlan_prio > 7 || vlan_prio < 0) {
-        alert("<%3844%>");
+        alert("<%3846%>");
         return false;
     }
     while(typeof vlan_rule[i] != "undefined")
@@ -133,7 +133,7 @@ function checkData()
         i++;
     }
     if (conflict) {
-        alert("<%3845%> "+cf.vlan_name.value+" <%3846%>");
+        alert("<%3847%> "+cf.vlan_name.value+" <%3848%>");
         return false;
     }
     
@@ -142,22 +142,22 @@ function checkData()
     
     if((!cf.vlan_ports_0.checked) && (!cf.vlan_ports_1.checked) && (!cf.vlan_ports_2.checked)
          && (!cf.vlan_ports_3.checked) && (!cf.vlan_ports_4.checked) && (!cf.vlan_ports_5.checked)
-<%3816%>
+<%3818%>
          && (!cf.vlan_ports_6.checked)
-<%3817%>
+<%3819%>
          )
     {
-        alert("<%3852%>");
+        alert("<%3854%>");
         return false;
     }
     else if((cf.vlan_ports_0.checked) && (cf.vlan_ports_1.checked) && (cf.vlan_ports_2.checked)
          && (cf.vlan_ports_3.checked) && (cf.vlan_ports_4.checked) && (cf.vlan_ports_5.checked)
-<%3816%>
+<%3818%>
          && (cf.vlan_ports_6.checked)
-<%3817%>
+<%3819%>
          )
     {
-        alert("<%3851%>");
+        alert("<%3853%>");
         return false;
     }
 
@@ -170,17 +170,17 @@ function checkData()
 function loadSettings()
 {
     var cf = document.forms[0];
-    cf.vlan_name.value = "<%3856%>";
+    cf.vlan_name.value = "<%3858%>";
     
     if(cf.vlan_name.value == "Internet")
     {
         document.getElementById("vlan_name").readOnly = true
         document.getElementById("vlan_support_lan").style.display = "none";
     }
-    cf.vlan_id.value = "<%3857%>";
-    cf.vlan_prio.value = "<%3858%>";
+    cf.vlan_id.value = "<%3859%>";
+    cf.vlan_prio.value = "<%3860%>";
     
-    var vlan_ports= "<%3859%>";
+    var vlan_ports= "<%3861%>";
     
     if (vlan_ports & 0x1)
         cf.vlan_ports_0.checked = true;
@@ -194,10 +194,10 @@ function loadSettings()
         cf.vlan_ports_4.checked = true;
     if (vlan_ports & 0x20)
         cf.vlan_ports_5.checked = true;
-<%3816%>
+<%3818%>
     if (vlan_ports & 0x40)
         cf.vlan_ports_6.checked = true;
-<%3817%>
+<%3819%>
 
 }
 
@@ -212,7 +212,7 @@ function loadSettings()
 <form id="target"  method="POST" action="vlan_rule.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
     <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%3860%></div>
+<div class="subhead2"> <%3862%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -230,21 +230,21 @@ function loadSettings()
 <table border="0"   width="100%">
 
 <tr>
-    <td nowrap><%3832%></td>
+    <td nowrap><%3834%></td>
     <td width="50%" align="left" ><input type="text" id = "vlan_name" name="vlan_name" value="" size="15" maxlength="10"></td>
 </tr>
 <tr>
-    <td nowrap><%3833%></td>
+    <td nowrap><%3835%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_id" value="" class="num" size="10" maxlength="4">
-    <%3854%>
+    <%3856%>
     </td>
 </tr>
 <tr>
-    <td nowrap><%3834%></td>
+    <td nowrap><%3836%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_prio" value="" class="num" size="10" maxlength="1">
-    <%3855%>
+    <%3857%>
     </td>
 </tr>
 <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -256,9 +256,9 @@ function loadSettings()
     <input type="checkbox" name="vlan_ports_3">Port4
     <input type="checkbox" name="vlan_ports_4">WiFi-2.4G
     <input type="checkbox" name="vlan_ports_5">WiFi-5G
-<%3828%>
+<%3830%>
     <input type="checkbox" name="vlan_ports_6">WiFi-5G-2
-<%3829%>
+<%3831%>
 </td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -271,15 +271,15 @@ function loadSettings()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%266%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%268%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%267%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
       </div>
 
-<input type="hidden" name="vlan_rule_name" value="<%3839%>">
-<input type="hidden" name="orig_vlan_name" value="<%3856%>">
-<INPUT name="vlan_enable" type="hidden" value= "<%3836%>">
+<input type="hidden" name="vlan_rule_name" value="<%3841%>">
+<input type="hidden" name="orig_vlan_name" value="<%3858%>">
+<INPUT name="vlan_enable" type="hidden" value= "<%3838%>">
 <INPUT name="vlan_mode" type="hidden" value="edit">
 
 <a name="helpframe-anchor"></a>

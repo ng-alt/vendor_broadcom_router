@@ -275,7 +275,7 @@ function checkData()
     var cf = document.forms[0];    
     var pri_dns = 0;
     var sec_dns = 0;
-	var openvpnEnable = "<%522%>";
+	var openvpnEnable = "<%525%>";
     //if (cf.EnableDhcp.checked)
     //  cf.ipv6_enable_dhcp.value = 1;
     //else
@@ -285,24 +285,24 @@ function checkData()
     if (cf.IPv6WanAddr1.value == "" && cf.IPv6WanAddr2.value == "" && cf.IPv6WanAddr3.value == "" && cf.IPv6WanAddr4.value =="" &&
         cf.IPv6WanAddr5.value == "" && cf.IPv6WanAddr6.value == "" && cf.IPv6WanAddr7.value == "" && cf.IPv6WanAddr8.value == "")
     {
-        alert("<%3665%>");
+        alert("<%3667%>");
         return false;
     }
     else if (checkFiled(cf.IPv6WanAddr1) || checkFiled(cf.IPv6WanAddr2) || checkFiled(cf.IPv6WanAddr3) || checkFiled(cf.IPv6WanAddr4) ||
         checkFiled(cf.IPv6WanAddr5) || checkFiled(cf.IPv6WanAddr6) || checkFiled(cf.IPv6WanAddr7) || checkFiled(cf.IPv6WanAddr8))
     {
-        alert("<%3666%>");
+        alert("<%3668%>");
         return false;
     }
     else if (checkUnicast(cf.IPv6WanAddr1))
     {
-        alert("<%3667%><%3630%>");
+        alert("<%3669%><%3632%>");
         return false;
     }
 
     if (cf.ProfixWanLength.value == "" || (parseInt(cf.ProfixWanLength.value, 10)<4))
     {
-        alert("<%3668%>");
+        alert("<%3670%>");
         return false;
     }
 
@@ -311,7 +311,7 @@ function checkData()
         cf.IPv6Gateway5.value=="" && cf.IPv6Gateway6.value=="" &&
         cf.IPv6Gateway7.value=="" && cf.IPv6Gateway8.value=="")
     {
-        alert("<%3669%>");
+        alert("<%3671%>");
         return false;
     }
     else if (checkFiled(cf.IPv6Gateway1) || checkFiled(cf.IPv6Gateway2) || 
@@ -319,54 +319,54 @@ function checkData()
              checkFiled(cf.IPv6Gateway5) || checkFiled(cf.IPv6Gateway6) || 
              checkFiled(cf.IPv6Gateway7) || checkFiled(cf.IPv6Gateway8))
     {
-        alert("<%3670%>");
+        alert("<%3672%>");
         return false;
     }
     else if (checkUnicast(cf.IPv6Gateway1))
     {
-        alert("<%3671%><%3630%>");
+        alert("<%3673%><%3632%>");
         return false;
     }
     if (cf.IPv6LanAddr1.value == "" && cf.IPv6LanAddr2.value == "" && cf.IPv6LanAddr3.value == "" && cf.IPv6LanAddr4.value =="" &&
         cf.IPv6LanAddr5.value == "" && cf.IPv6LanAddr6.value == "" && cf.IPv6LanAddr7.value == "" && cf.IPv6LanAddr8.value == "")
     {
-        alert("<%3672%>");
+        alert("<%3674%>");
         return false;
     }
     else if (checkFiled(cf.IPv6LanAddr1) || checkFiled(cf.IPv6LanAddr2) || checkFiled(cf.IPv6LanAddr3) || checkFiled(cf.IPv6LanAddr4) ||
         checkFiled(cf.IPv6LanAddr5) || checkFiled(cf.IPv6LanAddr6) || checkFiled(cf.IPv6LanAddr7) || checkFiled(cf.IPv6LanAddr8))
     {
-        alert("<%3673%>");
+        alert("<%3675%>");
         return false;
     }
     else if (checkUnicast(cf.IPv6LanAddr1))
     {
-        alert("<%3674%>");
+        alert("<%3676%>");
         return false;
     }
     
     if (cf.ProfixLanLength.value == "" || (parseInt(cf.ProfixLanLength.value, 10)<4))
     {
-        alert("<%3675%>");
+        alert("<%3677%>");
         return false;
     }
 
     if (cf.DAddr1.value == "" && cf.DAddr2.value == "" && cf.DAddr3.value == "" && cf.DAddr4.value =="" &&
         cf.DAddr5.value == "" && cf.DAddr6.value == "" && cf.DAddr7.value == "" && cf.DAddr8.value == "")
     {
-        //alert("<%3676%>");
+        //alert("<%3678%>");
         //return false;
         pri_dns = 1;
     }
     else if (checkFiled(cf.DAddr1) || checkFiled(cf.DAddr2) || checkFiled(cf.DAddr3) || checkFiled(cf.DAddr4) ||
         checkFiled(cf.DAddr5) || checkFiled(cf.DAddr6) || checkFiled(cf.DAddr7) || checkFiled(cf.DAddr8))
     {
-        alert("<%3629%>");
+        alert("<%3631%>");
         return false;
     }
     else if (checkUnicast(cf.DAddr1))
     {
-        alert("<%3628%><%3630%>");
+        alert("<%3630%><%3632%>");
         return false;
     }
     
@@ -380,12 +380,12 @@ function checkData()
     else if (checkFiled(cf.PDAddr1) || checkFiled(cf.PDAddr2) || checkFiled(cf.PDAddr3) || checkFiled(cf.PDAddr4) ||
         checkFiled(cf.PDAddr5) || checkFiled(cf.PDAddr6) || checkFiled(cf.PDAddr7) || checkFiled(cf.PDAddr8))
     {
-        alert("<%3631%>");
+        alert("<%3633%>");
         return false;
     }
     else if (checkUnicast(cf.PDAddr1))
     {
-        alert("<%3632%><%3630%>");
+        alert("<%3634%><%3632%>");
         return false;
     }
 
@@ -400,12 +400,12 @@ function checkData()
     //gateway should in the same subnet with wan ip
     if (!isSameSubnet(cf.ipv6_wan_ipaddr.value,cf.ipv6_wan_gateway.value,cf.ipv6_wan_length.value))
     {
-        alert("<%3677%>");
+        alert("<%3679%>");
         return false;
     }
     else if (isIPv6Equals(cf.ipv6_wan_ipaddr.value, cf.ipv6_wan_gateway.value))
     {
-        alert("<%3678%>");
+        alert("<%3680%>");
         return false;
     }
     
@@ -413,20 +413,20 @@ function checkData()
     var tmpPreLen = (parseInt(cf.ipv6_wan_length.value, 10) > parseInt(cf.ipv6_lan_length.value, 10))? cf.ipv6_lan_length.value : cf.ipv6_wan_length.value;
     if (isSameSubnet(cf.ipv6_wan_ipaddr.value,cf.ipv6_lan_ipaddr.value,tmpPreLen))
     {
-        alert("<%3679%>");
+        alert("<%3681%>");
         return false;
     }
     
     if (isIPv6Equals(cf.ipv6_pri_dns.value, cf.ipv6_wan_ipaddr.value) ||
         isIPv6Equals(cf.ipv6_sec_dns.value, cf.ipv6_wan_ipaddr.value))
     {
-        alert("<%3680%>");
+        alert("<%3682%>");
         return false;
     }
     else if(isIPv6Equals(cf.ipv6_pri_dns.value, cf.ipv6_lan_ipaddr.value) ||
             isIPv6Equals(cf.ipv6_sec_dns.value, cf.ipv6_lan_ipaddr.value))
     {
-        alert("<%3681%>");
+        alert("<%3683%>");
         return false;
     }
     else
@@ -435,14 +435,14 @@ function checkData()
         {
             if (isIPv6Equals(cf.ipv6_pri_dns.value, cf.ipv6_sec_dns.value))
             {
-                alert("<%3633%>");
+                alert("<%3635%>");
                 return false;
             }
         }
     }
 /*
 	if(openvpnEnable == "enable"){
-		alert("<%3635%>");
+		alert("<%3637%>");
 		return false;
 	}
 */    
@@ -452,7 +452,7 @@ function checkData()
         isIPv6Equals(cf.ipv6_pri_dns.value, cf.ipv6_sec_dns.value) ||
         isIPv6Equals(cf.ipv6_pri_dns.value, cf.ipv6_wan_gateway.value))
     {
-        alert("<%3682%>");
+        alert("<%3684%>");
         return false;
     }
     
@@ -461,7 +461,7 @@ function checkData()
         isIPv6Equals(cf.ipv6_sec_dns.value, cf.ipv6_pri_dns.value) ||
         isIPv6Equals(cf.ipv6_sec_dns.value, cf.ipv6_wan_gateway.value))
     {
-        alert("<%3683%>");
+        alert("<%3685%>");
         return false;
     }
 */    
@@ -479,8 +479,8 @@ function loadSettings()
     var lan_length = cf.ipv6_lan_length.value;
     var pri_dns = cf.ipv6_pri_dns.value.split(":");
     var sec_dns = cf.ipv6_sec_dns.value.split(":");
-    var ipv6_proto_pre = "<%571%>";
-    var lan_dhcpsv6_enable_pre = "<%3684%>";
+    var ipv6_proto_pre = "<%574%>";
+    var lan_dhcpsv6_enable_pre = "<%3686%>";
     
     if (cf.ipv6_wan_ipaddr.value != "")
     {
@@ -561,7 +561,7 @@ function loadSettings()
 <form id="target"  name="formname" method="POST" action="ipv6_fix.cgi" >
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%1218%></div>
+<div class="subhead2"> <%1221%></div>
 <table border="0"     class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -574,18 +574,18 @@ function loadSettings()
 <tr><td colspan="2" class="scrollpane-table-seperate-border"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
 <tr>
- <td width="50%"><a><b><%3637%></b></a></td>
+ <td width="50%"><a><b><%3639%></b></a></td>
  <td width="50%" align="right">
     <select name="login_type" onChange="setServer()">
-        <option><%616%></option>
-        <option><%3638%></option>
-        <option><%3639%></option>
+        <option><%619%></option>
         <option><%3640%></option>
-        <option selected><%3641%></option>
-        <option ><%3171%></option>
-        <option ><%589%></option>
-        <option ><%3642%></option>
- 		<option ><%3643%></option>
+        <option><%3641%></option>
+        <option><%3642%></option>
+        <option selected><%3643%></option>
+        <option ><%3173%></option>
+        <option ><%592%></option>
+        <option ><%3644%></option>
+ 		<option ><%3645%></option>
     </select>
  </td>
 </tr>
@@ -595,11 +595,11 @@ function loadSettings()
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
 <tr>
-    <td width="100%"><b><%381%></b></td>
+    <td width="100%"><b><%384%></b></td>
 </tr>
 
 <tr>
-    <td><b><%3685%></b></td>
+    <td><b><%3687%></b></td>
 </tr>
 <tr>
     <td><img src="spacer.gif" width="20" height="12" border="0">
@@ -616,7 +616,7 @@ function loadSettings()
 </tr>
 
 <tr>
-    <td><b><%3686%></b></td>
+    <td><b><%3688%></b></td>
 </tr>
 <tr>
     <td><img src="spacer.gif" width="20" height="12" border="0">
@@ -631,7 +631,7 @@ function loadSettings()
     </td>
 </tr>
 <tr>
-    <td><b><%552%></b></td>
+    <td><b><%555%></b></td>
 </tr>
 <tr>
     <td><img src="spacer.gif" width="20" height="12" border="0">
@@ -646,7 +646,7 @@ function loadSettings()
     </td>
 </tr>
 <tr>
-    <td><b><%553%></b></td>
+    <td><b><%556%></b></td>
 </tr>
 <tr>
     <td><img src="spacer.gif" width="20" height="12" border="0">
@@ -664,20 +664,20 @@ function loadSettings()
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
 </tr>
 <tr>
-    <td width="50%"><b><%383%></b></td>
+    <td width="50%"><b><%386%></b></td>
 </tr>
 
 <tr>
-	<td nowrap colspan="2"><b><%3649%></b></td>
+	<td nowrap colspan="2"><b><%3651%></b></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="IpAssign" value="dhcp" <%3650%>><%3651%></td>
+	<td colspan="2" nowrap><input type="radio" name="IpAssign" value="dhcp" <%3652%>><%3653%></td>
 </tr>
 <tr>
-	<td colspan="2" nowrap><input type="radio" name="IpAssign" value="auto" <%3652%>><%3642%></td>
+	<td colspan="2" nowrap><input type="radio" name="IpAssign" value="auto" <%3654%>><%3644%></td>
 </tr>
 <tr>
-    <td><b><%3685%></b></td>
+    <td><b><%3687%></b></td>
 </tr>
 <tr>
     <td><img src="spacer.gif" width="20" height="12" border="0">
@@ -704,21 +704,21 @@ function loadSettings()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%266%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%268%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%267%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
       </div>
 
 
 
-<input type="hidden" name="ipv6_wan_ipaddr" value="<%3687%>">
-<input type="hidden" name="ipv6_lan_ipaddr" value="<%3688%>">
-<input type="hidden" name="ipv6_wan_length" value="<%3689%>">
-<input type="hidden" name="ipv6_lan_length" value="<%3690%>">
-<input type="hidden" name="ipv6_pri_dns" value="<%3691%>">
-<input type="hidden" name="ipv6_sec_dns" value="<%3692%>">
-<input type="hidden" name="ipv6_wan_gateway" value="<%3693%>">
+<input type="hidden" name="ipv6_wan_ipaddr" value="<%3689%>">
+<input type="hidden" name="ipv6_lan_ipaddr" value="<%3690%>">
+<input type="hidden" name="ipv6_wan_length" value="<%3691%>">
+<input type="hidden" name="ipv6_lan_length" value="<%3692%>">
+<input type="hidden" name="ipv6_pri_dns" value="<%3693%>">
+<input type="hidden" name="ipv6_sec_dns" value="<%3694%>">
+<input type="hidden" name="ipv6_wan_gateway" value="<%3695%>">
 <input type="hidden" name="ipv6_enable_dhcp" value="">
 <INPUT type="hidden" name="ipv6_proto" value= "fixed">
 
