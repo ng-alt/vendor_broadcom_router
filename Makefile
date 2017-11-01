@@ -751,6 +751,7 @@ ifeq ($(PROFILE),R8000)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
 	install prebuilt/et.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install prebuilt/dhd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
+	cd $(TARGETDIR)/etc && ln -s /tmp/resolv.conf resolv.conf
 endif
 
 ifneq (2_4,$(LINUX_VERSION))
@@ -1284,17 +1285,17 @@ iptables:
 	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
 	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 iptables-install:
-ifeq ($(CONFIG_IPTABLES),y)
-	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
-	install iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables
-	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/iptables/*.so
-	cp -rf iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
+	install -d $(INSTALLDIR)/iptables/usr/lib/xtables
+	cp -rf $(TOP)/iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/xtables
+	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/xtables/*.so
+	cp -rf $(TOP)/iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
 	install -d $(INSTALLDIR)/iptables/usr/lib
-	cp -f iptables-1.4.12/src/install/lib/libip* $(INSTALLDIR)/iptables/usr/lib
-else
-	# So that generic rule does not take precedence
-	@true
-endif
+	install -d $(INSTALLDIR)/iptables/usr/lib/xtables
+	install -d $(INSTALLDIR)/iptables/usr/lib/pkgconfig
+#	cp -P iptables-1.4.12/src/install/lib/lib* $(INSTALLDIR)/iptables/usr/lib
+	cp -P iptables-1.4.12/src/install/lib/pkgconfig/* $(INSTALLDIR)/iptables/usr/lib/pkgconfig
+	cp -P iptables-1.4.12/src/install/lib/xtables/*.so* $(INSTALLDIR)/iptables/usr/lib/xtables
+	cp -P iptables-1.4.12/src/install/lib/*.so* $(INSTALLDIR)/iptables/usr/lib
 iptables-clean:
 	-$(MAKE) -C iptables-1.4.12 KERNEL_DIR=$(LINUXDIR) DO_IPV6=1 clean
 

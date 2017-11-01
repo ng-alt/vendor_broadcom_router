@@ -3612,6 +3612,11 @@ sysinit(void)
 			!nvram_match("ctf_disable", "1"))
 			nvram_set("ctf_disable", "1");
 		/* Foxconn added end pling 06/26/2014 */
+        if ((nvram_match("enable_vlan","enable") || nvram_match("iptv_enabled","1")) &&
+            !nvram_match("ctf_disable", "1"))
+        {
+            nvram_set("ctf_disable", "1");
+        }
 
     /* Foxconn added start pling 08/19/2010 */
     /* Make sure the NVRAM "ctf_disable" exist, otherwise 
@@ -3678,6 +3683,8 @@ sysinit(void)
     if(!nvram_get("gmac3_enable"))
         nvram_set("gmac3_enable", "1");
     	
+    if(strcmp(nvram_get("access_control_mode"),"1")==0)
+        nvram_set("gmac3_enable", "0");
 
     if((strlen(nvram_get("gmac3_enable"))==0) || (strcmp(nvram_get("gmac3_enable"),"1")==0))
     {
@@ -4769,7 +4776,7 @@ main_loop(void)
 			start_bcmupnp();
       if(nvram_match ("wireless_restart", "1"))
       {
-
+			start_wps();
             start_eapd();
             start_nas();
             
@@ -4795,6 +4802,8 @@ main_loop(void)
 			if(nvram_match("enable_band_steering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
 				start_bsd();
 	  }
+	  		if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wlh_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
+				start_bsd();
             /* Now start ACOS services */
 
             /* Foxconn added start pling 06/26/2014 */
