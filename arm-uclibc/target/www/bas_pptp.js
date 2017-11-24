@@ -61,7 +61,7 @@ function check_wizard_pptp(check,page)
 	{
 		if(isValidChar(cf.pptp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2415%>");
+			alert("<%2417%>");
 			return false;
 		}
 	}
@@ -69,13 +69,13 @@ function check_wizard_pptp(check,page)
 	{
 		if(isValidChar(cf.pptp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2416%>");
+			alert("<%2418%>");
 			return false;
 		}
 	}
 	if(cf.pptp_idletime.value.length<=0)
 	{
-		alert("<%2417%>");
+		alert("<%2419%>");
 		return false;
 	}
 	else if(!_isNumeric(cf.pptp_idletime.value))
@@ -179,7 +179,7 @@ function check_wizard_pptp(check,page)
 	}
 	if( cf.pptp_serv_ip.value == cf.pptp_myip.value )
 	{
-		alert("<%2418%>");
+		alert("<%2420%>");
 		return false;
 	}
 
@@ -217,7 +217,7 @@ function check_wizard_pptp(check,page)
 	{
 		if(isValidChar(cf.pptp_conn_id.value.charCodeAt(i))==false)
 		{
-			alert("<%2419%>");
+			alert("<%2421%>");
 			return false;
 		}
 	}
@@ -430,7 +430,7 @@ function RU_pptp_user_info()
 	{
 		if(isValidChar(cf.pptp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2415%>");
+			alert("<%2417%>");
 			return false;
 		}
 	}
@@ -438,7 +438,7 @@ function RU_pptp_user_info()
 	{
 		if(isValidChar(cf.pptp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2416%>");
+			alert("<%2418%>");
 			return false;
 		}
 	}
@@ -632,7 +632,7 @@ function RU_check_pptp_dual()
 		cf.pptp_dnsaddr2.value="";
 	}
 	if(cf.DualAssign[1].checked == true)
-		alert("<%2414%>");
+		alert("<%2416%>");
 	parent.pptp_local_ipaddr=cf.pptp_myip.value;
 	parent.pptp_local_netmask=cf.pptp_mynetmask.value;
 	parent.pptp_local_gateway=cf.pptp_gateway.value;

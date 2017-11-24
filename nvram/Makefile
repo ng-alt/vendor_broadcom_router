@@ -38,6 +38,12 @@ CFLAGS  += -DX_ST_ML
 ifeq ($(PROFILE),R7000)
 CFLAGS  += -DHSDPA
 endif
+ifeq ($(PROFILE),R6900)
+CFLAGS  += -DHSDPA
+endif
+ifeq ($(PROFILE),R6700)
+CFLAGS  += -DHSDPA
+endif
 endif
 
 

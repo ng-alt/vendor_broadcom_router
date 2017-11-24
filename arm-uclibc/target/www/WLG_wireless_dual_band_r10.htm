@@ -614,12 +614,14 @@ function setOpMode()
         
         cf.opmode_an.selectedIndex = currentMode_an;
         /* 20120821: Russia region currently not support 11ac HT80 */
+/*
         if (cf.support_ac_mode.value == "1" && cf.WRegion.value == 14)
         {
             if (cf.opmode_an.selectedIndex == 2)
                 cf.opmode_an.selectedIndex = 1;
             cf.opmode_an.options.length = 2;
         }
+*/
     }
 
     wdsGray5gSecurity();
@@ -703,7 +705,7 @@ function setChannel()
         cf.opmode_an.length = 1;
     }
     else if(index == 18 )
-        cf.opmode_an.length = 2;
+        cf.opmode_an.length = 3;
     else
         cf.opmode_an.length = 3;   
         

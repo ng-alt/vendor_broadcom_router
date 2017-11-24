@@ -68,7 +68,7 @@ function check_static_ip_mask_gtw()
 	}
 	if(isSameSubNet(cf.pppoe_dual_ipaddr.value,cf.pppoe_dual_subnet.value,cf.pppoe_dual_gateway.value,cf.pppoe_dual_subnet.value) == false)
 	{
-		alert("<%2412%>");
+		alert("<%2414%>");
 		return false;
 	}
 	*/
@@ -96,7 +96,7 @@ function check_wizard_pppoe(check,servername,page)
 	{
 		if(isValidChar(form.pppoe_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2415%>");
+			alert("<%2417%>");
 			return false;
 		}
 	}
@@ -104,7 +104,7 @@ function check_wizard_pppoe(check,servername,page)
 	{
 		if(isValidChar(form.pppoe_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2416%>");
+			alert("<%2418%>");
 			return false;
 		}
 	}
@@ -112,13 +112,13 @@ function check_wizard_pppoe(check,servername,page)
 	{
 		if(isValidChar(servername.charCodeAt(i))==false)
 		{
-			alert("<%1025%>");
+			alert("<%1026%>");
 			return false;
 		}
 	}
 	if(form.pppoe_idletime.value.length<=0)
 	{
-		alert("<%2417%>");
+		alert("<%2419%>");
 		return false;
 	}
 	else if(!_isNumeric(form.pppoe_idletime.value))
@@ -408,7 +408,7 @@ function RU_pppoe_user_info()
 	{
 		if(isValidChar(cf.pppoe_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2415%>");
+			alert("<%2417%>");
 			return false;
 		}
 	}
@@ -416,7 +416,7 @@ function RU_pppoe_user_info()
 	{
 		if(isValidChar(cf.pppoe_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2416%>");
+			alert("<%2418%>");
 			return false;
 		}
 	}
@@ -424,7 +424,7 @@ function RU_pppoe_user_info()
 	{
 		if(isValidChar(cf.pppoe_servername.value.charCodeAt(i))==false)
 		{
-			alert("<%1025%>");
+			alert("<%1026%>");
 			return false;
 		}
 	}
@@ -582,7 +582,7 @@ function RU_check_pppoe_dual()
 		{
 			cf.conflict_wanlan.value=1;
 		}
-		alert("<%2414%>");
+		alert("<%2416%>");
 	}
 	else
 	{

@@ -190,19 +190,19 @@ function loadSettings()
 	var iqos_bw;
 	var bandwidthUp;
 	var bandwidthDown;
-	if("1"=="<%2113%>"){
+	if("1"=="<%2115%>"){
 	//uplink
-    iqos_bw = parseFloat(<%2114%>/1000000);
+    iqos_bw = parseFloat(<%2116%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2116%>/1000000);
+	iqos_bw = parseFloat(<%2118%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   
 	}else{
 	//uplink
-    iqos_bw = parseFloat(<%2715%>/1000000);
+    iqos_bw = parseFloat(<%2714%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2716%>/1000000);
+	iqos_bw = parseFloat(<%2715%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   	
 	}
     document.getElementById('uplink_bd').innerHTML = bandwidthUp + " Mbps";	
@@ -251,14 +251,14 @@ function handle_checkboxElements(checkbox)
 <form id="target"  method="post" action="devices.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%356%></div>
+<div class="subhead2"> <%357%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-    <td nowrap colspan="2" align="right"><%2717%></td>
+    <td nowrap colspan="2" align="right"><%2716%></td>
 </tr>
 <tr>
     <td>
@@ -277,15 +277,15 @@ function handle_checkboxElements(checkbox)
             <td width="30%" align="left">
                 <%407%>:
 				<!-- access_control_mode: 1: enabled 0: disabled -->
-				<%2718%>
-                <%2719%>
+				<%2717%>
+                <%2718%>
+				<%2719%>
 				<%2720%>
-				<%2721%>
-                <%2722%>
-				<%2723%>
+                <%2721%>
+				<%2722%>
 				<br>
 				<!-- access_all_new_devices: 1: allow all 0: block all -->
-				<%2724%>
+				<%2723%>
 
             </td>
             <td width="20%" align="right">
@@ -301,13 +301,13 @@ function handle_checkboxElements(checkbox)
 	<tr class="table_header">
 		<td nowrap align="center" width="5%"><span class="subheadtext"></span></td>
 		<td nowrap align="center" width="9%" name="show_status"><span class="subheadtext"><%773%></span></td>
-		<td nowrap align="center" width="10%"><span class="subheadtext"><%1956%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%1958%></span></td>
 		<td nowrap align="center" width="10%"><span class="subheadtext"><%774%></span></td>
 		<td nowrap align="center" width="20%"><span class="subheadtext"><%748%></span></td>
-		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2725%></span></td>
-		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2726%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2724%></span></td>
+		<td nowrap align="center" width="22%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2725%></span></td>
 	</tr>
-        <%2727%>
+        <%2726%>
 	</table>
 	</td>
 </tr>

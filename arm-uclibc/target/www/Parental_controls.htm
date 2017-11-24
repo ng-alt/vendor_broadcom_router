@@ -16,6 +16,29 @@
 
 <style type="text/css">
 
+html {
+    -webkit-transition: background-color 1s;
+    transition: background-color 1s;
+}
+
+html, body { min-height: 100%; }
+html.loading {
+    background: #FCFCFC url('loading.gif') no-repeat 50% 50%;
+    -webkit-transition: background-color 0;
+    transition: background-color 0;
+}
+
+body {
+    -webkit-transition: opacity 1s ease-in;
+    transition: opacity 1s ease-in;
+    }
+
+html.loading body {
+    opacity: 0.2;
+    -webkit-transition: opacity 0;
+    transition: opacity 1s;
+}
+
 .confirm-modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -30,6 +53,7 @@
     
 }
 
+
 </style>
 
 <STYLE TYPE="text/javascript">
@@ -39,6 +63,8 @@
 <%14%>
 <script language="javascript" type="text/javascript">
 <!--
+    var html = document.getElementsByTagName('html')[0];
+
 
     $(document).ready(function()
     {	
@@ -172,9 +198,16 @@ function loadvalue()
 
   if(cf.parental_control_apply.value!="1" && cf.enable_circle_control.value != "1" && cf.enable_opendns_control.value != "1")
   {
-      grayout_applybtn("Apply");
       apply_button_grayout=1;
   }
+  
+  if(cf.AlertMessage.value!="")
+      alert(cf.AlertMessage.value);
+}
+
+function showAnimation()
+{
+    html.className = 'loading';
 }
 
 //-->
@@ -192,7 +225,7 @@ function loadvalue()
       <table border="0"     class="subhead2-table">
         <tr align="left" valign="middle">
           <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-            <button type="submit" value="SUBMIT"  onClick="buttonClick(this,'<%78%>');" id="Apply" name="Apply" class=<%79%> style="padding-left:10px"> <span class="<%80%>" ><%81%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button>
+            <button type="submit" value="SUBMIT"  onClick="buttonClick(this,'<%78%>');showAnimation();" id="Apply" name="Apply" class="button-apply" style="padding-left:10px"> <span class="roundleft_apply" ><%81%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
             <button type="button" value="BUTTON"  onClick="buttonClick(this,'<%83%>');reset();loadSettings();" name="Cancel" class="button-rule" style="padding-left:10px" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
           </td>
         </tr>
@@ -204,20 +237,20 @@ function loadvalue()
                 <tr>
                   <td style="width:80px" valign="top"><img src="img/disabled.jpg" name="circle_status_pic" onclick="mode_select(1);"></td>
                   <td valign="top">
-                    <span style="font-size:14px"><b> <%4435%> </b></span>
-                    <p><span style="font-size:14px;"> <%4436%> </span><br>
+                    <span style="font-size:14px"><b> <%4442%> </b></span>
+                    <p><span style="font-size:14px;"> <%4443%> </span><br>
                     <span style="font-size:12px"><a onClick=window.open("http://www.netgear.com/circle","_blank") href=""><span style="color:#05BBD1"><%452%></span></a></span></p>
                     <div id="circle_message">
                     <table style="border:0px;width:500px">
                       <tr style="background-color:#f8f8f8">
                         <td style="width:300px">
-                           <p><b><%4437%></b></p>
+                           <p><b><%4444%></b></p>
                            <p><img src="img/apple_store.jpg" style="cursor: pointer;cursor:hand" onClick='window.open("https://itunes.apple.com/us/app/circle-home/id1037062934?ls=1&mt=8","_blank");' >&nbsp;&nbsp;&nbsp;<img src="img/google_store.jpg" style="cursor: pointer;cursor:hand" onClick='window.open("https://play.google.com/store/apps/details?id=com.circlemedia.circlehome","_blank");'></p>
                         </td>
                         <td style="width:200px;" >
-                           <p  style="padding-top:12px"><b><%4438%></b><p>
-                           <p><%4439%>: <%4440%><br>
-                           <%4441%>: <%4442%></p>
+                           <p  style="padding-top:12px"><b><%4445%></b><p>
+                           <p><%4446%>: <%4447%><br>
+                           <%4448%>: <%4449%></p>
                         </td>
                       </tr>
                     </table>
@@ -230,15 +263,15 @@ function loadvalue()
                 <tr>
                   <td style="width:80px"  valign="top"><img src="img/disabled.jpg" name="opendns_status_pic" onClick="mode_select(2);"></td>
                   <td valign="top">
-                    <span style="font-size:14px;"><b> <%4443%></b></span>
-                    <p style="font-size:14px;"> <%4444%><br>
+                    <span style="font-size:14px;"><b> <%4450%></b></span>
+                    <p style="font-size:14px;"> <%4451%><br>
                     <span style="font-size:12px"><a onClick=window.open("http://www.netgear.com/lpc","_blank")  href=""><span style="color:#05BBD1"><%452%> </span></a><span></p>
                 </tr>
                 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
               </table>
-              <p style="text-align:center;font-size:14px;"> <%4445%> <br>
-              &nbsp;<br><%4446%>
-              <br><%4447%>
+              <p style="text-align:center;font-size:14px;"> <%4452%> <br>
+              &nbsp;<br><%4453%>
+              <br><%4454%>
               </p>
             </div>
           </td>
@@ -249,23 +282,23 @@ function loadvalue()
         <table>
           <tr>
             <td>
-              <p style="text-align:center;font-size:18px;"><b><span style="color:#05BBD1"><%4448%></span><span style="float:right;font-size:24px" onclick="hide_confirm_page();">&times</span></b></p>
+              <p style="text-align:center;font-size:18px;"><b><span style="color:#05BBD1"><%4455%></span><span style="float:right;font-size:24px" onclick="hide_confirm_page();">&times</span></b></p>
             </td>
           </tr>
           <tr>
             <td>
-          <p style="text-align:center;font-size:14px"><%4449%></p>
+          <p style="text-align:center;font-size:14px"><%4456%></p>
             </td>
           </tr>
           <tr bgcolor="#F0F0F0">
             <td>
-          <p style="height:40px;text-align:center;font-size:14px"><span><b><%4450%></b></span></p>
+          <p style="height:40px;text-align:center;font-size:14px"><span><b><%4457%></b></span></p>
             </td>
           </tr>
           <tr>
             <td>
-              <p style="text-align:center;font-size:14px">      <button type="button" value="no"  " name="no" class="button-rule" style="padding-left:10px"  onClick="hide_confirm_page();"><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%4451%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-              <button type="button" value="yes" name="yes" class=<%79%> style="padding-left:10px" onClick="confirm_change();"> <span class="<%80%>" ><%4452%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button> </p>
+              <p style="text-align:center;font-size:14px">      <button type="button" value="no"  " name="no" class="button-rule" style="padding-left:10px"  onClick="hide_confirm_page();"><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%4458%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+              <button type="button" value="yes" name="yes" class=<%79%> style="padding-left:10px" onClick="confirm_change();"> <span class="<%80%>" ><%4459%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;</span></button> </p>
             </td>
           </tr>
         </table>
@@ -274,9 +307,10 @@ function loadvalue()
       <a name="helpframe-anchor"></a>
       <input type="hidden" name="enable_circle_control" value="<%473%>">
       <input type="hidden" name="enable_opendns_control" value="<%573%>">
-      <input type="hidden" name="parental_control_apply" value="<%4453%>">
+      <input type="hidden" name="parental_control_apply" value="<%4460%>">
       <input type="hidden" name="parentalSelect_tmp" value="">
       <input type="hidden" name="parentalSelect" value="">
+      <input type="hidden" name="AlertMessage" value="<%4461%>">
     </form>
   </div>
 </body>
