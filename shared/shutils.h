@@ -147,6 +147,20 @@ static inline char * strcat_r(const char *s1, const char *s2, char *buf)
  */
 extern int get_ifname_unit(const char* ifname, int *unit, int *subunit);
 
+/* This utility routine builds the wl prefixes from wl_unit.
+ * Input is expected to be a null terminated string
+ *
+ * @param	prefix		Pointer to prefix buffer
+ * @param	prefix_size	Size of buffer
+ * @param	Mode		If set generates unit.subunit output
+ *				if not set generates unit only
+ * @param	ifname		Optional interface name string
+ *
+ *
+ * @return				pointer to prefix, NULL if error.
+*/
+extern char* make_wl_prefix(char *prefix, int prefix_size, int mode, char *ifname);
+
 /*
  * Get interfaces belonging to a specific bridge.
  *
@@ -182,6 +196,9 @@ extern int remove_from_list(const char *name, char *list, int listsize);
 extern int add_to_list(const char *name, char *list, int listsize);
 
 extern char *find_in_list(const char *haystack, const char *needle);
+
+extern char *find_next_in_list(const char *haystack, const char *needle,
+	char *nextstr, int nextstrlen);
 
 extern int nvifname_to_osifname(const char *nvifname, char *osifname_buf,
                                 int osifname_buf_len);

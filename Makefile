@@ -171,6 +171,11 @@ export CFLAGS += -DBCMWPS
 #export CFLAGS += -DWFA_WPS_20_TESTBED
 endif
 
+ifeq ($(CONFIG_BT_IGMP),y)
+# WPS_NFC
+export CFLAGS += -DBT_IGMP_SUPPORT
+endif
+
 ifeq ($(CONFIG_EMF),y)
 export CFLAGS += -D__CONFIG_EMF__
 endif
@@ -741,7 +746,8 @@ ifeq ($(PROFILE),R6400)
 	install ufsd/mkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
-	install utelnetd/ookla $(TARGETDIR)/bin
+	install utelnetd/ookla $(TARGETDIR)/usr/sbin
+	install utelnetd/settings.txt $(TARGETDIR)/usr/sbin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib

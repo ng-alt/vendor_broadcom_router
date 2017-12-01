@@ -672,8 +672,8 @@ function setChannel()
     <%34%>
     if(index == 2 || index == 5) // Display Super WiFi option when region is Asia or China 
 	{
-		document.getElementById("super_wifi_option").style.display="block";
-		document.getElementById("super_wifi_option_an").style.display="block";
+		document.getElementById("super_wifi_option").style.display="none";
+		document.getElementById("super_wifi_option_an").style.display="none";
 	}
 	else
     {
@@ -2130,7 +2130,7 @@ function check5GSuperWifi()
       <td nowrap><%143%>:</td>
       <td nowrap><select name="opmode" onchange="chgCh(2);"><%144%></select></td></tr>
     <tr>
-      <td align=left><%145%></td>
+      <td align=left><%145%></td><!--adva_wlan_tpc="Transmit Power Control"-->
       <td align=left>
         <select name="enable_tpc" onChange="checkSuperWifi();">
           <%146%>
