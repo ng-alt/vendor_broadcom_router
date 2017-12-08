@@ -5,8 +5,8 @@ var changeMsg = "<%15%>";
 var notShown = true; // only shown region change message once
 var initialized = false;
 // "--",Africa,Asia,Australia,Canada,Europe,Israel,Japan,Korea,Mexico,Middle East,South America,USA
-var StartChannel = new Array(<%4357%>);
-var FinishChannel = new Array(<%4358%>);
+var StartChannel = new Array(<%4358%>);
+var FinishChannel = new Array(<%4359%>);
 
 /* region define:
  * value    -- region
@@ -38,15 +38,15 @@ var FinishChannel = new Array(<%4358%>);
  */
 var Channel_All_20M = 
     new Array (
-    <%4359%>
+    <%4360%>
         );
 var Channel_All_40M = 
     new Array (
-    <%4360%>
+    <%4361%>
         );
 var Channel_All_80M = 
     new Array (
-    <%4361%>
+    <%4362%>
         );
 
 var OpMode_BG_TEXT;
@@ -539,7 +539,7 @@ function CheckData()
     {
         if(cf.ssid.value==cf.ssid_5g.value)
         {
-            alert("<%4362%>");
+            alert("<%4363%>");
             return false;
         }    
         
@@ -713,7 +713,7 @@ function setChannel_5g()
     var ch_list = cf.w_channel_5g;
     //var index = cf.WRegion.options[cf.WRegion.selectedIndex].value;
     var index = cf.WRegion.selectedIndex;
-    var currChVal_5g = "<%4354%>";
+    var currChVal_5g = "<%4355%>";
     var len=0, i=0;
 
     ch_list.options.length = 100;
@@ -918,8 +918,8 @@ function setOpMode_24g_psr()
     {
         cf.opmode.disabled = false;
         cf.opmode.options.length = 2;
-        cf.opmode.options[0].text = "<%4363%>";
-        cf.opmode.options[1].text = "<%4364%>";
+        cf.opmode.options[0].text = "<%4364%>";
+        cf.opmode.options[1].text = "<%4365%>";
         cf.opmode.options[0].value = "145Mbps";
         cf.opmode.options[1].value = "300Mbps";
         cf.opmode.selectedIndex = currentMode;

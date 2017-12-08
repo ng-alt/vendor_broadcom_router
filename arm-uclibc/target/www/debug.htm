@@ -77,6 +77,8 @@ function checkRAData()
 		enabled=1;
 	if (cf4.serverIP.value != cf4.raServerIP.value)
 		enabled=1;
+        if (cf4.HTTPserverIP.value != cf4.raHTTPServerIP.value)
+                enabled=1;
 	if (cf4.serverPath.value != cf4.raServerPath.value)
 		enabled=1;
 	if (cf4.initStartTime.value != cf4.raInitStartTime.value)
@@ -245,12 +247,16 @@ function initStartTimeChange()
 <td nowrap width="20%" align="left"><input type="text" name="serverIP" value="<%3042%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
+<td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https server:</b><br><br></td>
+<td nowrap width="20%" align="left"><input type="text" name="HTTPserverIP" value="<%3043%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
+</tr>
+<tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Directory path:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="serverPath" value="<%3043%>" onchange="serverPathChange();" size="18" maxlength="33"></td>
+<td nowrap width="50%" align="left"><input type="text" name="serverPath" value="<%3044%>" onchange="serverPathChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initial start time:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3044%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
+<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3045%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
 <br><br>
 </tr>
 </table>
@@ -258,9 +264,10 @@ function initStartTimeChange()
 <input type="hidden" name="raStageDev" value="<%3038%>" >
 <input type="hidden" name="raStageProd" value="<%3040%>" >
 <input type="hidden" name="raServerIP" value="<%3042%>" >
-<input type="hidden" name="raServerPath" value="<%3043%>" >
-<input type="hidden" name="raInitStartTime" value="<%3044%>" >
+<input type="hidden" name="raHTTPServerIP" value="<%3043%>" >
+<input type="hidden" name="raServerPath" value="<%3044%>" >
+<input type="hidden" name="raInitStartTime" value="<%3045%>" >
 </form>
-<%3045%>
+<%3046%>
 </body>
 </html>
