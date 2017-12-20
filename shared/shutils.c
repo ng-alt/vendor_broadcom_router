@@ -61,7 +61,7 @@ char *
 fd2str(int fd)
 {
 	char *buf = NULL;
-	size_t count = 0, n;
+	ssize_t count = 0, n;
 
 	do {
 		buf = realloc(buf, count + 512);
@@ -142,7 +142,7 @@ _eval(char *const argv[], char *path, int timeout, int *ppid)
 			signal(sig, SIG_DFL);
 
 		/* Clean up */
-		ioctl(0, TIOCNOTTY, 0);
+		(void)ioctl(0, TIOCNOTTY, 0);
 		close(STDIN_FILENO);
 		setsid();
 
@@ -389,7 +389,7 @@ get_bridged_interfaces(char *bridge_name)
 
 	ifnames = nvram_get(bridge);
 
-	if (ifnames)
+	if (ifnames && strlen(ifnames) < sizeof(interfaces))
 		strncpy(interfaces, ifnames, sizeof(interfaces));
 	else
 		return NULL;
@@ -510,6 +510,7 @@ get_ifname_unit(const char* ifname, int *unit, int *subunit)
 	return 0;
 }
 
+
 /* In the space-separated/null-terminated list(haystack), try to
  * locate the string "needle"
  */
@@ -543,6 +544,63 @@ find_in_list(const char *haystack, const char *needle)
 	return NULL;
 }
 
+/* In the space-separated/null-terminated list(haystack), try to
+ * locate the string "needle" and get the next string from it
+ * if required, do a circular search as well
+ * if "needle" is NULL, get the first string in the list
+ */
+char *
+find_next_in_list(const char *haystack, const char *needle, char *nextstr, int nextstrlen)
+{
+	const char *ptr = haystack;
+	int needle_len = 0;
+	int haystack_len = 0;
+	int len = 0;
+
+	if (!haystack || !needle || !nextstr || !*haystack)
+		return NULL;
+
+	if (!*needle) {
+		goto found_next;
+	}
+
+	needle_len = strlen(needle);
+	haystack_len = strlen(haystack);
+
+	while (*ptr != 0 && ptr < &haystack[haystack_len])
+	{
+		/* consume leading spaces */
+		ptr += strspn(ptr, " ");
+
+		/* what's the length of the next word */
+		len = strcspn(ptr, " ");
+
+		if ((needle_len == len) && (!strncmp(needle, ptr, len))) {
+
+			ptr += len;
+
+			if (!(*ptr != 0 && ptr < &haystack[haystack_len])) {
+				ptr = haystack;
+			} else {
+				/* consume leading spaces */
+				ptr += strspn(ptr, " ");
+			}
+
+found_next:
+			/* what's the length of the next word */
+			len = strcspn(ptr, " ");
+
+			/* copy next value in nextstr */
+			memset(nextstr, 0, nextstrlen);
+			strncpy(nextstr, ptr, len);
+
+			return (char*) ptr;
+		}
+
+		ptr += len;
+	}
+	return NULL;
+}
 
 /**
  *	remove_from_list

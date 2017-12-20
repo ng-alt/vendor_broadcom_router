@@ -183,6 +183,9 @@ extern int add_to_list(const char *name, char *list, int listsize);
 
 extern char *find_in_list(const char *haystack, const char *needle);
 
+extern char *find_next_in_list(const char *haystack, const char *needle,
+	char *nextstr, int nextstrlen);
+
 extern int nvifname_to_osifname(const char *nvifname, char *osifname_buf,
                                 int osifname_buf_len);
 extern int osifname_to_nvifname(const char *osifname, char *nvifname_buf,

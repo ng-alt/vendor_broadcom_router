@@ -637,6 +637,7 @@ endif
 	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
+	cd $(TARGETDIR)/etc && ln -sf /tmp/resolv.conf resolv.conf
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
 	echo "=====> Don't delete wl_high.ko for USBAP"
