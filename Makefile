@@ -20,7 +20,19 @@
 
 
 include .config
-include .config.plt
+-include .config.plt
+include utils.mk
+
+ifneq ($(ROOTDIR),)
+ROUTER_EXTERNAL_PACKAGES := busybox kernel linux_kernel $(LINUX_OUTDIR)/.config \
+	bridge dhcp6c dhcp6s dnsmasq ffmpeg gpl hotplug2 iptables libflow libid3tag \
+	libmnl libnfnetlink libnetfilter_conntrack libnetfilter_queue \
+	ntpclient radvd ppp udev udhcpd vlan
+endif
+
+define filter-out-external-packages
+$(filter-out $(ROUTER_EXTERNAL_PACKAGES),$1)
+endef
 
 ifndef FW_TYPE
 FW_TYPE = WW
@@ -58,27 +70,37 @@ endif
 export PLATFORM LIBDIR USRLIBDIR LINUX_VERSION
 export BCM_KVERSIONSTRING := $(subst _,.,$(LINUX_VERSION))
 
+ifeq ($(ROOTDIR),)
 WLAN_ComponentsInUse := bcmwifi clm ppr olpc
 include ../makefiles/WLAN_Common.mk
 export SRCBASE := $(WLAN_SrcBaseA)
 export BASEDIR := $(WLAN_TreeBaseA)
+endif
 export TOP := $(shell pwd)
-export SRCBASE := $(shell (cd $(TOP)/.. && pwd -P))
+export SRCBASE ?= $(shell (cd $(TOP)/.. && pwd -P))
 export BASEDIR := $(shell (cd $(TOP)/../.. && pwd -P))
 
+ifeq ($(ROOTDIR),)
 ifeq (2_6_36,$(LINUX_VERSION))
-export 	LINUXDIR := $(BASEDIR)/components/opensource/linux/linux-2.6.36
+ifeq ($(LINUXDIR),)
+LINUXDIR := $(BASEDIR)/components/opensource/linux/linux-2.6.36
+endif
 export 	KBUILD_VERBOSE := 1
 export	BUILD_MFG := 0
 # for now, only suitable for 2.6.36 router platform
 SUBMAKE_SETTINGS = SRCBASE=$(SRCBASE) BASEDIR=$(BASEDIR)
 else ifeq (2_6,$(LINUX_VERSION))
-export 	LINUXDIR := $(SRCBASE)/linux/linux-2.6
+LINUXDIR := $(SRCBASE)/linux/linux-2.6
 export 	KBUILD_VERBOSE := 1
 export	BUILD_MFG := 0
 else
-export 	LINUXDIR := $(SRCBASE)/linux/linux
+LINUXDIR := $(SRCBASE)/linux/linux
 endif
+endif
+ifeq ($(LINUX_OUTDIR),)
+LINUX_OUTDIR := $(LINUXDIR)
+endif
+export LINUXDIR LINUX_OUTDIR
 
 # Opensource bases
 OPENSOURCE_BASE_DIR := $(BASEDIR)/components/opensource
@@ -356,7 +378,7 @@ export CFLAGS += -DAP_MODE
 #added by dennis ,01/02/2013, for ap mode detection
 export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 export CFLAGS += -D__CONFIG_IGMP_SNOOPING__
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+ifneq ($(call kernel-is-version,2_6_36),)
 export CFLAGS += -DLINUX26
 export CFLAGS += -DINCLUDE_IPV6
 endif
@@ -520,7 +542,7 @@ obj-$(CONFIG_EMF) += emf
 obj-$(CONFIG_EMF) += igs
 obj-$(CONFIG_IGMP_PROXY) += igmp
 obj-$(CONFIG_WL_ACI) += aci
-ifeq (2_6_36,$(LINUX_VERSION))
+ifneq ($(call kernel-is-version,2_6_36),)
 obj-y += udev
 obj-y += hotplug2
 endif
@@ -560,7 +582,7 @@ CFLAGS	+= -DPLC -DWPS_LONGPUSH_DISABLE
 endif
 
 #ifdef __CONFIG_TREND_IQOS__
-ifeq ($(LINUX_VERSION),2_6_36)
+ifneq ($(call kernel-is-version,2_6_36),)
 ifeq ($(CONFIG_TREND_IQOS),y)
 obj-$(CONFIG_TREND_IQOS) += iqos
 
@@ -592,28 +614,38 @@ endif
 ifeq ($(CONFIG_ACOS_MODULES),y)
 #obj-y += ../../ap/acos
 obj-y += ../../ap/gpl
+ifneq ($(ROOTDIR),)
+fw_cfg_file := $(ROOTDIR)$(ACOS)/include/ambitCfg.h
+else
 fw_cfg_file := ../../../project/acos/include/ambitCfg.h
+endif
 else
 obj-$(CONFIG_HTTPD) += httpd
 obj-$(CONFIG_WWW) += www
 endif
 
 
-obj-clean := $(foreach obj,$(obj-y) $(obj-n),$(obj)-clean)
-obj-install := $(foreach obj,$(obj-y),$(obj)-install)
+obj-clean := $(foreach obj,$(call filter-out-external-packages,$(obj-y) $(obj-n)),$(obj)-clean)
+obj-install := $(foreach obj,$(call filter-out-external-packages,$(obj-y)),$(obj)-install)
 
 ifneq ($(WLTEST),1)
-ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config),)
+ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUX_OUTDIR)/.config),)
 export WLTEST := 1
 endif
 endif
 
+KERNEL_RELEASE_FILE=$(LINUX_OUTDIR)/include/config/kernel.release
+ifneq ($(wildcard $(KERNEL_RELEASE_FILE)),)
+KERNEL_RELEASE := $(shell cat $(KERNEL_RELEASE_FILE))
+else
+KERNEL_RELEASE := 2.6.36.4brcmarm+
+endif
 #
 # Basic rules
 #
 
 
-all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
+all: $(call filter-out-external-packages, acos_link version $(LINUX_OUTDIR)/.config linux_kernel $(obj-y))
         # Also build kernel
         
 linux_kernel:        
@@ -665,9 +697,11 @@ version:  $(SRCBASE)/router/shared/router_version.h
 # if not, the build will fail anyway.
 $(SRCBASE)/router/shared/router_version.h: $(SRCBASE)/router/shared/version.h.in
 	[ ! -e $(SRCBASE)/tools/release/linux-router-bom.mk  ] ||  make SRCBASE=$(SRCBASE) -f $(SRCBASE)/tools/release/linux-router-bom.mk version
+ifeq ($(ROOTDIR),)
 ifeq ($(CONFIG_DHDAP),y)
 	$(MAKE) -C $(SRCBASE_DHD)/include
 #	$(MAKE) -C $(SRCBASE_FW)/include
+endif
 endif
 
 
@@ -695,7 +729,7 @@ endif
 distclean mrproper: clean
 	rm -f .config .config.plt $(LINUXDIR)/.config
 
-install package: $(filter-out lib-install,$(obj-install)) $(LINUXDIR)/.config
+install package: $(call filter-out-external-packages, $(filter-out lib-install,$(obj-install)) $(LINUX_OUTDIR)/.config)
         # Install binaries into target directory
 	install -d $(TARGETDIR)
 	install -d $(TARGETDIR)/usr
@@ -713,11 +747,13 @@ ifneq ("$(CONFIG_WAPI)$(CONFIG_WAPI_IAS)","")
 endif
 	# Install (and possibly optimize) C library
 	$(MAKE) lib-install
+ifeq ($(ROOTDIR),)
 	# Install modules into filesystem
 	if grep -q "CONFIG_MODULES=y" $(LINUXDIR)/.config ; then \
 	    $(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) \
 		modules_install DEPMOD=/bin/true INSTALL_MOD_PATH=$(TARGETDIR) ; \
 	fi
+endif # ROOTDIR
 	#	$(MAKE) acos-install
 	#water, 08/11/2009
 	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/build
@@ -735,18 +771,19 @@ endif
 	$(STRIP) $(TARGETDIR)/bin/eapd
 
 ifeq ($(PROFILE),R8000)
-	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
-	install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
-	install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	install -d $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
+	install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
+	install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
 	install usbprinter/KC_BONJOUR $(TARGETDIR)/usr/bin
 	install usbprinter/KC_PRINT $(TARGETDIR)/usr/bin
-	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
-	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
-	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
+	install -d $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
+	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
+	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
+ifeq ($(ROOTDIR),)
 	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
 	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin
 	
@@ -806,6 +843,7 @@ ifeq ($(PROFILE),R8000)
 	rm -rf $(TARGETDIR)/usr/local/share/doc
 	rm -rf $(TARGETDIR)/usr/local/share/man
 	rm -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
+endif # ROOTDIR
 endif
 
 ifneq (2_4,$(LINUX_VERSION))
@@ -827,9 +865,10 @@ endif
 endif
 	# Prepare filesystem
 	cd $(TARGETDIR) && $(TOP)/misc/rootprep.sh
-	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
-	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
+#	cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
+#	cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
 
+ifeq ($(ROOTDIR),)
 ifeq ($(CONFIG_SQUASHFS), y)
 	###########################################
 	### Create Squashfs filesystem ############
@@ -910,6 +949,7 @@ endif
 	-i $(fw_cfg_file) && \
 	rm -f rootfs && \
 	cp kernel_rootfs_image.chk $(FW_NAME)_`date +%m%d%H%M`.chk
+endif # ROOTDIR
 
 #
 # Configuration rules
@@ -1068,7 +1108,9 @@ busybox-clean:
 rc: netconf nvram shared
 	+$(MAKE) LINUXDIR=$(LINUXDIR) EXTRA_LDFLAGS=$(EXTRA_LDFLAGS) -C rc
 ifneq ($(CONFIG_BUSYBOX),)
+ifeq ($(ROOTDIR),)
 rc: busybox-1.x/Config.h
+endif
 endif
 else #linux-2.6
 CURBBCFG=$(CONFIG_BUSYBOX_CONFIG).h
@@ -1092,13 +1134,16 @@ endif
 endif #linux-2.6
 
 rc-install:
-	make LINUXDIR=$(LINUXDIR) INSTALLDIR=$(INSTALLDIR)/rc -C rc install
+	make LINUX_OUTDIR=$(LINUX_OUTDIR) BUSYBOXDIR=$(BUSYBOXDIR) BUSYBOX_OUTDIR=$(BUSYBOX_OUTDIR) INSTALLDIR=$(INSTALLDIR)/rc -C rc install
 
 lib-install:
-	make LX_VERS=$(LINUX_VERSION) INSTALLDIR=$(INSTALLDIR)/lib ARCH=$(ARCH) -C lib install
+	[ ! -d lib ] || make LX_VERS=$(LINUX_VERSION) INSTALLDIR=$(INSTALLDIR)/lib ARCH=$(ARCH) -C lib install
 
-www www-%:
-	$(MAKE) -C www/$(CONFIG_VENDOR) $* INSTALLDIR=$(INSTALLDIR)/www
+www:
+	$(MAKE) -C www/$(CONFIG_VENDOR) INSTALLDIR=$(INSTALLDIR)/www
+
+www-install:
+	$(MAKE) -C www/$(CONFIG_VENDOR) install INSTALLDIR=$(INSTALLDIR)/www
 
 NORTON_DIR := $(BASEDIR)/components/vendor/symantec/norton
 
@@ -1334,7 +1379,7 @@ else
 DOIPV6=0
 endif
 
-ifeq (2_6_36,$(LINUX_VERSION))
+ifneq ($(call kernel-is-version,2_6_36),)
 iptables:
 	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
 	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
@@ -1390,7 +1435,7 @@ iptables-clean:
 endif # linux-2.6
 
 
-netconf: iptables
+netconf: $(call filter-out-external-packages,iptables)
 ifeq ($(CONFIG_NETCONF),y)
 	make LINUXDIR=$(LINUXDIR) -C netconf
 else
@@ -1402,8 +1447,11 @@ ntpclient-install:
 	install -D ntpclient/ntpclient $(INSTALLDIR)/ntpclient/usr/sbin/ntpclient
 	$(STRIP) $(INSTALLDIR)/ntpclient/usr/sbin/ntpclient
 
-ppp ppp-%:
-	$(MAKE) -C ppp/pppoecd $* INSTALLDIR=$(INSTALLDIR)/ppp
+ppp:
+	$(MAKE) -C ppp/pppoecd INSTALLDIR=$(INSTALLDIR)/ppp
+
+ppp-install:
+	$(MAKE) -C ppp/pppoecd install INSTALLDIR=$(INSTALLDIR)/ppp
 
 udhcpd-install:
 	install -D udhcpd/udhcpd $(INSTALLDIR)/udhcpd/usr/sbin/udhcpd
@@ -1522,8 +1570,10 @@ endif
 
 
 acos_link:
+ifeq ($(ROOTDIR),)
 	cp $(LINUXDIR)/.config_$(PROFILE) $(LINUXDIR)/.config
-	cp ./prebuilt/target ./arm-uclibc/ -rf
+endif
+	$(if $(ROUTER),rsync -au, cp -rf) ./prebuilt/target ./arm-uclibc/
 
 acos:
 
@@ -1571,7 +1621,7 @@ acos_nat-install:
 
 acos_nat-clean:
 
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+ifneq ($(call kernel-is-version,2_6_36),)
 udev:
 	$(MAKE) -C udev CROSS_COMPILE=$(CROSS_COMPILE)
 
@@ -1663,13 +1713,13 @@ gpio-clean:
 #
 
 %:
-	[ ! -d $* ] || $(MAKE) -C $*
+	[ ! -e $*/Makefile ] || $(MAKE) -C $*
 
 %-clean:
-	[ ! -d $* ] || $(MAKE) -C $* clean
+	[ ! -e $*/Makefile ] || $(MAKE) -C $* clean
 
 %-install:
-	[ ! -d $* ] || $(MAKE) -C $* install INSTALLDIR=$(INSTALLDIR)/$*
+	[ ! -e $*/Makefile ] || $(MAKE) -C $* install INSTALLDIR=$(INSTALLDIR)/$*
 
 $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 

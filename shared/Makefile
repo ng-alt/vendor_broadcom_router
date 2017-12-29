@@ -18,15 +18,15 @@
 # $Id: Makefile 341899 2012-06-29 04:06:38Z $
 #
 
-include $(SRCBASE)/router/.config
-include $(SRCBASE)/makefiles/WLAN_Common.mk
+include $(TOP)/.config
+include $(TOP)/utils.mk
 
 CFLAGS	+= -I. -I../httpd -I$(SRCBASE)/include ${WLAN_StdIncPathA} -I$(SRCBASE)/common/include -Wall -fPIC
-CFLAGS	+= $(WLAN_ComponentIncPath) -I../../shared/bcmwifi/include 
+CFLAGS	+= $(WLAN_ComponentIncPath) -I$(if $(SRCBASE),$(SRCBASE)/shared/bcmwifi/include,../../shared/bcmwifi/include) 
 ifneq (2_4,$(LINUX_VERSION))
 CFLAGS += -I$(LINUXDIR)/include
 CFLAGS += -DLINUX26
-ifeq (2_6_36,$(LINUX_VERSION))
+ifneq ($(call kernel-is-version,2_6_36),)
 CFLAGS += -DAUTOFW_PORT_DEPRECATED
 endif
 endif
@@ -48,7 +48,7 @@ endif
 
 # Actually all builds use the new 11ac ratespec/chanspec
 CFLAGS  += -DD11AC_IOTYPES
-vpath %.c $(WLAN_StdSrcDirsA) $(WLAN_ComponentSrcDirs) ../../shared/bcmwifi/src/
+vpath %.c $(if $(ROOTDIR),$(SRCBASE)/shared/bcmwifi/src) $(WLAN_StdSrcDirsA) $(WLAN_ComponentSrcDirs)
 
 all: libshared.so
 

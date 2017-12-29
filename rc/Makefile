@@ -20,7 +20,11 @@
 
 include $(TOP)/.config
 
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+ifneq ($(BUSYBOX_OUTDIR),)
+CFLAGS += -DLINUX26 -DLINUX_2_6_36
+CFLAGS += -DACOS_LINUX26
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall -I$(LINUXDIR)/include $(if $(BUSYBOX_OUTDIR),-I$(BUSYBOX_OUTDIR)) -I$(BUSYBOXDIR)
+else ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 CFLAGS += -DLINUX26 -DLINUX_2_6_36
 # /* Fxcn port-S Wins, 0720-09 */
 CFLAGS += -DACOS_LINUX26
@@ -44,8 +48,8 @@ endif
 LDFLAGS	+= -L$(TOP)/nvram -L$(PLATFORMDIR)/install/nvram/usr/lib -lnvram -L$(TOP)/shared -L$(PLATFORMDIR)/install/shared/usr/lib -lshared \
 	-L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib -lbcmcrypto
 LDFLAGS += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib -lbcm
-CFLAGS	+= -I$(SRCBASE)/../ap/acos/shared
-LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(SRCBASE)/../ap/acos/acos_nat_cli -L$(TARGETDIR)/usr/lib -lacos_shared -lnat
+CFLAGS	+= -I$(if $(ROOTDIR),$(ROOTDIR)$(ACOS)/shared,$(SRCBASE)/../ap/acos/shared)
+LDFLAGS	+= $(addprefix -L, $(addprefix $(if $(ROOTDIR),$(ROOTDIR)$(ACOS)/,$(SRCBASE)/../ap/acos/), shared acos_nat_cli)) -L$(TARGETDIR)/usr/lib -lacos_shared -lnat
 
 #Foxconn Silver added start, 2011/12/21, for kernel_ntfs
 ifneq ($(PROFILE),)	# PROFILE eq R6300v2 || R6250

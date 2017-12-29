@@ -22,7 +22,7 @@
 ROOTDIR=$PWD
 
 # tmp
-mkdir -p tmp
+mkdir -p tmp/var tmp/media
 ln -sf tmp/var var
 ln -sf tmp/media media
 (cd $ROOTDIR/usr && ln -sf ../tmp)
