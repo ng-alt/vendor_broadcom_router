@@ -21,7 +21,7 @@
 include $(TOP)/.config
 
 ifeq ($(CONFIG_ACOS_MODULES),y)
-ACOSTOPDIR= $(SRCBASE)/../ap/acos
+ACOSTOPDIR=$(if $(ROOTDIR),$(ROOTDIR)$(ACOS),$(SRCBASE)/../ap/acos)
 ACOSNVRAM= $(ACOSTOPDIR)/nvram
 endif
 
@@ -29,7 +29,7 @@ endif
 CFLAGS += -DLINUX26
 #foxconn wklin add end, 05/12/2009
 
-CFLAGS	+= -I. -I$(SRCBASE)/include -I$(SRCBASE)/../project/acos/include -Wall -DINCLUDE_WAN_LAN_SUBNET
+CFLAGS	+= -I. -I$(SRCBASE)/include -I$(if $(ROOTDIR),$(ROOTDIR)$(ACOS)/include,$(SRCBASE)/../project/acos/include) -I$(SRCBASE)/common/include -Wall -DINCLUDE_WAN_LAN_SUBNET
 CFLAGS	+= -DINCLUDE_WDS -DINCLUDE_QOS -DBANDWIDTH_DETECT_17
 
 

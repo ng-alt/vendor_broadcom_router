@@ -20,16 +20,16 @@
 
 include $(TOP)/.config
 
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+#ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
 CFLAGS += -DLINUX26 -DLINUX_2_6_36
 # /* Fxcn port-S Wins, 0720-09 */
 CFLAGS += -DACOS_LINUX26
 # /* Fxcn port-E Wins, 0720-09 */
 
-CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall -I$(LINUXDIR)/include -I$(TOP)/busybox-1.x
-else
-CFLAGS += -I. -I$(TOP)/shared -I$(TOP)/busybox -I$(SRCBASE)/include -Wall
-endif
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -Wall -I$(LINUXDIR)/include $(if $(BUSYBOX_OUTDIR),-I$(BUSYBOX_OUTDIR)) -I$(if $(BUSYBOXDIR),$(BUSYBOXDIR),$(TOP)/busybox-1.x)
+#else
+#CFLAGS += -I. -I$(TOP)/shared -I$(TOP)/busybox -I$(SRCBASE)/include -Wall
+#endif
 
 CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(SRCBASE)/shared/bcmwifi/include)))
 CFLAGS += -I$(TOP)/dpsta
@@ -44,8 +44,8 @@ endif
 LDFLAGS	+= -L$(TOP)/nvram -L$(PLATFORMDIR)/install/nvram/usr/lib -lnvram -L$(TOP)/shared -L$(PLATFORMDIR)/install/shared/usr/lib -lshared \
 	-L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib -lbcmcrypto
 LDFLAGS += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib -lbcm
-CFLAGS	+= -I$(SRCBASE)/../ap/acos/shared
-LDFLAGS	+= -L$(SRCBASE)/../ap/acos/shared -L$(TARGETDIR)/usr/lib -lacos_shared
+CFLAGS	+= -I$(if $(ROOTDIR),$(ROOTDIR)$(ACOS)/shared,$(SRCBASE)/../ap/acos/shared)
+LDFLAGS	+= -L$(if $(ROOTDIR),$(ROOTDIR)$(ACOS)/shared,$(SRCBASE)/../ap/acos/shared) -L$(TARGETDIR)/usr/lib -lacos_shared
 
 #Foxconn Silver added start, 2011/12/21, for kernel_ntfs
 ifneq ($(PROFILE),)	# PROFILE eq R6300v2 || R6250

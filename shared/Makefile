@@ -18,7 +18,7 @@
 # $Id: Makefile 341899 2012-06-29 04:06:38Z $
 #
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 CFLAGS	+= -I. -I../httpd -I$(SRCBASE)/include -Wall -fPIC
 CFLAGS	+= $(WLAN_ComponentIncPath)

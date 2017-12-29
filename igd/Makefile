@@ -18,13 +18,9 @@
 # $Id: Makefile 271576 2011-07-12 20:31:22Z $
 #
 
-ifeq "$(SRCBASE)" ""
-	SRCBASE=$(shell cd ../.. ; pwd)
-endif
+include $(TOP)/.config
 
-include $(SRCBASE)/router/.config
-
-IGD	:= $(SRCBASE)/router/igd/linux
+IGD	:= $(TOP)/igd/linux
 CFLAGS += -s -include bcmconfig.h
 ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
 CFLAGS  += -Os
