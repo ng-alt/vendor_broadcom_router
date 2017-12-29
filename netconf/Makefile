@@ -20,8 +20,12 @@
 
 #CFLAGS	+= -g -DDEBUG
 CFLAGS	+= -s -O2
-
-ifeq (2_6_36,$(LINUX_VERSION))
+ifneq ($(IPTABLESDIR),)
+CFLAGS += -DLINUX26 -DLINUX_2_6_36
+CFLAGS  += -I$(IPTABLESDIR)/include
+LDFLAGS += -L. -L$(IPTABLESDIR)/libiptc/.libs
+CFLAGS += -D__EXPORTED_HEADERS__ -fPIC
+else ifeq (2_6_36,$(LINUX_VERSION))
 CFLAGS += -DLINUX26 -DLINUX_2_6_36
 CFLAGS  += -I$(TOP)/iptables-1.4.12/src/include
 LDFLAGS += -L. -L$(TOP)/iptables-1.4.12

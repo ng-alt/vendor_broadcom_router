@@ -25,7 +25,7 @@ endif
 LDFLAGS += -L.
 
 vpath %.c $(SRCBASE)/bcmcrypto
-vpath %.o $(SRCBASE)/router/libbcmcrypto/prebuilt
+vpath %.o $(TOP)/libbcmcrypto/prebuilt
 
 OBJS := aes.o aeskeywrap.o rijndael-alg-fst.o dh.o bn.o sha1.o passhash.o prf.o md5.o hmac.o rc4.o random.o
 ifeq ($(CONFIG_WSCCMD),y)

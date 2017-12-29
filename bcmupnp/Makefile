@@ -18,11 +18,7 @@
 # $Id: Makefile,v 1.10 2010/03/04 08:57:26 Exp $
 #
 
-ifeq "$(SRCBASE)" ""
-	SRCBASE=$(shell cd ../.. ; pwd)
-endif
-
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 ifeq ($(CONFIG_IGD),y)
 CFG_BCMIGD = 0

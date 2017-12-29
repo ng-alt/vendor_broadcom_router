@@ -60,7 +60,7 @@ CFLAGS		:= $(subst -pg,,$(CFLAGS))
 endif
 CFLAGS		+= -ffunction-sections $(call check_gcc, -fvtable-gc, )
 
-SYSTEM		?= $(LINUXDIR)/vmlinux
+SYSTEM		?= $(if $(LINUX_OUTDIR),$(LINUX_OUTDIR),$(LINUXDIR))/vmlinux
 
 # Note: siutils.o appeared seperately on purpose to solve post reference problem of GCC
 OBJS-mips = boot.o sisdram.o sbsdram.o aisdram.o hndmips.o sbutils.o aiutils.o siutils.o nicpci.o
@@ -83,8 +83,8 @@ ASFLAGS		+= $(ASFLAGS-$(ARCH))
 
 # Default to lzma_4k
 # modify by Hank for change lzma tool path in 2.6.36 08/21/2012
-COMPRESS	?= ../../../tools/lzma_4k e
-CFLAGS		+= -DUSE_LZMA -D_LZMA_NO_SYSTEM_SIZE_T -DBCMLZMA -I$(SRCBASE)/tools/misc/lzma_src/C
+COMPRESS	?= $(if $(BR2_EXTERNAL),lzma_4k,../../../tools/lzma_4k) e
+CFLAGS		+= -DUSE_LZMA -D_LZMA_NO_SYSTEM_SIZE_T -DBCMLZMA -I$(if $(ROOTDIR),$(ROOTDIR)external/lzma-sdk/C,$(SRCBASE)/tools/misc/lzma_src/C)
 
 CFLAGS		+= -I$(SRCBASE)/include -DBCMDRIVER
 CFLAGS		+= -I$(SRCBASE)/common/include
