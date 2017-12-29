@@ -12,7 +12,7 @@
 # $Id: Makefile 361287 2012-10-08 00:28:04Z $
 #
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
 ifneq ($(wildcard $(SRCBASE)/wl/exe/wlu_common.c),)

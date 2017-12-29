@@ -18,7 +18,7 @@
 # $Id: Makefile 502280 2014-09-12 09:45:12Z $
 #
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 CFLAGS	+= -I. -I../httpd -I$(SRCBASE)/include -Wall -fPIC -I$(SRCBASE)/shared/bcmwifi/include
 CFLAGS	+= $(WLAN_ComponentIncPath)
@@ -36,7 +36,7 @@ endif
 LDFLAGS += -L.
 
 
-OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o  et_linux.o confmtd_utils.o common_utils.o passpoint_nvparse.o ../../shared/bcmwifi/src/bcmwifi_channels.o
+OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o  et_linux.o confmtd_utils.o common_utils.o passpoint_nvparse.o $(if $(ROOTDIR),$(ROOTDIR)$(SHARED)/,../../shared/)bcmwifi/src/bcmwifi_channels.o
 
 ifeq ($(CONFIG_PLC),y)
 OBJS += dict.o

@@ -15,7 +15,7 @@
 include $(TOP)/.config
 
 
-CFLAGS	+= -I. -I$(SRCBASE)/include -I$(SRCBASE)/router/shared -Wall
+CFLAGS	+= -I. -I$(SRCBASE)/include -I$(TOP)/shared -Wall
 #CFLAGS	+= -g -DDEBUG
 CFLAGS	+= -s -O2
 LDFLAGS += -L.
