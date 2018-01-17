@@ -6,9 +6,9 @@
 
 <script type="text/javascript">
 <!--
-<%1803%>
-var pchar = "||"; // progress char
 <%1804%>
+var pchar = "||"; // progress char
+<%1805%>
 <%848%>
 var maxchars = 50;
 <%849%>
@@ -41,18 +41,18 @@ function updateProgress()
       
 	if (charcount < maxchars)
 	{
-	<%1805%>
+	<%1806%>
 		if( charcount < 6 )
 			var pchar = "||"; // progress char
 		else
 			var pchar = "|"; // progress char
 		charcount ++;
 		cf.progress.value = makeStr1(charcount,pchar);
-	<%1806%>
-	<%1803%>
+	<%1807%>
+	<%1804%>
 		charcount ++;
 		cf.progress.value = makeStr(charcount,pchar);
-	<%1804%>
+	<%1805%>
 		setTimeout("updateProgress()",delay_time);
 	}
 	else

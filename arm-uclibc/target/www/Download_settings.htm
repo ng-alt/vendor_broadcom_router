@@ -149,7 +149,7 @@ function sprintf()
 function checkData()
 {
     var cf = document.forms[0];
-    var str1 = "<%2190%>";
+    var str1 = "<%2191%>";
     cf.max_concur_tasks.value = "0";
     cf.refresh_rate.value = "0";
     cf.auto_refresh_enable.value = "0";
@@ -164,13 +164,13 @@ function checkData()
     
     if(!_isNumeric(cf.max_down_speed.value))
     {
-        alert("<%2191%>");
+        alert("<%2192%>");
         return false;
     }
     
     if(!_isNumeric(cf.max_up_speed.value))
     {
-        alert("<%2192%>");
+        alert("<%2193%>");
         return false;
     }
     
@@ -178,7 +178,7 @@ function checkData()
     {
         if(!_isNumeric(cf.other_refresh_rate.value))
         {
-            alert("<%2193%>");
+            alert("<%2194%>");
             return false;
         }
         else
@@ -258,7 +258,7 @@ function enableAutoRefresh()
     var cf = document.forms[0];
     if(cf.auto_refresh.checked)
     {
-        alert("<%2194%>");
+        alert("<%2195%>");
         cf.auto_refresh_enable.value=1;
         cf.refresh_rate_sel.disabled=false;
         if(cf.refresh_rate_sel.selectedIndex == 3)
@@ -289,7 +289,7 @@ function check_usb_exist2()
     var isUsbAttached = <%297%>;
     if(isUsbAttached==0)
     {   
-        alert("<%2145%>");
+        alert("<%2146%>");
         window.top.location.href="start.htm";
     }
 }
@@ -324,12 +324,12 @@ function check_usb_exist2()
 <table style="border-collapse:collapse;width:97%">
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2"><b><%2195%></b></td>
+	<td colspan="2"><b><%2196%></b></td>
 </tr>
 
 <tr>
     <td colspan="2" align="left">
-    <input type="text" name="usb_folder" value= "<%2153%>" readonly>
+    <input type="text" name="usb_folder" value= "<%2154%>" readonly>
     &nbsp;&nbsp;&nbsp;<button type="button" value="<%418%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%418%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%418%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
     </td>
 </tr>
@@ -338,7 +338,7 @@ function check_usb_exist2()
 
    
 <tr>
-    <td><a><b><%2196%></b></a></td>
+    <td><a><b><%2197%></b></a></td>
     <td align="left">
     <select name ="max_concur_sel">
         <option value="1">1</option>
@@ -350,46 +350,46 @@ function check_usb_exist2()
     </td>
 </tr>
 <tr>
-        <td colspan="2" nowrap><%2197%></td>
+        <td colspan="2" nowrap><%2198%></td>
 </tr>
     
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-    <td align="left"><a><b><%2198%></b></a></td>
-    <td align="left"><input type="text" name="max_down_speed" size="8" maxlength="8" value= "<%2199%>"><b>KB/s</b></td>   
+    <td align="left"><a><b><%2199%></b></a></td>
+    <td align="left"><input type="text" name="max_down_speed" size="8" maxlength="8" value= "<%2200%>"><b>KB/s</b></td>   
 </tr>
 
 <tr>
-    <td align="left"><a><b><%2200%></b></a></td>
-    <td align="left"><input type="text" name="max_up_speed" size="8" maxlength="8" value= "<%2201%>"><b>KB/s</b></td>   
+    <td align="left"><a><b><%2201%></b></a></td>
+    <td align="left"><input type="text" name="max_up_speed" size="8" maxlength="8" value= "<%2202%>"><b>KB/s</b></td>   
 </tr>
 
 <tr>
-        <td colspan="2" nowrap><%2202%></td>
+        <td colspan="2" nowrap><%2203%></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-    <td colspan="2"><input type="checkbox" name="auto_refresh" value="checkboxValue" onclick="enableAutoRefresh();"><b><%2203%></b></td>
+    <td colspan="2"><input type="checkbox" name="auto_refresh" value="checkboxValue" onclick="enableAutoRefresh();"><b><%2204%></b></td>
 </tr>
 
 <tr>
-        &nbsp;&nbsp;<td colspan="2" nowrap><%2204%></td>
+        &nbsp;&nbsp;<td colspan="2" nowrap><%2205%></td>
 </tr>
 
 <tr>
-    <td><%2205%></td>
+    <td><%2206%></td>
     <td align="left">
     <select name ="refresh_rate_sel" onchange="OnRateChange();">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
-        <option value="4"><%2206%><!--Other--></option>
+        <option value="4"><%2207%><!--Other--></option>
     </select>
-    <input type="text" name="other_refresh_rate" id="other_refresh_rate" size="2" maxLength="2" value= "<%2207%>">
-    <%2208%>
+    <input type="text" name="other_refresh_rate" id="other_refresh_rate" size="2" maxLength="2" value= "<%2208%>">
+    <%2209%>
     </td>
 </tr>
 
@@ -400,7 +400,7 @@ function check_usb_exist2()
 </tr>
 <tr>
     <td align="left">
-      &nbsp;&nbsp;&nbsp;<button type="submit" value="configure_email" name="configure_email" class="button-rule" onClick="buttonClick(this,'setup_acl');highLightMenu('security_header', 'email'); return true;"><span class="roundleft_button">&nbsp;&nbsp; <%2209%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+      &nbsp;&nbsp;&nbsp;<button type="submit" value="configure_email" name="configure_email" class="button-rule" onClick="buttonClick(this,'setup_acl');highLightMenu('security_header', 'email'); return true;"><span class="roundleft_button">&nbsp;&nbsp; <%2210%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 
 </table>
@@ -418,10 +418,10 @@ function check_usb_exist2()
     <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%248%> </span>
       </div>
     
-<INPUT name="max_concur_tasks" type=hidden value= "<%2210%>">
-<INPUT name="concur_tasks_allow" type=hidden value= "<%2211%>">
-<INPUT name="refresh_rate" type=hidden value= "<%2212%>">
-<INPUT name="auto_refresh_enable" type=hidden value= "<%2213%>">
+<INPUT name="max_concur_tasks" type=hidden value= "<%2211%>">
+<INPUT name="concur_tasks_allow" type=hidden value= "<%2212%>">
+<INPUT name="refresh_rate" type=hidden value= "<%2213%>">
+<INPUT name="auto_refresh_enable" type=hidden value= "<%2214%>">
 <a name="helpframe-anchor"></a>
 </form>
 

@@ -134,18 +134,18 @@ function check_pin()
 		}
 		else
 		{
-			alert("<%2600%>");
+			alert("<%2601%>");
 			return false;
 		}
 	}
 	else
 	if (lpin.length != 4 && lpin.length != 8) {
-		alert("<%2600%>");
+		alert("<%2601%>");
 		return false;
 	}
 	
 	if (parseInt(cf.PIN.value, 10) != cf.PIN.value) {
-		alert("<%2600%>");
+		alert("<%2601%>");
 		return false;
 	}
 	
@@ -161,7 +161,7 @@ function check_pin()
 		accum += 1 * (parseInt(lpin / 1) % 10);
 
 		if (0 != (accum % 10)) {
-			alert("<%2601%>");
+			alert("<%2602%>");
 			return false;
 		}
 	}
@@ -197,22 +197,22 @@ function check_pin()
 <tr></tr>
 <tr>
 <p class=MsoNormal>
-<td colspan=3><b><%2602%>:</b></td></p>
+<td colspan=3><b><%2603%>:</b></td></p>
 </tr>
 
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2597%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="Push Button" onClick="location.href='WPS.htm'"><%2598%></td></tr>
 <tr>
-<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2599%></td></tr>
+<td colspan="3"><input type="radio" name="WPS_type" value="PIN Number" checked><%2600%></td></tr>
 <tr>
-<td colspan="3"><p><%2603%></p></td></tr>
+<td colspan="3"><p><%2604%></p></td></tr>
 <TR>
-<TD><p><%2604%>:</p></TD>
-<%2605%>
-<TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="9" VALUE="" align="left" onkeydown="return getPressEnt(event);"></TD>
+<TD><p><%2605%>:</p></TD>
 <%2606%>
-<TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="8" VALUE="" align="left"></TD>
+<TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="9" VALUE="" align="left" onkeydown="return getPressEnt(event);"></TD>
 <%2607%>
+<TD nowrap><INPUT TYPE="TEXT" NAME="PIN" SIZE="8" MAXLENGTH="8" VALUE="" align="left"></TD>
+<%2608%>
 <TD>
 <p class=MsoNormal align=center>
 &nbsp;&nbsp;&nbsp;<button TYPE="submit" value="<%1452%>" NAME="Next" class="button-rule" onclick="buttonClick(this,'<%1452%>');isNextButton=1;return check_pin();" ><span class="roundleft_button">&nbsp;&nbsp; <%1452%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;
