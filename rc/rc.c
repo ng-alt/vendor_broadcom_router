@@ -4302,7 +4302,18 @@ sysinit(void)
 
     if(!nvram_get("gmac3_enable"))
         nvram_set("gmac3_enable", "1");
-    	
+    	    
+    /* Foxconn added start pling 08/15/2017 */
+    /* TD#545 add a check to turn off gmac3 if certain functions are enabled */
+    if (nvram_match("enable_vlan", "enable") || nvram_match("iptv_enabled", "1"))
+    {
+        if (!nvram_match("gmac3_enable", "0"))
+        {
+            nvram_set("gmac3_enable", "0");
+            //printf("### VLAN/IPTV enable! Force disable gmac3! ###\n");
+        }
+    }
+    /* Foxconn added end pling 08/15/2017 */
 
     if((strlen(nvram_get("gmac3_enable"))==0) || (strcmp(nvram_get("gmac3_enable"),"1")==0))
     {
@@ -5309,6 +5320,15 @@ main_loop(void)
             
             save_wlan_time();          
             start_bcmupnp();
+
+            {
+                nvram_unset("wps_randomssid");
+                nvram_unset("wps_randomssid_5G");
+                nvram_unset("wps_randomkey");
+                nvram_unset("wps_randomkey_5G");
+                nvram_set("wps_status", "0");
+            }
+
             start_wps();            /* Foxconn modify by aspen Bai, 08/01/2008 */
             start_eapd();           /* Foxconn modify by aspen Bai, 10/08/2008 */
             start_nas();            /* Foxconn modify by aspen Bai, 08/01/2008 */

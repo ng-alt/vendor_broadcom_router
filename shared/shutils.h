@@ -1,12 +1,12 @@
 /*
  * Shell-like utility functions
  *
- * Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
- * 
+ * Copyright (C) 2017, Broadcom. All Rights Reserved.
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: shutils.h 341903 2012-06-29 04:06:51Z $
+ * $Id: shutils.h 704995 2017-06-15 08:44:29Z $
  */
 
 #ifndef _shutils_h_
@@ -147,6 +147,20 @@ static inline char * strcat_r(const char *s1, const char *s2, char *buf)
  */
 extern int get_ifname_unit(const char* ifname, int *unit, int *subunit);
 
+/* This utility routine builds the wl prefixes from wl_unit.
+ * Input is expected to be a null terminated string
+ *
+ * @param	prefix		Pointer to prefix buffer
+ * @param	prefix_size	Size of buffer
+ * @param	Mode		If set generates unit.subunit output
+ *				if not set generates unit only
+ * @param	ifname		Optional interface name string
+ *
+ *
+ * @return				pointer to prefix, NULL if error.
+*/
+extern char* make_wl_prefix(char *prefix, int prefix_size, int mode, char *ifname);
+
 /*
  * Get interfaces belonging to a specific bridge.
  *
@@ -183,6 +197,9 @@ extern int add_to_list(const char *name, char *list, int listsize);
 
 extern char *find_in_list(const char *haystack, const char *needle);
 
+extern char *find_next_in_list(const char *haystack, const char *needle,
+	char *nextstr, int nextstrlen);
+
 extern int nvifname_to_osifname(const char *nvifname, char *osifname_buf,
                                 int osifname_buf_len);
 extern int osifname_to_nvifname(const char *osifname, char *nvifname_buf,
@@ -195,7 +212,7 @@ int ure_any_enabled(void);
 #if !defined(__NetBSD__) && !defined(__ARM_ARCH_7A__)
 /* Check for a blank character; that is, a space or a tab */
 #define isblank(c) ((c) == ' ' || (c) == '\t')
-#endif
+#endif // endif
 
 /* Strip trailing CR/NL from string <s> */
 #define chomp(s) ({ \
@@ -244,7 +261,7 @@ int ure_any_enabled(void);
 		fclose(fp); \
 	} \
 } while (0)
-#endif
+#endif // endif
 
 /* Debug print */
 #ifdef DEBUG
@@ -252,7 +269,6 @@ int ure_any_enabled(void);
 #else
 #define dprintf(fmt, args...)
 #endif /* DEBUG */
-
 
 #ifdef __ECOS
 char * strsep(char **stringp, const char *delim);

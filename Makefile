@@ -1728,13 +1728,13 @@ endif
 	cp $(BASEDIR)/ap/gpl/IGMP-PROXY/Makefile_arm $(BASEDIR)/ap/gpl/IGMP-PROXY/Makefile
 	cp $(BASEDIR)/ap/gpl/iproute2/lib/Makefile_arm $(BASEDIR)/ap/gpl/iproute2/lib/Makefile
 	cp $(BASEDIR)/ap/gpl/l2tpd-0.69/Makefile_arm $(BASEDIR)/ap/gpl/l2tpd-0.69/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile
-	cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/fuse-lite/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/ntfs-3g/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/include/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libfuse-lite/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/libntfs-3g/Makefile
+	#cp $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile_arm $(BASEDIR)/ap/gpl/ntfs-3g-2009.3.8/src/Makefile
 	#cp $(BASEDIR)/ap/gpl/samba-3.0.13/Makefile_arm $(BASEDIR)/ap/gpl/samba-3.0.13/Makefile
 	cp $(BASEDIR)/ap/gpl/minidlna/Makefile_arm $(BASEDIR)/ap/gpl/minidlna/Makefile
 

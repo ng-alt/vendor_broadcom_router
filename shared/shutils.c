@@ -1,12 +1,12 @@
 /*
  * Shell-like utility functions
  *
- * Copyright (C) 2015, Broadcom Corporation. All Rights Reserved.
- * 
+ * Copyright (C) 2017, Broadcom. All Rights Reserved.
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -15,7 +15,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: shutils.c 435925 2013-11-12 18:15:46Z $
+ * $Id: shutils.c 704995 2017-06-15 08:44:29Z $
  */
 
 #include <typedefs.h>
@@ -232,7 +232,6 @@ _backtick(char *const argv[])
 	return buf;
 }
 
-
 /*
  * fread() with automatic retry on syscall interrupt
  * @param	ptr	location to store to
@@ -414,7 +413,6 @@ sh_strrspn(const char *s, const char *accept)
 	size_t accept_len = strlen(accept);
 	int i;
 
-
 	if (s[0] == '\0')
 		return 0;
 
@@ -510,6 +508,51 @@ get_ifname_unit(const char* ifname, int *unit, int *subunit)
 	return 0;
 }
 
+/* This utility routine builds the wl prefixes from wl_unit.
+ * Input is expected to be a null terminated string
+ *
+ * @param	prefix		Pointer to prefix buffer
+ * @param	prefix_size	Size of buffer
+ * @param	Mode		If set generates unit.subunit output
+ *				if not set generates unit only
+ * @param	ifname		Optional interface name string
+ *
+ *
+ * @return				pointer to prefix, NULL if error.
+*/
+char *
+make_wl_prefix(char *prefix, int prefix_size, int mode, char *ifname)
+{
+	int unit = -1, subunit = -1;
+	char *wl_unit = NULL;
+
+	if (!prefix || !prefix_size)
+		return NULL;
+
+	if (ifname) {
+		if (!*ifname)
+			return NULL;
+		wl_unit = ifname;
+	} else {
+		wl_unit = nvram_get("wl_unit");
+
+		if (!wl_unit)
+			return NULL;
+	}
+
+	if (get_ifname_unit(wl_unit, &unit, &subunit) < 0)
+		return NULL;
+
+	if (unit < 0) return NULL;
+
+	if  ((mode) && (subunit > 0))
+		snprintf(prefix, prefix_size, "wl%d.%d_", unit, subunit);
+	else
+		snprintf(prefix, prefix_size, "wl%d_", unit);
+
+	return prefix;
+}
+
 /* In the space-separated/null-terminated list(haystack), try to
  * locate the string "needle"
  */
@@ -543,6 +586,63 @@ find_in_list(const char *haystack, const char *needle)
 	return NULL;
 }
 
+/* In the space-separated/null-terminated list(haystack), try to
+ * locate the string "needle" and get the next string from it
+ * if required, do a circular search as well
+ * if "needle" is NULL, get the first string in the list
+ */
+char *
+find_next_in_list(const char *haystack, const char *needle, char *nextstr, int nextstrlen)
+{
+	const char *ptr = haystack;
+	int needle_len = 0;
+	int haystack_len = 0;
+	int len = 0;
+
+	if (!haystack || !needle || !nextstr || !*haystack)
+		return NULL;
+
+	if (!*needle) {
+		goto found_next;
+	}
+
+	needle_len = strlen(needle);
+	haystack_len = strlen(haystack);
+
+	while (*ptr != 0 && ptr < &haystack[haystack_len])
+	{
+		/* consume leading spaces */
+		ptr += strspn(ptr, " ");
+
+		/* what's the length of the next word */
+		len = strcspn(ptr, " ");
+
+		if ((needle_len == len) && (!strncmp(needle, ptr, len))) {
+
+			ptr += len;
+
+			if (!(*ptr != 0 && ptr < &haystack[haystack_len])) {
+				ptr = haystack;
+			} else {
+				/* consume leading spaces */
+				ptr += strspn(ptr, " ");
+			}
+
+found_next:
+			/* what's the length of the next word */
+			len = strcspn(ptr, " ");
+
+			/* copy next value in nextstr */
+			memset(nextstr, 0, nextstrlen);
+			strncpy(nextstr, ptr, len);
+
+			return (char*) ptr;
+		}
+
+		ptr += len;
+	}
+	return NULL;
+}
 
 /**
  *	remove_from_list
@@ -649,11 +749,9 @@ ure_any_enabled(void)
 		return 0;
 }
 
-
 #define WLMBSS_DEV_NAME	"wlmbss"
 #define WL_DEV_NAME "wl"
 #define WDS_DEV_NAME	"wds"
-
 
 #if defined(linux) || defined(__ECOS)
 /**
@@ -697,7 +795,6 @@ nvifname_to_osifname(const char *nvifname, char *osifname_buf,
 
 	return -1;
 }
-
 
 /* osifname_to_nvifname()
  * Convert the OS interface name to the name we use internally(NVRAM, GUI, etc.)
@@ -969,7 +1066,6 @@ set_ipconfig_index(char *eth_ifname, int index)
 }
 
 #endif /* __ECOS  */
-
 
 /* Utility function to remove duplicate entries in a space separated list
  */

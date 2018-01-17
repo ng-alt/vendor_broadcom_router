@@ -1053,6 +1053,7 @@ start_wps(void)
 
 	/* stop wps first in case some one call start_wps for restart it. */
 	stop_wps();
+	sleep(1);
 
 	_eval(wps_argv, NULL, 0, &pid);
 #else
