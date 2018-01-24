@@ -211,7 +211,7 @@ function loadSettings()
 	var wan_dns2_pri = cf.wan_dns2_pri.value.split(".");
 	var wan_dns2_sec = cf.wan_dns2_sec.value.split(".");
 
-	cf.pppoe_idletime.value = <%3047%> / 60;
+	cf.pppoe_idletime.value = <%3444%> / 60;
 
 	if (cf.pppoe_localip.value == "0.0.0.0")
 		cf.WANAssign[0].checked = true;
@@ -309,13 +309,13 @@ function setSession()
 </head>
 
 <body  onload="loadSettings(); loadcheck();goTestApply();" style="margin:0px;background-color:#e5e5e5">
-<%1577%>
+<%1579%>
 <form id="target"  name="formname" method="POST" action="wizpppoe.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
-<%1578%>
-<%1579%>
-<form id="target"  name="formname" method="POST" action="bsw_pppoe.cgi"> 
 <%1580%>
+<%1581%>
+<form id="target"  name="formname" method="POST" action="bsw_pppoe.cgi"> 
+<%1582%>
 <table border="0"   width="99%">
 
 <tr>
@@ -327,16 +327,16 @@ function setSession()
 
 <tr>
 	<td><a href="javascript:loadhelp('WIZ_pppoe','login')" tabindex="-1"><b><%597%></b></a></td>
-	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="60" value="<%3101%>"></td>
+	<td align="right"><input type="text" name="pppoe_username" size="15" maxlength="60" value="<%3498%>"></td>
 </tr>
 <tr>
 	<td nowrap><a href="javascript:loadhelp('WIZ_pppoe','password')" tabindex="-1"><b><%599%></b></a></td>
-	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="50" value="<%3102%>"></td>
+	<td align="right"><input type="password" name="pppoe_passwd" size="15" maxlength="50" value="<%3499%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('WIZ_pppoe','serv_name')" tabindex="-1"><%601%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%3103%>"></td>
+	<td align="right"><input type="text" name="pppoe_servicename" maxlength="50" size="15" value="<%3500%>"></td>
 </tr>
 
 <tr>
@@ -397,11 +397,11 @@ function setSession()
 </tr>
 
 <tr>
- <td width="50%"><b><%1590%></b></td>
+ <td width="50%"><b><%1592%></b></td>
  <td width="50%" align="right"><select name="session_type" onChange="setSession()">
         <option selected value=0><%619%></option>
-        <OPTION value=1><%1591%></OPTION>
-        <option value=2><%1592%></option>
+        <OPTION value=1><%1593%></OPTION>
+        <option value=2><%1594%></option>
         <OPTION value=3><%592%></OPTION>
       </select></td>
 </tr>
@@ -412,16 +412,16 @@ function setSession()
 
 <tr>
 	<td><a href="javascript:loadhelp('WIZ_pppoe','login')" tabindex="-1"><b><%597%></b></a></td>
-    <td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="60" value="<%3058%>"></td>
+    <td align="right"><input type="text" name="pppoe2_username" size="15" maxlength="60" value="<%3455%>"></td>
 </tr>
 <tr>
 	<td nowrap><a href="javascript:loadhelp('WIZ_pppoe','password')" tabindex="-1"><b><%599%></b></a></td>
-	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="50" value="<%3059%>"></td>
+	<td align="right"><input type="password" name="pppoe2_passwd" size="15" maxlength="50" value="<%3456%>"></td>
 </tr>
 
 <tr>
 	<td nowrap><a href="javascript:loadhelp('WIZ_pppoe','serv_name')" tabindex="-1"><%601%></a> &nbsp;</td>
-	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%3060%>"></td>
+	<td align="right"><input type="text" name="pppoe2_servicename" maxlength="50" size="15" value="<%3457%>"></td>
 </tr>
 
 <tr> <!-- RULE -->
@@ -482,26 +482,26 @@ function setSession()
 
 <tr>
 	<td nowrap colspan="2" align="center"><div ID="pppoebuttons" onmouseover="loadhelp('WIZ_pppoe','buttons')">
-<%1577%>
+<%1579%>
 	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%78%>" name="apply" class="button-rule" onClick="buttonClick(this,'<%78%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%78%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%83%>" name="Cancel" class="button-rule" onClick="buttonClick(this,'<%83%>');loadSettings();"><span class="roundleft_button">&nbsp;&nbsp; <%83%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%538%>" name="Test" class="button-rule" onClick="buttonClick(this,'<%538%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%538%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%1578%>
-<%1579%>
-	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1571%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1571%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1571%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 <%1580%>
+<%1581%>
+	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1573%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1573%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1573%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%1582%>
 	</div></td></tr>
 </table>
 <input type="hidden" name="runtest" value="<%561%>">
-<INPUT name=pppoe_localip type=hidden value= "<%3065%>">
-<INPUT name=pppoe2_localip type=hidden value= "<%3069%>">
+<INPUT name=pppoe_localip type=hidden value= "<%3462%>">
+<INPUT name=pppoe2_localip type=hidden value= "<%3466%>">
 <INPUT name=pppoe_temp type=hidden value= "4">
 <INPUT name=wan_dns_sel type=hidden value= "<%563%>">
 <INPUT name=wan_dns1_pri type=hidden value= "<%564%>">
 <INPUT name=wan_dns1_sec type=hidden value= "<%565%>">
-<INPUT name=wan2_dns_sel type=hidden value= "<%3070%>">
-<INPUT name=wan_dns2_pri type=hidden value= "<%3104%>">
-<INPUT name=wan_dns2_sec type=hidden value= "<%3105%>">
+<INPUT name=wan2_dns_sel type=hidden value= "<%3467%>">
+<INPUT name=wan_dns2_pri type=hidden value= "<%3501%>">
+<INPUT name=wan_dns2_sec type=hidden value= "<%3502%>">
 </form>
 <p></p>
 </body>

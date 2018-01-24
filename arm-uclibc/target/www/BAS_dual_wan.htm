@@ -1,7 +1,7 @@
 <html>
 <head>
 <%11%>
-<title><%3593%></title>
+<title><%3990%></title>
 <link rel="stylesheet" href="form.css">
 <STYLE TYPE="text/javascript">
 	classes.num.all.fontFamily = "Courier";
@@ -72,22 +72,22 @@ function checkData()
     failover_hw_time = cf.failover_hw_time.value;
     failover_resume = cf.failover_resume.value;
     if( isNumeric(cf.failover_retry_interval, 600) ) 
-        msg += "<%3602%>"
+        msg += "<%3999%>"
     if( isNumeric(cf.failover_count, 40) ) 
-        msg += "<%3603%>"
+        msg += "<%4000%>"
     if( isNumeric(cf.failover_hw_time, 600) ) 
-        msg += "<%3604%>"
+        msg += "<%4001%>"
     if( isNumeric(cf.failover_resume, 600) ) 
-        msg += "<%3605%>"
+        msg += "<%4002%>"
         
     if (failover_retry_interval < 10 || failover_retry_interval > 600) 
-        msg += "<%3606%>"
+        msg += "<%4003%>"
     if (failover_count < 1 || failover_count > 40)
-	    msg += "<%3607%>"
+	    msg += "<%4004%>"
     if (failover_hw_time < 10 || failover_hw_time > 600)
-	    msg += "<%3608%>"
+	    msg += "<%4005%>"
     if (failover_resume < 10 || failover_resume > 600) 
-        msg += "<%3609%>"
+        msg += "<%4006%>"
     if (msg.length > 1)
     {
         alert(msg);
@@ -97,14 +97,14 @@ function checkData()
     if(cf.checkIPAssign[1].checked)
     {
         if(isBlank(cf.failover_host_name))
-            msg+= "<%3610%>";
+            msg+= "<%4007%>";
     }
     
 	
     if(cf.checkIPAssign[2].checked)
     {
         if(checkIP(cf.PingIP1,cf.PingIP2,cf.PingIP3,cf.PingIP4,254))
-            msg+= "<%3611%>";
+            msg+= "<%4008%>";
         cf.ping_ip.value = cf.PingIP1.value+'.'+cf.PingIP2.value+'.'+cf.PingIP3.value+'.'+cf.PingIP4.value;
     }
     
@@ -132,14 +132,14 @@ function loadSettings()
     var dflag_IP = cf.checkIPAssign[2].checked;
 	
     var ping_ip = cf.ping_ip.value.split(".");
-    cf.failover_retry_interval.value = <%3265%>;
-    cf.failover_count.value = <%3266%>;
-    cf.failover_hw_time.value = <%3267%>;
-    cf.failover_resume.value = <%3268%>;
-    cf.failover_host_name.value = "<%3269%>";
-    checkIPIndex = <%3270%>;
-    current_wan_type = <%3271%>;
-    enable_hw_detect = <%3272%>;
+    cf.failover_retry_interval.value = <%3662%>;
+    cf.failover_count.value = <%3663%>;
+    cf.failover_hw_time.value = <%3664%>;
+    cf.failover_resume.value = <%3665%>;
+    cf.failover_host_name.value = "<%3666%>";
+    checkIPIndex = <%3667%>;
+    current_wan_type = <%3668%>;
+    enable_hw_detect = <%3669%>;
 
     if(enable_hw_detect == 1)
         cf.w_enable_hw_detect.checked = true;
@@ -249,8 +249,8 @@ function selectchange()
 function setGray()
 {
     var cf = document.forms[0];
-    var wan_type = "<%3271%>";
-    var wwan_3G = "<%3274%>";
+    var wan_type = "<%3668%>";
+    var wwan_3G = "<%3671%>";
     
     if (wan_type == "1" || wan_type=="0")
     {
@@ -285,18 +285,18 @@ function setGray()
 	<table border="0" cellpadding="0" cellspacing="3" width="100%">
 		<tr>
 			<td>
-				<h1><%3593%></h1></td></tr>
+				<h1><%3990%></h1></td></tr>
         <tr>
             <td background="liteblue.gif" height="12">&nbsp; </td></tr>
         <tr>
-            <td valign="top"><A href="javascript:loadhelp('BAS_dual_wan','access')" tabindex="-1"><B><%3277%></b></a></td></tr>
+            <td valign="top"><A href="javascript:loadhelp('BAS_dual_wan','access')" tabindex="-1"><B><%3674%></b></a></td></tr>
 
     <tr>
             <td align="middle">
-    <select name="wan_type" value="<%3271%>" size="1" tabindex="10"  onchange=selectchange()>
-        <option <%3278%> value=2 ><%3594%></option>
-	 <option <%3280%> value=0 ><%3595%></option>
-	 <option <%3282%> value=1 ><%3596%></option>
+    <select name="wan_type" value="<%3668%>" size="1" tabindex="10"  onchange=selectchange()>
+        <option <%3675%> value=2 ><%3991%></option>
+	 <option <%3677%> value=0 ><%3992%></option>
+	 <option <%3679%> value=1 ><%3993%></option>
     </select></td></tr>
 <tr>
  <td background="liteblue.gif" height="12"> &nbsp;</td>
@@ -304,11 +304,11 @@ function setGray()
 <tr><td>
 <table cellpadding="0" cellspacing="3" width=100%>
 <tr>
-	<td colspan="2"><a href="javascript:loadhelp('BAS_dual_wan','detectIP')" tabindex="-1"><b><%3311%></b></a></td>
+	<td colspan="2"><a href="javascript:loadhelp('BAS_dual_wan','detectIP')" tabindex="-1"><b><%3708%></b></a></td>
 </tr>
 
 <tr>
-	<td colspan="2"><input type="radio" name="checkIPAssign" value="0" onClick="setDetectIP()"  onChange="setCfgChanged()"> <%3612%></td>
+	<td colspan="2"><input type="radio" name="checkIPAssign" value="0" onClick="setDetectIP()"  onChange="setCfgChanged()"> <%4009%></td>
 </tr>
 <!--
 <tr>
@@ -322,13 +322,13 @@ function setGray()
 -->
 
 <tr>
-	<td><input type="radio" name="checkIPAssign" value="1" onClick="setDetectIP()" onChange="setCfgChanged()"> <%3312%></td>
+	<td><input type="radio" name="checkIPAssign" value="1" onClick="setDetectIP()" onChange="setCfgChanged()"> <%3709%></td>
 	<td align="right">
 	<input type="text" name="failover_host_name" size="24" maxlength="128"></td>
 </tr>
 
 <tr>
-	<td><input type="radio" name="checkIPAssign" value="2" onClick="setDetectIP()" onChange="setCfgChanged()"> <%3313%></td>
+	<td><input type="radio" name="checkIPAssign" value="2" onClick="setDetectIP()" onChange="setCfgChanged()"> <%3710%></td>
 	<td align="right" class="num">
 	<input type="text" name="PingIP1" class="num" size="4" maxlength="3" onFocus="if(DisablePingIP) this.blur()" onChange="setCfgChanged()">.
 	<input type="text" name="PingIP2" class="num" size="4" maxlength="3" onFocus="if(DisablePingIP) this.blur()" onChange="setCfgChanged()">.
@@ -337,28 +337,28 @@ function setGray()
 </tr>
 <tr><td colspan="2">&nbsp;</td></tr>
 <tr>
-	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_retry_interval')" tabindex="-1"><%3314%></a></td>
-	<td align="right"><input type="text" class="num" name="failover_retry_interval" size="3" maxlength="3" onChange="setCfgChanged()"><%3613%></td>
+	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_retry_interval')" tabindex="-1"><%3711%></a></td>
+	<td align="right"><input type="text" class="num" name="failover_retry_interval" size="3" maxlength="3" onChange="setCfgChanged()"><%4010%></td>
 </tr>
 
 <tr>
-	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_count')" tabindex="-1"><%3316%></a></td>
-	<td align="right"><input type="text" class="num" name="failover_count" size="3" maxlength="3" onChange="setCfgChanged()"><%3614%></td>
+	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_count')" tabindex="-1"><%3713%></a></td>
+	<td align="right"><input type="text" class="num" name="failover_count" size="3" maxlength="3" onChange="setCfgChanged()"><%4011%></td>
 </tr>
 
 <tr>
-	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_resume')" tabindex="-1"><%3317%></a></td>
-	<td align="right"><input type="text" class="num" name="failover_resume" size="3" maxlength="3" onChange="setCfgChanged()"><%3613%></td>
+	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_resume')" tabindex="-1"><%3714%></a></td>
+	<td align="right"><input type="text" class="num" name="failover_resume" size="3" maxlength="3" onChange="setCfgChanged()"><%4010%></td>
 </tr>
 <tr><td colspan="2">&nbsp;</td></tr>
 <tr>
         <td colspan="2">
-            <input type="checkbox" name="w_enable_hw_detect"> <%3318%>
+            <input type="checkbox" name="w_enable_hw_detect"> <%3715%>
         </td>
 </tr>
 <tr>
-	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_hw_time')" tabindex="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%3319%></a></td>
-	<td align="right"><input type="text" class="num" name="failover_hw_time" size="3" maxlength="3" onChange="setCfgChanged()"><%3613%></td>
+	<td><a href="javascript:loadhelp('BAS_dual_wan','failover_hw_time')" tabindex="-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%3716%></a></td>
+	<td align="right"><input type="text" class="num" name="failover_hw_time" size="3" maxlength="3" onChange="setCfgChanged()"><%4010%></td>
 </tr>
 <tr>
  <td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td>
@@ -370,9 +370,9 @@ function setGray()
                 <input type="submit" name="apply" value="<%78%>" onClick="return checkData()">
                 <input type="button" name="Cancel" value="<%83%>"  onClick="location.href='BAS_dual_wan.htm'"></td></tr>
     </table>
-    <INPUT name=new_wan_type type=hidden value= "<%3271%>">
-    <INPUT name=ping_ip type=hidden value= "<%3329%>">
-    <INPUT name=enable_hw_detect type=hidden value= "<%3272%>">
+    <INPUT name=new_wan_type type=hidden value= "<%3668%>">
+    <INPUT name=ping_ip type=hidden value= "<%3726%>">
+    <INPUT name=enable_hw_detect type=hidden value= "<%3669%>">
     <input type="hidden" name="cfgChanged" value="0">
     <input type="hidden" name="testpressed" value="0">
     <INPUT name=isfromWIZ type=hidden value= "no">

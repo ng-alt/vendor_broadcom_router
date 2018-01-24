@@ -39,19 +39,19 @@ function checkData()
 	var r, re, fail;
 	var usb_folder_string = cf.usb_folder.value;
 	fail = 1;
-	<%2529%>
+	<%2532%>
 	if(fail == 1)
-        msg+= "<%2530%>\n";
+        msg+= "<%2533%>\n";
 	
 	if (cf.usb_folder.value == "")
-		 msg+= "<%2531%>\n";
+		 msg+= "<%2534%>\n";
 	if ( (cf.usb_folder.value.match( /[\x2E-\x2E]/ )) )
 	   {
-			alert("<%2530%>\n");
+			alert("<%2533%>\n");
 			return false;
 	   }
 	if (cf.share_name.value == "")
-		msg+= "<%2532%>\n";
+		msg+= "<%2535%>\n";
 	
     if (   (cf.share_name.value.match( /[\x22-\x22]/ ))
         || (cf.share_name.value.match( /[\x3A-\x3A]/ ))
@@ -66,9 +66,9 @@ function checkData()
        )
 	{
 		cf.share_name.focus();
-		msg+= "<%2533%>.\n";
+		msg+= "<%2536%>.\n";
 	}	
-	<%2534%>
+	<%2537%>
     if (msg.length > 1)
 	{
 		alert(msg);
@@ -76,18 +76,18 @@ function checkData()
 	}
 	
 
-<%2535%>	
+<%2538%>	
     //There exist folder is "admin" privilege but no "All - no password" privilege. 
     isAllAdmin = cf.isAllAdminFolder.value;
     if ( cf.no_dlna.value != 1 ) 
     {
        if((isAllAdmin >= 0) && (cf.readAllNoPwdChecked.value == 0) && (cf.writeAllNoPwdChecked.value == 0) )
-           alert("<%2493%>");
+           alert("<%2496%>");
     }
-<%2536%>	
+<%2539%>	
 
 
-<%2537%>	
+<%2540%>	
 	if( (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 0) )
 	    cf.write_access.selectedIndex = 1;
 	
@@ -95,14 +95,14 @@ function checkData()
     isAllAdmin = cf.isAllAdminFolder.value;    
     if ( cf.no_dlna.value != 1 ) {
        if(isAllAdmin > 0 && (cf.read_access.selectedIndex == 1) && (cf.write_access.selectedIndex == 1) )
-           alert("<%2493%>");
+           alert("<%2496%>");
     }
-<%2538%>	
+<%2541%>	
 
     pageRefresh();
     return true;
 }
-<%2535%>	
+<%2538%>	
 function enDisableBox(userNum, type)
 {
 	var i;
@@ -198,7 +198,7 @@ function writeUser(Rname, Wname, userNum)
         }
     }
 }
-<%2536%>		
+<%2539%>		
 function loadSettings()
 {
     var cf = document.forms[0];
@@ -206,14 +206,14 @@ function loadSettings()
     if (partition != "-1")
         cf.usb_device[partition].selected = true;
     
-    var NotExistFolder = "<%2539%>";
+    var NotExistFolder = "<%2542%>";
     if (NotExistFolder == "1")
     {
         opener.document.location.href = "USB_adv_tab.htm";
         window.close();
     }
     else if (NotExistFolder == "2")
-        alert("<%2530%>\n");
+        alert("<%2533%>\n");
 }
 
 function pageRefresh()
@@ -230,7 +230,7 @@ function Browse_folder()
     window.open('USB_folderBrowse.htm','browse','resizable=0,scrollbars=yes,width=400,height=400,left=400,top=300').focus();
 }
 
-<%2537%>	
+<%2540%>	
 function chgRd()
 {
     var cf = document.forms[0];
@@ -243,7 +243,7 @@ function chgWt()
     if (cf.write_access.selectedIndex == 0)
 	    cf.read_access.selectedIndex = 0;
 }
-<%2538%>	
+<%2541%>	
 //-->
 </script></head>
 <body onload="loadSettings();"  style="margin:0px;background-color:#e5e5e5;">
@@ -252,7 +252,7 @@ function chgWt()
     <table border="0"   width="100%">
 
     <tr>
-        <td><h1><%2524%></h1></td>
+        <td><h1><%2527%></h1></td>
     </tr>
 <tr>
  <td>
@@ -263,61 +263,61 @@ function chgWt()
 <table border="1" cellpadding="2" cellspacing="0" width="100%">
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2540%></span></td>
+<p align="left"><span class="thead"><%2543%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 <p align="left"><select name="usb_device" size="1" >
-        <%2541%>
+        <%2544%>
     </select></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2542%></span></td>
+<p align="left"><span class="thead"><%2545%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<input name="usb_folder" style="float: left" value="<%2543%>">
+<input name="usb_folder" style="float: left" value="<%2546%>">
 &nbsp;&nbsp;&nbsp;<button type="button" value="<%481%>" name="Browse" class="button-rule" onClick="buttonClick(this,'<%481%>');Browse_folder();"><span class="roundleft_button">&nbsp;&nbsp; <%481%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2480%></span></td>
+<p align="left"><span class="thead"><%2483%></span></td>
 <td align="center" nowrap="nowrap" width="60%"> 
-<input name="share_name" value="<%2544%>" size="21" maxlength="20" style="float: left"></td>
+<input name="share_name" value="<%2547%>" size="21" maxlength="20" style="float: left"></td>
 </tr>
 <tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2545%></span></td>
+<p align="left"><span class="thead"><%2548%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 
-<%2546%>	
+<%2549%>	
 <table border="0" align="left">
-   <%2547%>
+   <%2550%>
 </table>
-<%2548%>
-<%2549%>
+<%2551%>
+<%2552%>
 	<p align="left">
     <select name="read_access" size="1" onchange="chgRd()">
-        <option value=0><%2550%></option>
-        <option value=1 <%2551%> ><%2552%></option>
+        <option value=0><%2553%></option>
+        <option value=1 <%2554%> ><%2555%></option>
     </select>
-<%2553%>
+<%2556%>
     
 </td>
 </tr>
 <td align="center" nowrap="nowrap" width="40%">
-<p align="left"><span class="thead"><%2554%></span></td>
+<p align="left"><span class="thead"><%2557%></span></td>
 <td align="center" nowrap="nowrap" width="60%">
 
-<%2546%>
-<table border="0" align="left">
-	<%2555%>
-</table>
-<%2548%>
 <%2549%>
+<table border="0" align="left">
+	<%2558%>
+</table>
+<%2551%>
+<%2552%>
 		<p align="left">
         <select name="write_access" size="1" onchange="chgWt()">
-        <option value=0><%2550%></option>
-        <option value=1 <%2556%> ><%2552%></option>
+        <option value=0><%2553%></option>
+        <option value=1 <%2559%> ><%2555%></option>
         </select>
-<%2553%>
+<%2556%>
     </td>
 </tr>
 </table>
@@ -345,9 +345,9 @@ function chgWt()
 </table>
 <INPUT name=mode type=hidden value="add">
 <INPUT name=fromPage type=hidden value="1">
-<INPUT name=selectp type=hidden value="<%2557%>">
-<INPUT name=isAllAdminFolder type=hidden value="<%2558%>">
-<input name="no_dlna" type="hidden" value="<%2527%>">
+<INPUT name=selectp type=hidden value="<%2560%>">
+<INPUT name=isAllAdminFolder type=hidden value="<%2561%>">
+<input name="no_dlna" type="hidden" value="<%2530%>">
 
 <input name="ReadMultiUser0" type="hidden" value="0">
 <input name="readAllNoPwdChecked" type="hidden" value="null">

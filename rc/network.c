@@ -1886,7 +1886,7 @@ start_wl(void)
       eval("wl", "assert_type", "1");
 
      /* Foxconn added start Antony 09/18/2015 Higher the ARP/ICMP/EAPOL priority */
-        system("wl -i eth1 boost_pri_proto 7");
+        system("wl -i eth1 boost_pri_proto 15");
         system("wl -i eth2 boost_pri_proto 7");
 
      /* Foxconn added end Antony 09/18/2015 */

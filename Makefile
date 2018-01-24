@@ -725,7 +725,7 @@ ifeq ($(PROFILE),R7000)
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
-	install utelnetd/ookla $(TARGETDIR)/bin
+	#install utelnetd/ookla $(TARGETDIR)/bin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
 	$(STRIP) $(TARGETDIR)/bin/fbwifi
 	# reduce the size here	

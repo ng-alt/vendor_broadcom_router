@@ -205,7 +205,6 @@ function initScrn()
     var sec_type_2G = fm.security_type_2G.value;
     var sec_type_5G = fm.security_type_5G.value;
   	var wifi_2g_tpc = fm.select_2g_tpc.value;
-    
     OpMode_BG_TEXT=fm.opmode.options[0].text; 
     OpMode_20M_TEXT=fm.opmode.options[1].text; 
     OpMode_40M_TEXT=fm.opmode.options[2].text; 
@@ -2038,7 +2037,6 @@ function band_steering_greyout(greyout)
 function sync_wifi_settings_from_2G()
 {
     var cf = document.forms[0];
-
     cf.ssid_an.value = cf.ssid.value;
     if(cf.ssid_bc.checked == true)
     {
@@ -2051,12 +2049,13 @@ function sync_wifi_settings_from_2G()
         cf.ssid_bc_an.value = "";
     }
     cf.security_type_an.value = cf.security_type.value;
-    if(cf.security_type.value == "NONE")
+
+    if(cf.security_type[0].checked ==true)
     {
         cf.security_type_an[0].checked = true;  //NONE
         securityCheck(1);
     }
-    else if(cf.security_type.value == "WPA-ENTERPRISE")
+    else if(cf.security_type[5].checked==true)
     {
         cf.security_type_an[5].checked = true;  //WPA-ENTERPRISE
         securityCheck(1);
@@ -2074,11 +2073,11 @@ function sync_wifi_settings_from_2G()
     }
     else 
     {
-        if(cf.security_type.value == "WPA-PSK")
+        if(cf.security_type[2].checked == true)
             cf.security_type_an[2].checked = true;  //WPA
-        else if(cf.security_type.value == "WPA2-PSK")
+        else if(cf.security_type[3].checked == true)
             cf.security_type_an[3].checked = true;  //WPA2
-        else if(cf.security_type.value == "AUTO-PSK")
+        else if(cf.security_type[4].checked == true)
             cf.security_type_an[4].checked = true;  //Auto-WPA
 
         securityCheck(1);
@@ -2167,8 +2166,9 @@ function is_dual_ssid_same()
 
     if(cf.enable_band_steering.checked != true)
     {
-        band_steering_enable=0;
         band_steering_greyout(0);
+        band_steering_enable=0;
+        cf.ssid_an.value = cf.ssid.value +"-5G";
         return true;
     }
 
