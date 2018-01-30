@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Filename definition
-IDP=IDP
-FWD=bw_forward
-QOS=tc_cmd
+IDP=tdts
+FWD=tdts_udbfw
+QOS=tdts_udb
 
 # Necessary command definition
 RM="rm -f"
@@ -37,69 +37,17 @@ FAIL_MOVE_QOS=-9
 stop_sys()
 {
 	echo "--------------------"
-	echo "Stop DPI System...."
-	printf "\nCall $SETUP to stop DPI System....\n"
-	cd $MAIN_PATH
-	$MAIN_PATH/$SETUP stop
-	cd $UPDATE_PATH
+	echo "Stop iQoS System...."
 
-	printf "\t--------------------------\n"
-	printf "\tCheck DPI System State....\n"
-	# Stop Forwarding Module
-	if [ "$($LSMOD |grep $FWD)" ]; then
-		printf "\t\tRemove $FWD fail\n" && return "$FAIL_STOP_FWD"
-	else
-		printf "\t\tRemove $FWD Success\n"
-	fi
-
-	# Stop IDP
-	if [ "$($LSMOD |grep $IDP)" ]; then
-		printf "\t\tRemove $IDP fail\n" && return "$FAIL_STOP_IDP"
-	else
-		printf "\t\tRemove $IDP Success\n"
-	fi
-
-	# Stop QOS
-	if [ "$($LSMOD |grep $QOS)" ]; then
-		printf "\t\tStop $QOS Fail\n" && return "$FAIL_STOP_QOS"
-	else
-		printf "\t\tStop $QOS Success\n"
-	fi
-
+    bcmiqosd stop
 	return "$SUCC"
 }
 
 start_sys()
 {
 	echo "--------------------"
-	echo "Start DPI System...."
-	printf "\nCall $SETUP to start DPI System....\n"
-	cd $MAIN_PATH
-	$MAIN_PATH/$SETUP start
-	cd $UPDATE_PATH
-
-	printf "\t--------------------------\n"
-	printf "\tCheck DPI System State....\n"
-	# Start IDP
-	if [ "$($LSMOD |grep $IDP)" ]; then
-		printf "\t\tStart $IDP Success\n"
-	else
-		printf "\t\tStart $IDP Fail\n" && return "$FAIL_START_IDP"
-	fi
-
-	# Start Forwarding Module
-	if [ "$($LSMOD |grep $FWD)" ]; then
-		printf "\t\tStart $FWD Success\n"
-	else
-		printf "\t\tStart $FWD Fail\n" && return "$FAIL_START_FWD"
-	fi
-
-	# Start QOS
-	if [ "$($LSMOD |grep $QOS)" ]; then
-		printf "\t\tStart $QOS Success\n"
-	else
-		printf "\t\tStart $QOS Fail\n"  && return "$FAIL_START_QOS"
-	fi
+	echo "Start iQoS System...."
+    bcmiqosd start
 
 	return "$SUCC"
 }
@@ -202,6 +150,15 @@ archive_file()
 	RET=$? && return "$RET"
 }
 
+cleanup_file()
+{
+    rm -f $UPDATE_PATH/*
+    rm -f $BACKUP_PATH/*
+    rm -f $ARCHIVE_PATH/*
+    rm -f /tmp/media/nand/rule.trf
+    rm -f /tmp/media/nand/TmToNtgr_dev_mapping
+}
+
 all()
 {
 	printf "Update DPI System\n"
@@ -257,6 +214,7 @@ help()
 	printf "\tbackup: backup DPI binaries\n"
 	printf "\tupdate: update DPI binaries\n"
 	printf "\trestore: restore DPI binaries\n"
+	printf "\tcleanup: clean up DPI binaries\n"
 	printf "\thelp and blank: show help\n"
 }
 
@@ -267,5 +225,6 @@ help()
 [ "$1" = "update" ] && update_file && exit 0
 [ "$1" = "archive" ] && archive_file && exit 0
 [ "$1" = "restore" ] && restore_file && exit 0
+[ "$1" = "cleanup" ] && cleanup_file && exit 0
 [ "$1" = "help" ] && help && exit 0
 [ "$1" = "" ] && help && exit 0

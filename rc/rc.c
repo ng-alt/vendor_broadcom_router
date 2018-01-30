@@ -3945,6 +3945,9 @@ sysinit(void)
 				}
 			}
 		}
+#if defined(R8000)
+        system("cd /tmp/trend; ./setup.sh start; ./setup.sh stop;"); //Init iQos database once to get version content
+#endif
 #endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 	}
 	/*Foxconn add start by Hank for enable WAN LED amber 12/07/2012*/

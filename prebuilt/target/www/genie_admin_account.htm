@@ -15,7 +15,7 @@
   }
   </style>
 
-<link rel="stylesheet" href="<%1415%>">
+<link rel="stylesheet" href="<%1418%>">
 
   <script language="javascript" type="text/javascript">
   
@@ -29,45 +29,45 @@
    
       if (cf.sysNewPasswd.value.length == 0)
       {
-        alert("<%3135%>");
+        alert("<%3140%>");
         return false;
       }
 
       if (cf.sysNewPasswd.value.length == 33 || cf.sysConfirmPasswd.value.length == 33)
       {
-        alert("<%1261%>");
+        alert("<%1264%>");
         return false;
       }
 
       if(cf.sysNewPasswd.value != cf.sysConfirmPasswd.value)
       {
 
-        alert("<%1262%>");
+        alert("<%1265%>");
         cf.sysConfirmPasswd.focus();
         return false;
       }
 /*   
       if(cf.sysNewPasswd.value.match(/[A-Z]/gi)==null || cf.sysNewPasswd.value.match(/[0-9]/gi)==null || cf.sysNewPasswd.value.length < 6) 
       {
-        alert("<%3136%>");
+        alert("<%3141%>");
         return false;
       }
 */  
     if(cf.answer1.value.length < 1 || cf.answer1.value.length > 64)
     {
-      alert("<%1264%>");
+      alert("<%1267%>");
       return false;
     }
     
     if(cf.answer2.value.length < 1 || cf.answer2.value.length > 64)
     {
-  	  alert("<%1264%>");
+  	  alert("<%1267%>");
     	return false;
     }
 		
     if(cf.question1.value == 0 || cf.question2.value == 0)
     {
-      alert("<%1265%>");
+      alert("<%1268%>");
       return false;
     }
     return true;
@@ -77,20 +77,20 @@
   {
   	var selected = [ "", "", "", "", "", "", "", "", "", ""];
 	
-	  selected[<%1240%>] = "selected";
+	  selected[<%1243%>] = "selected";
 	
     document.open();
     document.write("<select name=\"question1\">");
-    document.write("<option " + selected[0] + " value=\"0\"><%1241%></option>");
-    document.write("<option " + selected[1] + " value=\"1\"><%1242%></option>");
-    document.write("<option " + selected[2] + " value=\"2\"><%1243%></option>");
-    document.write("<option " + selected[3] + " value=\"3\"><%1244%></option>");
-    document.write("<option " + selected[4] + " value=\"4\"><%1245%></option>");
-    document.write("<option " + selected[5] + " value=\"5\"><%1246%></option>");
-    document.write("<option " + selected[6] + " value=\"6\"><%1247%></option>");
-    document.write("<option " + selected[7] + " value=\"7\"><%1248%></option>");
-    document.write("<option " + selected[8] + " value=\"8\"><%1249%></option>");
-    document.write("<option " + selected[9] + " value=\"9\"><%1250%></option>");
+    document.write("<option " + selected[0] + " value=\"0\"><%1244%></option>");
+    document.write("<option " + selected[1] + " value=\"1\"><%1245%></option>");
+    document.write("<option " + selected[2] + " value=\"2\"><%1246%></option>");
+    document.write("<option " + selected[3] + " value=\"3\"><%1247%></option>");
+    document.write("<option " + selected[4] + " value=\"4\"><%1248%></option>");
+    document.write("<option " + selected[5] + " value=\"5\"><%1249%></option>");
+    document.write("<option " + selected[6] + " value=\"6\"><%1250%></option>");
+    document.write("<option " + selected[7] + " value=\"7\"><%1251%></option>");
+    document.write("<option " + selected[8] + " value=\"8\"><%1252%></option>");
+    document.write("<option " + selected[9] + " value=\"9\"><%1253%></option>");
     document.write("</select>");
     document.close();
     return true;
@@ -100,19 +100,19 @@
   {
     var selected = [ "", "", "", "", "", "", "", "", "", ""];
 	
-    selected[<%1251%>] = "selected";
+    selected[<%1254%>] = "selected";
 	
     document.open();
 	  document.write("<select name=\"question2\">");
-    document.write("<option " + selected[0] + " value=\"0\"><%1252%></option>");
-    document.write("<option " + selected[1] + " value=\"1\"><%1253%></option>");
-    document.write("<option " + selected[2] + " value=\"2\"><%1254%></option>");
-    document.write("<option " + selected[3] + " value=\"3\"><%1255%></option>");
-    document.write("<option " + selected[4] + " value=\"4\"><%1256%></option>");
-    document.write("<option " + selected[5] + " value=\"5\"><%1257%></option>");
-    document.write("<option " + selected[6] + " value=\"6\"><%1258%></option>");
-    document.write("<option " + selected[7] + " value=\"7\"><%1259%></option>");
-    document.write("<option " + selected[8] + " value=\"8\"><%1260%></option>");
+    document.write("<option " + selected[0] + " value=\"0\"><%1255%></option>");
+    document.write("<option " + selected[1] + " value=\"1\"><%1256%></option>");
+    document.write("<option " + selected[2] + " value=\"2\"><%1257%></option>");
+    document.write("<option " + selected[3] + " value=\"3\"><%1258%></option>");
+    document.write("<option " + selected[4] + " value=\"4\"><%1259%></option>");
+    document.write("<option " + selected[5] + " value=\"5\"><%1260%></option>");
+    document.write("<option " + selected[6] + " value=\"6\"><%1261%></option>");
+    document.write("<option " + selected[7] + " value=\"7\"><%1262%></option>");
+    document.write("<option " + selected[8] + " value=\"8\"><%1263%></option>");
     document.write("</select>");	
     document.close();
     return true;
@@ -127,12 +127,12 @@
 	<table border="0" cellpadding="0" cellspacing="3" width="99%">
     <tr>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td class="centerTd"><h2><%3137%></h2></td>
+      <td class="centerTd"><h2><%3142%></h2></td>
       <td>&nbsp;</td>
   	</tr>
     <tr>
 		  <td>&nbsp;</td>
-		  <td class="centerTd"><%3138%></td>
+		  <td class="centerTd"><%3143%></td>
 		  <td>&nbsp;</td>
 	  </tr>
   	<tr>
@@ -143,15 +143,15 @@
       <td>
         <table border="0" cellpadding="0" width="99%">
           <tr>
-   		      <td width="50%" align="left" class="centerTd"><%3041%></td>
+   		      <td width="50%" align="left" class="centerTd"><%3046%></td>
    		      <td width="50%" align="left" class="centerTd"> admin </td>
           </tr>   		  
           <tr>
-            <td width="50%" align="left" class="centerTd"><%3139%> </td>
+            <td width="50%" align="left" class="centerTd"><%3144%> </td>
             <td width="50%" align="left" class="centerTd"><input type="password" name="sysNewPasswd" size="18" maxlength="33"></td>
           </tr>
           <tr>
-            <td width="50%" align="left" class="centerTd"><%3140%></td>
+            <td width="50%" align="left" class="centerTd"><%3145%></td>
             <td width="50%" align="left" class="centerTd"><input type="password" name="sysConfirmPasswd" size="18" maxlength="33"></td>
           </tr>
           <tr>
@@ -166,7 +166,7 @@
       <td>
 	      <table>
 		      <tr>
-            <td class="genie_font" align="right"><%1270%>*: </td>
+            <td class="genie_font" align="right"><%1273%>*: </td>
 			      <td class="genie_font" align="left">
 				      <script language="javascript" type="text/javascript">
 				      <!--
@@ -176,11 +176,11 @@
 			      </td>
 		      </tr>
 		      <tr>
-			      <td class="genie_font" align="right"><%1271%>*:</td>
-            <td class="genie_font" align="left"><input type="text" name="answer1" size="64" maxlength="64" value="<%1272%>"> </td>
+			      <td class="genie_font" align="right"><%1274%>*:</td>
+            <td class="genie_font" align="left"><input type="text" name="answer1" size="64" maxlength="64" value="<%1275%>"> </td>
 		      </tr>
 		      <tr>
-			      <td class="genie_font" align="right"><%1273%>*: </td>
+			      <td class="genie_font" align="right"><%1276%>*: </td>
 			      <td class="genie_font" align="left">
 				      <script language="javascript" type="text/javascript">
 				      <!--
@@ -190,15 +190,15 @@
             </td>
           </tr>
           <tr>
-            <td class="genie_font" align="right"><%1271%>*: </td>
-			      <td class="genie_font" align="left"><input type="text" name="answer2" size="64" maxlength="64" value="<%1274%>"></td>
+            <td class="genie_font" align="right"><%1274%>*: </td>
+			      <td class="genie_font" align="left"><input type="text" name="answer2" size="64" maxlength="64" value="<%1277%>"></td>
 		      </tr>
 		      <tr>
-         	  <td class="genie_font" align="right"><%1275%></td>
+         	  <td class="genie_font" align="right"><%1278%></td>
          	  <td></td>
 		      </tr>	
 		      <tr>
-    	  	  <td class="genie_font"  align="right" colspan=2><button type="submit" style="width:100px" value="submit" class="purpleBtn" name="next" onClick="return checkData();" ><span><%1447%></span></button></td>
+    	  	  <td class="genie_font"  align="right" colspan=2><button type="submit" style="width:100px" value="submit" class="purpleBtn" name="next" onClick="return checkData();" ><span><%1450%></span></button></td>
 		      </tr>	
 		      <tr>
     	  	  <td colspan=2>&nbsp;</td>

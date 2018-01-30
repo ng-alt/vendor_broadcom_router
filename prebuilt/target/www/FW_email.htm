@@ -149,14 +149,14 @@ function checkData()
         var tmp=cf.email_smtp.value.split(".");
         if(tmp.length < 3)
         {
-            alert("<%927%>");
+            alert("<%930%>");
             cf.email_smtp.focus();
             return false;
         }
         if(cf.email_addr.value.indexOf("@", 0) == -1 ||
            cf.email_addr.value.indexOf(".", 0) == -1)
         {
-            alert("<%928%>");
+            alert("<%931%>");
             cf.email_addr.focus();
             return false;
         }
@@ -232,7 +232,7 @@ function init()
     cf.cfAlert_Hour.selectedIndex = 0;
     cf.cfAlert_am[0].checked = true;
     cf.cfAlert_am[1].checked = false;
-    var rupr_downloader_en = "<%929%>";
+    var rupr_downloader_en = "<%932%>";
 
     if(cf.email_alert.value == "1")
     {
@@ -424,70 +424,70 @@ function setAuthGray()
     
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-        <td colspan="2"><input type="checkbox" name="email_notify" value="checkboxValue" onclick = "javascript:setGray();"><b><%930%></b></td></tr>
+        <td colspan="2"><input type="checkbox" name="email_notify" value="checkboxValue" onclick = "javascript:setGray();"><b><%933%></b></td></tr>
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-        <td colspan="2"><a href="javascript:loadhelp('FW_email','receive')" tabindex="-1"><b><%931%></b> </a></td></tr>
+        <td colspan="2"><a href="javascript:loadhelp('FW_email','receive')" tabindex="-1"><b><%934%></b> </a></td></tr>
     <tr>
-        <td nowrap><%932%></td>
+        <td nowrap><%935%></td>
         <td width="50%" align="right">
-            <input type="text" name="email_smtp" value="<%933%>" size="24" maxlength="50"></td></tr>
+            <input type="text" name="email_smtp" value="<%936%>" size="24" maxlength="50"></td></tr>
     <tr>
-        <td nowrap><%934%></td>
+        <td nowrap><%937%></td>
         <td width="50%" align="right">
-            <input type="text" name="email_addr" value="<%935%>" size="24" maxlength="50"></td></tr>
+            <input type="text" name="email_addr" value="<%938%>" size="24" maxlength="50"></td></tr>
      <tr>
-        <td nowrap><%936%></td>
+        <td nowrap><%939%></td>
         <td width="50%" align="right">
-            <input type="text" name="smtp_port" value="<%937%>" size="4" maxlength="50"></td></tr>
+            <input type="text" name="smtp_port" value="<%940%>" size="4" maxlength="50"></td></tr>
 
     <tr>
         <td colSpan=2 colspan="2" ><input type="checkbox" name="smtp_auth" onclick = "javascript:setAuthGray();">
-        <B><%938%></B></td></tr>    
+        <B><%941%></B></td></tr>    
     <tr>
         <td><%553%></td>
         <td align=right width="50%"><INPUT maxLength=64 name=auth_user size=24
-        value= "<%939%>"> </td></tr>
+        value= "<%942%>"> </td></tr>
     <tr>
         <td><%567%></td>
         <td align=right width="50%"><INPUT type=password maxLength=64 name=auth_pwd size=24
-        value= "<%940%>"> </td></tr>
+        value= "<%943%>"> </td></tr>
     
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <!-- /* RUPR_Download start */ -->
     <tr id="rupr_download_support_str" style="display: block;">
-        <td colspan="2"><a href="javascript:loadhelp('FW_email','alert')" tabindex="-1"><input type="checkbox"  name="download_finish_alert" value="checkboxValue"><b><%941%></b></a></td></tr>
+        <td colspan="2"><a href="javascript:loadhelp('FW_email','alert')" tabindex="-1"><input type="checkbox"  name="download_finish_alert" value="checkboxValue"><b><%944%></b></a></td></tr>
         
     <tr id="rupr_download_support_line" style="display:;">
         <td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <!-- /* RUPR_Download end */ -->
     <tr>
-        <td colspan="2"><a href="javascript:loadhelp('FW_email','alert')" tabindex="-1"><input type="checkbox"  name="block_site" value="checkboxValue"><b><%942%></b></a></td></tr>
+        <td colspan="2"><a href="javascript:loadhelp('FW_email','alert')" tabindex="-1"><input type="checkbox"  name="block_site" value="checkboxValue"><b><%945%></b></a></td></tr>
     <tr>
-        <td colspan="2" nowrap><%943%></td></tr>
+        <td colspan="2" nowrap><%946%></td></tr>
     <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
     <tr>
-	    <td colspan="2" nowrap><a href="javascript:loadhelp('FW_email','schedule')" tabindex="-1"><b><%944%></b></a></td></tr>
+	    <td colspan="2" nowrap><a href="javascript:loadhelp('FW_email','schedule')" tabindex="-1"><b><%947%></b></a></td></tr>
     <tr>
 	    <td colspan="2">
 	        <select name="cfAlert_Select" size="1" onchange="OnAlertChange();">
-	            <option selected value=1><%945%></option>
-	            <option value=2><%946%></option>
-	            <option value=3><%947%></option>
-	            <option value=4><%948%></option>
+	            <option selected value=1><%948%></option>
+	            <option value=2><%949%></option>
+	            <option value=3><%950%></option>
+	            <option value=4><%951%></option>
 	            <option value=0><%126%></option></select></td></tr>
     <tr>
-	    <td colspan="2"><%949%> &nbsp;
+	    <td colspan="2"><%952%> &nbsp;
 	        <select name="cfAlert_Day" size="1" onFocus="if (AlertTimeDisabled) this.blur()">
-	            <option selected value=0><%950%></option>
-	            <option value=1><%951%></option>
-	            <option value=2><%952%></option>
-	            <option value=3><%953%></option>
-	            <option value=4><%954%></option>
-	            <option value=5><%955%></option>
-	            <option value=6><%956%></option></select></td></tr>
+	            <option selected value=0><%953%></option>
+	            <option value=1><%954%></option>
+	            <option value=2><%955%></option>
+	            <option value=3><%956%></option>
+	            <option value=4><%957%></option>
+	            <option value=5><%958%></option>
+	            <option value=6><%959%></option></select></td></tr>
     <tr>
-	    <td colspan="2"><%957%>
+	    <td colspan="2"><%960%>
 		    <select name="cfAlert_Hour" size="1" onFocus="if (AlertHourDisabled) this.blur()">
 		        <option value=0>12:00</option>
 		        <option selected value=1>1:00</option>
@@ -519,15 +519,15 @@ function setAuthGray()
 
 
 
-<INPUT name=doloaded_mail type=hidden value= "<%958%>">
-<INPUT name=email_enable type=hidden value= "<%959%>">
-<INPUT name=email_from type=hidden value= "<%960%>">
-<INPUT name=email_alert type=hidden value= "<%961%>">
-<INPUT name=auth_enable type=hidden value= "<%962%>">
-<INPUT name=smtp_check type=hidden value= "<%963%>">
-<INPUT name=time_type type=hidden value= "<%964%>">
-<INPUT name=time_day type=hidden value= "<%965%>">
-<INPUT name=time_hour type=hidden value= "<%966%>">
+<INPUT name=doloaded_mail type=hidden value= "<%961%>">
+<INPUT name=email_enable type=hidden value= "<%962%>">
+<INPUT name=email_from type=hidden value= "<%963%>">
+<INPUT name=email_alert type=hidden value= "<%964%>">
+<INPUT name=auth_enable type=hidden value= "<%965%>">
+<INPUT name=smtp_check type=hidden value= "<%966%>">
+<INPUT name=time_type type=hidden value= "<%967%>">
+<INPUT name=time_day type=hidden value= "<%968%>">
+<INPUT name=time_hour type=hidden value= "<%969%>">
 <INPUT name=result type=hidden value= "apply">
 <a name="helpframe-anchor"></a>
 </form>
