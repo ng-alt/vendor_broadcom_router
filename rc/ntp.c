@@ -56,6 +56,8 @@ static void ntp_service()
 
 		setup_timezone();
 
+		if (is_routing_enabled())
+			notify_rc_and_period_wait("restart_upnp", 25);
 #ifdef RTCONFIG_DISK_MONITOR
 		notify_rc("restart_diskmon");
 #endif
@@ -65,11 +67,6 @@ static void ntp_service()
 			reload_dnsmasq();
 		}
 #endif
-
-		if (is_routing_enabled()) {
-			sleep(10);
-			notify_rc_and_period_wait("restart_upnp", 25);
-		}
 	}
 }
 
@@ -138,8 +135,7 @@ int ntp_main(int argc, char *argv[])
 	pid_t pid;
 	char *args[] = {"ntpclient", "-h", server, "-i", "3", "-l", "-s", NULL};
 
-	strlcpy(server, nvram_safe_get("ntp_server0"), sizeof (server));
-	args[2] = server;
+	strlcpy(server, nvram_safe_get("ntp_server0"), sizeof(server));
 
 	fp = fopen("/var/run/ntp.pid", "w");
 	if (fp == NULL)
@@ -165,7 +161,7 @@ int ntp_main(int argc, char *argv[])
 	{
 		if (sig_cur == SIGTSTP)
 			;
-		else if (nvram_get_int("sw_mode") == SW_MODE_ROUTER &&
+		else if (is_router_mode() &&
 			!nvram_match("link_internet", "1") &&
 			!nvram_match("link_internet", "2"))
 		{
@@ -189,9 +185,9 @@ int ntp_main(int argc, char *argv[])
 			if (strlen(nvram_safe_get("ntp_server0")))
 				strlcpy(server, nvram_safe_get("ntp_server0"), sizeof (server));
 			else if (strlen(nvram_safe_get("ntp_server1")))
-				strlcpy(server, nvram_safe_get("ntp_server1"), sizeof (server));
+				strlcpy(server, nvram_safe_get("ntp_server1"), sizeof(server));
 			else
-				strcpy(server, "");
+				strlcpy(server, "", sizeof(server));
 			args[2] = server;
 
 			set_alarm();

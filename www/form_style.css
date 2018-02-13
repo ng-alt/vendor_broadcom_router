@@ -949,31 +949,31 @@ form{
 
 /* btns in table */
 .add_btn{
- 	background: transparent url(images/New_ui/accountadd.png) no-repeat scroll center top;
- 	border:0;
-	height:34px;
- 	width:35px;
- 	cursor:pointer;
+	background: transparent url(images/New_ui/accountadd.png) no-repeat scroll center top;
+	border:0;
+	height:32px;
+	width:32px;
+	cursor:pointer;
 }
 .add_btn:hover, .add_btn:active{
- 	border:0;
-	height:34px;
- 	width:35px;
- 	cursor:pointer;
+	border:0;
+	height:32px;
+	width:32px;
+	cursor:pointer;
 }
 
 .remove_btn{
- 	background: transparent url(images/New_ui/accountdelete.png) no-repeat scroll center top;
+	background: transparent url(images/New_ui/accountdelete.png) no-repeat scroll center top;
 	border:0;
-	height:34px;
- 	width:35px;
- 	cursor:pointer;
+	height:32px;
+	width:32px;
+	cursor:pointer;
 }
 .remove_btn:hover, .remove_btn:active{
 	border:0;
-	height:34px;
- 	width:35px;
- 	cursor:pointer;
+	height:32px;
+	width:32px;
+	cursor:pointer;
 }
 .remove_btn_NM{
  	background: transparent url(images/zoomout.png) no-repeat scroll center top;
@@ -987,14 +987,14 @@ form{
 .edit_btn{
   background: transparent url(images/New_ui/accountedit.png) no-repeat scroll center top;
   border:0;
-	height:34px;
- 	width:35px;
+	height:32px;
+	width:32px;
  	cursor:pointer;
 }
 .edit_btn:hover, .edit_btn:active{
  	border:0;
-	height:34px;
- 	width:35px;
+	height:32px;
+	width:32px;
  	cursor:pointer;
 }
 /* btns in table */
@@ -1127,7 +1127,6 @@ color:#FFFFFF;
 	font-size:12px;
 	/*text-decoration:underline;*/
 }
-
 .tab_NW {	
 	font-weight: bolder;
 	background: transparent url(images/New_ui/taba.png) no-repeat scroll right top;
@@ -1186,6 +1185,51 @@ color:#FFFFFF;
     line-height: 20px;	
 	font-size: 13px; 
 }	
+
+.tab_table {
+	display: table;
+	table-layout: fixed;
+	width: 95%;
+	margin: 0 auto;
+}
+.tab_row {
+	display: table-row;
+	height: 30px;
+}
+.tab_col {
+	display: table-cell;
+	cursor: pointer;
+	font-weight: bolder;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	vertical-align: middle;
+	height: inherit;
+	text-align: center;
+}
+.tab_item  {
+	background-color: #323E41;
+	border-radius: 6px 6px 0 0;
+	height: 100%;
+	width: 99%;
+	display: table;
+}
+.tab_item:hover {
+	background-color: #4F5B5F;
+}
+.tab_item_click {  
+	background-color: #4F5B5F;
+	border-radius: 6px 6px 0 0;
+	height: 100%;
+	width: 99%;
+	display: table;
+}
+.tab_item_text  {
+	word-wrap: break-word;
+	word-break: break-all;
+	vertical-align: middle;
+	display: table-cell;
+	padding: 3px;
+}
 
 .flowfont{
 font:Arial, Helvetica, sans-serif;
@@ -1320,9 +1364,68 @@ padding-top:1px;
 	cursor: pointer;
 }
 
+.notification_on_td{
+	cursor: pointer;
+}
+
+#bwdpi_status{	
+	cursor: pointer;
+}
+
+.bwdpistatus_game{
+	height:20px;
+	width:22px;
+	background-image:url(images/New_ui/QoS_quick/game_icon.svg);
+	background-repeat:no-repeat;	
+	background-position:0px 2px;
+}
+
+.bwdpistatus_media{
+	height:20px;
+	width:21px;
+	background-image:url(images/New_ui/QoS_quick/media_icon.svg);
+	background-repeat:no-repeat;
+	background-position:0px 2px;
+}
+
+.bwdpistatus_web{
+	height:20px;
+	width:22px;
+	background-image:url(images/New_ui/QoS_quick/web_icon.svg);
+	background-repeat:no-repeat;
+	background-position:2px 0px;
+}
+
+.bwdpistatus_customize{
+	height:21px;
+	width:23px;
+	background-image:url(images/New_ui/QoS_quick/customize_icon.svg);
+	background-repeat:no-repeat;	
+	background-position:2px 2px;
+}
+
+.vpnstatuson{
+	background-image:url(images/New_ui/vpnstatus.png);
+	background-repeat:no-repeat;	
+	background-position:2px 2px;
+	height:29px;
+	width:30px;
+	cursor: pointer;
+	display: none;
+}
+.vpnstatusoff{
+	background-image:url(images/New_ui/vpnstatus.png);
+	background-repeat:no-repeat;	
+	background-position:2px -48px;
+	height:29px;
+	width:30px;
+	cursor: pointer;
+	display: none;
+}
+
 .wifihwswstatuson{
 	background-image:url(images/wifi_hw_sw.png);
-	background-repeat:no-repeat;
+	background-repeat:no-repeat;	
 	background-position:2px 2px;
 	height:29px;
 	width:30px;
@@ -1338,7 +1441,7 @@ padding-top:1px;
 }
 .wifihwswstatusoff{
 	background-image:url(images/wifi_hw_sw.png);
-	background-repeat:no-repeat;
+	background-repeat:no-repeat;	
 	background-position:2px -48px;
 	height:29px;
 	width:30px;
@@ -1431,6 +1534,16 @@ padding-top:1px;
 	cursor: pointer;
 }
 /*Viz add 2014.10 for adsl diag status      end*/
+.dblogdiag{
+	background-image:url(images/New_ui/dblog_diag.gif);
+	background-repeat:no-repeat;
+	height:30px;
+	width:30px;
+	cursor: pointer;
+	background-size: 70%;
+	background-position: 50%;
+	display: none;
+}
 .printstatuson{
 	background-image:url(images/New_ui/printstatus.png);
 	background-repeat:no-repeat;	
@@ -1670,45 +1783,6 @@ padding-top:1px;
 	border-bottom-left-radius: 5px;
 }
 
-#notiDiv{
-	position: absolute;
-	filter:alpha(opacity=95);
-	opacity:.95;
-	z-index: 98;
-	width:250px;
-	margin-top:10px;
-	margin-left:-210px;
-}
-
-#notiDiv_table3{
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	-moz-box-shadow: 3px 3px 4px #333;
-	-webkit-box-shadow: 3px 3px 4px #333;
-	box-shadow: 3px 3px 4px #000;
-	behavior: url(/PIE.htc);
-	*behavior: !important;
-}
-
-#notiDiv_table4{
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	behavior: url(/PIE.htc);
-}
-
-#notiDiv_table5{
-	behavior: url(/PIE.htc);
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-radius: 5px 5px 5px 5px ;
-	margin:3px 0px 0px 3px ;
-	behavior: url(/PIE.htc);
-}
-
 .aidisk1_table{
 	width:740px;
 	height:760px;
@@ -1806,81 +1880,11 @@ padding-top:1px;
 	cursor:pointer;
 	display:block;
 }
-
 .navigation li dd:hover{
-	text-decoration:underline;
-	background-color:#065280;
-}
-.notification_on{
-	background-image:url(images/New_ui/notification.png);
-	background-repeat:no-repeat;	
-	background-position:2px 2px;
-	height:29px;
-	width:30px;
-	cursor: pointer;
-}
-.notification_off{
-	display: none;
+       text-decoration:underline;
+       background-color:#065280;
 }
 
-.notification_on1{
-	cursor: pointer;
-}
-
-#bwdpi_status{	
-	cursor: pointer;
-}
-
-.bwdpistatus_game{
-	height:20px;
-	width:22px;
-	background-image:url(images/New_ui/QoS_quick/game_icon.svg);
-	background-repeat:no-repeat;	
-	background-position:0px 2px;
-}
-
-.bwdpistatus_media{
-	height:20px;
-	width:21px;
-	background-image:url(images/New_ui/QoS_quick/media_icon.svg);
-	background-repeat:no-repeat;
-	background-position:0px 2px;
-}
-
-.bwdpistatus_web{
-	height:20px;
-	width:22px;
-	background-image:url(images/New_ui/QoS_quick/web_icon.svg);
-	background-repeat:no-repeat;
-	background-position:2px 0px;
-}
-
-.bwdpistatus_customize{
-	height:21px;
-	width:23px;
-	background-image:url(images/New_ui/QoS_quick/customize_icon.svg);
-	background-repeat:no-repeat;	
-	background-position:2px 2px;
-}
-
-.vpnstatuson{
-	background-image:url(images/New_ui/vpnstatus.png);
-	background-repeat:no-repeat;	
-	background-position:2px 2px;
-	height:29px;
-	width:30px;
-	cursor: pointer;
-	display: none;
-}
-.vpnstatusoff{
-	background-image:url(images/New_ui/vpnstatus.png);
-	background-repeat:no-repeat;	
-	background-position:2px -48px;
-	height:29px;
-	width:30px;
-	cursor: pointer;
-	display: none;
-}
 .vpnClientTitle_td_unclick{
 	background-color: #000;
 	height: 30px;
@@ -1900,7 +1904,7 @@ padding-top:1px;
 }
 
 .traffictable th:hover{
-        cursor:pointer;                
+        cursor:pointer;
         text-decoration: underline;
 }
 
@@ -2245,11 +2249,15 @@ padding-top:1px;
 	cursor:pointer !important;
 	text-decoration:underline !important;
 }
-
 .IE8HACK{
 	display: none \9;
 }
-/* 382 */
+.minup_bg{
+	background :url("images/New_ui/midup_bg.png");
+}
+.mindown_bg{
+	background :url("images/New_ui/middown_bg.png");
+}
 .content_bg, .list_bg{
 	background: #4D595D;
 }
@@ -2275,7 +2283,7 @@ padding-top:1px;
 	border-color:#444F53 #444F53 #93E7FF #444F53;
 }
 .arrow_down{
-< 	border-color:#93E7FF #444F53 #444F53 #444F53;
+	border-color:#93E7FF #444F53 #444F53 #444F53;
 }
 #sortable div table tr:hover{
 	cursor: pointer;
@@ -2302,11 +2310,7 @@ padding-top:1px;
 	border-radius: 4px;
 }
 
-.minup_bg{
-	background :url("images/New_ui/midup_bg.png");
+#bottom_border{
+	border-bottom:5px #2A3539 solid;
+	padding:5px 10px 5px 10px;
 }
-.mindown_bg{
-	background :url("images/New_ui/middown_bg.png");
-}
-
-/* end 382 */

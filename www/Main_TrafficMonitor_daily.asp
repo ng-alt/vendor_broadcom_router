@@ -161,6 +161,10 @@ function init(){
 	initDate('ymd');
 	daily_history.sort(cmpHist);
 	redraw();
+
+	if(bwdpi_support){
+		document.getElementById('content_title').innerHTML = "<#traffic_monitor#>";
+	}
 }
 
 function switchPage(page){
@@ -263,7 +267,7 @@ function draw_chart(){
         			<tr>
 
 						<td  class="formfonttitle" align="left">
-										<div style="margin-top:5px;"><#Menu_TrafficManager#> - <#traffic_monitor#></div>
+										<div id="content_title" style="margin-top:5px;"><#Menu_TrafficManager#> - <#traffic_monitor#></div>
 									</td>
 
           			<td>

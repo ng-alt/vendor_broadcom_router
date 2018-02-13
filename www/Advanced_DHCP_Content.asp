@@ -20,6 +20,7 @@
 <script type="text/javascript" language="JavaScript" src="/validator.js"></script>
 <script language="JavaScript" type="text/javascript" src="/client_function.js"></script>
 <script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/httpApi.js"></script>
 <style>
 #ClientList_Block_PC{
 	border:1px outset #999;
@@ -61,6 +62,18 @@
 }
 </style>
 <script>
+$(function () {
+	if(amesh_support && (isSwMode("rt") || isSwMode("ap"))) {
+		$('<script>')
+			.attr('type', 'text/javascript')
+			.attr('src','/require/modules/amesh.js')
+			.appendTo('head');
+	}
+});
+
+var vpnc_dev_policy_list_array = []
+var vpnc_dev_policy_list_array_ori = [];
+
 var dhcp_staticlist_array = "<% nvram_get("dhcp_staticlist"); %>";
 
 if(pptpd_support){
@@ -102,6 +115,8 @@ var sortCol, sortMethod;
 
 function initial(){
 	show_menu();
+	//id="faq" href="https://www.asus.com/US/support/FAQ/1000906"
+	httpApi.faqURL("faq", "1000906", "https://www.asus.com", "/support/FAQ/");
 	//Viz 2011.10{ for LAN ip in DHCP pool or Static list
 	showtext(document.getElementById("LANIP"), '<% nvram_get("lan_ipaddr"); %>');
 	if((inet_network(document.form.lan_ipaddr.value)>=inet_network(document.form.dhcp_start.value))&&(inet_network(document.form.lan_ipaddr.value)<=inet_network(document.form.dhcp_end.value))){
@@ -142,15 +157,17 @@ function initial(){
 		document.getElementById("dnssec_tr").style.display = "";
 	}
 
-	//Viz keep this, disabled temporarily. if(!tmo_support){
-			document.form.sip_server.disabled = true;
-			document.form.sip_server.parentNode.parentNode.style.display = "none";
-	//}else{
-	//		document.form.sip_server.disabled = false;
-	//		document.form.sip_server.parentNode.parentNode.style.display = "";
-	//}
+	document.form.sip_server.disabled = true;
+	document.form.sip_server.parentNode.parentNode.style.display = "none";	
 
-	addOnlineHelp(document.getElementById("faq"), ["set", "up", "specific", "IP", "address"]);
+	if(vpn_fusion_support) {
+		vpnc_dev_policy_list_array = parse_vpnc_dev_policy_list('<% nvram_char_to_ascii("","vpnc_dev_policy_list"); %>');
+		vpnc_dev_policy_list_array_ori = vpnc_dev_policy_list_array.slice();
+	}
+
+	if(lyra_hide_support){
+		$("#dhcpEnable").hide();
+	}
 }
 
 function addRow(obj, head){
@@ -219,6 +236,15 @@ function addRow_Group(upper){
 		addRow(document.form.dhcp_staticip_x_0, 0);
 		addRow(document.form.dhcp_staticname_x_0, 0);
 
+
+		if(vpn_fusion_support) {
+			var newRuleArray = new Array();
+			newRuleArray.push(document.form.dhcp_staticip_x_0.value);
+			newRuleArray.push("0");
+			newRuleArray.push("0");
+			vpnc_dev_policy_list_array.push(newRuleArray);
+		}
+
 		showdhcp_staticlist();
 
 		if (backup_mac != "") {
@@ -233,10 +259,19 @@ function addRow_Group(upper){
 }
 
 function del_Row(r){
-  var i=r.parentNode.parentNode.rowIndex;
-  document.getElementById('dhcp_staticlist_table').deleteRow(i);
+	var i=r.parentNode.parentNode.rowIndex;
 
-  var dhcp_staticlist_value = "";
+	if(vpn_fusion_support) {
+		if(manually_dhcp_list_array_ori[delIP] != undefined) {
+			if(!confirm("Remove the client's IP binding will also delete the client's policy in the exception list of <#VPN_Fusion#>. Are you sure you want to delete?"))/*untranslated*/
+				return false;
+		}
+	}
+
+
+	document.getElementById('dhcp_staticlist_table').deleteRow(i);
+
+	var dhcp_staticlist_value = "";
 	for(k=0; k<document.getElementById('dhcp_staticlist_table').rows.length; k++){
 		dhcp_staticlist_value += "&#60";
 		dhcp_staticlist_value += document.getElementById('dhcp_staticlist_table').rows[k].cells[0].title + "&#62";
@@ -247,6 +282,21 @@ function del_Row(r){
 	dhcp_staticlist_array = dhcp_staticlist_value;
 	if(dhcp_staticlist_array == "")
 		showdhcp_staticlist();
+
+	if(vpn_fusion_support) {
+		for(var i = 0; i < vpnc_dev_policy_list_array.length; i += 1) {
+			var tmp_array = [];
+			for(var i in vpnc_dev_policy_list_array){
+				if (vpnc_dev_policy_list_array.hasOwnProperty(i)) {
+					if(vpnc_dev_policy_list_array[i][0] != delIP) {
+						tmp_array.push(vpnc_dev_policy_list_array[i]);
+					}
+				}
+			}
+			vpnc_dev_policy_list_array = tmp_array;
+		}
+	}
+
 }
 
 function edit_Row(r){
@@ -360,6 +410,11 @@ function applyRule(){
 				tmp_value += document.getElementById('dhcp_staticlist_table').rows[i].cells[2].innerHTML;
 			}
 		}
+		if (tmp_value.length > 2998) {
+			alert("Resulting list of DHCP reservations is too long - remove some, or use shorter names.");
+			return false;
+		}
+
 		document.form.dhcp_staticlist.value = tmp_value;
 
 		// Only restart the whole network if needed
@@ -374,6 +429,44 @@ function applyRule(){
 		} else {
 			document.form.action_script.value = "restart_dnsmasq";
 			document.form.action_wait.value = 5;
+		}
+
+		if(vpn_fusion_support) {
+			if(vpnc_dev_policy_list_array.toString() != vpnc_dev_policy_list_array_ori.toString()) {
+				var action_script_tmp = "restart_vpnc_dev_policy;" + document.form.action_script.value;
+				document.form.action_script.value = action_script_tmp;
+
+				var parseArrayToStr_vpnc_dev_policy_list = function(_array) {
+					var vpnc_dev_policy_list = "";
+					for(var i = 0; i < _array.length; i += 1) {
+						if(_array[i].length != 0) {
+							if(i != 0)
+								vpnc_dev_policy_list += "<";
+
+							var temp_ipaddr = _array[i][0];
+							var temp_vpnc_idx = _array[i][1];
+							var temp_active = _array[i][2];
+							var temp_destination_ip = "";
+							vpnc_dev_policy_list += temp_active + ">" + temp_ipaddr + ">" + temp_destination_ip + ">" + temp_vpnc_idx;
+						}
+					}
+					return vpnc_dev_policy_list;
+				};
+
+				document.form.vpnc_dev_policy_list.disabled = false;
+				document.form.vpnc_dev_policy_list_tmp.disabled = false;
+				document.form.vpnc_dev_policy_list_tmp.value = parseArrayToStr_vpnc_dev_policy_list(vpnc_dev_policy_list_array_ori);
+				document.form.vpnc_dev_policy_list.value = parseArrayToStr_vpnc_dev_policy_list(vpnc_dev_policy_list_array);
+			}
+		}
+
+		if(based_modelid == "MAP-AC1300" || based_modelid == "MAP-AC2200" || based_modelid == "VZW-AC1300" || based_modelid == "MAP-AC1750")
+			alert("By applying new LAN settings, please reboot all Lyras connected to main Lyra manually.");
+
+		if(amesh_support && isSwMode("rt")) {
+			var radio_value = (document.form.dhcp_enable_x[0].checked) ? 1 : 0;
+			if(!AiMesh_confirm_msg("DHCP_Server", radio_value))
+				return false;
 		}
 
 		showLoading();
@@ -753,6 +846,27 @@ jQuery(function($) {
 	}
 });
 
+function parse_vpnc_dev_policy_list(_oriNvram) {
+	var parseArray = [];
+	var oriNvramRow = decodeURIComponent(_oriNvram).split('<');
+	for(var i = 0; i < oriNvramRow.length; i += 1) {
+		if(oriNvramRow[i] != "") {
+			var oriNvramCol = oriNvramRow[i].split('>');
+			var eachRuleArray = new Array();
+			if(oriNvramCol.length == 4) {
+				var temp_ipaddr = oriNvramCol[1];
+				var temp_vpnc_idx =  oriNvramCol[3];
+				var temp_active = oriNvramCol[0];
+				eachRuleArray.push(temp_ipaddr);
+				eachRuleArray.push(temp_vpnc_idx);
+				eachRuleArray.push(temp_active);
+			}
+			parseArray.push(eachRuleArray);
+		}
+	}
+	return parseArray;
+}
+
 </script>
 </head>
 
@@ -777,6 +891,8 @@ jQuery(function($) {
 <input type="hidden" name="lan_ipaddr" value="<% nvram_get("lan_ipaddr"); %>">
 <input type="hidden" name="lan_netmask" value="<% nvram_get("lan_netmask"); %>">
 <input type="hidden" name="dhcp_staticlist" value="">
+<input type="hidden" name="vpnc_dev_policy_list" value="" disabled>
+<input type="hidden" name="vpnc_dev_policy_list_tmp" value="" disabled>
 
 <table class="content" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -804,7 +920,10 @@ jQuery(function($) {
       <div class="formfontdesc"><#LANHostConfig_DHCPServerConfigurable_sectiondesc#></div>
       <div id="router_in_pool" class="formfontdesc" style="color:#FFCC00;display:none;"><#LANHostConfig_DHCPServerConfigurable_sectiondesc2#><span id="LANIP"></span></div>
       <div id="VPN_conflict" class="formfontdesc" style="color:#FFCC00;display:none;"><span id="VPN_conflict_span"></span></div>
-      <div class="formfontdesc" style="margin-top:-10px;display:none;">
+			<div class="formfontdesc" style="margin-top:-10px;">
+				<a id="faq" href="" target="_blank" style="font-family:Lucida Console;text-decoration:underline;"><#LANHostConfig_ManualDHCPList_groupitemdesc#>&nbsp;FAQ</a>
+			</div>
+      <div class="formfontdesc" style="margin-top:-10px">
          <br>You can enter up to 128 static DHCP reservations.  If filled, the Name field content will be pushed to the
          client as the hostname.  If an invalid name is entered (such as one with spaces), then the name will only
          be used as a description on the webui itself (for example, "My Laptop").
@@ -816,7 +935,7 @@ jQuery(function($) {
 			  </tr>
 			  </thead>
 
-			  <tr>
+			  <tr id="dhcpEnable">
 				<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(5,1);"><#LANHostConfig_DHCPServerConfigurable_itemname#></a></th>
 				<td>
 				  <input type="radio" value="1" name="dhcp_enable_x" class="content_input_fd" onClick="return change_common_radio(this, 'LANHostConfig', 'dhcp_enable_x', '1')" <% nvram_match("dhcp_enable_x", "1", "checked"); %>><#checkbox_Yes#>
@@ -927,7 +1046,7 @@ jQuery(function($) {
 			<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" class="FormTable" style="margin-top:8px;" >
 		  	<thead>
 		  		<tr>
-					<td colspan="3"><#LANHostConfig_ManualDHCPEnable_itemname#></td>
+					<td colspan="3"><#LANHostConfig_ManualDHCPEnable_title#></td>
 		  		</tr>
 		  	</thead>
 

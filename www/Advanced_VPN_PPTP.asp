@@ -20,6 +20,7 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
 <script language="JavaScript" type="text/javascript" src="/form.js"></script>
+<script type="text/javascript" src="/js/httpApi.js"></script>
 <style>
 .contentM_qis{
 	position:absolute;
@@ -74,8 +75,9 @@ function initial(){
 	var pptpd_wins2_orig = '<% nvram_get("pptpd_wins2"); %>';
 	var pptpd_clients = '<% nvram_get("pptpd_clients"); %>';
 	
-	show_menu();		
-	addOnlineHelp(document.getElementById("faq"), ["ASUSWRT", "VPN"]);
+	show_menu();
+	// https://www.asus.com/US/support/FAQ/1033906
+	httpApi.faqURL("faq", "1033906", "https://www.asus.com", "/support/FAQ/");
 
 	//if support pptpd and openvpnd then show switch button
 	if(pptpd_support && openvpnd_support) {
@@ -163,6 +165,19 @@ function initial(){
 	/* MPPE end */		
 	check_vpn_conflict();
 	/* Advanced Setting end */
+
+	var vpn_server_array = { "PPTP" : ["PPTP", "Advanced_VPN_PPTP.asp"], "OpenVPN" : ["OpenVPN", "Advanced_VPN_OpenVPN.asp"], "IPSEC" : ["IPSec VPN", "Advanced_VPN_IPSec.asp"]};
+	if(!pptpd_support) {
+		delete vpn_server_array.PPTP;
+	}
+	if(!openvpnd_support) {
+		delete vpn_server_array.OpenVPN;
+	}
+	if(!ipsec_srv_support) {
+		delete vpn_server_array.IPSEC;
+	}
+	$('#divSwitchMenu').html(gen_switch_menu(vpn_server_array, "PPTP"));
+
 }
 
 var MAX_RETRY_NUM = 5;
@@ -854,16 +869,7 @@ function check_vpn_conflict() {		//if conflict with LAN ip & DHCP ip pool & stat
 								<td bgcolor="#4D595D" valign="top">
 									<div>&nbsp;</div>
 									<div id="divVPNTitle" class="formfonttitle"><#BOP_isp_heart_item#> - PPTP</div>
-									<div id="divSwitchMenu" style="margin-top:-40px;float:right;display:none;">
-										<div style="width:173px;height:30px;border-top-left-radius:8px;border-bottom-left-radius:8px;" class="block_filter_pressed">
-											<div style="text-align:center;padding-top:5px;color:#93A9B1;font-size:14px">PPTP</div>
-										</div>
-										<div style="width:172px;height:30px;margin:-32px 0px 0px 173px;border-top-right-radius:8px;border-bottom-right-radius:8px;" class="block_filter">
-											<a href="Advanced_VPN_OpenVPN.asp">	
-												<div class="block_filter_name">OpenVPN</div>
-											</a>
-										</div>
-									</div>
+									<div id="divSwitchMenu" style="margin-top:-40px;float:right;"></div>
 									<div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
 									<div id="privateIP_notes" class="formfontdesc" style="display:none;color:#FC0;"><#vpn_privateIP_hint#></div>
 									<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable">
@@ -911,7 +917,7 @@ function check_vpn_conflict() {		//if conflict with LAN ip & DHCP ip pool & stat
 										<div class="formfontdesc"><#PPTP_desc#></div>
 										<div id="wan_ctrl" class="formfontdesc"></div>
 										<div id="dualwan_ctrl" style="display:none;" class="formfontdesc"></div>
-										<div class="formfontdesc" style="margin-top:-10px;font-weight: bolder;"><#PPTP_desc3#></div>
+										<div class="formfontdesc" style="margin-top:-10px;"><#PPTP_desc3#></div>
 										<div class="formfontdesc" style="margin-top:-10px;">(7) <#NSlookup_help#></div>
 										<div class="formfontdesc" style="margin:-10px 0px 0px -15px;">
 											<ul>

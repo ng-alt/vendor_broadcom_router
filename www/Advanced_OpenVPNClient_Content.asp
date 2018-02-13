@@ -18,7 +18,7 @@
 <script language="JavaScript" type="text/javascript" src="/help.js"></script>
 <script type="text/javascript" src="/validator.js"></script>
 <script language="JavaScript" type="text/javascript" src="/client_function.js"></script>
-<script type="text/javascript" language="JavaScript" src="/merlin.js"></script>
+<script type="text/javascript" language="JavaScript" src="/base64.js"></script>
 
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
@@ -62,7 +62,6 @@
 	padding-left:10px;
 	*padding-left:30px;
 	font-size:12px;
-	font-weight:bolder;
 	color: #FFFFFF;
 	text-align:left;
 }
@@ -222,20 +221,26 @@ var digestsarray = [
 
 
 var clientlist_array = "<% nvram_get("vpn_client_clientlist"); %>";
+if (isSupport("hnd")) {
+	clientlist_array += "<% nvram_get("vpn_client_clientlist1"); %>"+
+			    "<% nvram_get("vpn_client_clientlist2"); %>"+
+			    "<% nvram_get("vpn_client_clientlist3"); %>"+
+			    "<% nvram_get("vpn_client_clientlist4"); %>"+
+			    "<% nvram_get("vpn_client_clientlist5"); %>";
+}
 
 function initial()
 {
 	show_menu();
-	if(vpnc_support && openvpnd_support) {
+
+	if(vpnc_support) {
+		var vpn_client_array = {"OpenVPN" : ["OpenVPN", "Advanced_OpenVPNClient_Content.asp"], "PPTP" : ["PPTP/L2TP", "Advanced_VPNClient_Content.asp"]};
+		$('#divSwitchMenu').html(gen_switch_menu(vpn_client_array, "OpenVPN"));
 		document.getElementById("divSwitchMenu").style.display = "";
 	}
+
 	showclientlist();
 	showLANIPList();
-
-	// Unit list
-	for(var i = 1; i <= (based_modelid == "RT-AC3200" ? 2 : 5); i++){
-		add_option(document.form.vpn_client_unit, "Client "+i, i, openvpn_unit == i);
-	}
 
 	// Cipher list
 	free_options(document.form.vpn_client_cipher);
@@ -275,7 +280,17 @@ function initial()
 	document.form.vpn_client_rgw.value = policy_ori;
 	update_visibility();
 
+
+	var custom2 = document.form.vpn_client_custom2.value;
+	if (isSupport("hnd")) {
+		document.getElementById("vpn_client_custom_x").maxLength = 170 * 3;     // 255 * 3 - base64 overhead
+		custom2 += document.form.vpn_client_custom21.value +
+		           document.form.vpn_client_custom22.value;
+	}
+	document.getElementById("vpn_client_custom_x").value = Base64.decode(custom2);
+
 	setTimeout("getConnStatus()", 1000);
+
 }
 
 function getTLS(unit){
@@ -316,6 +331,7 @@ function setTLSTable(unit) {
 			document.getElementById('edit_vpn_crt_client_key').value = vpn_crt_client3_key[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_static').value = vpn_crt_client3_static[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_crl').value = vpn_crt_client3_crl[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
+			document.getElementById('edit_vpn_crt_client_extra').value = vpn_crt_client3_extra[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			break;
 		case "4" :
 			document.getElementById('edit_vpn_crt_client_ca').value = vpn_crt_client4_ca[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
@@ -323,6 +339,7 @@ function setTLSTable(unit) {
 			document.getElementById('edit_vpn_crt_client_key').value = vpn_crt_client4_key[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_static').value = vpn_crt_client4_static[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_crl').value = vpn_crt_client4_crl[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
+			document.getElementById('edit_vpn_crt_client_extra').value = vpn_crt_client4_extra[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			break;
 		case "5" :
 			document.getElementById('edit_vpn_crt_client_ca').value = vpn_crt_client5_ca[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
@@ -330,6 +347,7 @@ function setTLSTable(unit) {
 			document.getElementById('edit_vpn_crt_client_key').value = vpn_crt_client5_key[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_static').value = vpn_crt_client5_static[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			document.getElementById('edit_vpn_crt_client_crl').value = vpn_crt_client5_crl[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
+			document.getElementById('edit_vpn_crt_client_extra').value = vpn_crt_client5_extra[0].replace(/&#10/g, "\n").replace(/&#13/g, "\r");
 			break;
 	}
 }
@@ -350,8 +368,6 @@ function update_visibility(){
 
 	showhide("client_userauth", (auth == "tls"));
 	showhide("client_hmac", (auth == "tls"));
-	showhide("client_custom_crypto_text", (auth == "custom"));
-	showhide("client_tls_crypto_text", (auth != "custom"));         //add by Viz
 
 	showhide("client_username", userauth);
 	showhide("client_password", userauth);
@@ -539,7 +555,6 @@ function validForm(){
 	return true;
 }
 
-
 function applyRule(manual_switch){
 	if (!validForm()){
 		return false;
@@ -582,7 +597,14 @@ function applyRule(manual_switch){
 	}
 	if(tmp_value == "<"+"<#IPConnection_VSList_Norule#>" || tmp_value == "<")
 		tmp_value = "";
-	document.form.vpn_client_clientlist.value = tmp_value;
+
+	if (isSupport("hnd")) {
+		split_clientlist(tmp_value);
+		split_custom2(Base64.encode(document.getElementById("vpn_client_custom_x").value));
+	} else {
+		document.form.vpn_client_clientlist.value = tmp_value;
+		document.form.vpn_client_custom2.value = Base64.encode(document.getElementById("vpn_client_custom_x").value);
+	}
 
 	if (((enforce_ori != getRadioValue(document.form.vpn_client_enforce)) ||
 	     (policy_ori != document.form.vpn_client_rgw.value)) &&
@@ -590,6 +612,25 @@ function applyRule(manual_switch){
 		document.form.action_script.value += "start_vpnrouting"+openvpn_unit;
 
 	document.form.submit();
+}
+
+function split_clientlist(clientlist){
+	var counter = 0;
+	document.form.vpn_client_clientlist.value = clientlist.substring(counter, (counter+=255));
+
+	document.form.vpn_client_clientlist1.value = clientlist.substring(counter, (counter+=255));
+	document.form.vpn_client_clientlist2.value = clientlist.substring(counter, (counter+=255));
+	document.form.vpn_client_clientlist3.value = clientlist.substring(counter, (counter+=255));
+	document.form.vpn_client_clientlist4.value = clientlist.substring(counter, (counter+=255));
+	document.form.vpn_client_clientlist5.value = clientlist.substring(counter, (counter+=255));
+}
+
+function split_custom2(custom2){
+	var counter = 0;
+	document.form.vpn_client_custom2.value = custom2.substring(counter, (counter+=255));
+
+	document.form.vpn_client_custom21.value = custom2.substring(counter, (counter+=255));
+	document.form.vpn_client_custom22.value = custom2.substring(counter, (counter+=255));
 }
 
 function change_vpn_unit(val){
@@ -863,22 +904,32 @@ function showConnStatus() {
 		case "1":
 			client_state = vpnc_state_t1;
 			client_errno = vpnc_errno_t1;
+			localip = vpn_client1_ip;
+			remoteip = vpn_client1_rip;
 			break;
 		case "2":
 			client_state = vpnc_state_t2;
 			client_errno = vpnc_errno_t2;
+			localip = vpn_client2_ip;
+			remoteip = vpn_client2_rip;
 			break;
 		case "3":
 			client_state = vpnc_state_t3;
 			client_errno = vpnc_errno_t3;
+			localip = vpn_client3_ip;
+			remoteip = vpn_client3_rip;
 			break;
 		case "4":
 			client_state = vpnc_state_t4;
 			client_errno = vpnc_errno_t4;
+			localip = vpn_client4_ip;
+			remoteip = vpn_client4_rip;
 			break;
 		case "5":
 			client_state = vpnc_state_t5;
 			client_errno = vpnc_errno_t5;
+			localip = vpn_client5_ip;
+			remoteip = vpn_client5_rip;
 			break;
 	}
 
@@ -888,7 +939,7 @@ function showConnStatus() {
 			setTimeout("getConnStatus()",2000);
 			break;
 		case "2":	// COnnected
-			code = "Connected";
+			code = "Connected (Local: "+ localip + " - Public: " + remoteip + ")";
 			break;
 		case "-1":
 			switch (client_errno) {
@@ -981,15 +1032,15 @@ function defaultSettings() {
 											</td>
 										</tr>
 										<tr>
-											<th id="manualKey">Certificate Revocation List (Optional)</th>
+											<th id="manualKey">Certificate Revocation List<br><br><i>(Optional)</i></th>
 											<td>
 												<textarea rows="8" class="textarea_ssh_table" id="edit_vpn_crt_client_crl" name="edit_vpn_crt_client_crl" cols="65" maxlength="3499"></textarea>
 											</td>
 										</tr>
 										<tr>
-											<th id="manualKey">Extra Chain Certificates (Optional)</th>
+											<th id="manualKey">Extra Chain Certificates<br><br><i>(Optional)</i></th>
 											<td>
-												<textarea rows="8" class="textarea_ssh_table"id="edit_vpn_crt_client_extra" name="edit_vpn_crt_client_extra" cols="65" maxlength="3499"></textarea>
+												<textarea rows="8" class="textarea_ssh_table" id="edit_vpn_crt_client_extra" name="edit_vpn_crt_client_extra" cols="65" maxlength="3499"></textarea>
 											</td>
 										</tr>
 									</table>
@@ -1061,6 +1112,14 @@ function defaultSettings() {
 <input type="hidden" name="vpn_client_if" value="<% nvram_get("vpn_client_if"); %>">
 <input type="hidden" name="vpn_client_local" value="<% nvram_get("vpn_client_local"); %>">
 <input type="hidden" name="vpn_client_clientlist" value="<% nvram_clean_get("vpn_client_clientlist"); %>">
+<input type="hidden" name="vpn_client_clientlist1" value="<% nvram_clean_get("vpn_client_clientlist1"); %>">
+<input type="hidden" name="vpn_client_clientlist2" value="<% nvram_clean_get("vpn_client_clientlist2"); %>">
+<input type="hidden" name="vpn_client_clientlist3" value="<% nvram_clean_get("vpn_client_clientlist3"); %>">
+<input type="hidden" name="vpn_client_clientlist4" value="<% nvram_clean_get("vpn_client_clientlist4"); %>">
+<input type="hidden" name="vpn_client_clientlist5" value="<% nvram_clean_get("vpn_client_clientlist5"); %>">
+<input type="hidden" name="vpn_client_custom2" value="<% nvram_get("vpn_client_custom2"); %>">
+<input type="hidden" name="vpn_client_custom21" value="<% nvram_get("vpn_client_custom21"); %>">
+<input type="hidden" name="vpn_client_custom22" value="<% nvram_get("vpn_client_custom22"); %>">
 
 <table class="content" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -1082,16 +1141,7 @@ function defaultSettings() {
                 <td valign="top">
                 <div>&nbsp;</div>
                 <div class="formfonttitle">OpenVPN Client Settings</div>
-		<div id="divSwitchMenu" style="margin-top:-40px;float:right;display:none;">
-			<div style="width:173px;height:30px;border-top-left-radius:8px;border-bottom-left-radius:8px;" class="block_filter">
-				<a href="Advanced_VPNClient_Content.asp">
-					<div class="block_filter_name">PPTP/L2TP</div>
-				</a>
-			</div>
-			<div style="width:172px;height:30px;margin:-32px 0px 0px 173px;border-top-right-radius:8px;border-bottom-right-radius:8px;" class="block_filter_pressed">
-				<div style="text-align:center;padding-top:5px;color:#93A9B1;font-size:14px">OpenVPN</div>
-			</div>
-		</div>
+		<div id="divSwitchMenu" style="margin-top:-40px;float:right;"></div>
                 <div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
 		<div class="formfontdesc">
                         <p>Before starting the service make sure you properly configure it, including
@@ -1108,7 +1158,12 @@ function defaultSettings() {
 					<tr id="client_unit">
 						<th>Select client instance</th>
 						<td>
-							<select name="vpn_client_unit" id="vpn_client_unit" class="input_option" onChange="change_vpn_unit(this.value);">
+							<select name="vpn_client_unit" class="input_option" onChange="change_vpn_unit(this.value);">
+								<option value="1" <% nvram_match("vpn_client_unit","1","selected"); %> >Client 1</option>
+								<option value="2" <% nvram_match("vpn_client_unit","2","selected"); %> >Client 2</option>
+								<option value="3" <% nvram_match("vpn_client_unit","3","selected"); %> >Client 3</option>
+								<option value="4" <% nvram_match("vpn_client_unit","4","selected"); %> >Client 4</option>
+								<option value="5" <% nvram_match("vpn_client_unit","5","selected"); %> >Client 5</option>
 							</select>
 						</td>
 					</tr>
@@ -1163,7 +1218,7 @@ function defaultSettings() {
 					<tr>
 						<th>Description</th>
 						<td>
-							<input type="text" maxlength="25" class="input_25_table" name="vpn_client_desc" onBlur="validator.string(this);" value="<% nvram_get("vpn_client_desc"); %>">
+							<input type="text" maxlength="25" class="input_25_table" name="vpn_client_desc" value="<% nvram_get("vpn_client_desc"); %>">
 						</td>
 					</tr>
 					<tr>
@@ -1175,7 +1230,7 @@ function defaultSettings() {
 					</tr>
 
 					<tr>
-						<th><#vpn_openvpn_interface#></th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,4);"><#vpn_openvpn_interface#></a></th>
 						<td>
 							<select name="vpn_client_if_x"  onclick="update_rgw_options();update_visibility();" class="input_option">
 							</select>
@@ -1183,7 +1238,7 @@ function defaultSettings() {
 					</tr>
 
 					<tr>
-						<th><#IPConnection_VServerProto_itemname#></th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,5);"><#IPConnection_VServerProto_itemname#></a></th>
 						<td>
 							<select name="vpn_client_proto" class="input_option">
 								<option value="tcp-client" <% nvram_match("vpn_client_proto","tcp-client","selected"); %> >TCP</option>
@@ -1196,7 +1251,7 @@ function defaultSettings() {
 						<th>Server Address and Port</th>
 						<td>
 							<label>Address:</label><input type="text" maxlength="128" class="input_25_table" name="vpn_client_addr" value="<% nvram_get("vpn_client_addr"); %>">
-							<label style="margin-left: 4em;">Port:</label><input type="text" maxlength="5" class="input_6_table" name="vpn_client_port" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 65535)" value="<% nvram_get("vpn_client_port"); %>" >
+							<label style="margin-left: 4em;">Port:</label><input type="text" maxlength="5" class="input_6_table" name="vpn_client_port" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("vpn_client_port"); %>" >
 						</td>
 					</tr>
 
@@ -1211,18 +1266,20 @@ function defaultSettings() {
 					</tr>
 
 					<tr>
-						<th><#vpn_openvpn_Auth#></th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,7);"><#vpn_openvpn_Auth#></a></th>
 						<td>
 							<select name="vpn_client_crypt" class="input_option" onclick="update_visibility();">
 								<option value="tls" <% nvram_match("vpn_client_crypt","tls","selected"); %> >TLS</option>
 								<option value="secret" <% nvram_match("vpn_client_crypt","secret","selected"); %> >Static Key</option>
-								<option value="custom" <% nvram_match("vpn_client_crypt","custom","selected"); %> >Custom</option>
 							</select>
-							<span id="client_tls_crypto_text" onclick="edit_Keys();" style="text-decoration:underline;cursor:pointer;">Content modification of Keys &amp; Certificates.</span>
-							<span id="client_custom_crypto_text">(Must be manually configured!)</span>
 						</td>
 					</tr>
-
+					<tr>
+						<th>Keys and Certificates</th>
+						<td>
+							<input type="button" onclick="edit_Keys();" value="Edit..."></td>
+						</td>
+					</tr>
 					<tr id="client_userauth">
 						<th>Username/Password Authentication</th>
 						<td>
@@ -1245,7 +1302,7 @@ function defaultSettings() {
 						</td>
 					</tr>
 					<tr id="client_useronly">
-						<th><#vpn_openvpn_AuthOnly#><br><i>(Must define certificate authority)</i></th>
+						<th><#vpn_openvpn_AuthOnly#></th>
 						<td>
 							<input type="radio" name="vpn_client_useronly" class="input" value="1" onclick="update_visibility();" <% nvram_match_x("", "vpn_client_useronly", "1", "checked"); %>><#checkbox_Yes#>
 							<input type="radio" name="vpn_client_useronly" class="input" value="0" onclick="update_visibility();" <% nvram_match_x("", "vpn_client_useronly", "0", "checked"); %>><#checkbox_No#>
@@ -1254,7 +1311,7 @@ function defaultSettings() {
 					</tr>
 
 					<tr id="client_hmac">
-						<th>TLS control channel security<br><i>(tls-auth / tls-crypt)</i></th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,10);">TLS control channel security<br><i>(tls-auth / tls-crypt)</i></a></th>
 						<td>
 							<select name="vpn_client_hmac" class="input_option">
 								<option value="-1" <% nvram_match("vpn_client_hmac","-1","selected"); %> >Disabled</option>
@@ -1267,7 +1324,7 @@ function defaultSettings() {
 					</tr>
 
 					<tr>
-						<th>Auth digest</th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,26);">Auth digest</a></th>
 						<td>
 							<select name="vpn_client_digest" class="input_option">
 								<option value="<% nvram_get("vpn_client_digest"); %>" selected><% nvram_get("vpn_client_digest"); %></option>
@@ -1285,7 +1342,7 @@ function defaultSettings() {
 					</tr>
 
 					<tr id="client_nat">
-						<th>Create NAT on tunnel<br><i>(Router must be configured manually)</i></th>
+						<th>Create NAT on tunnel</th>
 						<td>
 							<input type="radio" name="vpn_client_nat" class="input" value="1" onclick="update_visibility();" <% nvram_match_x("", "vpn_client_nat", "1", "checked"); %>><#checkbox_Yes#>
 							<input type="radio" name="vpn_client_nat" class="input" value="0" onclick="update_visibility();" <% nvram_match_x("", "vpn_client_nat", "0", "checked"); %>><#checkbox_No#>
@@ -1319,21 +1376,21 @@ function defaultSettings() {
 					</thead>
 
 					<tr>
-						<th>Log verbosity<br><i>(0-11, default=3)</i></th>
+						<th>Log verbosity<br><i>(0-6, default=3)</i></th>
 						<td>
-							<input type="text" maxlength="2" class="input_6_table" name="vpn_client_verb" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 0, 11)" value="<% nvram_get("vpn_client_verb"); %>">
+							<input type="text" maxlength="2" class="input_6_table" name="vpn_client_verb" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("vpn_client_verb"); %>">
 						</td>
 					</tr>
 
 					<tr>
-						<th><#vpn_openvpn_PollInterval#><br><i>( <#zero_disable#> )</i></th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,21);"><#vpn_openvpn_PollInterval#></a></th>
 						<td>
-							<input type="text" maxlength="4" class="input_6_table" name="vpn_client_poll" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 0, 60)" value="<% nvram_get("vpn_client_poll"); %>">
+							<input type="text" maxlength="4" class="input_6_table" name="vpn_client_poll" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("vpn_client_poll"); %>">
 						</td>
 					</tr>
 
 					<tr id="client_adns">
-						<th>Accept DNS Configuration</th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,24);">Accept DNS Configuration</a></th>
 						<td>
 							<select name="vpn_client_adns" class="input_option">
 								<option value="0" <% nvram_match("vpn_client_adns","0","selected"); %> >Disabled</option>
@@ -1385,16 +1442,16 @@ function defaultSettings() {
 					</tr>
 
 					<tr id="client_reneg">
-						<th>TLS Renegotiation Time<br><i>(in seconds, -1 for default)</th>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(32,19);">TLS Renegotiation Time<br><i>(in seconds, -1 for default)</a></th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="vpn_client_reneg" onblur="validator.numberRange(this, -1, 2147483647)" value="<% nvram_get("vpn_client_reneg"); %>">
+							<input type="text" maxlength="5" class="input_6_table" name="vpn_client_reneg" value="<% nvram_get("vpn_client_reneg"); %>">
 						</td>
 					</tr>
 
 					<tr>
 						<th>Connection Retry<br><i>(in seconds, -1 for infinite)</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="vpn_client_retry" onblur="validator.numberRange(this, -1, 32767)" value="<% nvram_get("vpn_client_retry"); %>">
+							<input type="text" maxlength="5" class="input_6_table" name="vpn_client_retry" value="<% nvram_get("vpn_client_retry"); %>">
 						</td>
 					</tr>
 
@@ -1471,7 +1528,7 @@ function defaultSettings() {
 					</thead>
 					<tr>
 						<td>
-							<textarea rows="8" class="textarea_ssh_table" style="width:99%;" name="vpn_client_custom" cols="55" maxlength="15000"><% nvram_clean_get("vpn_client_custom"); %></textarea>
+							<textarea rows="8" class="textarea_ssh_table" style="width:99%;" id="vpn_client_custom_x" cols="55" maxlength="2047"></textarea>
 						</td>
 					</tr>
 					</table>

@@ -17,7 +17,6 @@
 <script language="JavaScript" type="text/javascript" src="/validator.js"></script>
 <script language="JavaScript" type="text/javascript" src="/popup.js"></script>
 <script language="JavaScript" type="text/javascript" src="/help.js"></script>
-<script language="JavaScript" type="text/javascript" src="/merlin.js"></script>
 <script language="JavaScript" type="text/javascript" src="/tmmenu.js"></script>
 <script language="JavaSCript" type="text/javascript" src="/js/jquery.js"></script>
 <script language="JavaScript" type="text/javascript" src="/disk_functions.js"></script>
@@ -86,33 +85,21 @@ function initial() {
 	initConntrackValues()
 	set_rstats_location();
 	hide_rstats_storage(document.form.rstats_location.value);
-	hide_cstats(getRadioValue(document.form.cstats_enable));
-	hide_cstats_ip(getRadioValue(document.form.cstats_all));
-	if (document.form.usb_idle_exclude.value.indexOf("a") != -1)
-		document.form.usb_idle_exclude_a.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("b") != -1)
-		document.form.usb_idle_exclude_b.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("c") != -1)
-		document.form.usb_idle_exclude_c.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("d") != -1)
-		document.form.usb_idle_exclude_d.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("e") != -1)
-		document.form.usb_idle_exclude_e.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("f") != -1)
-		document.form.usb_idle_exclude_f.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("g") != -1)
-		document.form.usb_idle_exclude_g.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("h") != -1)
-		document.form.usb_idle_exclude_h.checked = true;
-	if (document.form.usb_idle_exclude.value.indexOf("i") != -1)
-		document.form.usb_idle_exclude_i.checked = true;
+	if (hnd_support) {
+		document.getElementById("cstats_enable_tr").style.display="none";
+		hide_cstats(0);
+		hide_cstats_ip(0);
+	} else {
+		hide_cstats(getRadioValue(document.form.cstats_enable));
+		hide_cstats_ip(getRadioValue(document.form.cstats_all));
+	}
 
 	if(!live_update_support)
 		document.getElementById("fwcheck").style.display="none";
 
-	if (machine_name.search("arm") != -1) {
+	if ((machine_name.search("arm") != -1) || hnd_support) {
 		document.getElementById("ct_established_default").innerHTML = "Default: 2400";
-		showhide("memory_mgmt_tr" ,1);
+		if (!hnd_support) showhide("memory_mgmt_tr" ,1);
 	}
 
 	if (document.form.dns_probe_content.value == "")
@@ -533,6 +520,20 @@ function initConntrackValues(){
 
 
 function applyRule(){
+	if (!validator.numberRange(document.form.rstats_offset, 1, 31) ||
+	    !validator.numberRange(document.form.ct_max, 256, 300000) ||
+	    !validator.numberRange(document.form.tcp_established, 1, 432000) ||
+	    !validator.numberRange(document.form.tcp_syn_sent, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_syn_recv, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_fin_wait, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_time_wait, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_close, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_close_wait, 1, 86400) ||
+	    !validator.numberRange(document.form.tcp_last_ack, 1, 86400) ||
+	    !validator.numberRange(document.form.udp_assured, 1, 86400) ||
+	    !validator.numberRange(document.form.udp_unreplied, 1, 86400))
+		return false;
+
 
 	showLoading();
 
@@ -556,38 +557,15 @@ function applyRule(){
 
 	document.form.ct_udp_timeout.value = document.form.udp_unreplied.value + " "+document.form.udp_assured.value;
 
-	excluded = "";
-	if (document.form.usb_idle_exclude_a.checked)
-		excluded += "a";
-        if (document.form.usb_idle_exclude_b.checked)
-                excluded += "b";
-        if (document.form.usb_idle_exclude_c.checked)
-                excluded += "c";
-	if (document.form.usb_idle_exclude_d.checked)
-		excluded += "d";
-	if (document.form.usb_idle_exclude_e.checked)
-		excluded += "e";
-	if (document.form.usb_idle_exclude_f.checked)
-		excluded += "f";
-	if (document.form.usb_idle_exclude_g.checked)
-		excluded += "g";
-	if (document.form.usb_idle_exclude_h.checked)
-		excluded += "h";
-	if (document.form.usb_idle_exclude_i.checked)
-		excluded += "i";
-
-	document.form.usb_idle_exclude.value = excluded;
-
-	if ( (excluded != "<% nvram_get("usb_idle_exclude"); %>") ||  (document.form.usb_idle_timeout.value != <% nvram_get("usb_idle_timeout"); %>) )
-                document.form.action_script.value += ";restart_sdidle";
-
-	if (getRadioValue(document.form.cstats_enable) != "<% nvram_get("cstats_enable"); %>") {
-		if ( (getRadioValue(document.form.cstats_enable) == 1) && (<% nvram_get("ctf_disable"); %> == 0) )
-			FormActions("start_apply.htm", "apply", "reboot", "<% get_default_reboot_time(); %>");
-		else
-			document.form.action_script.value += ";restart_firewall;restart_cstats";
-	} else {
-		document.form.action_script.value += ";restart_cstats";
+	if (based_modelid != "RT-AC86U") {
+		if (getRadioValue(document.form.cstats_enable) != "<% nvram_get("cstats_enable"); %>") {
+			if ( (getRadioValue(document.form.cstats_enable) == 1) && ("<% nvram_get("ctf_disable"); %>" == 0) )
+				FormActions("start_apply.htm", "apply", "reboot", "<% get_default_reboot_time(); %>");
+			else
+				document.form.action_script.value += ";restart_firewall;restart_cstats";
+		} else {
+			document.form.action_script.value += ";restart_cstats";
+		}
 	}
 
 	if (getRadioValue(document.form.dns_probe) == 0)
@@ -615,7 +593,7 @@ function update_filter(o,v) {
 
 function validate(){
 
-	if ((document.form.rstats_location.value == "2") && (getRadioValue(document.form.cstats_enable) == "1")) {
+	if ((based_modelid != "RT-AC86U") && (document.form.rstats_location.value == "2") && (getRadioValue(document.form.cstats_enable) == "1")) {
 		showhide('invalid_location', 1);
 		document.form.rstats_location.focus();
 
@@ -685,7 +663,6 @@ function done_validating(action){
 <input type="hidden" name="firmver" value="<% nvram_get("firmver"); %>">
 <input type="hidden" name="ct_tcp_timeout" value="<% nvram_get("ct_tcp_timeout"); %>">
 <input type="hidden" name="ct_udp_timeout" value="<% nvram_get("ct_udp_timeout"); %>">
-<input type="hidden" name="usb_idle_exclude" value="<% nvram_get("usb_idle_exclude"); %>">
 <input type="hidden" name="dns_probe_content" value="<% nvram_get("dns_probe_content"); %>">
 
 <table class="content" align="center" cellpadding="0" cellspacing="0">
@@ -754,7 +731,7 @@ function done_validating(action){
 					</tr>
 					<tr>
 						<th>Starting day of monthly cycle</th>
-						<td><input type="text" maxlength="2" class="input_3_table" name="rstats_offset" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 31)" value="<% nvram_get("rstats_offset"); %>"></td>
+						<td><input type="text" maxlength="2" class="input_3_table" name="rstats_offset" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("rstats_offset"); %>"></td>
 					</tr>
 					<tr id="cstats_enable_tr">
 						<th>Enable IPTraffic (per IP monitoring)</i></th>
@@ -806,27 +783,6 @@ function done_validating(action){
 							<input type="radio" name="webui_resolve_conn" class="input" value="0" <% nvram_match_x("", "webui_resolve_conn", "0", "checked"); %>><#checkbox_No#>
 						</td>
 	                                </tr>
-
-					<tr>
-						<th>Disk spindown idle time (in seconds)<br><i>0 = disable feature</i></th>
-						<td>
-							<input type="text" maxlength="6" class="input_12_table"name="usb_idle_timeout" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 0, 43200)"value="<% nvram_get("usb_idle_timeout"); %>">
-						</td>
-					</tr>
-					<tr>
-						<th>Exclude the following drives from spinning down</th>
-						<td>
-							<input type="checkbox" name="usb_idle_exclude_a">sda</input>
-							<input type="checkbox" name="usb_idle_exclude_b">sdb</input>
-							<input type="checkbox" name="usb_idle_exclude_c">sdc</input>
-							<input type="checkbox" name="usb_idle_exclude_d">sdd</input>
-							<input type="checkbox" name="usb_idle_exclude_e">sde</input>
-							<input type="checkbox" name="usb_idle_exclude_f">sdf</input>
-							<input type="checkbox" name="usb_idle_exclude_g">sdg</input>
-							<input type="checkbox" name="usb_idle_exclude_h">sdh</input>
-							<input type="checkbox" name="usb_idle_exclude_i">sdi</input>
-						</td>
-					</tr>
 					<tr>
 						<th>Stealth Mode (disable all LEDs)</th>
 						<td>
@@ -853,14 +809,14 @@ function done_validating(action){
 					<tr>
 						<th>TCP connections limit</th>
 						<td>
-							<input type="text" maxlength="6" class="input_12_table" name="ct_max" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 256, 300000)" value="<% nvram_get("ct_max"); %>">
+							<input type="text" maxlength="6" class="input_12_table" name="ct_max" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("ct_max"); %>">
 						</td>
 					</tr>
 
 					<tr>
 						<th>TCP Timeout: Established</th>
 						<td>
-							<input type="text" maxlength="6" class="input_6_table" name="tcp_established" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 432000)" value="">
+							<input type="text" maxlength="6" class="input_6_table" name="tcp_established" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span id="ct_established_default">Default: 1200</span>
 						</td>
 
@@ -869,7 +825,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: syn_sent</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_syn_sent" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_syn_sent" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 120</span>
 						</td>
 					</tr>
@@ -877,7 +833,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: syn_recv</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_syn_recv" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_syn_recv" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 60</span>
 						</td>
 					</tr>
@@ -885,7 +841,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: fin_wait</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_fin_wait" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_fin_wait" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 120</span>
 						</td>
 					</tr>
@@ -893,7 +849,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: time_wait</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_time_wait" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_time_wait" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 120</span>
 						</td>
 					</tr>
@@ -901,7 +857,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: close</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_close" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_close" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 10</span>
 						</td>
 					</tr>
@@ -909,7 +865,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: close_wait</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_close_wait" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_close_wait" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 60</span>
 						</td>
 					</tr>
@@ -917,7 +873,7 @@ function done_validating(action){
 					<tr>
 						<th>TCP Timeout: last_ack</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="tcp_last_ack" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="tcp_last_ack" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 30</span>
 						</td>
 					</tr>
@@ -925,7 +881,7 @@ function done_validating(action){
 					<tr>
 						<th>UDP Timeout: Assured</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="udp_assured" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1, 86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="udp_assured" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 180</span>
 						</td>
 					</tr>
@@ -933,7 +889,7 @@ function done_validating(action){
 					<tr>
 						<th>UDP Timeout: Unreplied</th>
 						<td>
-							<input type="text" maxlength="5" class="input_6_table" name="udp_unreplied" onKeyPress="return validator.isNumber(this,event);" onblur="validate_number_range(this, 1,86400)" value="">
+							<input type="text" maxlength="5" class="input_6_table" name="udp_unreplied" onKeyPress="return validator.isNumber(this,event);" value="">
 							<span>Default: 30</span>
 						</td>
 					</tr>
@@ -949,13 +905,6 @@ function done_validating(action){
 						<td>
 							<input type="radio" name="drop_caches" class="input" value="1" <% nvram_match_x("", "drop_caches", "1", "checked"); %>><#checkbox_Yes#>
 							<input type="radio" name="drop_caches" class="input" value="0" <% nvram_match_x("", "drop_caches", "0", "checked"); %>><#checkbox_No#>
-						</td>
-					</tr>
-					<tr>
-						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,3);">Miniupnp: Enable secure mode (default: Yes)</a></th>
-						<td>
-							<input type="radio" name="upnp_secure" class="input" value="1" <% nvram_match_x("", "upnp_secure", "1", "checked"); %>><#checkbox_Yes#>
-							<input type="radio" name="upnp_secure" class="input" value="0" <% nvram_match_x("", "upnp_secure", "0", "checked"); %>><#checkbox_No#>
 						</td>
 					</tr>
 					<tr>
@@ -979,7 +928,6 @@ function done_validating(action){
 							<input type="radio" name="aae_disable_force" class="input" value="0" <% nvram_match_x("", "aae_disable_force", "0", "checked"); %>><#checkbox_No#>
 						</td>
 					</tr>
-
 				</table>
 				<div class="apply_gen">
 					<input name="button" type="button" class="button_gen" onclick="validate();" value="<#CTL_apply#>"/>

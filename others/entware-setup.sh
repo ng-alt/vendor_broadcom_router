@@ -18,38 +18,10 @@ echo -e "$INFO the old ones will be saved on Entware partition with name"
 echo -e "$INFO like /tmp/mnt/sda1/jffs_scripts_backup.tgz"
 echo
 
-PLATFORM=$(uname -m)
-
-if [ "$PLATFORM" == "aarch64" ]
-then
-   echo -e "$INFO This platform supports both 64bit and 32bit Entware installations."
-   echo -e "$INFO 64bit support is recommended, but 32bit support may be required"
-   echo -e "$INFO   if you are using other 32bit applications."
-   echo -e "$INFO The 64bit installation is also better optimized for newer kernels."
-   echo ""
-   echo -en "$INPUT Do you wish to install the 64bit version? (y/n) "
-
-  read -r choice
-  case "$choice" in
-   y|Y )
-     echo -e "$INFO Installing the 64bit version.\n"
-     PLATFORM="aarch64"
-     ;;
-  n|N )
-     echo -e "$INFO Installing the 32bit version.\n"
-     PLATFORM="armv7l"
-     ;;
-  * )
-     echo -e "Invalid option - exiting...\n"
-     exit
-     ;;
-  esac
-fi
-
-case $PLATFORM in
+case $(uname -m) in
   armv7l)
     PART_TYPES='ext2|ext3|ext4'
-    INST_URL='http://bin.entware.net/armv7sf-k2.6/installer/generic.sh'
+    INST_URL='http://pkg.entware.net/binaries/armv7/installer/entware_install.sh'
     ;;
   mips)
     PART_TYPES='ext2|ext3'
@@ -57,11 +29,10 @@ case $PLATFORM in
     ;;
   aarch64)
     PART_TYPES='ext2|ext3|ext4'
-    INST_URL='http://bin.entware.net/aarch64-k3.10/installer/generic.sh'
+    INST_URL='http://pkg.entware.net/binaries/armv7/installer/entware_install.sh'
     ;;
   *)
-    echo "This is an unsupported platform, sorry."
-    exit 1
+    echo "This is unsupported platform, sorry."
     ;;
 esac
 
@@ -108,7 +79,7 @@ echo -e "$INFO Creating /tmp/opt symlink..."
 ln -s "$entFolder" /tmp/opt
 
 echo -e "$INFO Creating /jffs scripts backup..."
-tar -czf "$entPartition/jffs_scripts_backup_$(date +%F_%H-%M).tgz" /jffs/scripts/* >/dev/null
+tar -czf "$entPartition/jffs_scripts_backup_$(date +%F_%H-%M).tgz" /jffs/scripts/* >/dev/nul
 
 echo -e "$INFO Modifying start scripts..."
 cat > /jffs/scripts/services-start << EOF

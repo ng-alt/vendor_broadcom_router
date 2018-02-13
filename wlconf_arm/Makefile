@@ -30,17 +30,17 @@ ifeq ($(RTCONFIG_QTN),y)
 LDFLAGS += -L$(TOP)/libqcsapi_client -lqcsapi_client
 endif
 
+ifeq ($(RTCONFIG_AMAS),y)
+LDFLAGS += -L$(TOP)/json-c/.libs -ljson-c
+endif
+
 vpath %.c $(SRCBASE)/shared $(WLAN_ComponentSrcDirs)
 
 OBJS := wlconf.o bcmwifi_channels.o
 
 ifeq ($(wildcard $(SRCBASE)/router/wlconf$(BCMEX)/*.c),)
 all:
-ifeq ($(RTCONFIG_QTN),y)
-	-cp -f $(SRCBASE)/router/wlconf$(BCMEX)/prebuilt/wlconf_qtn wlconf
-else
 	-cp -f $(SRCBASE)/router/wlconf$(BCMEX)/prebuilt/wlconf wlconf
-endif
 else
 all: wlconf
 endif

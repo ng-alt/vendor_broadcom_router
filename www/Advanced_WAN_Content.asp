@@ -32,6 +32,8 @@
 <script type="text/javascript" src="/popup.js"></script>
 <script type="text/javascript" src="/help.js"></script>
 <script type="text/javascript" src="/validator.js"></script>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/httpApi.js"></script>
 <script>
 
 var wans_dualwan = '<% nvram_get("wans_dualwan"); %>';
@@ -44,10 +46,13 @@ if(dualWAN_support && ( wans_dualwan.search("wan") >= 0 || wans_dualwan.search("
 			location.href = "Advanced_DSL_Content.asp";
 			break;
 		case "USB":
-			if(based_modelid == "4G-AC55U")
+			if(based_modelid == "4G-AC53U" || based_modelid == "4G-AC55U" || based_modelid == "4G-AC68U")
 				location.href = "Advanced_MobileBroadband_Content.asp";
-			else
-				location.href = "Advanced_Modem_Content.asp";
+			else{
+				if(based_modelid != "BRT-AC828"){
+					location.href = "Advanced_Modem_Content.asp";
+				}
+			}
 			break;
 		default:
 			break;	
@@ -61,6 +66,7 @@ var original_wan_type = wan_proto_orig;
 var original_wan_dhcpenable = parseInt('<% nvram_get("wan_dhcpenable_x"); %>');
 var original_dnsenable = parseInt('<% nvram_get("wan_dnsenable_x"); %>');
 var original_ppp_echo = parseInt('<% nvram_get("wan_ppp_echo"); %>');
+var default_ppp_echo = parseInt('<% nvram_default_get("wan_ppp_echo"); %>');
 var wan_unit_flag = '<% nvram_get("wan_unit"); %>';
 
 if(yadns_support){
@@ -78,9 +84,15 @@ function initial(){
 			document.wanUnit_form.target = "";
 			document.wanUnit_form.submit();
 		}
+	}else{
+		if('<% nvram_get("wan_unit"); %>' == usb_index){
+			change_notusb_unit();
+		}
 	}
 	
-	show_menu();			
+	show_menu();
+	// https://www.asus.com/support/FAQ/1011715/
+	httpApi.faqURL("faq", "1011715", "https://www.asus.com", "/support/FAQ/");
 	change_wan_type(document.form.wan_proto.value, 0);	
 	fixed_change_wan_type(document.form.wan_proto.value);
 	genWANSoption();
@@ -92,6 +104,8 @@ function initial(){
 		document.form.wan_pppoe_passwd.value = pppoe_password;
 	}
 
+	change_nat(<% nvram_get("wan_nat_x"); %>);
+
 	if(yadns_support){
 		if(yadns_enable != 0 && yadns_mode != -1){
 			document.getElementById("yadns_hint").style.display = "";
@@ -99,8 +113,6 @@ function initial(){
 		}
 	}
 	display_upnp_options();
-
-	addOnlineHelp(document.getElementById("faq"), ["UPnP"]);
 
 	if(gobi_support){
 		document.getElementById("page_title").innerHTML = "<#WAN_page_desc#>";
@@ -113,9 +125,18 @@ function initial(){
 		showhide("dot1q_setting",0);
 }
 
+function change_notusb_unit(){
+	document.wanUnit_form.wan_unit.value = (usb_index+1)%2;
+	FormActions("apply.cgi", "change_wan_unit", "", "");
+	document.wanUnit_form.target = "";
+	document.wanUnit_form.submit();
+	location.herf = document.wanUnit_form.current_page.value;
+}
+
 function display_upnp_options(){
 	document.getElementById("upnp_range_int").style.display = (document.form.wan_upnp_enable[0].checked) ? "" : "none";
 	document.getElementById("upnp_range_ext").style.display = (document.form.wan_upnp_enable[0].checked) ? "" : "none";
+	document.getElementById("upnp_secure_tr").style.display = (document.form.wan_upnp_enable[0].checked) ? "" : "none";
 	if (igd2_support) {
 		document.getElementById("upnp_pinhole").style.display = (document.form.wan_upnp_enable[0].checked) ? "" : "none";
 	} else {
@@ -127,7 +148,7 @@ var dsltmp_transmode = "<% nvram_get("dsltmp_transmode"); %>";
 function change_wan_unit(obj){
 	if(!dualWAN_support) return;
 	
-	if(obj.options[obj.selectedIndex].text == "DSL"){	
+	if(obj.options[obj.selectedIndex].text == "DSL"){
 		if(dsltmp_transmode == "atm")
 			document.form.current_page.value = "Advanced_DSL_Content.asp";
 		else //ptm
@@ -143,17 +164,18 @@ function change_wan_unit(obj){
 			|| obj.options[obj.selectedIndex].text == "Ethernet LAN"
 			|| obj.options[obj.selectedIndex].text == "Ethernet WAN"){
 		if((wans_dualwan == "wan lan" || wans_dualwan == "lan wan")
-				 || (wans_dualwan == "wan2 wan" || wans_dualwan == "wan wan2")){
+				 || (wans_dualwan == "wan2 wan" || wans_dualwan == "wan wan2")
+				 || (wans_dualwan == "wan2 lan" || wans_dualwan == "lan wan2")){
 			if(obj.selectedIndex != wan_unit_flag){
 				document.form.wan_unit.value = obj.selectedIndex;
-			}	
-			else{ 
+			}
+			else{
 				return false;
 			}
 		}
 		else{
 			return false;
-		}			
+		}
 	}
 	else if(obj.options[obj.selectedIndex].text == "<#Mobile_title#>"){
 		document.form.current_page.value = "Advanced_MobileBroadband_Content.asp";
@@ -173,7 +195,7 @@ function genWANSoption(){
         	wans_dualwan_NAME = "Ethernet WAN";
 		else if(wans_dualwan_NAME == "LAN")
         	wans_dualwan_NAME = "Ethernet LAN";		
-		else if(wans_dualwan_NAME == "USB" && based_modelid == "4G-AC55U")
+		else if(wans_dualwan_NAME == "USB" && (based_modelid == "4G-AC53U" || based_modelid == "4G-AC55U" || based_modelid == "4G-AC68U"))
 			wans_dualwan_NAME = "<#Mobile_title#>";                       
 		document.form.wan_unit.options[i] = new Option(wans_dualwan_NAME, i);
 	}	
@@ -492,6 +514,7 @@ function change_wan_type(wan_type, flag){
 		inputCtrl(document.form.wan_pppoe_mru, 1);
 		inputCtrl(document.form.wan_pppoe_service, 1);
 		inputCtrl(document.form.wan_pppoe_ac, 1);
+		inputCtrl(document.form.wan_pppoe_hostuniq, 1);
 		inputCtrl(document.form.dhcpc_mode, 0);
 		inputCtrl(document.form.wan_mtu, 0);
 		
@@ -517,6 +540,7 @@ function change_wan_type(wan_type, flag){
 		inputCtrl(document.form.wan_pppoe_mru, 0);
 		inputCtrl(document.form.wan_pppoe_service, 0);
 		inputCtrl(document.form.wan_pppoe_ac, 0);
+		inputCtrl(document.form.wan_pppoe_hostuniq, 0);
 		inputCtrl(document.form.dhcpc_mode, 0);
 		inputCtrl(document.form.wan_mtu, 0);
 		
@@ -542,6 +566,7 @@ function change_wan_type(wan_type, flag){
 		inputCtrl(document.form.wan_pppoe_mru, 0);
 		inputCtrl(document.form.wan_pppoe_service, 0);
 		inputCtrl(document.form.wan_pppoe_ac, 0);
+		inputCtrl(document.form.wan_pppoe_hostuniq, 0);
 		inputCtrl(document.form.dhcpc_mode, 0);
 		inputCtrl(document.form.wan_mtu, 0);
 		
@@ -567,6 +592,7 @@ function change_wan_type(wan_type, flag){
 		inputCtrl(document.form.wan_pppoe_mru, 0);
 		inputCtrl(document.form.wan_pppoe_service, 0);
 		inputCtrl(document.form.wan_pppoe_ac, 0);
+		inputCtrl(document.form.wan_pppoe_hostuniq, 0);
 		inputCtrl(document.form.dhcpc_mode, 0);
 		inputCtrl(document.form.wan_mtu, 1);
 		
@@ -592,6 +618,7 @@ function change_wan_type(wan_type, flag){
 		inputCtrl(document.form.wan_pppoe_mru, 0);
 		inputCtrl(document.form.wan_pppoe_service, 0);
 		inputCtrl(document.form.wan_pppoe_ac, 0);
+		inputCtrl(document.form.wan_pppoe_hostuniq, 0);
 		inputCtrl(document.form.dhcpc_mode, 1);
 		inputCtrl(document.form.wan_mtu, 1);
 		
@@ -633,7 +660,7 @@ function fixed_change_wan_type(wan_type){
 			document.form.wan_dnsenable_x[0].checked = 1;
 			document.form.wan_dnsenable_x[1].checked = 0;
 			change_common_radio(document.form.wan_dnsenable_x, 'IPConnection', 'wan_dnsenable_x', 1);
-			document.form.wan_ppp_echo.value = 1;
+			document.form.wan_ppp_echo.value = default_ppp_echo;
 			ppp_echo_control();
 		}		
 	}else if(wan_type == "pptp"	|| wan_type == "l2tp"){	
@@ -650,7 +677,7 @@ function fixed_change_wan_type(wan_type){
 			change_common_radio(document.form.wan_dnsenable_x, 'IPConnection', 'wan_dnsenable_x', 0);
 			inputCtrl(document.form.wan_dnsenable_x[0], 1);
 			inputCtrl(document.form.wan_dnsenable_x[1], 1);
-			document.form.wan_ppp_echo.value = 1;
+			document.form.wan_ppp_echo.value = default_ppp_echo;
 			ppp_echo_control();
 		}
 	}
@@ -816,9 +843,15 @@ function ppp_echo_control(flag){
 	var enable = (flag == 1) ? 1 : 0;
 	inputCtrl(document.form.wan_ppp_echo_interval, enable);
 	inputCtrl(document.form.wan_ppp_echo_failure, enable);
-	var enable = (flag == 2) ? 1 : 0;
+	enable = (flag == 2) ? 1 : 0;
 	//inputCtrl(document.form.dns_probe_timeout, enable);
 	inputCtrl(document.form.dns_delay_round, enable);
+}
+
+function change_nat(state) {
+	if (based_modelid == "RT-AC86U") {
+		document.getElementById("nat_type_tr").style.display = (state ? "" : "none");
+	}
 }
 
 </script>
@@ -828,7 +861,7 @@ function ppp_echo_control(flag){
 <script>
 	if(sw_mode == 3){
 		alert("<#page_not_support_mode_hint#>");
-		location.href = "/index.asp";
+		location.href = '<% abs_index_page(); %>';
 	}
 </script>
 <div id="TopBanner"></div>
@@ -935,10 +968,19 @@ function ppp_echo_control(flag){
 							<tr>
 								<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,22);"><#Enable_NAT#></a></th>                 
 								<td>
-									<input type="radio" name="wan_nat_x" class="input" value="1" <% nvram_match("wan_nat_x", "1", "checked"); %>><#checkbox_Yes#>
-									<input type="radio" name="wan_nat_x" class="input" value="0" <% nvram_match("wan_nat_x", "0", "checked"); %>><#checkbox_No#>
+									<input type="radio" name="wan_nat_x" class="input" value="1" onclick="change_nat(1);" <% nvram_match("wan_nat_x", "1", "checked"); %>><#checkbox_Yes#>
+									<input type="radio" name="wan_nat_x" class="input" value="0" onclick="change_nat(0);" <% nvram_match("wan_nat_x", "0", "checked"); %>><#checkbox_No#>
 								</td>
 							</tr>				
+							<tr id="nat_type_tr" style="display:none;">
+								<th>NAT Type</th>
+								<td>
+									<select name="nat_type" class="input_option">
+										<option value="0" <% nvram_match("nat_type", "0", "selected"); %>>Symmetric</option>
+										<option value="1" <% nvram_match("nat_type", "1", "selected"); %>>Fullcone</option>
+									</select>
+								</td>
+							</tr>
 
 							<tr>
 								<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,23);"><#BasicConfig_EnableMediaServer_itemname#></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a id="faq" href="" target="_blank" style="font-family:Lucida Console;text-decoration:underline;">UPnP&nbspFAQ</a></th>
@@ -952,6 +994,13 @@ function ppp_echo_control(flag){
 								<td>
 									<input type="radio" name="upnp_pinhole_enable" class="input" value="1" onclick="display_upnp_options();" <% nvram_match("upnp_pinhole_enable", "1", "checked"); %>><#checkbox_Yes#>
 									<input type="radio" name="upnp_pinhole_enable" class="input" value="0" onclick="display_upnp_options();" <% nvram_match("upnp_pinhole_enable", "0", "checked"); %>><#checkbox_No#>
+								</td>
+							</tr>
+							<tr id="upnp_secure_tr">
+								<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,3);">Enable secure UPnP mode</a></th>
+								<td>
+									<input type="radio" name="upnp_secure" class="input" value="1" <% nvram_match_x("", "upnp_secure", "1", "checked"); %>><#checkbox_Yes#>
+									<input type="radio" name="upnp_secure" class="input" value="0" <% nvram_match_x("", "upnp_secure", "0", "checked"); %>><#checkbox_No#>
 								</td>
 							</tr>
 							<tr id="upnp_range_int">
@@ -1102,7 +1151,7 @@ function ppp_echo_control(flag){
               	<td><input type="text" maxlength="32" class="input_32_table" name="wan_pppoe_ac" value="<% nvram_get("wan_pppoe_ac"); %>" onkeypress="return validator.isString(this, event)" autocorrect="off" autocapitalize="off"/></td>
             	</tr>
 				<tr>
-					<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,18);">Host-Uniq (Hexadecimal)</a><!--untranslated--></th>
+					<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,18);">Host-Uniq (<#Hexadecimal#>)</a></th>
 					<td><input type="text" maxlength="32" class="input_32_table" name="wan_pppoe_hostuniq" value="<% nvram_get("wan_pppoe_hostuniq"); %>" onkeypress="return validator.isString(this, event);" autocorrect="off" autocapitalize="off"/></td>
 				</tr>
             	<!-- 2008.03 James. patch for Oleg's patch. { -->
@@ -1119,7 +1168,7 @@ function ppp_echo_control(flag){
 		</td>
 		</tr>
 		<tr>
-			<th><a class="hintstyle" href="javascript:void(0);">Internet Detection</a></th><!--untranslated-->
+			<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,31);"><#PPPConnection_x_InternetDetection_itemname#></a></th>
 			<td>
 				<select name="wan_ppp_echo" class="input_option" onChange="ppp_echo_control();">
 				<option value="0" <% nvram_match("wan_ppp_echo", "0","selected"); %>><#btn_disable#></option>
@@ -1129,11 +1178,11 @@ function ppp_echo_control(flag){
 			</td>
 		</tr>
 		<tr>
-			<th><a class="hintstyle" href="javascript:void(0);">PPP Echo Interval</a></th><!--untranslated-->
+			<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,32);"><#PPPConnection_x_PPPEcho_Interval#></a></th>
 			<td><input type="text" maxlength="6" class="input_6_table" name="wan_ppp_echo_interval" value="<% nvram_get("wan_ppp_echo_interval"); %>" onkeypress="return validator.isNumber(this, event)" autocorrect="off" autocapitalize="off"/></td>
 		</tr>
 		<tr>
-			<th><a class="hintstyle" href="javascript:void(0);">PPP Echo Max Failures</a></th><!--untranslated-->
+			<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,33);"><#PPPConnection_x_PPPEcho_Max_Failure#></a></th>
 			<td><input type="text" maxlength="6" class="input_6_table" name="wan_ppp_echo_failure" value="<% nvram_get("wan_ppp_echo_failure"); %>" onkeypress="return validator.isNumber(this,event);" autocorrect="off" autocapitalize="off"/></td>
 		</tr>
 		<!--tr>
@@ -1141,7 +1190,7 @@ function ppp_echo_control(flag){
 			<td><input type="text" maxlength="6" class="input_6_table" name="dns_probe_timeout" value="<% nvram_get("dns_probe_timeout"); %>" onkeypress="return validator.isNumber(this, event)" autocorrect="off" autocapitalize="off"/></td>
 		</tr-->
 		<tr>
-			<th><a class="hintstyle" href="javascript:void(0);">DNS Probe Max Failures</a></th><!--untranslated-->
+			<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(7,34);">DNS Probe Max Failures</a></th><!--untranslated-->
 			<td><input type="text" maxlength="6" class="input_6_table" name="dns_delay_round" value="<% nvram_get("dns_delay_round"); %>" onkeypress="return validator.isNumber(this,event);" autocorrect="off" autocapitalize="off"/></td>
 		</tr>
 		<tr>
@@ -1198,11 +1247,11 @@ function ppp_echo_control(flag){
 
 		<tr>
 		<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,7);">Manual clientid (Option 61)</a></th>
-			<td><input type="text" name="wan_clientid" class="input_32_table" maxlength="128" value="<% nvram_get("wan_clientid"); %>" onkeypress="return validator.isString(this, event)"></td>
+			<td><input type="text" name="wan_clientid" class="input_32_table" maxlength="128" value="<% nvram_get("wan_clientid"); %>" onKeyPress="return validator.isString(this, event)"></td>
 		</tr>
 		<tr>
 		<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,8);">Manual Vendor class (Option 60)</a></th>
-			<td><input type="text" name="wan_vendorid" class="input_32_table" maxlength="128" value="<% nvram_get("wan_vendorid"); %>" onkeypress="return validator.isString(this, event)"></td>
+			<td><input type="text" name="wan_vendorid" class="input_32_table" maxlength="128" value="<% nvram_get("wan_vendorid"); %>" onKeyPress="return validator.isString(this, event)"></td>
 		</tr>
 
 		<tr style="display:none;">

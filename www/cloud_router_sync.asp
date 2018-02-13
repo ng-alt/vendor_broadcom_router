@@ -20,7 +20,6 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
 <script language="JavaScript" type="text/javascript" src="/md5.js"></script>
-<script type="text/javascript" src="/disk_functions.js"></script>
 <script language="JavaScript" type="text/javascript" src="/form.js"></script>
 <style type="text/css">
 /* folder tree */
@@ -664,8 +663,8 @@ function confirm_folderTree(){
 function show_invitation(share_link_url){
 	var invite_content = "";
 	var sync_rule_desc = "";
-	document.getElementById('invite_desc').innerHTML = "<#sync_router_Invit_desc2#>: "+document.form.router_sync_desc.value;
-	document.getElementById('invite_path').innerHTML = document.form.cloud_dir.value;
+	document.getElementById('invite_desc').innerHTML = "<#sync_router_Invit_desc2#>: " + htmlEnDeCode.htmlEncode(document.form.router_sync_desc.value);
+	document.getElementById('invite_path').innerHTML = htmlEnDeCode.htmlEncode(document.form.cloud_dir.value);
 	if(document.form.router_sync_rule.value == 0)
 		sync_rule_desc = "Two way sync";
 	else if(document.form.router_sync_rule.value == 1)
@@ -750,12 +749,20 @@ function domain_name_select(){
 		document.getElementById('host_name').focus();
 		return false;
 	}
+	else if(!Block_chars(document.getElementById('host_name'), ["<", ">"]))
+		return false;
+
+	if(document.getElementById('url_port').value != "")
+		if(!validator.numberRange(document.getElementById('url_port'), 1, 65535))
+			return false;
 
 	if(document.form.cloud_dir.value == ""){
 		alert("<#JS_fieldblank#>");
 		document.form.cloud_dir.focus();
 		return false;
 	}
+	else if(!Block_chars(document.form.cloud_dir, ["<", ">"]))
+		return false;
 
 	if(router_sync.search(document.form.cloud_dir.value) != -1){
 		alert("This folder already exists. Please select a different folder.");
@@ -1181,7 +1188,7 @@ function checkDDNSReturnCode(){
 												<option value="1">Https</option>
 											</select>
 											<input id="host_name" type="text" maxlength="32"  class="input_32_table" style="height:25px;font-size:13px;"  onKeyPress="return validator.isString(this, event)" autocorrect="off" autocapitalize="off">&nbsp:
-											<input type="text" maxlength="6" id="url_port" class="input_6_table" style="height:25px;font-size:13px;"  onKeyPress="return validator.isString(this, event)" autocorrect="off" autocapitalize="off">
+											<input type="text" maxlength="6" id="url_port" class="input_6_table" style="height:25px;font-size:13px;"  onKeyPress="return validator.isNumber(this, event)" autocorrect="off" autocapitalize="off">
 										</td>
 									</tr>
 									<tr style="height:40px;">

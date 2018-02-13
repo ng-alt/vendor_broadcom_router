@@ -27,6 +27,14 @@
 <% login_state_hook(); %>
 
 var dnsfilter_rule_list = '<% nvram_get("dnsfilter_rulelist"); %>'.replace(/&#60/g, "<");
+if (isSupport("hnd")) {
+	dnsfilter_rule_list += '<% nvram_get("dnsfilter_rulelist1"); %>'.replace(/&#60/g, "<") +
+		'<% nvram_get("dnsfilter_rulelist2"); %>'.replace(/&#60/g, "<") +
+		'<% nvram_get("dnsfilter_rulelist3"); %>'.replace(/&#60/g, "<") +
+		'<% nvram_get("dnsfilter_rulelist4"); %>'.replace(/&#60/g, "<") +
+		'<% nvram_get("dnsfilter_rulelist5"); %>'.replace(/&#60/g, "<");
+}
+
 var dnsfilter_rule_list_row = dnsfilter_rule_list.split('<');
 
 
@@ -94,7 +102,7 @@ function show_dnsfilter_list(){
 
 	code +='<table width="100%" border="1" cellspacing="0" cellpadding="4" align="center" class="FormTable_table" id="mainTable_table">';
 	code +='<thead><tr><td colspan="3"><#ConnectedClient#>&nbsp;(<#List_limit#>&nbsp;64)</td></tr></thead>';
-	code +='<tr><th width="65%"><#ParentalCtrl_username#></th>';
+	code +='<tr><th width="65%">Client MAC address</th>';
 	code +='<th width="20%">Filter Mode</th>';
 	code +='<th width="15%"><#list_add_delete#></th></tr>';
 
@@ -102,7 +110,7 @@ function show_dnsfilter_list(){
 	code +='<img id="pull_arrow" height="14px;" src="/images/arrow-down.gif" style="position:absolute;" onclick="pullLANIPList(this);" title="<#select_client#>">';
 	code +='<div id="ClientList_Block_PC" style="margin:0 0 0 52px" class="clientlist_dropdown"></div></td>';
 	code +='<td style="border-bottom:2px solid #000;">'+gen_modeselect("rule_mode", "-1", "")+'</td>';
-	code +='<td style="border-bottom:2px solid #000;"><input class="url_btn" type="button" onClick="addRow_main(64)" value=""></td></tr>';
+	code +='<td style="border-bottom:2px solid #000;"><input class="add_btn" type="button" onClick="addRow_main(64)" value=""></td></tr>';
 
 	if(dnsfilter_rule_list_row == "")
 		code +='<tr><td style="color:#FFCC00;" colspan="3"><#IPConnection_VSList_Norule#></td>';
@@ -174,10 +182,24 @@ function show_dnsfilter_list(){
 }
 
 function applyRule(){
-	document.form.dnsfilter_rulelist.value = dnsfilter_rule_list.replace(/&#62/g, ">") ;
+	if (isSupport("hnd"))
+		split_clientlist(dnsfilter_rule_list.replace(/&#62/g, ">"));
+	else
+		document.form.dnsfilter_rulelist.value = dnsfilter_rule_list.replace(/&#62/g, ">") ;
 
 	showLoading();
 	document.form.submit();
+}
+
+function split_clientlist(clientlist){
+	var counter = 0;
+
+	document.form.dnsfilter_rulelist.value = clientlist.substring(counter, (counter+=255))
+	document.form.dnsfilter_rulelist1.value = clientlist.substring(counter, (counter+=255));
+	document.form.dnsfilter_rulelist2.value = clientlist.substring(counter, (counter+=255));
+	document.form.dnsfilter_rulelist3.value = clientlist.substring(counter, (counter+=255));
+	document.form.dnsfilter_rulelist4.value = clientlist.substring(counter, (counter+=255));
+	document.form.dnsfilter_rulelist5.value = clientlist.substring(counter, (counter+=255));
 }
 
 function check_macaddr(obj,flag){ //control hint of input mac address
@@ -297,6 +319,11 @@ function changeRow_main(r){
 <input type="hidden" name="firmver" value="<% nvram_get("firmver"); %>">
 <input type="hidden" name="dnsfilter_enable_x" value="<% nvram_get("dnsfilter_enable_x"); %>">
 <input type="hidden" name="dnsfilter_rulelist" value="">
+<input type="hidden" name="dnsfilter_rulelist1" value="">
+<input type="hidden" name="dnsfilter_rulelist2" value="">
+<input type="hidden" name="dnsfilter_rulelist3" value="">
+<input type="hidden" name="dnsfilter_rulelist4" value="">
+<input type="hidden" name="dnsfilter_rulelist5" value="">
 
 <table class="content" align="center" cellpadding="0" cellspacing="0" >
 	<tr>

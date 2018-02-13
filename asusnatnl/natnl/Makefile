@@ -3,7 +3,7 @@ include ../version.mak
 #RTSRCBASE=../../..
 PJBASE=../pjproject-1.12
 RTSHAREDBASE=$(TOP)/shared
-RTNVARMBASE=$(TOP)/nvram$(BCMEX)
+RTNVARMBASE=$(TOP)/nvram$(BCMEX)$(EX7)
 UMEMBASE=../umem-1.0.1
 UDTBASE=../udt
 LIB_UDT=udt
@@ -26,10 +26,14 @@ CFLAGS += -g -I$(NATBASE) -I$(NATBASE)/msvc_prjs/asusnatnl
 CFLAGS += -DTUNNEL_V=\"$(VERSION)\"
 CFLAGS += -I$(UDTBASE) -I$(SCTPBASE)
 #CFLAGS += -Wall
-CPPFLAGS += -fPIC $(CFLAGS)
+CPPFLAGS += -fPIC $(CFLAGS) 
 
 ifeq ($(AR),)
 AR=ar
+endif
+
+ifeq ($(RTCONFIG_SW_HW_AUTH),y)
+CFLAGS += -DSW_HW_AUTH
 endif
 
 ifeq ($(router), yes)
@@ -103,7 +107,7 @@ android-lib: main.cpp $(OBJS)
 ifeq ($(wildcard ./*.cpp),)
 #For prebuild on router platform. Don't remove it.
 linux-lib:
-	-cp -f $(TOP)/asusnatnl/natnl/prebuild$(BCMEX)/libasusnatnl.so libasusnatnl.so
+	-cp -f $(TOP)/asusnatnl/natnl/prebuild$(BCMEX)$(EXHND)/libasusnatnl.so libasusnatnl.so
 else
 linux-lib: main.cpp $(OBJS)
 	$(CXX) -shared -o libasusnatnl.so $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS)

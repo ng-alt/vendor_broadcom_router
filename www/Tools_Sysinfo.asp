@@ -17,10 +17,17 @@ p{
 	font-weight: bolder;
 }
 .tableApi_table th {
-       height: 20px;
+	height: 20px;
+	text-align: left;
+}
+.tableApi_table td {
+	text-align: left;
 }
 .data_tr {
-       height: 30px;
+	height: 30px;
+}
+.row_title th {
+	width: unset;
 }
 </style>
 
@@ -35,8 +42,8 @@ p{
 <script type="text/javascript" src="/js/table/table.js"></script>
 <script>
 
-var hwacc = "<% nvram_get("ctf_disable"); %>";
-var hwacc_force = "<% nvram_get("ctf_disable_force"); %>";
+var ctf_dis = "<% nvram_get("ctf_disable"); %>";
+var ctf_dis_force = "<% nvram_get("ctf_disable_force"); %>";
 var etherstate = "<% sysinfo("ethernet"); %>";
 var rtkswitch = <% sysinfo("ethernet.rtk"); %>;
 var odmpid = "<% nvram_get("odmpid");%>";
@@ -98,7 +105,7 @@ function update_temperatures(){
 				code += "&nbsp;&nbsp;-&nbsp;&nbsp;<b>5 GHz:</b> <span>" + curr_coreTmp_5_raw + "</span>";
 
 			if (curr_coreTmp_cpu != "")
-				code +="&nbsp;&nbsp;-&nbsp;&nbsp;<b>CPU:</b> <span>" + curr_coreTmp_cpu +"&deg;C</span>";
+				code +="&nbsp;&nbsp;-&nbsp;&nbsp;<b>CPU:</b> <span>" + parseInt(curr_coreTmp_cpu) +"&deg;C</span>";
 
 			document.getElementById("temp_td").innerHTML = code;
 			setTimeout("update_temperatures();", 3000);
@@ -108,34 +115,64 @@ function update_temperatures(){
 
 
 function hwaccel_state(){
-	if (hwacc == "1") {
-		code = "Disabled";
-		if (hwacc_force == "1")
-			code += " <i>(by user)</i>";
-		else {
-			code += " <i> - incompatible with:<span>  ";	// Two trailing spaces
-			if ('<% nvram_get("cstats_enable"); %>' == '1') code += 'IPTraffic, ';
-			if (('<% nvram_get("qos_enable"); %>' == '1') && ('<% nvram_get("qos_type"); %>' == '0')) code += 'QoS, ';
-			if ('<% nvram_get("sw_mode"); %>' == '2') code += 'Repeater mode, ';
-			if ('<% nvram_get("ctf_disable_modem"); %>' == '1') code += 'USB modem, ';
+	var qos_enable = '<% nvram_get("qos_enable"); %>';
+	var qos_type = '<% nvram_get("qos_type"); %>';
 
-			// We're disabled but we don't know why
-			if (code.slice(-2) == "  ") code += "&lt;unknown&gt;, ";
+	if (hnd_support) {
+		code = "<span>Runner:</span> ";
 
-			// Trim two trailing chars, either "  " or ", "
-			code = code.slice(0,-2) + "</span></>";
+		if ('<% nvram_get("runner_disable"); %>' == '1') {
+			code += "Disabled";
+			if ('<% nvram_get("runner_disable_force"); %>' == '1') {
+				code += " <i>(by user)</i>";
+			} else {
+				if (qos_enable == '1')
+					code += " <i>(QoS)</i>";
+			}
+		} else {
+			code += "Enabled";
 		}
-	} else if (hwacc == "0") {
-		code = "<span>Enabled";
-		if (ctf_fa != "") {
-                        if (ctf_fa != "0")
-                                code += " (CTF + FA)";
-                        else
-                                code += " (CTF only)";
-                }
-		code += "</span>";
+
+		code += "&nbsp;&nbsp;-&nbsp;&nbsp;<span>Flow Cache:</span> ";
+		if ('<% nvram_get("fc_disable"); %>' == '1') {
+			code += "Disabled";
+			if ('<% nvram_get("fc_disable_force"); %>' == '1') {
+				code += " <i>(by user)</i>";
+			} else {
+				if ((qos_enable == '1') && (qos_type != '1'))
+					code += " <i>(QoS)</i>";
+			}
+		} else {
+			code += "Enabled";
+		}
 	} else {
-		code = "<span>N/A</span>";
+		if (ctf_dis == "1") {
+			code = "Disabled";
+			if (ctf_dis_force == "1")
+				code += " <i>(by user)</i>";
+			else {
+				code += " <i> - incompatible with:<span>  ";	// Two trailing spaces
+				if ('<% nvram_get("cstats_enable"); %>' == '1') code += 'IPTraffic, ';
+				if ((qos_enable == '1') && (qos_type == '0')) code += 'QoS, ';
+				if ('<% nvram_get("sw_mode"); %>' == '2') code += 'Repeater mode, ';
+				if ('<% nvram_get("ctf_disable_modem"); %>' == '1') code += 'USB modem, ';
+
+				// We're disabled but we don't know why
+				if (code.slice(-2) == "  ") code += "&lt;unknown&gt;, ";
+
+				// Trim two trailing chars, either "  " or ", "
+				code = code.slice(0,-2) + "</span></>";
+			}
+		} else if (ctf_dis == "0") {
+			code = "<span>Enabled";
+			if (ctf_fa != "") {
+				if (ctf_fa != "0")
+					code += " (CTF + FA)";
+				else
+					code += " (CTF only)";
+	                }
+			code += "</span>";
+		}
 	}
 
 	document.getElementById("hwaccel").innerHTML = code;
@@ -163,7 +200,10 @@ function show_etherstate(){
 	var wan_array;
 	var port_array= Array();
 
-	if ((based_modelid == "RT-N16") || (based_modelid == "RT-AC87U")
+	if (based_modelid == "RT-AC86U") {
+		show_etherstate_hnd();
+		return;
+	} else if ((based_modelid == "RT-N16") || (based_modelid == "RT-AC87U")
 	    || (based_modelid == "RT-AC3200") || (based_modelid == "RT-AC88U")
 	    || (based_modelid == "RT-AC3100"))
 		reversed = true;
@@ -180,7 +220,7 @@ function show_etherstate(){
 
 		if (line[0] == "Port") {
 			if (line[2] == "DOWN")
-				state2 = "Down";
+				state2 = "Unplugged";
 			else {
 				state = line[2].replace("FD"," Full Duplex");
 				state2 = state.replace("HD"," Half Duplex");
@@ -236,10 +276,12 @@ function show_etherstate(){
 
 	if (based_modelid == "RT-AC88U")
 	{
+		document.getElementById("rtk_warning").style.display="";
+
 		for (var i = 0; i < rtkswitch.length; i++) {
 			line = rtkswitch[i];
 			if (line[1] == "0")
-				state = "Down"
+				state = "Unplugged"
 			else
 				state = line[1] + " Mbps";
 
@@ -257,11 +299,11 @@ function show_etherstate(){
 		header: [
 			{
 				"title" : "Port",
-				"width" : "15%"
+				"width" : "21%"
 			},
 			{
 				"title" : "VLAN",
-				"width" : "15%"
+				"width" : "14%"
 			},
 			{
 				"title" : "Link State",
@@ -269,7 +311,7 @@ function show_etherstate(){
 			},
 			{
 				"title" : "Last Device Seen",
-				"width" : "45%"
+				"width" : "40%"
 			}
 		]
 	}
@@ -277,6 +319,48 @@ function show_etherstate(){
 	if(tableStruct.data.length) {
 		tableApi.genTableAPI(tableStruct);
 	}
+}
+
+
+function show_etherstate_hnd(){
+	var wanLanStatus = hndswitch["portSpeed"];
+
+	var parseStrToArray = function(_array) {
+		var speedMapping = new Array();
+		speedMapping["M"] = "100 Mbps";
+		speedMapping["G"] = "1 Gbps";
+		speedMapping["X"] = "Unplugged";
+		var parseArray = [];
+		for (var prop in _array) {
+			if (_array.hasOwnProperty(prop)) {
+				var newRuleArray = new Array();
+				newRuleArray.push(prop);
+				newRuleArray.push(speedMapping[_array[prop]]);
+				parseArray.push(newRuleArray);
+			}
+		}
+		return parseArray;
+	};
+
+	var tableStruct = {
+		data: parseStrToArray(wanLanStatus),
+		container: "tableContainer",
+		header: [
+			{
+				"title" : "Port",
+				"width" : "50%"
+			},
+			{
+				"title" : "Link State",
+				"width" : "50%"
+			},
+		]
+	}
+
+	if(tableStruct.data.length) {
+		tableApi.genTableAPI(tableStruct);
+	}
+
 }
 
 
@@ -431,7 +515,7 @@ function update_sysinfo(e){
 						<td id="rc_td"></td>
 					</tr>
 					<tr>
-						<th><#General_x_SystemUpTime_itemname#></a></th>
+						<th><#General_x_SystemUpTime_itemname#></th>
 						<td><span id="boot_days"></span> <#Day#> <span id="boot_hours"></span> <#Hour#> <span id="boot_minutes"></span> <#Minute#> <span id="boot_seconds"></span> <#Second#></td>
 					</tr>
 
@@ -495,7 +579,7 @@ function update_sysinfo(e){
 					</tr>
 				</table>
 
-				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0"bordercolor="#6b8fa3"  class="FormTable">
+				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
 					<thead>
 						<tr>
 							<td colspan="2">Internal Storage</td>
@@ -511,7 +595,7 @@ function update_sysinfo(e){
 					</tr>
 				</table>
 
-				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0"bordercolor="#6b8fa3"  class="FormTable">
+				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
 					<thead>
 						<tr>
 							<td colspan="2">Network</td>
@@ -528,6 +612,7 @@ function update_sysinfo(e){
 					<tr>
 						<th>Ethernet Ports</th>
 						<td>
+							<span id="rtk_warning" style="display:none;">Note: not all information can be retrieved for Realtek ports.</span>
 							<div id="tableContainer" style="margin-top:-10px;"></div>
 						</td>
 					</tr>

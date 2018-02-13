@@ -136,7 +136,7 @@ function unlockAcc(){
 
 									<table width="100%" style="border-collapse:collapse;">
 
-									  <tr bgcolor="#444f53">
+									  <tr bgcolor="#4D595D">
 									    <td colspan="5" class="cloud_main_radius">
 												<div style="padding:30px;font-size:18px;word-break:break-all;border-style:dashed;border-radius:10px;border-width:1px;border-color:#999;">
 													<div><#AiCloud_PWD_enable#></div>
@@ -198,7 +198,7 @@ function unlockAcc(){
 											</td>
 									  </tr>
 
-									  <tr bgcolor="#444f53">
+									  <tr bgcolor="#4D595D">
 									    <td colspan="5" class="cloud_main_radius">
 												<div style="padding:30px;font-size:18px;word-break:break-all;border-style:dashed;border-radius:10px;border-width:1px;border-color:#999;">
 													<#AiCloud_webport#> <input type="text" name="webdav_https_port" class="input_6_table" maxlength="5" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("webdav_https_port"); %>" autocorrect="off" autocapitalize="off">

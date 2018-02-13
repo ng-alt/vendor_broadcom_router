@@ -1,7 +1,7 @@
 #
 # Broadcom Linux Router WPS Makefile
 #
-# Copyright (C) 2012, Broadcom Corporation
+# Copyright (C) 2013, Broadcom Corporation
 # All Rights Reserved.
 # 
 # This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
@@ -9,9 +9,8 @@
 # or duplicated in any form, in whole or in part, without the prior
 # written permission of Broadcom Corporation.
 #
-# $Id: Makefile 343005 2012-07-05 08:39:28Z $
+# $Id: Makefile 383955 2013-02-08 06:00:32Z $
 #
-
 REBUILD = $(shell if [ -f "prebuilt/wps_monitor" ]; then echo 0; else echo 1; fi)
 
 ifneq (true,$(parallel))
@@ -58,6 +57,9 @@ endif
 ifeq ($(CONFIG_PLC),y)
 CFLAGS += -DWPS_PLC
 endif
+ifeq ($(CONFIG_NFC),y)
+export WPS_NFC_DEVICE = 1
+endif
 include $(WPSSRC)/common/config/wps.mk
 EXTRA_CFLAGS = $(WPS_FLAGS)
 
@@ -79,7 +81,8 @@ wpssubdirs := $(addprefix wps_,$(shell echo "$(VLIST)" | tr A-Z a-z))
 CFLAGS += -DWPS_AP_M2D
 
 # Enable WWTP option cause the security hole described in WSC 2.0 specification section 4.3.1
-#CFLAGS += -DWPS_ADDCLIENT_WWTP
+# But WPS 2 Test plan 4.1.13 still need this feature support.
+CFLAGS += -DWPS_ADDCLIENT_WWTP
 
 CFLAGS += -Wall -Wnested-externs -D_REENTRANT -D__linux__
 #CFLAGS += -Werror
@@ -89,35 +92,42 @@ CFLAGS += -g
 endif
 
 
-CFLAGS += -I$(SRCBASE)/include -I$(SRCBASE)/wps/common/include	\
-	-I$(SRCBASE)/router/libbcm -I$(SRCBASE)/router/eapd	\
+CFLAGS += -I$(SRCBASE)/include -I$(SRCBASE)/common/include -I$(SRCBASE)/wps/common/include	\
+	-I$(SRCBASE)/router/libbcm -I$(SRCBASE)/router/eapd${BCMEX}	\
 	-I$(SRCBASE)/router/shared -I$(SRCBASE)/wps/brcm_apps/include	\
-	-I$(SRCBASE)/include/bcmcrypto #${WLAN_ComponentIncPath}
+	-I$(SRCBASE)/include/bcmcrypto ${WLAN_ComponentIncPath}
 
-LDFLAGS += $(EXTRA_LDFLAGS)
-
-ifeq ($(RTCONFIG_HTTPS),y)
-CFLAGS += -I$(TOP)/openssl/include/openssl
-LDFLAGS += -L$(TOP)/openssl -lcrypto -lssl
-endif
+LDFLAGS += -lgcc_s
 
 ifeq ($(RTCONFIG_QTN),y)
 LDFLAGS += -L$(TOP)/libqcsapi_client -lqcsapi_client
 endif
 
-WPSM_LIBS = -lnvram -lbcm -lshared -lbcmcrypto -lm -lc
+ifeq ($(RTCONFIG_AMAS),y)
+LDFLAGS += -L$(TOP)/json-c/.libs -ljson-c
+endif
+
+WPSM_LIBS = -lnvram -lbcm -lshared -lbcmcrypto -lm
 # Set link libraries search path
 export LIBPATH  = -L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib
 export LIBPATH += -L$(TOP)/libbcm -L$(INSTALLDIR)/libbcm/usr/lib
 export LIBPATH += -L$(TOP)/shared -L$(INSTALLDIR)/shared/usr/lib
-export LIBPATH += -L$(TOP)/nvram -L$(INSTALLDIR)/nvram/usr/lib
-export LIBPATH += -L$(SRCBASE)/router/wps/lib
-export LIBPATH += -L$(SRCBASE)/router/wps/prebuilt
+export LIBPATH += -L$(TOP)/nvram${BCMEX} -L$(INSTALLDIR)/nvram/usr/lib
+export LIBPATH += -L$(SRCBASE)/router/wps${BCMEX}/lib
+export LIBPATH += -L$(SRCBASE)/router/wps${BCMEX}/prebuilt
 ifeq ($(WPS_UPNP_DEVICE),1)
 # Always use LIBUPNP
 export LIBPATH += -L$(TOP)/libupnp${BCMEX}$(EX7) -L$(INSTALLDIR)/libupnp/usr/lib
 WPSM_LIBS += -lupnp
 CFLAGS += -I$(SRCBASE)/router/libupnp${BCMEX}$(EX7)/include -I$(SRCBASE)/wps/brcm_apps/upnp/WFADevice
+endif
+
+ifeq ($(WPS_NFC_DEVICE),1)
+export LIBPATH += -L$(TOP)/nfc -L$(INSTALLDIR)/nfc/usr/lib
+WPSM_LIBS += -lnsa -lipcnsa -lpthread
+CFLAGS += -I$(SRCBASE)/wps/brcm_apps/nfc
+CFLAGS += -I$(BASEDIR)/components/apps/nfc/3rdparty/embedded/nsa_examples/linux/libnsa/include
+CFLAGS += -include $(BASEDIR)/components/apps/nfc/3rdparty/embedded/nsa_examples/linux/libnsa/include/buildcfg.h
 endif
 
 WPS_OSL := $(WPS_ROUTERHALFILES)
@@ -180,13 +190,13 @@ dirs :
 	mkdir -p lib
 
 mkversion :
-	$(SRCBASE)/router/wps/mkversion.sh $(WPSSRC)/common/include/version.h.in $(WPSSRC)/common/include/wps_version.h "$(PROD_TAG)"
+	$(SRCBASE)/router/wps${BCMEX}/mkversion.sh $(WPSSRC)/common/include/version.h.in $(WPSSRC)/common/include/wps_version.h "$(PROD_TAG)"
 
 # target
 # force compile wps_monitor in case the library changed.
 ifeq ($(wildcard ./prebuilt),)
 wps_monitor : objs FORCE
-	$(CC) $(LIBPATH) $(WPS_OSLOBJS) $(WPSM_LIBS) -l$(WPS_LIB_FILE) $(LDFLAGS) -o $@
+	$(CC) $(LIBPATH) $(WPS_OSLOBJS) -l$(WPS_LIB_FILE) $(WPSM_LIBS) $(LDFLAGS) -o $@
 else
 wps_monitor :
 endif
@@ -198,21 +208,18 @@ clean:
 	find . \( -name '*.[od]' -o -name '*.tmp' \) -type f -print | xargs rm -f
 	find -name obj | xargs rm -rf
 	rm -rf lib
-#	find -name wps_monitor | xargs rm -f
-#	rm -rf prebuilt
+ifeq ($(REBUILD),1)
+	find -name wps_monitor | xargs rm -f
+endif
 
 # install
 install: all
-	install -d $(INSTALLDIR)/wps$(BCMEX)/bin
+	install -d $(INSTALLDIR)/wps${BCMEX}/bin
 ifeq ($(REBUILD),0)
-ifeq ($(RTCONFIG_QTN),y)
-	install prebuilt/wps_monitor_qtn $(INSTALLDIR)/wps$(BCMEX)/bin/wps_monitor
+	install prebuilt/wps_monitor $(INSTALLDIR)/wps${BCMEX}/bin
 else
-	install prebuilt/wps_monitor $(INSTALLDIR)/wps$(BCMEX)/bin
+	install wps_monitor $(INSTALLDIR)/wps${BCMEX}/bin
 endif
-else
-	install wps_monitor $(INSTALLDIR)/wps$(BCMEX)/bin
-endif
-	$(STRIP) $(INSTALLDIR)/wps$(BCMEX)/bin/wps_monitor
+	$(STRIP) $(INSTALLDIR)/wps${BCMEX}/bin/wps_monitor
 
 .PHONY: all clean install libs dirs osl

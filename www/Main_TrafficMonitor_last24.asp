@@ -194,6 +194,9 @@ function init()
 	initCommon(1, 0, 0, 1);	   //Viz 2010.09
 	ref.initX();
 	document.getElementById("faq0").href = "https://www.asus.com/support/FAQ/114483/" ;
+	if(bwdpi_support){
+		document.getElementById('content_title').innerHTML = "<#traffic_monitor#>";
+	}
 }
 
 function switchPage(page){
@@ -283,7 +286,7 @@ function Zoom(func){
 						<table width="100%" >
 							<tr>
 							<td  class="formfonttitle" align="left">
-										<div style="margin-top:5px;"><#Menu_TrafficManager#> - <#traffic_monitor#></div>
+										<div id="content_title" style="margin-top:5px;"><#Menu_TrafficManager#> - <#traffic_monitor#></div>
 									</td>
 							<td>
      						<div align="right">
@@ -333,6 +336,7 @@ function Zoom(func){
 								<input title="Zoom in" type="button" onclick="Zoom('in');" class="zoomin_btn" name="button">
          						<input title="Zoom out" type="button" onclick="Zoom('out');" class="zoomout_btn" name="button">
 							</span>
+							<span id="iftitle" style="font-weight: bold; color: #A0B06B; position: absolute; margin-top: 30px; margin-left: 41%; min-width: 180px;"></span>
 							<!--========= svg =========-->
 							<!--[if IE]>
 								<div id="svg-table" align="left" class="IE8HACK">

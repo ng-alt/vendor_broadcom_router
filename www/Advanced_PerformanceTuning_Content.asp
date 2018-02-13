@@ -4,11 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <meta HTTP-EQUIV="Expires" CONTENT="-1">
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7, IE=EmulateIE10" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 <meta name="svg.render.forceflash" content="false" />	
 <link rel="shortcut icon" href="images/favicon.png">
 <link rel="icon" href="images/favicon.png">
-<title><#Web_Title#> - Performance tuning</title>
+<title><#Web_Title#> - Temperature</title>
 <link rel="stylesheet" type="text/css" href="index_style.css"> 
 <link rel="stylesheet" type="text/css" href="form_style.css">
 <script language="JavaScript" type="text/javascript" src="/state.js"></script>
@@ -55,7 +55,7 @@ function update_coretmp(e){
       update_coretmp();
     },
     success: function(response){
-			updateNum(curr_coreTmp_2, curr_coreTmp_5, curr_coreTmp_cpu);
+			updateNum(curr_coreTmp_2, curr_coreTmp_5, parseInt(curr_coreTmp_cpu));
 			setTimeout("update_coretmp();", 5000);
 		}    
   });
@@ -74,7 +74,7 @@ function updateNum(_coreTmp_2, _coreTmp_5, _cpuTemp){
 		document.getElementById("coreTemp_2").innerHTML = (_coreTmp_2 == 0 ? "disabled" : _coreTmp_2 + " °C");
 		document.getElementById("coreTemp_5").innerHTML = (_coreTmp_5 == 0 ? "disabled" : _coreTmp_5 + " °C");
 		if (_cpuTemp != "")
-			document.getElementById("coreTemp_cpu").innerHTML = _cpuTemp + " °C";
+			document.getElementById("coreTemp_cpu").innerHTML = parseInt(_cpuTemp) + " °C";
 	}
 }
 
@@ -127,7 +127,7 @@ function changeTempUnit(num){
 								<tr bgcolor="#4D595D" style="height:10px">
 								  <td valign="top">
 									  <div>&nbsp;</div>
-									  <div class="formfonttitle"><#menu5_6#> - Performance tuning</div>
+									  <div class="formfonttitle"><#menu5_6#> - Temperature</div>
 									  <div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
 									  <!--div class="formfontdesc"><#PerformaceTuning_desc#></div-->
 									</td>

@@ -1,4 +1,5 @@
-﻿define(function(){
+﻿/* menuTree_ROG.js */
+define(function(){
 	var menuTree = {
 		list: [
 			/*
@@ -48,7 +49,7 @@
 					{url: "AiProtection_HomeSecurity.asp", tabName: "__HIDE__"},
 					{url: "AiProtection_HomeProtection.asp", tabName: "<#AiProtection_Home#>"},
 					{url: "AiProtection_MaliciousSitesBlocking.asp", tabName: "<#AiProtection_sites_blocking#>"},
-					{url: "AiProtection_IntrusionPreventionSystem.asp", tabName: "Two-Way IPS"},
+					{url: "AiProtection_IntrusionPreventionSystem.asp", tabName: "<#AiProtection_two-way_IPS#>"},
 					{url: "AiProtection_InfectedDevicePreventBlock.asp", tabName: "<#AiProtection_detection_blocking#>"},
 					{url: "AiProtection_WebProtector.asp", tabName: "<#Parental_Control#>"},
 					{url: "ParentalControl.asp", tabName: "__INHERIT__"},
@@ -68,7 +69,6 @@
 					{url: "Advanced_QOSUserPrio_Content.asp", tabName: "__INHERIT__"},
 					{url: "Advanced_QOSUserRules_Content.asp", tabName: "__INHERIT__"},
 					{url: "AdaptiveQoS_Adaptive.asp", tabName: "__INHERIT__"},
-					{url: "Bandwidth_Limiter.asp", tabName: "__INHERIT__"},
 					{url: "NULL", tabName: "__INHERIT__"}
 				] 
 			},
@@ -80,10 +80,10 @@
 					{url: "NULL", tabName: "__INHERIT__"}
 				] 
 			},			{
-				menuName: "Game Profile",
+				menuName: "<#Game_Profile#>",
 				index: "menu_GameProfile", 
 				tab: [
-					{url: "GameProfile.asp", tabName: "Game Profile"},
+					{url: "GameProfile.asp", tabName: "<#Game_Profile#>"},
 					{url: "NULL", tabName: "__INHERIT__"}
 				] 
 			},
@@ -96,10 +96,10 @@
 				] 
 			},
 			{
-				menuName: "WiFi Radar",
+				menuName: "<#WiFi_radar#>",
 				index: "menu_WifiRadar", 
 				tab: [
-					{url: "WiFi_Insight.asp", tabName: "WiFi Radar"},
+					{url: "WiFi_Insight.asp", tabName: "<#WiFi_radar#>"},
 					{url: "NULL", tabName: "__INHERIT__"}
 				] 
 			},
@@ -110,7 +110,7 @@
 					{url: "Advanced_VPN_PPTP.asp", tabName: "<#BOP_isp_heart_item#>"},
 					{url: "Advanced_VPN_OpenVPN.asp", tabName: "__INHERIT__"},
 					{url: "Advanced_VPN_IPSec.asp", tabName: "__INHERIT__"},
-					{url: "Advanced_VPNClient_Content.asp", tabName: "<#vpnc_title#>"},
+					{url: "Advanced_VPNClient_Content.asp", tabName: (vpn_fusion_support) ? "<#VPN_Fusion#>" : "<#vpnc_title#>"},
 					{url: "Advanced_TOR_Content.asp", tabName: "TOR"},
 					{url: "NULL", tabName: "__INHERIT__"}
 				]
@@ -119,7 +119,7 @@
 				menuName: "<#Traffic_Analyzer#>",
 				index: "menu_TrafficAnalyzer", 
 				tab: [
-					{url: "TrafficAnalyzer_Statistic.asp", tabName: "Statistic"},
+					{url: "TrafficAnalyzer_Statistic.asp", tabName: "<#Statistic#>"},
 					{url: "Main_TrafficMonitor_realtime.asp", tabName: "<#traffic_monitor#>"},
 					{url: "Main_TrafficMonitor_last24.asp", tabName: "__INHERIT__"},
 					{url: "Main_TrafficMonitor_daily.asp", tabName: "__INHERIT__"},
@@ -189,6 +189,8 @@
 				tab: [
 					{url: "Advanced_WAN_Content.asp", tabName: "<#menu5_3_1#>"},
 					{url: "Advanced_DSL_Content.asp", tabName: "<#menu5_3_1#>"},
+					{url: "Advanced_Modem_Content.asp", tabName: "<#menu5_3_1#>"},
+					{url: "Advanced_MobileBroadband_Content.asp", tabName: "<#menu5_3_1#>"},
 					{url: "Advanced_WANPort_Content.asp", tabName: "<#dualwan#>"},
 					{url: "Advanced_PortTrigger_Content.asp", tabName: "<#menu5_3_3#>"},
 					{url: "Advanced_VirtualServer_Content.asp", tabName: "<#menu5_3_4#>"},
@@ -226,6 +228,15 @@
 				] 
 			},
 			{
+				menuName: "Alexa & IFTTT",
+				index: "menu_Alexa_IFTTT",
+				tab: [
+					{url: "Advanced_Smart_Home_Alexa.asp", tabName: "__INHERIT__"},
+					{url: "Advanced_Smart_Home_IFTTT.asp", tabName: "__INHERIT__"},
+					{url: "NULL", tabName: "__INHERIT__"}
+				]
+			},
+			{
 				menuName: "IPv6",
 				index: "menu_IPv6",
 				tab: [
@@ -241,8 +252,7 @@
 					{url: "Advanced_BasicFirewall_Content.asp", tabName: "<#menu5_1_1#>"},
 					{url: "Advanced_URLFilter_Content.asp", tabName: "<#menu5_5_2#>"},
 					{url: "Advanced_KeywordFilter_Content.asp", tabName: "<#menu5_5_5#>"},
-					{url: "Advanced_Firewall_Content.asp", tabName: "<#menu5_5_4#>"},
-					{url: "Advanced_Firewall_IPv6_Content.asp", tabName: "<#menu5_5_6#>"},			
+					{url: "Advanced_Firewall_Content.asp", tabName: "<#menu5_5_4#>"},			
 					{url: "NULL", tabName: "__INHERIT__"}
 				]
 			},
@@ -316,6 +326,10 @@
 
 				if(!cloudsync_support && !aicloudipk_support){
 					retArray.push("menu_AiCloud");
+				}
+
+				if(!ifttt_support && !alexa_support){
+					retArray.push("menu_Alexa_IFTTT");
 				}
 
 				if(!IPv6_support){
@@ -437,6 +451,10 @@
 					retArray.push("Advanced_VPN_OpenVPN.asp");
 				}	
 
+				if(!ipsec_srv_support){
+					retArray.push("Advanced_VPN_IPSec.asp");
+				}
+
 				if(!vpnc_support){
 					retArray.push("Advanced_VPNClient_Content.asp");
 				}
@@ -459,6 +477,21 @@
 				
 				if(!dualWAN_support){
 					retArray.push("Advanced_WANPort_Content.asp");
+					retArray.push("Advanced_Modem_Content.asp");
+					retArray.push("Advanced_MobileBroadband_Content.asp");
+				}
+				else{
+					if(!dualwan_enabled && usb_index == 0){
+						retArray.push("Advanced_WAN_Content.asp");
+						if(!gobi_support)
+							retArray.push("Advanced_MobileBroadband_Content.asp");
+						else
+							retArray.push("Advanced_Modem_Content.asp");
+					}
+					else{
+						retArray.push("Advanced_MobileBroadband_Content.asp");
+						retArray.push("Advanced_Modem_Content.asp");
+					}
 				}
 
 				if(!SwitchCtrl_support){
@@ -522,9 +555,16 @@
 					retArray.push("AdaptiveQoS_ROG.asp");
 				}
 
+				if(!alexa_support){
+					retArray.push("Advanced_Smart_Home_Alexa.asp");
+				}
+
+				if(!ifttt_support){
+					retArray.push("Advanced_Smart_Home_IFTTT.asp");
+				}
+
 				if(!IPv6_support){
 					retArray.push("Main_IPV6Status_Content.asp");
-					retArray.push("Advanced_Firewall_IPv6_Content.asp");
 				}
 
 				if(!fbwifi_support){
@@ -538,7 +578,7 @@
 				else
 					retArray.push("Advanced_DHCP_Content.asp");
 
-				if(!Rawifi_support || !concurrep_support || !isSwMode("re")){
+				if(!wifiproxy_support || !concurrep_support || !isSwMode("re")){
 					retArray.push("Advanced_WProxy_Content.asp");
 				}
 				
@@ -556,6 +596,9 @@
 				if(!cooler_support){
 					retArray.push("Advanced_PerformanceTuning_Content.asp");
 				}
+
+				if(!rrsut_support)
+					retArray.push("cloud_router_sync.asp");
 
 				/* Operation Mode */
 				if(isSwMode("re")){
@@ -609,7 +652,7 @@
 					retArray.push("Advanced_DHCP_Content.asp");
 					retArray.push("Advanced_MultiSubnet_Content.asp");
 					retArray.push("Advanced_GWStaticRoute_Content.asp");
-					retArray.push("Advanced_IPTV_Content.asp");								
+					retArray.push("Advanced_IPTV_Content.asp");
 					retArray.push("Advanced_SwitchCtrl_Content.asp");
 					retArray.push("Main_DHCPStatus_Content.asp");
 					retArray.push("Main_IPV6Status_Content.asp");

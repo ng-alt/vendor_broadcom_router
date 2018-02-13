@@ -10,7 +10,7 @@ fi
 my_logger(){
 	if [ "$VPN_LOGGING" -gt "3" ]
 	then
-		logger -t "openvpn-routing" "$1"
+		/usr/bin/logger -t "openvpn-routing" "$1"
 	fi
 }
 
@@ -80,8 +80,8 @@ purge_client_list(){
 run_custom_script(){
 	if [ -f /jffs/scripts/openvpn-event ]
 	then
-		logger -t "custom_script" "Running /jffs/scripts/openvpn-event (args: $PARAM)"
-		sh /jffs/scripts/openvpn-event $PARAM
+		/usr/bin/logger -t "custom_script" "Running /jffs/scripts/openvpn-event (args: $PARAM)"
+		/bin/sh /jffs/scripts/openvpn-event $PARAM
 	fi
 }
 
@@ -113,35 +113,35 @@ init_table(){
 # Begin
 if [ "$dev" == "tun11" ]
 then
-	VPN_IP_LIST=$(nvram get vpn_client1_clientlist)
+	VPN_IP_LIST=$(nvram get vpn_client1_clientlist)$(nvram get vpn_client1_clientlist1)$(nvram get vpn_client1_clientlist2)$(nvram get vpn_client1_clientlist3)$(nvram get vpn_client1_clientlist4)$(nvram get vpn_client1_clientlist5)
 	VPN_REDIR=$(nvram get vpn_client1_rgw)
 	VPN_FORCE=$(nvram get vpn_client1_enforce)
 	VPN_UNIT=1
 	VPN_LOGGING=$(nvram get vpn_client1_verb)
 elif [ "$dev" == "tun12" ]
 then
-	VPN_IP_LIST=$(nvram get vpn_client2_clientlist)
+	VPN_IP_LIST=$(nvram get vpn_client2_clientlist)$(nvram get vpn_client2_clientlist1)$(nvram get vpn_client2_clientlist2)$(nvram get vpn_client2_clientlist3)$(nvram get vpn_client2_clientlist4)$(nvram get vpn_client2_clientlist5)
 	VPN_REDIR=$(nvram get vpn_client2_rgw)
 	VPN_FORCE=$(nvram get vpn_client2_enforce)
 	VPN_UNIT=2
 	VPN_LOGGING=$(nvram get vpn_client2_verb)
 elif [ "$dev" == "tun13" ]
 then
-	VPN_IP_LIST=$(nvram get vpn_client3_clientlist)
+	VPN_IP_LIST=$(nvram get vpn_client3_clientlist)$(nvram get vpn_client3_clientlist1)$(nvram get vpn_client3_clientlist2)$(nvram get vpn_client3_clientlist3)$(nvram get vpn_client3_clientlist4)$(nvram get vpn_client3_clientlist5)
 	VPN_REDIR=$(nvram get vpn_client3_rgw)
 	VPN_FORCE=$(nvram get vpn_client3_enforce)
 	VPN_UNIT=3
 	VPN_LOGGING=$(nvram get vpn_client3_verb)
 elif [ "$dev" == "tun14" ]
 then
-	VPN_IP_LIST=$(nvram get vpn_client4_clientlist)
+	VPN_IP_LIST=$(nvram get vpn_client4_clientlist)$(nvram get vpn_client4_clientlist1)$(nvram get vpn_client4_clientlist2)$(nvram get vpn_client4_clientlist3)$(nvram get vpn_client4_clientlist4)$(nvram get vpn_client4_clientlist5)
 	VPN_REDIR=$(nvram get vpn_client4_rgw)
 	VPN_FORCE=$(nvram get vpn_client4_enforce)
 	VPN_UNIT=4
 	VPN_LOGGING=$(nvram get vpn_client4_verb)
 elif [ "$dev" == "tun15" ]
 then
-	VPN_IP_LIST=$(nvram get vpn_client5_clientlist)
+	VPN_IP_LIST=$(nvram get vpn_client5_clientlist)$(nvram get vpn_client5_clientlist1)$(nvram get vpn_client5_clientlist2)$(nvram get vpn_client5_clientlist3)$(nvram get vpn_client5_clientlist4)$(nvram get vpn_client5_clientlist5)
 	VPN_REDIR=$(nvram get vpn_client5_rgw)
 	VPN_FORCE=$(nvram get vpn_client5_enforce)
 	VPN_UNIT=5
@@ -188,7 +188,7 @@ then
 	exit 0
 fi
 
-logger -t "openvpn-routing" "Configuring policy rules for client $VPN_UNIT"
+/usr/bin/logger -t "openvpn-routing" "Configuring policy rules for client $VPN_UNIT"
 
 if [ $script_type == "route-pre-down" ]
 then
@@ -196,7 +196,7 @@ then
 
 	if [ $VPN_FORCE == "1" -a $VPN_REDIR -ge "2" ]
 	then
-		logger -t "openvpn-routing" "Tunnel down - VPN client access blocked"
+		/usr/bin/logger -t "openvpn-routing" "Tunnel down - VPN client access blocked"
 		ip route change prohibit default table $VPN_TBL
 		create_client_list
 	else
@@ -228,14 +228,14 @@ then
 	then
 		if [ "$VPN_FORCE" == "1" ]
 		then
-			logger -t "openvpn-routing" "Tunnel re-established, restoring WAN access to clients"
+			/usr/bin/logger -t "openvpn-routing" "Tunnel re-established, restoring WAN access to clients"
 		fi
 		if [ "$route_net_gateway" != "" ]
 		then
 			ip route del default table $VPN_TBL
 			ip route add default via $route_vpn_gateway table $VPN_TBL
 		else
-			logger -t "openvpn-routing" "WARNING: no VPN gateway provided, routing might not work properly!"
+			/usr/bin/logger -t "openvpn-routing" "WARNING: no VPN gateway provided, routing might not work properly!"
 		fi
 	fi
 

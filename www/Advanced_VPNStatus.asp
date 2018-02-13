@@ -20,7 +20,7 @@
 <script language="JavaScript" type="text/javascript" src="/general.js"></script>
 <script language="JavaScript" type="text/javascript" src="/popup.js"></script>
 <script language="JavaScript" type="text/javascript" src="/help.js"></script>
-<script language-:JavaScript" type="text/javascript" src="/js/jquery.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/jquery.js"></script>
 <script>
 wan_route_x = '<% nvram_get("wan_route_x"); %>';
 wan_nat_x = '<% nvram_get("wan_nat_x"); %>';
@@ -35,11 +35,6 @@ function initial(){
 
 	if (openvpnd_support) {
 		setTimeout("refreshData()",1000);
-		if (based_modelid == "RT-AC3200") {
-			showhide("client3", 0);
-			showhide("client4", 0);
-			showhide("client5", 0);
-		}
 	} else {
 		showhide("server1", 0);
 		showhide("server2", 0);
@@ -49,6 +44,14 @@ function initial(){
 		showhide("client4", 0);
 		showhide("client5", 0);
 	}
+
+	if (!pptpd_support)
+		showhide("pptpserver", 0);
+
+	if (ipsec_srv_support)
+		setTimeout("refresh_ipsec_data()",1200);
+	else
+		showhide("ipsecsrv", 0);
 }
 
 
@@ -84,7 +87,7 @@ function displayData(){
 	else
 		document.getElementById("server2_Block_Running").innerHTML = state_srv_stop;
 
-	for (var unit = 1; unit < (based_modelid == "RT-AC3200" ? 3 : 6); unit++) {
+	for (var unit = 1; unit < 6; unit++) {
 		switch (unit) {
 			case 1:
 				client_state = vpnc_state_t1;
@@ -158,11 +161,9 @@ function displayData(){
 	parseStatus(vpn_server2_status, "server2_Block", "", "");
 	parseStatus(vpn_client1_status, "client1_Block", vpn_client1_ip, vpn_client1_rip);
 	parseStatus(vpn_client2_status, "client2_Block", vpn_client2_ip, vpn_client2_rip);
-	if (based_modelid != "RT-AC3200") {
-		parseStatus(vpn_client3_status, "client3_Block", vpn_client3_ip, vpn_client3_rip);
-		parseStatus(vpn_client4_status, "client4_Block", vpn_client4_ip, vpn_client4_rip);
-		parseStatus(vpn_client5_status, "client5_Block", vpn_client5_ip, vpn_client5_rip);
-	}
+	parseStatus(vpn_client3_status, "client3_Block", vpn_client3_ip, vpn_client3_rip);
+	parseStatus(vpn_client4_status, "client4_Block", vpn_client4_ip, vpn_client4_rip);
+	parseStatus(vpn_client5_status, "client5_Block", vpn_client5_ip, vpn_client5_rip);
 
 	if (pptpd_support) {
 		if (pptpdpid > 0)
@@ -170,13 +171,17 @@ function displayData(){
 		else
 			document.getElementById("pptp_Block_Running").innerHTML = state_srv_stop;
 		parsePPTPClients();
-
-	} else {
-		showhide("pptpserver", 0);
 	}
 
 	if ( (vpnc_support) && (vpnc_clientlist_array != "") ) {
 		show_vpnc_rulelist();
+	}
+
+	if(ipsec_srv_support) {
+		if('<% nvram_get("ipsec_server_enable"); %>' == "1")
+			document.getElementById("ipsec_srv_Block_Running").innerHTML = state_srv_run;
+		else
+			document.getElementById("ipsec_srv_Block_Running").innerHTML = state_srv_stop;
 	}
 
 	setTimeout("refreshData()",2000);
@@ -295,56 +300,33 @@ function parseStatus(text, block, ipaddress, ripaddress){
 		code = '<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable_table"><thead><tr><td colspan="6">Clients</td></tr></thead><tr>';
 
 // Headers
-		for (i = 0; i < (clientTableHeaders.length - 2); ++i)
-		{
-			switch (i) {
-				case 0: // CN, merge with user
-					code +='<th style="text-align:left;">' + clientTableHeaders[0] + '<br><span style="color: cyan; background: transparent;">' + clientTableHeaders[clientTableHeaders.length-2] + '</span></th>';
-					break;
-				case 2: // Virtual IPv4, merge with IPv6
-					code +='<th style="text-align:left;">' + clientTableHeaders[2] + '<br><span style="color: cyan; background: transparent;">' + clientTableHeaders[3] + '</span></th>';
-					break;
-				case 3: // IPv6, merged with IPv4 field
-				case 7: // Connected since time_t
-					break;
-				case 4: // dl/up amount
-				case 5:
-					code +='<th style="text-align:left;">' + clientTableHeaders[i].replace("Bytes","MBytes") + '</th>';
-					break;
-				default:
-					code +='<th style="text-align:left;">' + clientTableHeaders[i] + '</th>';
-			}
-		}
-
+		// Common Name, Username
+		code +='<th style="width:25%;text-align:left;">' + clientTableHeaders[0] + '<br><span style="color: cyan; background: transparent;">' + clientTableHeaders[8] + '</span></th>';
+		// Real IPv4, merged with Virtual IPv4
+		code +='<th style="width:20%;text-align:left;">' + clientTableHeaders[1] + '<br><span style="color: cyan; background: transparent;">' + clientTableHeaders[2] + '</span></th>';
+		// dl/up amount
+		code +='<th style="width:16%;text-align:left;">' + clientTableHeaders[4].replace("Bytes","MBytes") + '</th>';
+		code +='<th style="width:16%;text-align:left;">' + clientTableHeaders[5].replace("Bytes","MBytes") + '</th>';
+		// Connected since
+		code +='<th style="width:23%;text-align:left;">' + clientTableHeaders[6] + '</th>';
 		code += '</tr>';
 
 // Clients
 		for (i = 0; i < clientTableEntries.length; ++i)
 		{
 			code += '<tr>';
-			for (j = 0; j < (clientTableEntries[i].length-2); ++j)
-			{
-				switch (j) {
-					case 0:	// CN, merge with user
-						if (clientTableEntries[i][8] == "UNDEF") {
-							clientTableEntries[i][8] = "";
-						}
-						code += '<td style="vertical-align:top; white-space:nowrap; text-align:left;">' + clientTableEntries[i][0] + '<br><span style="color: cyan; background: transparent;">' + clientTableEntries[i][8] +'</span></td>';
-						break;
-					case 2:	// virtual IPv4, merge with IPv6
-						code += '<td style="vertical-align:top; text-align:left;">' + clientTableEntries[i][2] + '<br><span style=""color: cyan; background: transparent;">' + clientTableEntries[i][3] +'</span></td>';
-						break;
-					case 3:	// IPv6, merged with IPv4 field
-					case 7: // connected since time_t
-						break;
-					case 4:
-					case 5: // dl/up amount
-						code += '<td style="vertical-align:top; text-align:left;">' + Number(clientTableEntries[i][j]/1024/1024).toFixed(2).toLocaleString() + '</td>';
-						break;
-					default:
-						code += '<td style="vertical-align:top; text-align:left;">' + clientTableEntries[i][j] + '</td>';
-				}
+			// Common Name, Username
+			if (clientTableEntries[i][8] == "UNDEF") {
+				clientTableEntries[i][8] = "";
 			}
+			code += '<td style="vertical-align:top; white-space:nowrap; text-align:left;">' + clientTableEntries[i][0] + '<br><span style="color: cyan; background: transparent;">' + clientTableEntries[i][8] +'</span></td>';
+			// Real IP, Virtual IP
+			code += '<td style="vertical-align:top; text-align:left;">' + clientTableEntries[i][1] + '<br><span style="color: cyan; background: transparent;">' + clientTableEntries[i][2] +'</span></td>';
+			// dl/up amount
+			code += '<td style="vertical-align:top; text-align:left;">' + Number(clientTableEntries[i][4]/1024/1024).toFixed(2).toLocaleString() + '</td>';
+			code += '<td style="vertical-align:top; text-align:left;">' + Number(clientTableEntries[i][5]/1024/1024).toFixed(2).toLocaleString() + '</td>';
+			// Connected Since
+			code += '<td style="vertical-align:top; text-align:left;">' + clientTableEntries[i][6] + '</td>';
 			code += '</tr>';
 		}
 		code += '</table><br>';
@@ -405,15 +387,14 @@ function parseStatus(text, block, ipaddress, ripaddress){
 /*** Static Stats ***/
 
 	if (staticstatsPtr > 0) {
-
 		code += '<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable_table"><thead><tr><td colspan="4">Statistics</td></tr></thead>';
 
-                if (ipaddress != "") {
+		if (ipaddress != "") {
 			code += '<tr><th class="statcell">Public IP</th>';
 			code += '<td class="statcell">' + ripaddress +'</td>';
 			code += '<th class="statcell">Local IP</th>';
 			code += '<td class="statcell">' + ipaddress +'</td></tr>';
-                }
+		}
 
 		for (i = 0; i < staticstatsTableEntries.length; ++i)
 		{
@@ -428,6 +409,32 @@ function parseStatus(text, block, ipaddress, ripaddress){
 	document.getElementById(block).innerHTML += code;
 }
 
+
+function parseIPSecData(profileName){
+	var code = "<table width='100%' border='1' align='center' cellpadding='4' cellspacing='0' bordercolor='#6b8fa3' class='FormTable_table'><thead><tr><td colspan='5'>Connected Clients</td></tr></thead><tr>";
+	code += "<th style='text-align:left;white-space:nowrap;'>Remote IP</th>";
+	code += "<th style='text-align:left;white-space:nowrap;'><#statusTitle_Client#></th>";
+	code += "<th style='text-align:left;white-space:nowrap;'><#Access_Time#></th>";
+	code += "<th style='text-align:left;white-space:nowrap;'><#vpn_ipsec_XAUTH#> <#Permission_Management_Users#></th>";
+	code += "<th style='text-align:left;white-space:nowrap;'>PSKR Auth Time</th>";
+
+	var statusText = [[""], ["<#Connected#>"], ["<#Connecting_str#>"], ["<#Connecting_str#>"]]
+	var profileName_array = ipsec_connect_status_array[profileName].split("<");
+	for (i = 0; i < profileName_array.length; i += 1) {
+		if(profileName_array[i] != "") {
+			var profileName_col = profileName_array[i].split(">");
+
+			code += "<tr><td style='text-align:left;'>" + profileName_col[0] + "</td>";
+			code += "<td style='text-align:left;'>" + statusText[profileName_col[1]] + "</td>";
+			code += "<td style='text-align:left;'>" + profileName_col[2] + "</td>";
+			code += "<td style='text-align:left;'>" + profileName_col[3] + "</td>";
+			code += "<td style='text-align:left;'>" + profileName_col[4] + "</td></tr>";
+		}
+	}
+
+	code +='</table>';
+	document.getElementById('ipsec_srv_Block').innerHTML = code;
+}
 
 function show_vpnc_rulelist(){
 	if(vpnc_clientlist_array[0] == "<")
@@ -477,12 +484,41 @@ function show_vpnc_rulelist(){
 					code += '<td>'+ vpnc_clientlist_col[1] +'</td>';
 				}
 			}
-
 		}
 	}
 	code +='</table>';
 
 	document.getElementById("vpnc_clientlist_Block").innerHTML = code;
+}
+
+function refresh_ipsec_data() {
+	$.ajax({
+		url: '/ajax_ipsec.asp',
+		dataType: 'script',
+		timeout: 1500,
+		error: function(xhr){
+			setTimeout("refresh_ipsec_data();",1500);
+		},
+		success: function() {
+			ipsec_connect_status_array = [];
+			for(var i = 0; i < ipsec_connect_status.length; i += 1) {
+				ipsec_connect_status_array["Host-to-Net"] = ipsec_connect_status[i][1];
+			}
+			if(ipsec_connect_status_array["Host-to-Net"] != undefined) {
+				var connected_count = (ipsec_connect_status_array["Host-to-Net"].split("<").length - 1);
+				if(connected_count > 0) {
+					parseIPSecData("Host-to-Net");
+				}
+				else
+					document.getElementById('ipsec_srv_Block').innerHTML = "";
+				}
+			else {
+				document.getElementById('ipsec_srv_Block').innerHTML = "";
+			}
+		}
+	});
+
+	setTimeout("refresh_ipsec_data()", 2000)
 }
 
 
@@ -573,6 +609,19 @@ function show_vpnc_rulelist(){
 					</tr>
 
 				</table>
+				<br>
+				<table width="100%" id="ipsecsrv" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
+					<thead>
+						<tr>
+                                                        <td>IPSec Server<span id="ipsec_srv_Block_Running" style="background: transparent;"></span></td>
+						</tr>
+					</thead>
+					<tr>
+						<td style="border: none;">
+							<div id="ipsec_srv_Block"></div>
+						</td>
+					</tr>
+                                </table>
 				<br>
 				<table width="100%" id="client1" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
 					<thead>
@@ -677,4 +726,5 @@ function show_vpnc_rulelist(){
 <div id="footer"></div>
 </body>
 </html>
+
 

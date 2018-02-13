@@ -18,7 +18,6 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
 <script type="text/javascript" src="/form.js"></script>
-<script type="text/javascript" src="/validator.js"></script>
 <script>
 
 if('<% nvram_get("start_aicloud"); %>' == '0')
@@ -71,10 +70,6 @@ else
 
 function initial(){
 	show_menu();
-	addOnlineHelp(document.getElementById("faq0"), ["samba"]);
-	addOnlineHelp(document.getElementById("faq1"), ["ASUSWRT", "port", "forwarding"]);
-	addOnlineHelp(document.getElementById("faq2"), ["ASUSWRT", "DMZ"]);
-	addOnlineHelp(document.getElementById("faq3"), ["WOL", "BIOS"]);
 
 	document.getElementById("app_state").style.display = "";
 	
@@ -142,7 +137,7 @@ function initial(){
 				else
 					document.getElementById("accessMethod").innerHTML = "<#AiCloud_enter#> <a style=\"font-weight: bolder;text-decoration: underline;word-break:break-all;\" href=\"https://"+ ddns_hostname + ":"+ https_port +"\" target=\"_blank\">https://"+ ddns_hostname +":"+ https_port +"</a><br />";
 				
-				document.getElementById("accessMethod").innerHTML += "To modify the ddns name, please click <a style=\"font-weight: bolder;text-decoration: underline;\" href=\"/Advanced_ASUSDDNS_Content.asp?af=DDNSName\" target=\"_blank\">here</a>.";
+				document.getElementById("accessMethod").innerHTML += '<#aicloud_disk_case12#>';
 			}
 			else{
 				if(https_port == 443) // if the port number of https is 443, hide it
@@ -152,7 +147,7 @@ function initial(){
                                 	document.getElementById('cloud_url').href = "https://"+ theUrl +":" + https_port;
 	                                document.getElementById('cloud_url').innerHTML = "https://"+ theUrl +":" + https_port;
 				}	
-				document.getElementById("accessMethod").innerHTML += "<br/>Register for an ASUS DDNS <a style=\"font-weight: bolder;text-decoration: underline;\" href=\"/Advanced_ASUSDDNS_Content.asp\" target=\"_blank\">here</a> to access the cloud disk online.";
+				document.getElementById("accessMethod").innerHTML += '<br/><#aicloud_disk_case22#>';
 			}
 			break;
 	}
@@ -845,7 +840,7 @@ This agreement constitutes the entire agreement between you and ASUS with respec
 											</td>
 
 									    <td width="6px">
-												<div align="center"><img src="/images/cloudsync/line.png"></div>
+												<div align="center"><img src="/images/line.png"></div>
 											</td>
 
 									    <td width="1px"></td>
@@ -896,7 +891,7 @@ This agreement constitutes the entire agreement between you and ASUS with respec
 												</div>
 											</td>
 									    <td>
-												<div align="center"><img src="/images/cloudsync/line.png"></div>
+												<div align="center"><img src="/images/line.png"></div>
 											</td>
 									    <td>
 												&nbsp;
@@ -945,7 +940,7 @@ This agreement constitutes the entire agreement between you and ASUS with respec
 												</div>
 											</td>
 									    <td>
-												<div align="center"><img src="/images/cloudsync/line.png"></div>
+												<div align="center"><img src="/images/line.png"></div>
 											</td>
 									    <td>
 												&nbsp;

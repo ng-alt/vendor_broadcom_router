@@ -1,7 +1,7 @@
 #
 # 802.1x Authenticator (Network Access Server) Embedded Linux Build Makefile
 #
-# Copyright (C) 2012, Broadcom Corporation
+# Copyright (C) 2015, Broadcom Corporation
 # All Rights Reserved.
 # 
 # This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
@@ -9,13 +9,12 @@
 # or duplicated in any form, in whole or in part, without the prior
 # written permission of Broadcom Corporation.
 #
-# $Id: Makefile 341899 2012-06-29 04:06:38Z $
+# $Id: Makefile 382679 2013-02-03 04:43:50Z $
 #
 
 include ../../common.mak
-CFLAGS	+= $(EXTRACFLAGS)
 
-CFLAGS	+= -I.. -I$(SRCBASE)/include -I$(SRCBASE)/router/shared -Wall -Werror
+CFLAGS	+= -I.. -I$(SRCBASE)/include -I$(SRCBASE)/common/include -I$(SRCBASE)/router/shared -Wall -Werror
 CFLAGS	+= $(WLAN_ComponentIncPath)
 
 #CFLAGS	+= -g -DDEBUG
@@ -25,23 +24,29 @@ CFLAGS  += -DNAS_WKSP_BUILD_NAS_SUPPL
 #CFLAGS  += -DNAS_GTK_PER_STA
 CFLAGS  += -DNAS_RADIUS
 CFLAGS  += -DNAS_WKSP_ON_DEMAND
-
+ifeq ($(RTCONFIG_IPV6),y)
+CFLAGS += -DNAS_IPV6
+endif
 
 CFLAGS	+= -DBCMSUPPL
 
 # EAPD include path
-CFLAGS	+= -I$(SRCBASE)/router/eapd
+CFLAGS	+= -I$(SRCBASE)/router/eapd${BCMEX}
 
-LDFLAGS += -L$(TOP)/nvram -L$(INSTALLDIR)/nvram/usr/lib -lnvram
+LDFLAGS += -L$(TOP)/nvram${BCMEX} -L$(INSTALLDIR)/nvram/usr/lib -lnvram
 LDFLAGS += -L$(TOP)/shared -L$(INSTALLDIR)/shared/usr/lib -lshared
 LDFLAGS += -L$(TOP)/libbcmcrypto -L$(INSTALLDIR)/libbcmcrypto/usr/lib -lbcmcrypto
-LDFLAGS += $(EXTRA_LDFLAGS)
+LDFLAGS += -lgcc_s
 
 ifeq ($(RTCONFIG_QTN),y)
 LDFLAGS += -L$(TOP)/libqcsapi_client -lqcsapi_client
 endif
 
-vpath %.c $(SRCBASE)/router/nas $(SRCBASE)/shared $(SRCBASE)/router/shared
+ifeq ($(RTCONFIG_AMAS),y)
+LDFLAGS += -L$(TOP)/json-c/.libs -ljson-c
+endif
+
+vpath %.c $(SRCBASE)/router/nas${BCMEX} $(SRCBASE)/shared $(SRCBASE)/router/shared
 
 # build target
 NASOBJS = mppe.o wpa.o nas.o nas_linux.o nas_wl.o nas_wksp.o
@@ -50,11 +55,7 @@ UTLOBJS = bcmwpa.o bcmutils.o
 
 ifeq ($(wildcard ../*.c), )
 all:
-ifeq ($(RTCONFIG_QTN),y)
-	-cp ./prebuilt/nas_qtn nas
-else
 	-cp ./prebuilt/nas .
-endif
 else
 all: nas
 endif

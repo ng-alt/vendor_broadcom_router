@@ -28,6 +28,9 @@
 #include <pjlib.h>
 #include <pj/errno.h>
 #include <pj/sock.h>
+#if defined(ENABLE_MEMWATCH) && ENABLE_MEMWATCH != 0
+#include <memwatch.h>
+#endif
 
 
 #ifdef __cplusplus
@@ -59,7 +62,7 @@ typedef struct natnl_wl_ioctl {
 
 #define NVRAM_WEBDAV_HTTP_PORT "webdav_http_port"
 #define NVRAM_WEBDAV_HTTPS_PORT "webdav_https_port"
-#define NVRAM_WEB_HTTP_PORT ""
+#define NVRAM_WEB_HTTP_PORT "http_lanport"
 #define NVRAM_WEB_HTTPS_PORT "https_lanport"
 #ifdef __cplusplus
 }
@@ -104,6 +107,8 @@ struct natnl_data {
 
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
+
+#define NATNL_IM_MAX_LEN 13000
 
 #ifdef SOLARIS
 /* Copied from sys/time.h on linux system since solaris system that I tried to

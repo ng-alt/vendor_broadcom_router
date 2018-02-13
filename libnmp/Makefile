@@ -6,11 +6,7 @@ LDFLAGS += -L$(TOP)/nvram -lnvram -L$(TOP)/shared -lshared
 
 ifeq ($(wildcard $(SRCBASE)/router/libnmp/*.c),)
 all:
-ifeq ($(RTCONFIG_BCMARM),y)
-	-cp -f prebuilt_arm/libnmp.so libnmp.so
-else
 	-cp -f prebuilt/libnmp.so libnmp.so
-endif
 else
 all: libnmp.so
 endif

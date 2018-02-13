@@ -27,14 +27,9 @@ LDFLAGS += -L.
 
 OBJS := bcmgpio.o
 
-
 ifeq ($(wildcard ./*.c),)
 all:
-ifeq ($(RTCONFIG_BCMARM),y)
-	cp -f ./prebuilt_arm$(EX7)/libbcm.so .
-else
-	cp -f ./prebuilt/libbcm.so .
-endif
+	cp -f ./prebuilt$(BCMEX)$(EX7)/libbcm.so .
 else
 all: libbcm.so
 endif

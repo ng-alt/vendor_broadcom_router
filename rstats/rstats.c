@@ -53,7 +53,6 @@
 #define SMIN	60
 #define	SHOUR	(60 * 60)
 #define	SDAY	(60 * 60 * 24)
-#define BOOT_DATESTAMP		1483232400UL
 
 #define INTERVAL		30
 #if defined(RTCONFIG_WANPORT2)
@@ -72,10 +71,10 @@
 /* INTERNET:	2
  * WIRED:	1
  * BRIDGE:	1
- * WIFI_2G:	4
- * WIFI_5G:	4 x number of 5g bands
+ * WIFI_2G:	7
+ * WIFI_5G:	7 x number of 5g bands
  */
-#define MAX_SPEED_IF	25
+#define MAX_SPEED_IF	35
 
 #define MAX_ROLLOVER	(MAX_BW * INTERVAL / 8ULL * M)
 
@@ -94,6 +93,10 @@
 
 #define RA_OFFSET_ISP_METER	0x4FF00
 
+/**
+ * If you expand this enumeration, check MAX_SPEED_IF array size too.
+ * If you expand Y of IFID_WIRELESSX_Y, you must update desc_to_id() function too.
+ */
 enum if_id {
 	IFID_INTERNET = 0,	/* INTERNET */
 	IFID_INTERNET1,		/* INTERNET1 */
@@ -103,14 +106,30 @@ enum if_id {
 	IFID_WIRELESS0_1,	/* WIRELESS0.1 */
 	IFID_WIRELESS0_2,	/* WIRELESS0.2 */
 	IFID_WIRELESS0_3,	/* WIRELESS0.3 */
+	IFID_WIRELESS0_4,	/* WIRELESS0.4 */
+	IFID_WIRELESS0_5,	/* WIRELESS0.5 */
+	IFID_WIRELESS0_6,	/* WIRELESS0.6 */
 	IFID_WIRELESS1,		/* WIRELESS1 */
 	IFID_WIRELESS1_1,	/* WIRELESS1.1 */
 	IFID_WIRELESS1_2,	/* WIRELESS1.2 */
 	IFID_WIRELESS1_3,	/* WIRELESS1.3 */
+	IFID_WIRELESS1_4,	/* WIRELESS1.4 */
+	IFID_WIRELESS1_5,	/* WIRELESS1.5 */
+	IFID_WIRELESS1_6,	/* WIRELESS1.6 */
 	IFID_WIRELESS2,		/* WIRELESS2 */
 	IFID_WIRELESS2_1,	/* WIRELESS2.1 */
 	IFID_WIRELESS2_2,	/* WIRELESS2.2 */
 	IFID_WIRELESS2_3,	/* WIRELESS2.3 */
+	IFID_WIRELESS2_4,	/* WIRELESS2.4 */
+	IFID_WIRELESS2_5,	/* WIRELESS2.6 */
+	IFID_WIRELESS2_6,	/* WIRELESS2.5 */
+	IFID_WIRELESS3,		/* WIRELESS3 */
+	IFID_WIRELESS3_1,	/* WIRELESS3.1 */
+	IFID_WIRELESS3_2,	/* WIRELESS3.2 */
+	IFID_WIRELESS3_3,	/* WIRELESS3.3 */
+	IFID_WIRELESS3_4,	/* WIRELESS3.4 */
+	IFID_WIRELESS3_5,	/* WIRELESS3.6 */
+	IFID_WIRELESS3_6,	/* WIRELESS3.5 */
 
 	IFID_MAX
 };
@@ -217,7 +236,7 @@ void get_meter_file(char *meter_buf)
 #else
 	FRead(meter_buf, RA_OFFSET_ISP_METER, 64);
 #endif
-	_dprintf("meter_buf: %s\n", meter_buf);
+	//_dprintf("meter_buf: %s\n", meter_buf);
 	return;
 }
 
@@ -285,7 +304,7 @@ static void save(int quick)
 	comp(speed_fn, speed, sizeof(speed[0]) * speed_count);
 
 /*
-	if ((now = time(0)) < BOOT_DATESTAMP) {
+	if ((now = time(0)) < Y2K) {
 		_dprintf("%s: time not set\n", __FUNCTION__);
 		return;
 	}
@@ -304,7 +323,7 @@ static void save(int quick)
 
 	if (strcmp(save_path, "*nvram") == 0) {
 		if (!wait_action_idle(10)) {
-			_dprintf("%s: busy, not saving\n", __FUNCTION__);
+			//_dprintf("%s: busy, not saving\n", __FUNCTION__);
 			return;
 		}
 
@@ -315,7 +334,7 @@ static void save(int quick)
 				nvram_set("rstats_data", bo);
 				if (!nvram_match("debug_nocommit", "1")) nvram_commit();
 
-				_dprintf("%s: nvram commit\n", __FUNCTION__);
+				//_dprintf("%s: nvram commit\n", __FUNCTION__);
 
 				free(bo);
 			}
@@ -331,9 +350,9 @@ static void save(int quick)
 				_dprintf("%s: busy, not saving\n", __FUNCTION__);
 			}
 			else {
-				_dprintf("%s: cp %s %s\n", __FUNCTION__, hgz, tmp);
+				//_dprintf("%s: cp %s %s\n", __FUNCTION__, hgz, tmp);
 				if (eval("cp", hgz, tmp) == 0) {
-					_dprintf("%s: copy ok\n", __FUNCTION__);
+					//_dprintf("%s: copy ok\n", __FUNCTION__);
 
 					if (!nvram_match("rstats_bak", "0")) {
 						now = time(0);
@@ -352,9 +371,9 @@ static void save(int quick)
 						}
 					}
 
-					_dprintf("%s: rename %s %s\n", __FUNCTION__, tmp, save_path);
+					//_dprintf("%s: rename %s %s\n", __FUNCTION__, tmp, save_path);
 					if (rename(tmp, save_path) == 0) {
-						_dprintf("%s: rename ok\n", __FUNCTION__);
+						//_dprintf("%s: rename ok\n", __FUNCTION__);
 						break;
 					}
 				}
@@ -374,18 +393,14 @@ static int decomp(const char *fname, void *buffer, int size, int max)
 	FILE *fp;
 	long file_size = 0;
 
-#ifdef DEBUG
-	_dprintf("%s: fname=%s\n", __FUNCTION__, fname);
-#endif
+	//_dprintf("%s: fname=%s\n", __FUNCTION__, fname);
 
 	unlink(uncomp_fn);
 
 	n = 0;
 	sprintf(s, "gzip -dc %s > %s", fname, uncomp_fn);
 	if (system(s)) {
-#ifdef DEBUG
-		_dprintf("%s: %s != 0\n", __func__, s);
-#endif
+		//_dprintf("%s: %s != 0\n", __func__, s);
 		goto exit_decomp;
 	}
 	if (!(fp = fopen(uncomp_fn, "r")))
@@ -395,16 +410,12 @@ static int decomp(const char *fname, void *buffer, int size, int max)
 	file_size = ftell(fp);
 	fclose(fp);
 	if ((size * max) != file_size) {
-#ifdef DEBUG
-		_dprintf("%s: filesize mismatch! (%ld/%ld)\n", __func__, (size * max), file_size);
-#endif
+		//_dprintf("%s: filesize mismatch! (%ld/%ld)\n", __func__, (size * max), file_size);
 		goto exit_decomp;
 	}
 
 	n = f_read(uncomp_fn, buffer, size * max);
-#ifdef DEBUG
-	_dprintf("%s: n=%d\n", __func__, n);
-#endif
+	//_dprintf("%s: n=%d\n", __func__, n);
 	if (n <= 0)
 		n = 0;
 	else
@@ -427,17 +438,13 @@ static int load_history(const char *fname)
 {
 	history_t hist;
 
-#ifdef DEBUG
-	_dprintf("%s: fname=%s\n", __FUNCTION__, fname);
-#endif
+	//_dprintf("%s: fname=%s\n", __FUNCTION__, fname);
 
 	if ((decomp(fname, &hist, sizeof(hist), 1) != 1) || (hist.id != CURRENT_ID)) {
 		history_v0_t v0;
 
 		if ((decomp(fname, &v0, sizeof(v0), 1) != 1) || (v0.id != ID_V0)) {
-#ifdef DEBUG
-			_dprintf("%s: load failed\n", __FUNCTION__);
-#endif
+			//_dprintf("%s: load failed\n", __FUNCTION__);
 			return 0;
 		}
 		else {
@@ -456,9 +463,7 @@ static int load_history(const char *fname)
 		memcpy(&history, &hist, sizeof(history));
 	}
 
-#ifdef DEBUG
-	_dprintf("%s: dailyp=%d monthlyp=%d\n", __FUNCTION__, history.dailyp, history.monthlyp);
-#endif
+	//_dprintf("%s: dailyp=%d monthlyp=%d\n", __FUNCTION__, history.dailyp, history.monthlyp);
 	return 1;
 }
 
@@ -509,6 +514,10 @@ static void load(int new)
 	strlcpy(save_path, nvram_safe_get("rstats_path"), sizeof(save_path) - 32);
 	if (((n = strlen(save_path)) > 0) && (save_path[n - 1] == '/')) {
 		ether_atoe(get_lan_hwaddr(), mac);
+#ifdef RTCONFIG_GMAC3
+        	if(nvram_match("gmac3_enable", "1"))
+			ether_atoe(nvram_safe_get("et2macaddr"), mac);
+#endif
 		sprintf(save_path + n, "tomato_rstats_%02x%02x%02x%02x%02x%02x.gz",
 			mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 	}
@@ -524,7 +533,7 @@ static void load(int new)
 
 	sprintf(hgz, "%s.gz", speed_fn);
 	speed_count = decomp(hgz, speed, sizeof(speed[0]), MAX_SPEED_IF);
-	_dprintf("%s: speed_count = %d\n", __FUNCTION__, speed_count);
+	//_dprintf("%s: speed_count = %d\n", __FUNCTION__, speed_count);
 
 	for (i = 0; i < speed_count; ++i) {
 		if (speed[i].utime > current_uptime) {
@@ -544,9 +553,9 @@ static void load(int new)
 	}
 
 	f_read_string(source_fn, sp, sizeof(sp));	// always terminated
-	_dprintf("%s: read source=%s save_path=%s\n", __FUNCTION__, sp, save_path);
+	//_dprintf("%s: read source=%s save_path=%s\n", __FUNCTION__, sp, save_path);
 	if ((strcmp(sp, save_path) == 0) && (load_history(hgz))) {
-		_dprintf("%s: using local file\n", __FUNCTION__);
+		//_dprintf("%s: using local file\n", __FUNCTION__);
 		return;
 	}
 
@@ -558,7 +567,7 @@ static void load(int new)
 			if ((n = strlen(bi)) > 0) {
 				if ((bo = malloc(base64_decoded_len(n))) != NULL) {
 					n = base64_decode(bi, bo, n);
-					_dprintf("%s: nvram n=%d\n", __FUNCTION__, n);
+					//_dprintf("%s: nvram n=%d\n", __FUNCTION__, n);
 					f_write(hgz, bo, n, 0, 0);
 					free(bo);
 					load_history(hgz);
@@ -615,7 +624,7 @@ static void save_speedjs(long next)
 
 	if ((f = fopen("/var/tmp/rstats-speed.js", "w")) == NULL) return;
 
-	_dprintf("%s: speed_count = %d\n", __FUNCTION__, speed_count);
+	//_dprintf("%s: speed_count = %d\n", __FUNCTION__, speed_count);
 
 	fprintf(f, "\nspeed_history = {\n");
 
@@ -654,20 +663,20 @@ static void save_datajs(FILE *f, int mode)
 	int max;
 	int k, kn;
 
-_dprintf("save_datajs:\n");
+//_dprintf("save_datajs:\n");
 	fprintf(f, "\n%s_history = [\n", (mode == DAILY) ? "daily" : "monthly");
 
 	if (mode == DAILY) {
 		data = history.daily;
 		p = history.dailyp;
 		max = MAX_NDAILY;
-_dprintf("DAILY: p= %d\n", p);
+//_dprintf("DAILY: p= %d\n", p);
 	}
 	else {
 		data = history.monthly;
 		p = history.monthlyp;
 		max = MAX_NMONTHLY;
-_dprintf("MONTHLY: p= %d\n", p);
+//_dprintf("MONTHLY: p= %d\n", p);
 	}
 	kn = 0;
 	for (k = max; k > 0; --k) {
@@ -676,8 +685,8 @@ _dprintf("MONTHLY: p= %d\n", p);
 		fprintf(f, "%s[0x%lx,0x%llx,0x%llx]", kn ? "," : "",
 			(unsigned long)data[p].xtime, data[p].counter[0] / K, data[p].counter[1] / K);
 		++kn;
-_dprintf("%d:: [0x%lx,0x%llx,0x%llx]\n", p, 
-	(unsigned long)data[p].xtime, data[p].counter[0] / K, data[p].counter[1] / K);
+//_dprintf("%d:: [0x%lx,0x%llx,0x%llx]\n", p, 
+//	(unsigned long)data[p].xtime, data[p].counter[0] / K, data[p].counter[1] / K);
 	}
 	fprintf(f, "];\n");
 }
@@ -744,27 +753,37 @@ static enum if_id desc_to_id(char *desc)
 	else if (!strncmp(desc, "WIRELESS0", 9)) {
 		if (*d == '\0')
 			id = IFID_WIRELESS0;
-		else if (*d == '.' && *s >= '0' && *s <= '2' && *(s + 1) == '\0')
+		else if (*d == '.' && *s >= '0' && *s <= '6' && *(s + 1) == '\0')
 			id = IFID_WIRELESS0 + *s - '0' + 1;
 	} else if (!strncmp(desc, "WIRELESS1", 9)) {
 		if (*d == '\0')
 			id = IFID_WIRELESS1;
-		else if (*d == '.' && *s >= '0' && *s <= '2' && *(s + 1) == '\0')
+		else if (*d == '.' && *s >= '0' && *s <= '6' && *(s + 1) == '\0')
 			id = IFID_WIRELESS1 + *s - '0' + 1;
 	} else if (!strncmp(desc, "WIRELESS2", 9)) {
 		if (*d == '\0')
 			id = IFID_WIRELESS2;
-		else if (*d == '.' && *s >= '0' && *s <= '2' && *(s + 1) == '\0')
+		else if (*d == '.' && *s >= '0' && *s <= '6' && *(s + 1) == '\0')
 			id = IFID_WIRELESS2 + *s - '0' + 1;
+	} else if (!strncmp(desc, "WIRELESS3", 9)) {
+		if (*d == '\0')
+			id = IFID_WIRELESS3;
+		else if (*d == '.' && *s >= '0' && *s <= '6' && *(s + 1) == '\0')
+			id = IFID_WIRELESS3 + *s - '0' + 1;
 	}
 
-	if (id < 0 || id == IFID_MAX)
-		_dprintf("%s: Unknown desc [%s]\n", __func__, desc);
+	//if (id < 0 || id == IFID_MAX)
+		//_dprintf("%s: Unknown desc [%s]\n", __func__, desc);
 
 	return id;
 
 }
 
+#ifdef RTCONFIG_LANTIQ
+#define RS_PPACMD_WAN_PATH "/tmp/rs_ppacmd_getwan"
+#define RS_PPACMD_LAN_PATH "/tmp/rs_ppacmd_getlan"
+#define RS_PPACMD_TRAFFIC_PATH "/tmp/rs_ppacmd_traffic"
+#endif
 static void calc(void)
 {
 	FILE *f;
@@ -793,31 +812,71 @@ static void calc(void)
 #ifdef RTCONFIG_ISP_METER
         char traffic[64];
 #endif
+	char *nv_lan_ifname;
+	char *nv_lan_ifnames;
 
 #ifdef RTCONFIG_QTN
 	qcsapi_unsigned_int l_counter_value;
+#endif
+#ifdef RTCONFIG_LANTIQ
+	char ifname_buf[10];
 #endif
 
 	rx2 = 0;
 	tx2 = 0;
 	now = time(0);
 	exclude = nvram_safe_get("rstats_exclude");
+	nv_lan_ifname = nvram_safe_get("lan_ifname");
+	nv_lan_ifnames = nvram_safe_get("lan_ifnames");
 
-	if ((f = fopen("/proc/net/dev", "r")) == NULL) return;
-	fgets(buf, sizeof(buf), f);	// header
-	fgets(buf, sizeof(buf), f);	// "
+#ifdef RTCONFIG_LANTIQ
+	if ((nvram_get_int("switch_stb_x") == 0 || nvram_get_int("switch_stb_x") > 6) && ppa_support(WAN_UNIT_FIRST)) {
+		if(nvram_get_int("wave_ready") == 0 ||
+			nvram_get_int("wave_action") != 0 ) return;
+		memset(tmp_speed, 0, sizeof(tmp_speed));
+		doSystem("ppacmd getwan > %s", RS_PPACMD_WAN_PATH);
+		doSystem("ppacmd getlan > %s", RS_PPACMD_LAN_PATH);
+		doSystem("cat %s %s > %s", RS_PPACMD_WAN_PATH, RS_PPACMD_LAN_PATH, RS_PPACMD_TRAFFIC_PATH);
+		f = fopen(RS_PPACMD_TRAFFIC_PATH, "r");
+	}
+	else
+#endif
+		f = fopen("/proc/net/dev", "r");
+
+	if (!f) return;
+#ifdef RTCONFIG_LANTIQ
+	if ((nvram_get_int("switch_stb_x") > 0 && nvram_get_int("switch_stb_x") <= 6) || !ppa_support(WAN_UNIT_FIRST))
+#endif
+	{
+		fgets(buf, sizeof(buf), f);	// header
+		fgets(buf, sizeof(buf), f);	// "
+	}
 	memset(tmp_speed, 0, sizeof(tmp_speed));
 	while (fgets(buf, sizeof(buf), f)) {
-		if ((p = strchr(buf, ':')) == NULL) continue;
-			//_dprintf("\n=== %s\n", buf);
-		*p = 0;
-		if ((ifname = strrchr(buf, ' ')) == NULL) ifname = buf;
-			else ++ifname;
-		if ((strcmp(ifname, "lo") == 0) || (find_word(exclude, ifname))) continue;
+#ifdef RTCONFIG_LANTIQ
+		if ((nvram_get_int("switch_stb_x") > 0 && nvram_get_int("switch_stb_x") <= 6) || !ppa_support(WAN_UNIT_FIRST)) {
+#endif
+			if ((p = strchr(buf, ':')) == NULL) continue;
+				//_dprintf("\n=== %s\n", buf);
+			*p = 0;
+			if ((ifname = strrchr(buf, ' ')) == NULL) ifname = buf;
+				else ++ifname;
+			if ((strcmp(ifname, "lo") == 0) || (find_word(exclude, ifname))) continue;
 
-		// <rx bytes, packets, errors, dropped, fifo errors, frame errors, compressed, multicast><tx ...>
-		if (sscanf(p + 1, "%llu%*u%*u%*u%*u%*u%*u%*u%llu", &counter[0], &counter[1]) != 2) continue;
-
+			// <rx bytes, packets, errors, dropped, fifo errors, frame errors, compressed, multicast><tx ...>
+			if (sscanf(p + 1, "%llu%*u%*u%*u%*u%*u%*u%*u%llu", &counter[0], &counter[1]) != 2) continue;
+#ifdef RTCONFIG_LANTIQ
+		}
+		else
+		{
+			if ((p = strchr(buf, '[')) == NULL || strstr(buf, "errno")) continue;
+			if (sscanf(buf, "%*s%*s%s%*s%*s%llu", ifname_buf, &counter[0]) != 2) continue;
+			if ((p = strchr(buf, ':')) == NULL) continue;
+			sscanf(p + 1, "%llu", &counter[1]);
+			ifname = &ifname_buf;
+			//_dprintf("%s, rx: %llu, tx: %llu\n", ifname, counter[0], counter[1]);
+		}
+#endif
 //TODO: like httpd/web.c ej_netdev()
 #ifdef RTCONFIG_BCM5301X_TRAFFIC_MONITOR
 		if(strncmp(ifname, "vlan", 4)==0){
@@ -825,7 +884,7 @@ static void calc(void)
 		}
 #endif
 
-		if (!netdev_calc(ifname, ifname_desc, (unsigned long*) &counter[0], (unsigned long*) &counter[1], ifname_desc2, (unsigned long*) &rx2, (unsigned long*) &tx2))
+		if (!netdev_calc(ifname, ifname_desc, (unsigned long*) &counter[0], (unsigned long*) &counter[1], ifname_desc2, (unsigned long*) &rx2, (unsigned long*) &tx2, nv_lan_ifname, nv_lan_ifnames))
 			continue;
 		//_dprintf(">>> %s, %s, %llu, %llu, %s, %llu, %llu <<<\n",ifname, ifname_desc, counter[0], counter[1], ifname_desc2, rx2, tx2);
 #ifdef RTCONFIG_QTN		
@@ -866,6 +925,13 @@ loopagain:
 
 #endif
 	}
+#ifdef RTCONFIG_LANTIQ
+	if ((nvram_get_int("switch_stb_x") == 0 || nvram_get_int("switch_stb_x") > 6) && ppa_support(WAN_UNIT_FIRST)) {
+		unlink(RS_PPACMD_WAN_PATH);
+		unlink(RS_PPACMD_LAN_PATH);
+		unlink(RS_PPACMD_TRAFFIC_PATH);
+	}
+#endif
 	fclose(f);
 
 	for (t = 0, tmp = tmp_speed; t < ARRAY_SIZE(tmp_speed); ++t, ++tmp) {
@@ -912,7 +978,7 @@ loopagain:
 				c = tmp->counter[i];
 				sc = sp->last[i];
 				if (c < sc) {
-					diff = (0xFFFFFFFFUL - sc + 1) + c;
+					diff = (0xFFFFFFFF - sc + 1) + c;
 					if (diff > MAX_ROLLOVER) diff = 0;
 				}
 				else {
@@ -932,7 +998,7 @@ loopagain:
 
 		// todo: split, delay
 
-		if (now > BOOT_DATESTAMP && strcmp(tmp->desc, "INTERNET")==0) {
+		if (nvram_get_int("ntp_ready") && strcmp(tmp->desc, "INTERNET")==0) {
 			/* Skip this if the time&date is not set yet */
 			/* Skip non-INTERNET interface only 	     */
 			tms = localtime(&now);
@@ -977,12 +1043,12 @@ _dprintf("CUR MONTH Tx= %lu = %lu + %llu - %lu\n",month_tx,last_month_tx,(histor
 			continue;
 		}
 		if (((current_uptime - sp->utime) > (10 * SMIN)) || (find_word(exclude, sp->ifname))) {
-			_dprintf("%s: #%d removing. > time limit or excluded\n", __FUNCTION__, i);
+			//_dprintf("%s: #%d removing. > time limit or excluded\n", __FUNCTION__, i);
 			--speed_count;
 			memcpy(sp, sp + 1, (speed_count - i) * sizeof(speed[0]));
 		}
 		else {
-			_dprintf("%s: %s not found setting sync=1\n", __FUNCTION__, sp->ifname);
+			//_dprintf("%s: %s not found setting sync=1\n", __FUNCTION__, sp->ifname, i);
 			sp->sync = 1;
 		}
 	}
@@ -991,7 +1057,7 @@ _dprintf("CUR MONTH Tx= %lu = %lu + %llu - %lu\n",month_tx,last_month_tx,(histor
 	if (current_uptime >= save_utime) {
 		save(0);
 		save_utime = current_uptime + get_stime();
-		_dprintf("%s: uptime = %dm, save_utime = %dm\n", __FUNCTION__, current_uptime / 60, save_utime / 60);
+		//_dprintf("%s: uptime = %dm, save_utime = %dm\n", __FUNCTION__, current_uptime / 60, save_utime / 60);
 	}
 }
 
@@ -1038,7 +1104,7 @@ int main(int argc, char *argv[])
 	if (argc > 1) {
 		if (strcmp(argv[1], "--new") == 0) {
 			new = 1;
-			_dprintf("new=1\n");
+			_dprintf("New rstats database\n");
 		}
 	}
 
@@ -1081,7 +1147,7 @@ _dprintf("L_time= %ld\n",isp_limit_time);
         get_meter_file(isp_meter_buf);
 	if(isp_meter_buf!=NULL) {
                 if (sscanf(isp_meter_buf, "isp_meter:%lu,%lu,%ld,end", &isp_rx, &isp_tx, &isp_connect_time) == 3) {
-                        _dprintf("isp_rx= %lu, isp_tx= %lu, isp_connent_time= %ld\n", 
+                        //_dprintf("isp_rx= %lu, isp_tx= %lu, isp_connent_time= %ld\n", 
 				 isp_rx, isp_tx, isp_connect_time);
                         if((isp_rx>last_month_rx)&&(isp_tx>last_month_tx)){
                                 last_month_rx = isp_rx;

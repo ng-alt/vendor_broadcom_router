@@ -9,14 +9,14 @@
 # SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
 # FOR A SPECIFIC PURPOSE OR NONINFRINGEMENT CONCERNING THIS SOFTWARE.
 #
-# $Id: Makefile,v 1.41 2011-01-20 03:08:08 Exp $
+# $Id: Makefile 361287 2012-10-08 00:28:04Z $
 #
 
 include ../common.mak
 
 WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o
 ifeq ($(RTCONFIG_BCMWL6),y)
-WLU_OBJS += wlu_rates_matrix.o
+WLU_OBJS += wlu_rates_matrix.o wlc_ppr.o
 endif
 ifneq ($(wildcard $(SRCBASE)/wl/exe/wlu_common.c),)
 WLU_OBJS += wlu_common.o
@@ -45,6 +45,7 @@ CFLAGS += -s -I$(SRCBASE)/include
 ifneq ($(RTCONFIG_BCMWL6),y)
 CFLAGS += -I$(TOP)/shared -I$(TOP)/nvram
 endif
+CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(SRCBASE)/shared/bcmwifi/src)))
 #ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
 ifeq ($(SFP),y)
 CFLAGS  += -Os
@@ -57,18 +58,23 @@ CFLAGS += -DBCMINTERNAL -DBCMDBG
 ifneq ($(RTCONFIG_BCMWL6),y)
 LDFLAGS += -L$(TOP)/nvram -L$(INSTALLDIR)/nvram/usr/lib -lnvram
 LDFLAGS += -L$(TOP)/shared -L$(INSTALLDIR)/shared/usr/lib -lshared
+ifeq ($(RTCONFIG_AMAS),y)
+LDFLAGS += -L$(TOP)/json-c/.libs -ljson-c
+endif
 endif
 
 #UTILS := mii-tool robocfg ttcp
-UTILS := robocfg
 #ifneq ($(CONFIG_LINUX26),y)
 #CFLAGS += -U CONFIG_NVRAM_SIZE
 #endif
 
 CFLAGS += -DLINUX -I$(SRCBASE)/wl/exe
+ifeq ($(RTCONFIG_BCMWL6), y)
+CFLAGS += -I$(SRCBASE)/wl/olpc/include -I$(SRCBASE)/wl/ppr/include
+endif
 
 # Use newer 11ac ratespec for wl command line
-CFLAGS += -DD11AC_IOTYPES
+CFLAGS += -DD11AC_IOTYPES -DPPR_API
 
 #ifdef WLCNT
 CFLAGS += -DWLCNT
@@ -79,6 +85,9 @@ CFLAGS += -DTRAFFIC_MGMT
 endif
 
 vpath %.c $(SRCBASE)/tools/misc
+ifeq ($(RTCONFIG_BCMWL6),y)
+vpath %.c $(SRCBASE)/shared/bcmwifi/src $(SRCBASE)/wl/ppr/src
+endif
 
 ifneq ($(wildcard $(SRCBASE)/et/linux/et.c),)
 UTILS += et
@@ -110,6 +119,11 @@ UTILS += $(SERVER_WIFI)
 vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
 endif
 endif
+
+ifeq ($(RTCONFIG_5301X),y)
+CFLAGS += -DBCM5301X
+endif
+UTILS += robocfg
 
 all: $(UTILS)
 
@@ -145,12 +159,7 @@ endif
 
 mii-tool: mii-tool.c mii.h
 
-ifeq ($(wildcard $(SRCBASE)/router/utils/robocfg.c),)
-robocfg:
-	-cp -f $(SRCBASE)/wl/exe/prebuilt/robocfg robocfg
-else
 robocfg: robocfg.c etc53xx.h
-endif
 
 ttcp: epi_ttcp.c
 	$(CC) $(CFLAGS) -o $@ $^
@@ -158,8 +167,10 @@ ttcp: epi_ttcp.c
 clean:
 	rm -f *.o *~ $(UTILS)
 	rm -rf socket wifi epi_ttcp
+	rm -f $(INSTALLDIR)/usr/sbin/WlGetDriverCfg.sh
 
 install: all
 	install -d $(INSTALLDIR)/usr/sbin
 	install $(UTILS) $(INSTALLDIR)/usr/sbin
+	install -D -m 755 WlGetDriverCfg.sh $(INSTALLDIR)/usr/sbin/WlGetDriverCfg.sh
 	$(STRIP) $(foreach file,$(UTILS),$(INSTALLDIR)/usr/sbin/$(file))

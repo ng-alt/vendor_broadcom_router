@@ -24,7 +24,6 @@ var page = parseInt('<% get_parameter("page"); %>'-'0');
 
 function initial(){
 	show_menu();
-
 	document.getElementById("statusframe").style.display = "block";
 	
 	if(page == 2)
@@ -301,7 +300,7 @@ function getASUSDDNS_enable(){
 			<div id="tabMenu"></div>
 
 		<!--==============Beginning of hint content=============-->
-<table id="AiDiskFormTitle" width="100%" height="100%" border="0" bgcolor="#4d595d" cellpadding="0"  cellspacing="0" style="margin-top:-140px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">
+<table id="FormTitle" width="100%" height="100%" border="0" bgcolor="#4d595d" cellpadding="0"  cellspacing="0" style="margin-top:-140px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">
   <tr>
 		<td align="left" valign="top">
 			<iframe id="sub_frame" src="" width="760px" height="710px" frameborder="0" scrolling="no" style="position:relative;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;"></iframe>

@@ -88,7 +88,6 @@ var notification = {
 	send_debug_log: 0,
 	clicking: 0,
 	sim_record: 0,
-	external_ip: 0,
 	redirectftp:function(){location.href = 'Advanced_AiDisk_ftp.asp';},
 	redirectsamba:function(){location.href = 'Advanced_AiDisk_samba.asp';},
 	redirectFeedback:function(){location.href = 'Advanced_Feedback.asp';},
@@ -103,7 +102,7 @@ var notification = {
 	ie_legacy: 0,
 	notiClick: function(){
 		// stop flashing after the event is checked.
-		cookie.set("notification_history", [notification.upgrade, notification.wifi_2g ,notification.wifi_5g ,notification.ftp ,notification.samba ,notification.loss_sync ,notification.experience_FB ,notification.notif_hint, notification.mobile_traffic, notification.send_debug_log, notification.sim_record, notification.external_ip, notification.pppoe_tw, notification.pppoe_tw_static, notification.ie_legacy].join(), 1000);
+		cookie.set("notification_history", [notification.upgrade, notification.wifi_2g ,notification.wifi_5g ,notification.ftp ,notification.samba ,notification.loss_sync ,notification.experience_FB ,notification.notif_hint, notification.mobile_traffic, notification.send_debug_log, notification.sim_record, notification.pppoe_tw, notification.pppoe_tw_static, notification.ie_legacy].join(), 1000);
 		clearInterval(notification.flashTimer);
 		document.getElementById("notification_status").className = "notification_on";
 		if(notification.clicking == 0){
@@ -180,28 +179,12 @@ var notification = {
 			notification.sim_record = 0;
 		}
 
-		if(0){
-//		if(realip_support && !external_ip){
-			notification.array[14] = 'noti_external_ip';
-			notification.external_ip = 1;
-			notification.desc[14] = "<#external_ip_warning#>";
-			notification.action_desc[14] = "<#ASUSGATE_act_change#>";
-			if(active_wan_unit == 0)
-				notification.clickCallBack[14] = "goToWAN(0);";
-			else if(active_wan_unit == 1)
-				notification.clickCallBack[14] = "goToWAN(1);";
-		}
-		else{
-			notification.array[14] = 'off';
-			notification.external_ip = 0;
-		}
-
-		if(notification.stat != "on" && (notification.mobile_traffic || notification.sim_record || notification.external_ip)){
+		if(notification.stat != "on" && (notification.mobile_traffic || notification.sim_record)){
 			notification.stat = "on";
 			notification.flash = "on";
 			notification.run_notice();
 		}
-		else if(notification.stat == "on" && !notification.mobile_traffic && !notification.sim_record && !notification.external_ip && !notification.upgrade && !notification.wifi_2g && 
+		else if(notification.stat == "on" && !notification.mobile_traffic && !notification.sim_record && !notification.upgrade && !notification.wifi_2g &&
 				!notification.wifi_5g && !notification.ftp && !notification.samba && !notification.loss_sync && !notification.experience_FB && !notification.notif_hint && !notification.mobile_traffic && 
 				!notification.send_debug_log && !notification.pppoe_tw && !notification.pppoe_tw_static && !notification.ie_legacy){
 			cookie.unset("notification_history");
@@ -222,9 +205,9 @@ var notification = {
 		}else
 			notification.acpw = 0;
 
-//		if(current_firmware_path==1)
-//			var latest_state_info = webs_state_info_beta;
-//		else
+		if(current_firmware_path==1)
+			var latest_state_info = webs_state_info_beta;
+		else
 			var latest_state_info = webs_state_info;
 			
 		if(isNewFW(latest_state_info,current_firmware_path,current_firmware_path)){	//case2
@@ -232,7 +215,7 @@ var notification = {
 			notification.upgrade = 1;
 			notification.desc[1] = '<#ASUSGATE_note2#>';
 			if(!live_update_support || !HTTPS_support){
-				notification.action_desc[1] = '<a id="link_to_downlodpage" target="_blank" href="https://asuswrt.lostrealm.ca/download/" style="color:#FFCC00;"><#ASUSGATE_act_update#></a>';
+				notification.action_desc[1] = '<a id="link_to_downlodpage" target="_blank" href="'+get_helplink()+'" style="color:#FFCC00;"><#ASUSGATE_act_update#></a>';
 				notification.clickCallBack[1] = "";
 			}
 			else{
@@ -260,7 +243,7 @@ var notification = {
 		}else
 			notification.wifi_5g = 0;
 		
-/*		if(usb_support && !noftp_support && enable_ftp == 1 && st_ftp_mode == 1 && st_ftp_force_mode == '' ){ //case4_1
+		if(usb_support && !noftp_support && enable_ftp == 1 && st_ftp_mode == 1 && st_ftp_force_mode == '' ){ //case4_1
 				notification.array[4] = 'noti_ftp';
 				notification.ftp = 1;
 				notification.desc[4] = '<#ASUSGATE_note4_1#>';
@@ -272,10 +255,10 @@ var notification = {
 				notification.desc[4] = '<#ASUSGATE_note4#>';
 				notification.action_desc[4] = '<#ASUSGATE_act_change#>';
 				notification.clickCallBack[4] = "showLoading();setTimeout('document.noti_ftp.submit();', 1);setTimeout('notification.redirectftp()', 2000);";
-		}else */
+		}else
 			notification.ftp = 0;
 
-/*		if(usb_support && enable_samba == 1 && st_samba_mode == 1 && st_samba_force_mode == ''){ //case5_1
+		if(usb_support && enable_samba == 1 && st_samba_mode == 1 && st_samba_force_mode == ''){ //case5_1
 				notification.array[5] = 'noti_samba';
 				notification.samba = 1;
 				notification.desc[5] = '<#ASUSGATE_note5_1#>';
@@ -287,7 +270,7 @@ var notification = {
 				notification.desc[5] = '<#ASUSGATE_note5#>';
 				notification.action_desc[5] = '<#ASUSGATE_act_change#>';
 				notification.clickCallBack[5] = "showLoading();setTimeout('document.noti_samba.submit();', 1);setTimeout('notification.redirectsamba()', 2000);";
-		}else */
+		}else
 			notification.samba = 0;
 
 		//Higher priority: DLA intervened case dsltmp_dla_modified 0: default / 1:need to feedback / 2:Feedback submitted 
@@ -338,7 +321,7 @@ var notification = {
 		if(wan_diag_state == "4"){               //case11
 			notification.array[11] = 'noti_send_debug_log';
 			notification.send_debug_log = 1;
-			notification.desc[11] = "-	Diagnostic DSL debug log capture completed.";
+			notification.desc[11] = "-	The debug log of diagnostic DSL captured.";
 			notification.action_desc[11] = "Send debug log now";
 			notification.clickCallBack[11] = "setTimeout('notification.redirectFeedbackInfo()', 1000);";
 		
@@ -356,16 +339,6 @@ var notification = {
 			}
 		}
 
-	// Low NVRAM
-	if((<% sysinfo("nvram.total"); %> - <% sysinfo("nvram.used"); %>) < 3000){
-		notification.array[17] = 'noti_low_nvram';
-		notification.low_nvram = 1;
-		notification.desc[17] = "Your router is running low on free NVRAM, which might affect its stability.<br>Review nvram-intensive settings such as OpenVPN, or consider doing a factory default reset and reconfiguring.";
-		notification.action_desc[17] = "Review System Information now";
-		notification.clickCallBack[17] = "location.href = 'Tools_Sysinfo.asp';"
-	}else
-		notification.low_nvram = 0;
-
 		/*if(is_TW_sku && wan_proto == "pppoe" && is_CHT_pppoe && !is_CHT_pppoe_static){
 			notification.pppoe_tw_static = 1;
 			notification.array[17] = 'noti_pppoe_tw_static';
@@ -382,7 +355,7 @@ var notification = {
 			notification.clickCallBack[15] = "location.href = 'Advanced_WAN_Content.asp?af=wan_proto'";			
 		}
 		
-		if( notification.acpw || notification.upgrade || notification.wifi_2g || notification.wifi_5g || notification.ftp || notification.samba || notification.loss_sync || notification.experience_FB || notification.notif_hint || notification.send_debug_log || notification.mobile_traffic || notification.sim_record || notification.external_ip || notification.pppoe_tw || notification.pppoe_tw_static || notification.ie_legacy || notification.low_nvram){
+		if( notification.acpw || notification.upgrade || notification.wifi_2g || notification.wifi_5g || notification.ftp || notification.samba || notification.loss_sync || notification.experience_FB || notification.notif_hint || notification.send_debug_log || notification.mobile_traffic || notification.sim_record || notification.pppoe_tw || notification.pppoe_tw_static || notification.ie_legacy){
 			notification.stat = "on";
 			notification.flash = "on";
 			notification.run_notice();
@@ -403,7 +376,7 @@ var notification = {
 			tarObj1.className = "notification_on1";
 		}
 
-		if(this.flash == "on" && cookie.get("notification_history") != [notification.upgrade, notification.wifi_2g ,notification.wifi_5g ,notification.ftp ,notification.samba ,notification.loss_sync ,notification.experience_FB ,notification.notif_hint, notification.mobile_traffic, notification.send_debug_log, notification.sim_record, notification.external_ip, notification.pppoe_tw, notification.pppoe_tw_static, notification.ie_legacy, notification.low_nvram].join()){
+		if(this.flash == "on" && cookie.get("notification_history") != [notification.upgrade, notification.wifi_2g ,notification.wifi_5g ,notification.ftp ,notification.samba ,notification.loss_sync ,notification.experience_FB ,notification.notif_hint, notification.mobile_traffic, notification.send_debug_log, notification.sim_record, notification.pppoe_tw, notification.pppoe_tw_static, notification.ie_legacy].join()){
 			notification.flashTimer = setInterval(function(){
 				tarObj.className = (tarObj.className == "notification_on") ? "notification_off" : "notification_on";
 			}, 1000);
@@ -427,7 +400,6 @@ var notification = {
 		this.mobile_traffic = 0;
 		this.send_debug_log = 0;
 		this.sim_record = 0;
-		this.external_ip = 0;
 		this.action_desc = [];
 		this.desc = [];
 		this.array = [];
