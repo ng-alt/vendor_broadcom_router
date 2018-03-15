@@ -256,7 +256,8 @@ function initial(){
 	}
 
 	/* MODELDEP */
-	if(tmo_support || based_modelid == "AC2900"){	//MODELDEP: AC2900(RT-AC86U)
+//	if(tmo_support || based_modelid == "AC2900"){	//MODELDEP: AC2900(RT-AC86U)
+	if(1){
 		document.getElementById("telnet_tr").style.display = "none";
 		document.form.telnetd_enable[0].disabled = true;
 		document.form.telnetd_enable[1].disabled = true;
@@ -629,6 +630,7 @@ function validForm(){
 			&& document.form.dst_start_w.value == document.form.dst_end_w.value
 			&& document.form.dst_start_d.value == document.form.dst_end_d.value){
 		alert("<#FirewallConfig_URLActiveTime_itemhint4#>");	//At same day
+		document.form.dst_start_m.focus();
 		return false;
 	}
 
@@ -878,28 +880,38 @@ var dstoff_end_m,dstoff_end_w,dstoff_end_d,dstoff_end_h;
 function parse_dstoffset(){     //Mm.w.d/h,Mm.w.d/h
 	if(dstoffset){
 		var dstoffset_startend = dstoffset.split(",");
-    			
-		var dstoffset_start = trim(dstoffset_startend[0]);
-		var dstoff_start = dstoffset_start.split(".");
-		dstoff_start_m = dstoff_start[0];
-		dstoff_start_w = dstoff_start[1];
-		dstoff_start_d = dstoff_start[2].split("/")[0];
-		dstoff_start_h = dstoff_start[2].split("/")[1];
-				
-		var dstoffset_end = trim(dstoffset_startend[1]);
-		var dstoff_end = dstoffset_end.split(".");
-		dstoff_end_m = dstoff_end[0];
-		dstoff_end_w = dstoff_end[1];
-		dstoff_end_d = dstoff_end[2].split("/")[0];
-		dstoff_end_h = dstoff_end[2].split("/")[1];
-    			
+
+		if(dstoffset_startend[0] != "" && dstoffset_startend[0] != undefined){
+			var dstoffset_start = trim(dstoffset_startend[0]);
+			var dstoff_start = dstoffset_start.split(".");
+			dstoff_start_m = dstoff_start[0]!=""?dstoff_start[0]:"M3";
+			dstoff_start_w = parseInt(dstoff_start[1]);
+			if (dstoff_start_w == "NaN") dstoff_start_w = "2";
+			dstoff_start_d = parseInt(dstoff_start[2].split("/")[0]);
+			if (dstoff_start_d == "NaN") dstoff_start_d = "0";
+			dstoff_start_h = parseInt(dstoff_start[2].split("/")[1]);
+			if (dstoff_start_h == "NaN") dstoff_start_h = "2";
+		}
+
+		if(dstoffset_startend[1] != "" && dstoffset_startend[1] != undefined){
+			var dstoffset_end = trim(dstoffset_startend[1]);
+			var dstoff_end = dstoffset_end.split(".");
+			dstoff_end_m = dstoff_end[0]!=""?dstoff_end[0]:"M10";
+			dstoff_end_w = parseInt(dstoff_end[1]);
+			if (dstoff_end_w == "NaN") dstoff_end_w = "2";
+			dstoff_end_d = parseInt(dstoff_end[2].split("/")[0]);
+			if (dstoff_end_d == "NaN") dstoff_end_d = "0";
+			dstoff_end_h = parseInt(dstoff_end[2].split("/")[1]);
+			if (dstoff_end_h == "NaN") dstoff_end_h = "2";
+		}
 		//console.log(dstoff_start_m+"."+dstoff_start_w+"."+dstoff_start_d+"/"+dstoff_start_h);
 		//console.log(dstoff_end_m+"."+dstoff_end_w+"."+dstoff_end_d+"/"+dstoff_end_h);
-		load_dst_m_Options();
-		load_dst_w_Options();
-		load_dst_d_Options();
-		load_dst_h_Options();
 	}
+
+	load_dst_m_Options();
+	load_dst_w_Options();
+	load_dst_d_Options();
+	load_dst_h_Options();
 }
 
 function load_dst_m_Options(){
@@ -1041,6 +1053,7 @@ function hide_https_crt(){
 		showhide("https_crt_san", (protos != "0" ? 1 : 0));
 		showhide("https_crt_gen", (protos != "0" ? 1 : 0));
 		showhide("https_cert", (protos != "0" ? 1 : 0));
+		showhide("cert_manage_link", 0);
 	}
 }
 
@@ -1932,6 +1945,7 @@ function upload_cert_key(){
 							<div style="display:table-cell;white-space: nowrap">Expires on :</div>
 							<div id="expireOn" style="display:table-cell; padding-left:10px;"></div>
 						</div>
+						<div id="cert_manage_link" style="padding-top:10px;"><span>Click <a style="color:#FC0;text-decoration: underline;" href="Advanced_ASUSDDNS_Content.asp">here</a> to manage.</span></div>
 					</td>
 				</tr>
 
@@ -1996,7 +2010,7 @@ function upload_cert_key(){
 					<td width="40%">
 						<input type="checkbox" name="access_webui" class="input access_type" value="1">Web UI<!--untranslated-->
 						<input type="checkbox" name="access_ssh" class="input access_type" value="2">SSH<!--untranslated-->
-						<input type="checkbox" name="access_telnet" class="input access_type" value="4">Telnet(LAN only)<!--untranslated-->
+						<!-- input type="checkbox" name="access_telnet" class="input access_type" value="4">Telnet(LAN only) --><!--untranslated-->
 					</td>
 					<td width="10%">
 						<div id="add_delete" class="add_enable" style="margin:0 auto" onclick="addRow(document.form.http_client_ip_x_0, 4);"></div>

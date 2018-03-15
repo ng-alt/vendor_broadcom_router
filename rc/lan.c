@@ -225,7 +225,11 @@ start_emf(char *lan_ifname)
 	char word[256], *next;
 	char *mgrp, *ifname;
 
-#if (defined(HND_ROUTER) && defined(MCPD_PROXY)) || defined(BLUECAVE)
+#ifdef BLUECAVE
+	return;
+#endif
+
+#if (defined(HND_ROUTER) && defined(MCPD_PROXY))
 	/* Disable EMF.
 	 * Since Runner is involved in Ethernet side when MCPD is enabled
 	 */
@@ -234,10 +238,15 @@ start_emf(char *lan_ifname)
 		nvram_commit();
 	}
 
+#ifdef RTCONFIG_PROXYSTA
+	eval("bcmmcastctl", "mode", "-i",  "br0",  "-p", "1",  "-m", (psta_exist() || psr_exist()) ? "0" : "2");
+	eval("bcmmcastctl", "mode", "-i",  "br0",  "-p", "2",  "-m", (psta_exist() || psr_exist()) ? "0" : "2");
+#endif
+
 	return;
 #endif /* HND_ROUTER && MCPD_PROXY */
 
-#if defined(RTCONFIG_BCMARM) && !defined(HND_ROUTER)
+#if 0	//defined(RTCONFIG_BCMARM) && !defined(HND_ROUTER)
 	char path[PATH_MAX], sval[16];
 
 	if (lan_ifname == NULL)
@@ -2339,10 +2348,6 @@ void start_lan(void)
 							   ETHER_ADDR_LEN) == 0) {
 							ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
 							memcpy(ifr.ifr_hwaddr.sa_data, hwaddr, ETHER_ADDR_LEN);
-#ifdef RTCONFIG_AMAS
-							if(nvram_get_int("re_mode") == 1)
-								ifr.ifr_hwaddr.sa_data[0] = ifr.ifr_hwaddr.sa_data[0] | 0x02;
-#endif
 							ioctl(s, SIOCSIFHWADDR, &ifr);
 						}
 						close(s);

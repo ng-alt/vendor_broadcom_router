@@ -1610,6 +1610,7 @@ void nat_setting(char *wan_if, char *wan_ip, char *wanx_if, char *wanx_ip, char 
 	//if (nvram_match("misc_natlog_x", "1"))
 	// 	fprintf(fp, "-A PREROUTING -i %s -j LOG --log-prefix ALERT --log-level 4\n", wan_if);
 
+#if 0
 #ifdef RTCONFIG_AUTOCOVER_SIP
 	if(nvram_get_int("atcover_sip") == 1 && !strcmp(lan_ip, nvram_default_get("lan_ipaddr")) && strcmp(lan_ip, nvram_safe_get("atcover_sip_ip"))){
 		int dst_port;
@@ -1626,6 +1627,8 @@ void nat_setting(char *wan_if, char *wan_ip, char *wanx_if, char *wanx_ip, char 
 				);
 	}
 #endif
+#endif
+
 #ifdef RTCONFIG_IPSEC
 	if(is_nat_enabled() && dmz_enabled()) {
 		fprintf(fp, "-A PREROUTING -i %s -p udp -m udp --dport 500 -j REDIRECT --to-port 500\n", wan_if);
@@ -1812,11 +1815,7 @@ void nat_setting(char *wan_if, char *wan_ip, char *wanx_if, char *wanx_ip, char 
 #endif
 
 		/* masquerade lan to lan */
-		if (nvram_match("fw_nat_loopback", "2"))
-			fprintf(fp, "-A POSTROUTING %s -m mark --mark 0x8000/0x8000 -j MASQUERADE\n" , p);
-		else if (nvram_match("fw_nat_loopback", "1")) {
 			fprintf(fp, "-A POSTROUTING %s -o %s -s %s -d %s -j MASQUERADE\n", p, lan_if, lan_class, lan_class);
-		}
 
 #ifdef RTCONFIG_WIFI_SON
 		ip2class(g_lan_ip, nvram_safe_get("lan_netmask"), g_lan_class);
@@ -2241,11 +2240,6 @@ void nat_setting2(char *lan_if, char *lan_ip, char *logaccept, char *logdrop)	//
 
 		// masquerade lan to lan
 		fprintf(fp, "-A POSTROUTING %s -o %s -s %s -d %s -j MASQUERADE\n", p, lan_if, lan_class, lan_class);
-		if (nvram_match("fw_nat_loopback", "2"))
-			fprintf(fp, "-A POSTROUTING %s -m mark --mark 0x8000/0x8000 -j MASQUERADE\n", p);
-		else if (nvram_match("fw_nat_loopback", "1")) {
-			fprintf(fp, "-A POSTROUTING %s -o %s -s %s -d %s -j MASQUERADE\n", p, lan_if, lan_class, lan_class);
-		}
 
 #ifdef RTCONFIG_WIFI_SON
 		ip2class(g_lan_ip, nvram_safe_get("lan_netmask"), g_lan_class);
@@ -2380,6 +2374,7 @@ void redirect_setting(void)
 				":DNSFILTER - [0:0]\n");
 #endif
 
+#if 0
 #ifdef RTCONFIG_AUTOCOVER_SIP
 		if(nvram_get_int("atcover_sip") == 1 && !strcmp(lan_ipaddr_t, nvram_default_get("lan_ipaddr")) && strcmp(lan_ipaddr_t, nvram_safe_get("atcover_sip_ip"))){
 			int dst_port;
@@ -2395,6 +2390,7 @@ void redirect_setting(void)
 					dst_port
 					);
 		}
+#endif
 #endif
 	}
 
@@ -5317,11 +5313,6 @@ mangle_setting(char *wan_if, char *wan_ip, char *lan_if, char *lan_ip, char *log
 	}
 #endif
 
-/* For NAT loopback */
-	if (nvram_match("fw_nat_loopback", "2"))
-		eval("iptables", "-t", "mangle", "-A", "PREROUTING", "!", "-i", wan_if,
-		     "-d", wan_ip, "-j", "MARK", "--set-mark", "0x8000/0x8000");
-
 /* Workaround for neighbour solicitation flood from Comcast */
 #ifdef RTCONFIG_IPV6
 	if (nvram_get_int("ipv6_ns_drop")) {
@@ -5573,19 +5564,6 @@ mangle_setting2(char *lan_if, char *lan_ip, char *logaccept, char *logdrop)
 #endif /* RTCONFIG_IPV6 */
 #endif /* RTCONFIG_DNSFILTER */
 
-
-/* For NAT loopback */
-	for(unit = WAN_UNIT_FIRST; unit < WAN_UNIT_MAX; ++unit){
-		snprintf(prefix, sizeof(prefix), "wan%d_", unit);
-		if(nvram_get_int(strcat_r(prefix, "state_t", tmp)) != WAN_STATE_CONNECTED)
-			continue;
-
-		wan_if = get_wan_ifname(unit);
-
-		if (nvram_match("fw_nat_loopback", "2"))
-			eval("iptables", "-t", "mangle", "-A", "PREROUTING", "!", "-i", wan_if,
-			     "-d", nvram_safe_get(strcat_r(prefix, "ipaddr", tmp)), "-j", "MARK", "--set-mark", "0x8000/0x8000");
-	}
 
 /* Workaround for neighbour solicitation flood from Comcast */
 #ifdef RTCONFIG_IPV6

@@ -589,7 +589,11 @@ extern int download_clmblob_files();
 #ifdef RTAC68U
 extern void check_cfe_ac68u();
 extern void update_cfe();
+extern int firmware_enc_crc_main(int argc, char *argv[]);
+extern int fw_check_main(int argc, char *argv[]);
 #endif
+extern void check_asus_jffs(void);
+extern void fw_check_pre(void);
 #ifdef RTAC3200
 extern void update_cfe_ac3200();
 extern void update_cfe_ac3200_128k();
@@ -612,6 +616,12 @@ extern int wait_to_forward_state(char *ifname);
 #endif
 #ifdef RTCONFIG_BCMWL6
 extern int hw_vht_cap();
+#endif
+extern int wl_control_channel(int unit);
+#ifdef RTCONFIG_AMAS
+extern int set_amas_bdl(void);
+extern int unset_amas_bdl(void);
+extern int get_amas_bdl(void);
 #endif
 #endif
 
@@ -1636,6 +1646,9 @@ void stop_amas_lanctrl(void);
 void start_amas_lldpd(void);
 void stop_amas_lldpd(void);
 extern void gen_lldpd_if(char *bind_ifnames);
+void set_pre_sysdep_config(int iftype);
+void set_post_sysdep_config(int iftype);
+int get_radar_status(int bssidx);
 #endif
 #endif	/* RTCONFIG_WIRELESSREPEATER */
 
@@ -2066,4 +2079,8 @@ extern void start_adtbw();
 extern void start_aae();
 #endif
 
+// asm1042.c
+#ifdef RTN65U
+extern void asm1042_upgrade(int);
+#endif
 #endif	/* __RC_H__ */

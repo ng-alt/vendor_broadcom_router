@@ -338,6 +338,7 @@ enum romaingEvent {
 #define RAST_CANDIDATE_AP "CANDIDATE"
 #define RAST_STA_RSSI	"STA_RSSI"
 #define RAST_CANDIDATE_AP_RSSI	"AP_RSSI"
+#define RAST_CANDIDATE_AP_RSSI_CRITERIA  "AP_RSSI_CRITERIA"
 
 #define RAST_JVALUE_BAND_2G "2"
 #define RAST_JVALUE_BAND_5G "1"
@@ -1414,6 +1415,8 @@ extern int is_wlsta_exist(int unit, int vidx);
 #if defined(RTCONFIG_BCMWL6)
 extern int get_wl_sta_list(void);
 extern int get_maxassoc(char *ifname);
+extern int wl_add_ie(int unit, uint32 pktflag, int ielen, uchar *oui, uchar *data);
+extern void wl_del_ie_with_oui(int unit, uchar *oui);
 #endif
 #if defined(RTCONFIG_LANTIQ)
 extern int get_wl_sta_list(void);
@@ -1564,6 +1567,7 @@ extern uint32_t hnd_get_phy_speed(int port, int offs, unsigned int regv, unsigne
 extern int hnd_ethswctl(ecmd_t act, unsigned int val, int len, int wr, unsigned long long regdata);
 extern uint32_t set_ex53134_ctrl(uint32_t portmask, int ctrl);
 #endif
+extern int fw_check(void);
 #endif
 #ifdef RTCONFIG_AMAS
 //extern char *get_pap_bssid(int unit);
@@ -1682,6 +1686,21 @@ extern int psta_exist_except(int unit);
 extern int psr_exist(void);
 extern int psr_exist_except(int unit);
 #endif
+
+struct ifino_s {
+	char ifname[IFNAMSIZ];
+	ino_t inode;
+	unsigned long long last_rx, last_tx;
+	unsigned long long shift_rx, shift_tx;
+};
+
+struct ifname_ino_tbl {
+	unsigned nr_items;
+	struct ifino_s items[50];
+};
+
+extern struct ifino_s *ifname_ino_ptr(struct ifname_ino_tbl *ifinotbl, const char *ifname);
+extern ino_t get_iface_inode(const char *ifname);
 extern unsigned int netdev_calc(char *ifname, char *ifname_desc, unsigned long *rx, unsigned long *tx, char *ifname_desc2, unsigned long *rx2, unsigned long *tx2, char *nv_lan_ifname, char *nv_lan_ifnames);
 extern void disable_dpi_engine_setting(void);
 extern int get_iface_hwaddr(char *name, unsigned char *hwaddr);
@@ -2260,5 +2279,10 @@ extern int detwan_set_def_vid(const char *ifname, int vid, int needTagged, int a
 
 extern int IPTV_ports_cnt(void);
 
+#ifdef RTCONFIG_BCMWL6
+#define WL_5G_BAND_2	1 << (2 - 1)
+#define WL_5G_BAND_3	1 << (3 - 1)
+#define WL_5G_BAND_4	1 << (4 - 1)
+#endif
 
 #endif	/* !__SHARED_H__ */
