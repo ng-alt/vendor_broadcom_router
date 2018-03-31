@@ -3162,10 +3162,12 @@ sysinit(void)
 
 		/* Foxconn added start pling 06/26/2014 */
 		/* Change CTF mode when access control is enabled */
+#if 0
 		if (nvram_match("access_control_mode", "1") &&
 			!nvram_match("ctf_disable", "1"))
 			nvram_set("ctf_disable", "1");
-		/* Foxconn added end pling 06/26/2014 */
+#endif	
+	/* Foxconn added end pling 06/26/2014 */
 
     /* Foxconn added start pling 08/19/2010 */
     /* Make sure the NVRAM "ctf_disable" exist, otherwise 
@@ -3174,8 +3176,12 @@ sysinit(void)
     if (nvram_get("ctf_disable") == NULL)
         nvram_set("ctf_disable", "1");
     /* Foxconn added end pling 08/19/2010 */
-		if (!nvram_match("ctf_disable", "1"))
-			eval("insmod", "ctf");
+#if defined(R7000)
+	eval("insmod", "ctf");
+#else
+	if (!nvram_match("ctf_disable", "1"))
+		eval("insmod", "ctf");
+#endif
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 		wapi_mtd_restore();
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */

@@ -728,6 +728,29 @@ ifeq ($(PROFILE),R7000)
 	#install utelnetd/ookla $(TARGETDIR)/bin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
 	$(STRIP) $(TARGETDIR)/bin/fbwifi
+	$(STRIP) $(TARGETDIR)/lib/libssl.so
+	$(STRIP) $(TARGETDIR)/lib/libcrypto.so
+	$(STRIP) $(TARGETDIR)/usr/local/sbin/openvpn
+	$(STRIP) $(TARGETDIR)/bin/wget
+	$(STRIP) $(TARGETDIR)/sbin/curl
+	$(STRIP) $(TARGETDIR)/usr/sbin/tcpdump*
+	$(STRIP) $(TARGETDIR)/usr/sbin/zip
+	$(STRIP) $(TARGETDIR)/bin/ipset
+	$(STRIP) $(TARGETDIR)/usr/sbin/ookla
+	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-daemon
+	$(STRIP) $(TARGETDIR)/usr/bin/KC_PRINT
+	$(STRIP) $(TARGETDIR)/usr/bin/KC_BONJOUR
+	$(STRIP) $(TARGETDIR)/lib/libmnl.so.0.2.0
+	rm -r -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
+	rm -r -f $(TARGETDIR)/www/QOS_down_streaming_iqos.htm
+	$(STRIP) $(TARGETDIR)/usr/lib/libcurl.a
+	$(STRIP) $(TARGETDIR)/usr/lib/libcurl.so*
+	$(STRIP) $(TARGETDIR)/usr/sbin/zipsplit
+	#$(STRIP) $(TARGETDIR)/usr/bin/wsdl2h
+	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
+	#$(STRIP) $(TARGETDIR)/bin/fbwifi
+	$(STRIP) $(TARGETDIR)/usr/share/libssl.so.1.0.0
+	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 	# reduce the size here	
 	#$(STRIP) $(TARGETDIR)/usr/bin/xmllint
 	#$(STRIP) $(TARGETDIR)/usr/bin/xmlcatalog
