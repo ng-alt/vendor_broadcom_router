@@ -114,11 +114,11 @@ function checkEdit_Delete(index)
         {
             if(action_flag == 0)
             {/*Edit*/
-                alert("<%1165%>");
+                alert("<%1170%>");
             }
             else if(action_flag == 1)
             {/*Delete*/
-                alert("<%1166%>");
+                alert("<%1171%>");
                 return false;
             }
         }
@@ -149,22 +149,22 @@ function checkData()
     var dns_pri_ipaddr2 = (dns_pri_ipaddr[0] << 24) | (dns_pri_ipaddr[1] << 16) | (dns_pri_ipaddr[2] << 8)| (dns_pri_ipaddr[3]);
     var dns_sec_ipaddr2 = (dns_sec_ipaddr[0] << 24) | (dns_sec_ipaddr[1] << 16) | (dns_sec_ipaddr[2] << 8)| (dns_sec_ipaddr[3]);
 
-<%522%>
+<%523%>
 
 	if (cf.device_name.value == "")
-		msg+= "<%1167%>\n";
+		msg+= "<%1172%>\n";
 
 	if (cf.device_name.value.match( /[^\x20-\x7E]/ ))
 	{
 		cf.device_name.focus();
-		msg+= "<%792%>\n";
+		msg+= "<%793%>\n";
 	}
-<%523%>
+<%524%>
 
 	if(checkIP(cf.sysLANSubnetMask1,cf.sysLANSubnetMask2,cf.sysLANSubnetMask3,cf.sysLANSubnetMask4,255)
 		||!isNetmask(cf.sysLANSubnetMask1, cf.sysLANSubnetMask2, cf.sysLANSubnetMask3, cf.sysLANSubnetMask4)
 		||(lan_netaddr_min > lan_netaddr_max))
-		msg+= "<%530%>";
+		msg+= "<%531%>";
 	if(checkIP(cf.sysLANIPAddr1,cf.sysLANIPAddr2,cf.sysLANIPAddr3,cf.sysLANIPAddr4,254)
 		||((parseInt(cf.sysLANIPAddr4.value,10)==0) && (parseInt(cf.sysLANSubnetMask4.value,10)==0) && (parseInt(cf.sysLANSubnetMask3.value,10)!=0))
 		||((parseInt(cf.sysLANIPAddr4.value,10)==0) && (parseInt(cf.sysLANIPAddr3.value,10)==0) && (parseInt(cf.sysLANSubnetMask4.value,10)==0) && (parseInt(cf.sysLANSubnetMask3.value,10)==0)&& (parseInt(cf.sysLANSubnetMask2.value,10)!=0))
@@ -181,7 +181,7 @@ function checkData()
         || (n1 < (lan_netaddr_min & 0xFF)) || (n2 > (lan_netaddr_max & 0xFF))
         || ((cf.sysPoolStartingAddr4.value & cf.sysLANSubnetMask4.value) != (cf.sysLANIPAddr4.value & cf.sysLANSubnetMask4.value))
         || ((cf.sysPoolFinishAddr4.value & cf.sysLANSubnetMask4.value) != (cf.sysLANIPAddr4.value & cf.sysLANSubnetMask4.value)) )
-        msg+= "<%1168%>";
+        msg+= "<%1173%>";
 	if (msg.length > 1)
 	{
 		alert(msg);
@@ -196,7 +196,7 @@ function checkData()
 			return false;
 		}
         
-		/*  if(<%563%>==0) */
+		/*  if(<%564%>==0) */
 		/* checking whether DNS address as LAN address, no matter got automatically or not */
         if (w_netmask != 0)
 		{
@@ -306,7 +306,7 @@ function checkData()
 	else
     {
         cf.lan_proto.value = "static";
-        alert("<%1169%>");
+        alert("<%1174%>");
     }
 	checkRip();
 	return true;
@@ -329,9 +329,9 @@ function loadSettings()
 	var lan_proto_tmp = cf.tmp_lan_proto.value;
 	var rip_enable_tmp = cf.tmp_rip_enable.value;
 
-<%522%>
-	cf.device_name.value = cf.dev_name.value;
 <%523%>
+	cf.device_name.value = cf.dev_name.value;
+<%524%>
 	
 	if (cf.dlna_autoip_en.value == "0" || cf.dlna_autoip_en.value == "")
     {
@@ -345,7 +345,7 @@ function loadSettings()
 	    cf.sysLANSubnetMask3.value = lan_netmask[2];
 	    cf.sysLANSubnetMask4.value = lan_netmask[3];
         
-	    cf.rip_direction.selectedIndex = <%1170%> - 1;
+	    cf.rip_direction.selectedIndex = <%1175%> - 1;
 	    if (rip_enable == "0")
 	    	cf.sysRIPVersion.selectedIndex = 0;
 	    else
@@ -402,7 +402,7 @@ function loadSettings()
 	    cf.sysLANSubnetMask3.value = lan_netmask_tmp[2];
 	    cf.sysLANSubnetMask4.value = lan_netmask_tmp[3];
         
-	    cf.rip_direction.selectedIndex = <%1170%> - 1;
+	    cf.rip_direction.selectedIndex = <%1175%> - 1;
 	    if (rip_enable_tmp == "0")
 	    	cf.sysRIPVersion.selectedIndex = 0;
 	    else
@@ -591,28 +591,28 @@ function dhcp_update(index)
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-  <td nowrap><a href="javascript:loadhelp('LAN_lan','device_name')" tabindex="-1"><b><%748%></b></a></td>
-<%540%>
-  <td width="60%" align="left"><INPUT TYPE="text" MAXLENGTH="12" SIZE="24" NAME="device_name" value="<%1171%>"></td>
-<%542%>
+  <td nowrap><a href="javascript:loadhelp('LAN_lan','device_name')" tabindex="-1"><b><%749%></b></a></td>
+<%541%>
+  <td width="60%" align="left"><INPUT TYPE="text" MAXLENGTH="12" SIZE="24" NAME="device_name" value="<%1176%>"></td>
+<%543%>
 <%389%>
 	<td width="60%" align="left">
-		<%1171%>
-		&nbsp;&nbsp;&nbsp;<button type="button" value="<%543%>" name="Edit" class="button-rule" onClick="location.href='DEV_name.htm';"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%543%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		<%1176%>
+		&nbsp;&nbsp;&nbsp;<button type="button" value="<%544%>" name="Edit" class="button-rule" onClick="location.href='DEV_name.htm';"><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%544%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td>
 <%391%>
 </tr>
     
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td nowrap colspan="2"><p><b><a href="javascript:loadhelp('LAN_lan','tcp')" tabindex="-1"><%1172%> </a></b></p></td>
+	<td nowrap colspan="2"><p><b><a href="javascript:loadhelp('LAN_lan','tcp')" tabindex="-1"><%1177%> </a></b></p></td>
 	</tr>
 <!--<tr>
-	<td colspan="2" nowrap><input type="checkbox" name="dlna_autoip" value="dlna_autoip" onclick=DisableDHCPSetting();><%1173%> 
+	<td colspan="2" nowrap><input type="checkbox" name="dlna_autoip" value="dlna_autoip" onclick=DisableDHCPSetting();><%1178%> 
 	</td>
 </tr>-->
 <tr>
-<td nowrap><%549%></td>
+<td nowrap><%550%></td>
 <td nowrap align="left" class="num">
     <input type="text" name="sysLANIPAddr1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)" onBlur="dhcp_update(1)">.
     <input type="text" name="sysLANIPAddr2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)" onBlur="dhcp_update(2)">.
@@ -620,7 +620,7 @@ function dhcp_update(index)
     <input type="text" name="sysLANIPAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)" onBlur="dhcp_update(4)"></td>
 </tr>
 <tr>
-<td nowrap><%550%></td>
+<td nowrap><%551%></td>
 <td nowrap align="left" class="num">
     <input type="text" name="sysLANSubnetMask1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)" >.
     <input type="text" name="sysLANSubnetMask2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)" >.
@@ -628,34 +628,34 @@ function dhcp_update(index)
     <input type="text" name="sysLANSubnetMask4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)" ></td>
 </tr>
 <tr>
-<td nowrap><%1174%></td>
+<td nowrap><%1179%></td>
 <td align="left">
     <select name="rip_direction" size="1">
 	
-        <option value=1><%1175%></option>
-        <option value=2><%1176%></option>
-        <option value=3><%1177%></option>
+        <option value=1><%1180%></option>
+        <option value=2><%1181%></option>
+        <option value=3><%1182%></option>
     </select></td>
 </tr>
 <tr>
-<td nowrap><%1178%></td>
+<td nowrap><%1183%></td>
 <td align="left">
     <select name="sysRIPVersion" size="1">
-	<option><%619%></option>
-	<option><%1179%></option>
-	<option><%1180%></option>
-	<option><%1181%></option>
+	<option><%620%></option>
+	<option><%1184%></option>
+	<option><%1185%></option>
+	<option><%1186%></option>
     </select></td>
 </tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-	<td colspan="2" nowrap><input type="checkbox" name="dhcp_server" value="dhcp_server"><a href="javascript:loadhelp('LAN_lan','dhcp')" tabindex="-1"><b> <%1182%></b> </a> 
+	<td colspan="2" nowrap><input type="checkbox" name="dhcp_server" value="dhcp_server"><a href="javascript:loadhelp('LAN_lan','dhcp')" tabindex="-1"><b> <%1187%></b> </a> 
 	</td>
 </tr>
 
 <tr>
-<td nowrap><%1183%></td>
+<td nowrap><%1188%></td>
 <td nowrap align="left" class="num">
 	<input type="text" name="sysPoolStartingAddr1" class="num" size="4" maxlength="3" disabled="true" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
 	<input type="text" name="sysPoolStartingAddr2" class="num" size="4" maxlength="3" disabled="true" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
@@ -663,7 +663,7 @@ function dhcp_update(index)
 	<input type="text" name="sysPoolStartingAddr4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr>
-<td nowrap><%1184%></td>
+<td nowrap><%1189%></td>
 <td nowrap align="left" class="num">
 	<input type="text" name="sysPoolFinishAddr1" class="num" size="4" maxlength="3" disabled="true" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.
 	<input type="text" name="sysPoolFinishAddr2" class="num" size="4" maxlength="3" disabled="true" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.
@@ -674,7 +674,7 @@ function dhcp_update(index)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-	<td nowrap colspan="2"><a href="javascript:loadhelp('LAN_lan','reserved')" tabindex="-1"><b><%1185%></b></a></td>
+	<td nowrap colspan="2"><a href="javascript:loadhelp('LAN_lan','reserved')" tabindex="-1"><b><%1190%></b></a></td>
 </tr>
 
 <tr>
@@ -683,20 +683,20 @@ function dhcp_update(index)
 	<tr>
 		<td nowrap align="center" width="6%"><span class="thead"> &nbsp;</span></td>
 		<td nowrap align="center" width="6%"><span class="thead"># </span></td>
-		<td nowrap align="center"><span class="thead"><%549%></span></td>
-		<td nowrap align="center"><span class="thead"><%748%></span></td>
+		<td nowrap align="center"><span class="thead"><%550%></span></td>
 		<td nowrap align="center"><span class="thead"><%749%></span></td>
+		<td nowrap align="center"><span class="thead"><%750%></span></td>
 	</tr>
-	<%1186%>
+	<%1191%>
 	</table>
 </td>
 </tr>
 
 <tr>
 <td colspan="2" align="center">
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%692%>" name="Add" class="button-rule" onclick="buttonClick(this,'<%692%>');" ><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%692%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%543%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%543%>');return checkEdit_Delete(0)" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%543%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%693%>" name="Delete" class=<%488%> onclick="buttonClick(this,'<%693%>');return checkEdit_Delete(1)" ><span class="<%489%>"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%693%></span></span><span class="<%490%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%693%>" name="Add" class="button-rule" onclick="buttonClick(this,'<%693%>');" ><span class="roundleft_button"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%693%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%544%>" name="Edit" class="button-rule" onclick="buttonClick(this,'<%544%>');return checkEdit_Delete(0)" ><span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%544%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="Submit" value="<%694%>" name="Delete" class=<%488%> onclick="buttonClick(this,'<%694%>');return checkEdit_Delete(1)" ><span class="<%489%>"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%694%></span></span><span class="<%490%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	<input type="hidden" name="select" value="-1">
 </td>
 </tr>
@@ -716,36 +716,36 @@ function dhcp_update(index)
     <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
       </div>
 
-  <INPUT name=arp_enable type=hidden value= "<%1187%>">
-  <INPUT name=ipmac_token type=hidden value= "<%1188%>">
-  <INPUT name=dev_name type=hidden value= "<%1171%>">
+  <INPUT name=arp_enable type=hidden value= "<%1192%>">
+  <INPUT name=ipmac_token type=hidden value= "<%1193%>">
+  <INPUT name=dev_name type=hidden value= "<%1176%>">
   <INPUT name=lan_ipaddr type=hidden value= "<%302%>">
-  <INPUT name=lan_netmask type=hidden value= "<%572%>">
-  <INPUT name=rip_enable type=hidden value= "<%1189%>">
-  <INPUT name=rip_multicast type=hidden value= "<%1190%>">
-  <INPUT name=rip_version type=hidden value= "<%1191%>">
-  <INPUT name=lan_proto type=hidden value= "<%1192%>">
-  <INPUT name=dhcp_start type=hidden value= "<%1193%>">
-  <INPUT name=dhcp_end type=hidden value= "<%1194%>">
-  <INPUT name=dhcp_start_old type=hidden value= "<%1193%>">
-  <INPUT name=dhcp_end_old type=hidden value= "<%1194%>">
-  <INPUT name=pptp_wan_ipaddr type=hidden value= "<%635%>">
-  <INPUT name=l2tp_wan_ipaddr type=hidden value= "<%1195%>">
-  <INPUT name=pppoe_wan_ipaddr type=hidden value= "<%621%>">
-  <INPUT name=pptp_serv_ipaddr type=hidden value= "<%645%>">
-  <INPUT name=l2tp_serv_ipaddr type=hidden value= "<%1196%>">
-  <INPUT name=wan_dns1_pri type=hidden value= "<%564%>">
-  <INPUT name=wan_dns1_sec type=hidden value= "<%565%>">
+  <INPUT name=lan_netmask type=hidden value= "<%573%>">
+  <INPUT name=rip_enable type=hidden value= "<%1194%>">
+  <INPUT name=rip_multicast type=hidden value= "<%1195%>">
+  <INPUT name=rip_version type=hidden value= "<%1196%>">
+  <INPUT name=lan_proto type=hidden value= "<%1197%>">
+  <INPUT name=dhcp_start type=hidden value= "<%1198%>">
+  <INPUT name=dhcp_end type=hidden value= "<%1199%>">
+  <INPUT name=dhcp_start_old type=hidden value= "<%1198%>">
+  <INPUT name=dhcp_end_old type=hidden value= "<%1199%>">
+  <INPUT name=pptp_wan_ipaddr type=hidden value= "<%636%>">
+  <INPUT name=l2tp_wan_ipaddr type=hidden value= "<%1200%>">
+  <INPUT name=pppoe_wan_ipaddr type=hidden value= "<%622%>">
+  <INPUT name=pptp_serv_ipaddr type=hidden value= "<%646%>">
+  <INPUT name=l2tp_serv_ipaddr type=hidden value= "<%1201%>">
+  <INPUT name=wan_dns1_pri type=hidden value= "<%565%>">
+  <INPUT name=wan_dns1_sec type=hidden value= "<%566%>">
   <INPUT name=wan_proto type=hidden value= "<%499%>">
   <INPUT name=wan_ipaddr type=hidden value= "<%294%>">
   <INPUT name=wan_netmask type=hidden value= "<%295%>">
   <input type="hidden" name="repeater" value="<%467%>">
   <input type="hidden" name="repeater_an" value="<%468%>">
-  <input type="hidden" name="dlna_autoip_en" value="<%1197%>">
-  <INPUT name=tmp_lan_ipaddr type=hidden value= "<%1198%>">
-  <INPUT name=tmp_lan_netmask type=hidden value= "<%1199%>">
-  <INPUT name=tmp_lan_proto type=hidden value= "<%1200%>">
-  <INPUT name=tmp_rip_enable type=hidden value= "<%1201%>">
+  <input type="hidden" name="dlna_autoip_en" value="<%1202%>">
+  <INPUT name=tmp_lan_ipaddr type=hidden value= "<%1203%>">
+  <INPUT name=tmp_lan_netmask type=hidden value= "<%1204%>">
+  <INPUT name=tmp_lan_proto type=hidden value= "<%1205%>">
+  <INPUT name=tmp_rip_enable type=hidden value= "<%1206%>">
 <a name="helpframe-anchor"></a>
 </form>
 

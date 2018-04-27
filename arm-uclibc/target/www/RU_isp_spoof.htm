@@ -8,8 +8,8 @@
 <script language="javascript" type="text/javascript">
 
 var isp_type=parent.isp_type;
-var wan_factory_mac="<%2444%>";
-var wan_remote_mac="<%571%>";
+var wan_factory_mac="<%2448%>";
+var wan_remote_mac="<%572%>";
 
 function loadvalue()
 {
@@ -44,7 +44,7 @@ function loadvalue()
 <input name="ether_gateway" type="hidden">
 <input name="ether_dnsaddr1" type="hidden">
 <input name="ether_dnsaddr2" type="hidden">
-<input name="system_name" value="<%541%>" type="hidden">
+<input name="system_name" value="<%542%>" type="hidden">
 <input name="domain_name" value="" type="hidden">
 
 <!-- PPPoE -->
@@ -100,11 +100,11 @@ function loadvalue()
 </tr>
 
 <tr>
-<td colspan="2" class="left_text"><h2><%2431%></h2></td>
+<td colspan="2" class="left_text"><h2><%2435%></h2></td>
 </tr>
 
 <tr>
-<td colspan="2" class="left_text"><%2445%></td>
+<td colspan="2" class="left_text"><%2449%></td>
 </tr>
 
 <tr style="height:10px">
@@ -112,17 +112,17 @@ function loadvalue()
 </tr>
 <!--tr>
 	<TD colspan=2 class="RU_radio">
-	<input type="radio" name="macspoof" value="0" ><%558%>
+	<input type="radio" name="macspoof" value="0" ><%559%>
 	</TD>
 </tr>
 <tr>
 	<TD colspan=2 class="RU_radio">
-	<input type="radio" name="macspoof" value="1" checked ><%559%>
+	<input type="radio" name="macspoof" value="1" checked ><%560%>
 	</TD>
 </tr>
 <tr>
 	<TD colspan=2 class="RU_radio">
-	<input type="radio" name="macspoof" value="2" ><%560%>
+	<input type="radio" name="macspoof" value="2" ><%561%>
 	</TD>
 	<td><input type=text name=thismac></td>
 </tr-->
@@ -130,20 +130,20 @@ function loadvalue()
 
 <tr id="mac_default">
 	<td class="centerTd" nowrap="nowrap">
-		<input checked="checked" name="MACAssign" value="0" onclick="setMAC(document.forms[0], wan_factory_mac)" type="radio"><%558%>
+		<input checked="checked" name="MACAssign" value="0" onclick="setMAC(document.forms[0], wan_factory_mac)" type="radio"><%559%>
 	</td>
 </tr>
 <tr id="mac_comp">
 	<td class="centerTd" nowrap="nowrap">
-		<input name="MACAssign" value="1" onclick="setMAC(document.forms[0], wan_remote_mac)" type="radio"><%559%>
+		<input name="MACAssign" value="1" onclick="setMAC(document.forms[0], wan_remote_mac)" type="radio"><%560%>
 	</td>
 </tr>
 <tr id="mac_this">
 	<td class="centerTd" nowrap="nowrap">
-		<input name="MACAssign" value="2" onclick="setMAC(document.forms[0], '00:00:00:00:00:00')" type="radio"><%560%>
+		<input name="MACAssign" value="2" onclick="setMAC(document.forms[0], '00:00:00:00:00:00')" type="radio"><%561%>
 	</td>
 	<td align="right" nowrap="nowrap">
-		<input disabled="disabled" value="<%570%>" name="Spoofmac" maxlength="17" size="20" onkeypress="return getkey('mac',event)" type="text">
+		<input disabled="disabled" value="<%571%>" name="Spoofmac" maxlength="17" size="20" onkeypress="return getkey('mac',event)" type="text">
 	</td>
 </tr>
 
@@ -153,8 +153,8 @@ function loadvalue()
 
 <tr>
 	<td colspan="2" align="center" class="text-align:center;">
-		<button class="purpleBtn" type="button" style="width:100px" name="back" value="submit" onclick="RU_spoof_back()"><span><%1587%></span></button>
-		<button class="purpleBtn" type="button" style="width:100px" name="next" value="submit" onclick="RU_check_spoof();"><span><%1589%></span></button>
+		<button class="purpleBtn" type="button" style="width:100px" name="back" value="submit" onclick="RU_spoof_back()"><span><%1591%></span></button>
+		<button class="purpleBtn" type="button" style="width:100px" name="next" value="submit" onclick="RU_check_spoof();"><span><%1593%></span></button>
 	</td>
 </tr>
 </tbody>

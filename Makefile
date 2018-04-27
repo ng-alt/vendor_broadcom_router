@@ -724,13 +724,20 @@ ifeq ($(PROFILE),R7000)
 	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
-	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
+#	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	#install utelnetd/ookla $(TARGETDIR)/bin
-	install fbwifi/fbwifi $(TARGETDIR)/bin
-	$(STRIP) $(TARGETDIR)/bin/fbwifi
+#	install fbwifi/fbwifi $(TARGETDIR)/bin
+	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
+	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin
+	install ../../ap/gpl/openssl-1.0.2h/libssl.so.1.0.0 $(TARGETDIR)/usr/share
+	install ../../ap/gpl/openssl-1.0.2h/libcrypto.so.1.0.0 $(TARGETDIR)/usr/share
+	#$(STRIP) $(TARGETDIR)/bin/fbwifi
 	$(STRIP) $(TARGETDIR)/lib/libssl.so
 	$(STRIP) $(TARGETDIR)/lib/libcrypto.so
 	$(STRIP) $(TARGETDIR)/usr/local/sbin/openvpn
+	$(STRIP) $(TARGETDIR)/usr/local/sbin/openssl
+	rm -f $(TARGETDIR)/usr/share/libssl.so $(TARGETDIR)/usr/share/libcrypto.so
+	cd $(TARGETDIR)/usr/share && ln -s libssl.so.1.0.0 libssl.so && ln -s libcrypto.so.1.0.0 libcrypto.so
 	$(STRIP) $(TARGETDIR)/bin/wget
 	$(STRIP) $(TARGETDIR)/sbin/curl
 	$(STRIP) $(TARGETDIR)/usr/sbin/tcpdump*
@@ -743,14 +750,24 @@ ifeq ($(PROFILE),R7000)
 	$(STRIP) $(TARGETDIR)/lib/libmnl.so.0.2.0
 	rm -r -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
 	rm -r -f $(TARGETDIR)/www/QOS_down_streaming_iqos.htm
+	#remove uncessary file
+	rm -r -f $(TARGETDIR)/bin/fbwifi
+	rm -r -f $(TARGETDIR)/etc/wgetrc
+	rm -r -f $(TARGETDIR)/share/*
+	rm -r -f $(TARGETDIR)/usr/share/doc
+	rm -r -f $(TARGETDIR)/usr/share/man
+	rm -r -f $(TARGETDIR)/usr/share/gtk-doc
+	rm -r -f $(TARGETDIR)/usr/local/man
+	rm -r -f $(TARGETDIR)/usr/local/share/doc
+	rm -r -f $(TARGETDIR)/usr/local/share/gtk-doc
+	rm -r -f $(TARGETDIR)/usr/local/share/man
+	#   rm $(TARGETDIR)/usr/bin/soapcpp2
 	$(STRIP) $(TARGETDIR)/usr/lib/libcurl.a
 	$(STRIP) $(TARGETDIR)/usr/lib/libcurl.so*
 	$(STRIP) $(TARGETDIR)/usr/sbin/zipsplit
 	#$(STRIP) $(TARGETDIR)/usr/bin/wsdl2h
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
 	#$(STRIP) $(TARGETDIR)/bin/fbwifi
-	$(STRIP) $(TARGETDIR)/usr/share/libssl.so.1.0.0
-	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 	# reduce the size here	
 	#$(STRIP) $(TARGETDIR)/usr/bin/xmllint
 	#$(STRIP) $(TARGETDIR)/usr/bin/xmlcatalog
@@ -767,6 +784,8 @@ ifeq ($(PROFILE),R7000)
 	#$(STRIP) $(TARGETDIR)/usr/bin/wsdl2h
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
 	#$(STRIP) $(TARGETDIR)/bin/fbwifi
+	$(STRIP) $(TARGETDIR)/usr/share/libssl.so.1.0.0
+	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 	cp -f $(PLATFORMDIR)/hosts $(TARGETDIR)/etc/hosts
 	#remove uncessary file
 	rm -r -f $(TARGETDIR)/usr/share/doc
@@ -786,10 +805,12 @@ ifeq ($(PROFILE),R7000)
 	install prebuilt/ubd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/br_dns_hijack.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/l7_filter.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
-	
+	cd $(TARGETDIR)/etc && ln -s /tmp/resolv.conf resolv.conf
 endif
 ifeq ($(CONFIG_IPERF),y)
 	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
+	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
+	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
 endif
 

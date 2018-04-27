@@ -54,14 +54,14 @@ function check_wizard_pptp(check,page)
 	var cf=document.forms[0];
 	if(cf.pptp_username.value=="")
 	{
-		alert("<%814%>");
+		alert("<%815%>");
 		return false;
 	}
 	for(i=0;i<cf.pptp_username.value.length;i++)
 	{
 		if(isValidChar(cf.pptp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2420%>");
+			alert("<%2424%>");
 			return false;
 		}
 	}
@@ -69,18 +69,18 @@ function check_wizard_pptp(check,page)
 	{
 		if(isValidChar(cf.pptp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2421%>");
+			alert("<%2425%>");
 			return false;
 		}
 	}
 	if(cf.pptp_idletime.value.length<=0)
 	{
-		alert("<%2422%>");
+		alert("<%2426%>");
 		return false;
 	}
 	else if(!_isNumeric(cf.pptp_idletime.value))
 	{
-		alert("<%582%>");
+		alert("<%583%>");
 		return false;
 	}
 	cf.pptp_myip.value=cf.myip_1.value+'.'+cf.myip_2.value+'.'+cf.myip_3.value+'.'+cf.myip_4.value;
@@ -91,7 +91,7 @@ function check_wizard_pptp(check,page)
 	{
 		if(checkipaddr(cf.pptp_myip.value)==false)
 		{
-			alert("<%586%>");
+			alert("<%587%>");
 			return false;
 		}
 		if(isSameSubNet(cf.pptp_myip.value,lan_subnet,lan_ip,lan_subnet) == true)
@@ -115,7 +115,7 @@ function check_wizard_pptp(check,page)
 	{
 		if(checksubnet(cf.pptp_mynetmask.value)==false)
 		{
-			alert("<%530%>");
+			alert("<%531%>");
 			return false;
 		}
 	}
@@ -134,7 +134,7 @@ function check_wizard_pptp(check,page)
 		cf.WANAssign.value=1;
 		if ( cf.pptp_gateway.value != "..." && checkgateway(cf.pptp_gateway.value) == false )
 		{
-			alert("<%531%>");
+			alert("<%532%>");
 			return false;
 		}
 
@@ -151,12 +151,12 @@ function check_wizard_pptp(check,page)
 		{
 			if(isGateway(cf.pptp_myip.value,cf.pptp_mynetmask.value,cf.pptp_gateway.value) == false)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 			if(isSameIp(cf.pptp_myip.value,cf.pptp_gateway.value) == true)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 		}
@@ -166,20 +166,20 @@ function check_wizard_pptp(check,page)
 
 	if(cf.pptp_serv_ip.value=="")
 	{
-		alert("<%636%>");
+		alert("<%637%>");
 		return false;
 	}
 	for(i=0;i<cf.pptp_serv_ip.value.length;i++)
 	{
 		if(isValidChar(cf.pptp_serv_ip.value.charCodeAt(i))==false)
 		{
-			alert("<%636%>");
+			alert("<%637%>");
 			return false;
 		}
 	}
 	if( cf.pptp_serv_ip.value == cf.pptp_myip.value )
 	{
-		alert("<%2423%>");
+		alert("<%2427%>");
 		return false;
 	}
 
@@ -195,7 +195,7 @@ function check_wizard_pptp(check,page)
 		{
 			if ( checkipaddr(cf.pptp_serv_ip.value) == false )
 			{
-				alert("<%636%>");
+				alert("<%637%>");
 				return false;
 			}
 		}
@@ -217,7 +217,7 @@ function check_wizard_pptp(check,page)
 	{
 		if(isValidChar(cf.pptp_conn_id.value.charCodeAt(i))==false)
 		{
-			alert("<%2424%>");
+			alert("<%2428%>");
 			return false;
 		}
 	}
@@ -235,7 +235,7 @@ function check_wizard_pptp(check,page)
 		{
 			if(isSameSubNet(cf.pptp_myip.value,cf.pptp_mynetmask.value,cf.pptp_gateway.value,cf.pptp_mynetmask.value) != true)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 		}
@@ -259,7 +259,7 @@ function check_pptp(cf,check)
 	{
 		if( server_addr_array[i].length > 63 )
 		{
-			alert("<%636%>");
+			alert("<%637%>");
 			return false;
 		}
 	}
@@ -332,7 +332,7 @@ function check_welcome_pptp()
 	{
 		if(checkipaddr(cf.pptp_myip.value)==false)
 		{
-			alert("<%586%>");
+			alert("<%587%>");
 			return false;
 		}
 		cf.WANAssign.value=1;
@@ -342,7 +342,7 @@ function check_welcome_pptp()
 	{
 		if(checkipaddr(cf.pptp_gateway.value)==false)
 		{
-			alert("<%531%>");
+			alert("<%532%>");
 			return false;
 		}
 	}
@@ -354,7 +354,7 @@ function check_welcome_pptp()
 	{
 		if(checksubnet(cf.pptp_mynetmask.value)==false)
 		{
-			alert("<%530%>");
+			alert("<%531%>");
 			return false;
 		}
 	}
@@ -368,7 +368,7 @@ function check_welcome_pptp()
 		{
 			if(isSameSubNet(cf.pptp_myip.value,cf.pptp_mynetmask.value,cf.pptp_gateway.value,cf.pptp_mynetmask.value) != true)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 		}
@@ -423,14 +423,14 @@ function RU_pptp_user_info()
 	var cf=document.forms[0];
 	if(cf.pptp_username.value=="")
 	{
-		alert("<%814%>");
+		alert("<%815%>");
 		return false;
 	}
 	for(i=0;i<cf.pptp_username.value.length;i++)
 	{
 		if(isValidChar(cf.pptp_username.value.charCodeAt(i))==false)
 		{
-			alert("<%2420%>");
+			alert("<%2424%>");
 			return false;
 		}
 	}
@@ -438,20 +438,20 @@ function RU_pptp_user_info()
 	{
 		if(isValidChar(cf.pptp_passwd.value.charCodeAt(i))==false)
 		{
-			alert("<%2421%>");
+			alert("<%2425%>");
 			return false;
 		}
 	}
 	if(cf.pptp_serv_ip.value=="")
 	{
-		alert("<%636%>");
+		alert("<%637%>");
 		return false;
 	}
 	for(i=0;i<cf.pptp_serv_ip.value.length;i++)
 	{
 		if(isValidChar(cf.pptp_serv_ip.value.charCodeAt(i))==false)
 		{
-			alert("<%636%>");
+			alert("<%637%>");
 			return false;
 		}
 	}
@@ -461,7 +461,7 @@ function RU_pptp_user_info()
 	{
 		if( server_addr_array[i].length > 63 )
 		{
-			alert("<%636%>");
+			alert("<%637%>");
 			return false;
 		}
 	}
@@ -569,29 +569,29 @@ function RU_check_pptp_dual()
 		parent.pptp_wan_assign=1;
 		if(checkipaddr(cf.pptp_myip.value)==false)
 		{
-			alert("<%586%>");
+			alert("<%587%>");
 			return false;
 		}
 		if(checksubnet(cf.pptp_mynetmask.value)==false)
 		{
-			alert("<%530%>");
+			alert("<%531%>");
 			return false;
 		}
 		if ( cf.pptp_gateway.value != "..." && checkgateway(cf.pptp_gateway.value) == false )
 		{
-			alert("<%531%>");
+			alert("<%532%>");
 			return false;
 		}
 		if( cf.pptp_gateway.value != "..." )
 		{
 			if(isGateway(cf.pptp_myip.value,cf.pptp_mynetmask.value,cf.pptp_gateway.value) == false)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 			if(isSameIp(cf.pptp_myip.value,cf.pptp_gateway.value) == true)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 		}
@@ -601,7 +601,7 @@ function RU_check_pptp_dual()
 		{
 			if(isSameSubNet(cf.pptp_myip.value,cf.pptp_mynetmask.value,cf.pptp_gateway.value,cf.pptp_mynetmask.value) != true)
 			{
-				alert("<%531%>");
+				alert("<%532%>");
 				return false;
 			}
 		}
@@ -632,7 +632,7 @@ function RU_check_pptp_dual()
 		cf.pptp_dnsaddr2.value="";
 	}
 	if(cf.DualAssign[1].checked == true)
-		alert("<%2419%>");
+		alert("<%2423%>");
 	parent.pptp_local_ipaddr=cf.pptp_myip.value;
 	parent.pptp_local_netmask=cf.pptp_mynetmask.value;
 	parent.pptp_local_gateway=cf.pptp_gateway.value;

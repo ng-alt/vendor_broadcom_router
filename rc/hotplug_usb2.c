@@ -357,7 +357,7 @@ int usb2_led(void)
         close(fd);
     }
 #endif /* GPIO_EXT_CTRL */
-    /* foxconn wklin modified end ,01/19/2011 */
+    
     return rtn_val;
 } /* usb2_led() */
 
@@ -366,7 +366,7 @@ int usb_dual_led(void)
     int rtn_val = 0;
 
     usb1_led();
-#if (!defined R6700)    /* No USB2 LED for R6700 */
+#if (!defined R6700) && (!defined R6900)    /* No USB2 LED for R6700 and R6900 */
     usb2_led();
 #endif
 
