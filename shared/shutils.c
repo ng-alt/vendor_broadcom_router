@@ -514,6 +514,42 @@ get_ifname_unit(const char* ifname, int *unit, int *subunit)
  * locate the string "needle"
  */
 char *
+make_wl_prefix(char *prefix, int prefix_size, int mode, char *ifname)
+{
+	int unit = -1, subunit = -1;
+	char *wl_unit = NULL;
+
+	if (!prefix || !prefix_size)
+		return NULL;
+
+	if (ifname) {
+		if (!*ifname)
+			return NULL;
+		wl_unit = ifname;
+	} else {
+		wl_unit = nvram_get("wl_unit");
+
+		if (!wl_unit)
+			return NULL;
+	}
+
+	if (get_ifname_unit(wl_unit, &unit, &subunit) < 0)
+		return NULL;
+
+	if (unit < 0) return NULL;
+
+	if  ((mode) && (subunit > 0))
+		snprintf(prefix, prefix_size, "wl%d.%d_", unit, subunit);
+	else
+		snprintf(prefix, prefix_size, "wl%d_", unit);
+
+	return prefix;
+}
+
+/* In the space-separated/null-terminated list(haystack), try to
+ * locate the string "needle"
+ */
+char *
 find_in_list(const char *haystack, const char *needle)
 {
 	const char *ptr = haystack;
@@ -543,6 +579,63 @@ find_in_list(const char *haystack, const char *needle)
 	return NULL;
 }
 
+/* In the space-separated/null-terminated list(haystack), try to
+ * locate the string "needle" and get the next string from it
+ * if required, do a circular search as well
+ * if "needle" is NULL, get the first string in the list
+ */
+char *
+find_next_in_list(const char *haystack, const char *needle, char *nextstr, int nextstrlen)
+{
+	const char *ptr = haystack;
+	int needle_len = 0;
+	int haystack_len = 0;
+	int len = 0;
+
+	if (!haystack || !needle || !nextstr || !*haystack)
+		return NULL;
+
+	if (!*needle) {
+		goto found_next;
+	}
+
+	needle_len = strlen(needle);
+	haystack_len = strlen(haystack);
+
+	while (*ptr != 0 && ptr < &haystack[haystack_len])
+	{
+		/* consume leading spaces */
+		ptr += strspn(ptr, " ");
+
+		/* what's the length of the next word */
+		len = strcspn(ptr, " ");
+
+		if ((needle_len == len) && (!strncmp(needle, ptr, len))) {
+
+			ptr += len;
+
+			if (!(*ptr != 0 && ptr < &haystack[haystack_len])) {
+				ptr = haystack;
+			} else {
+				/* consume leading spaces */
+				ptr += strspn(ptr, " ");
+			}
+
+found_next:
+			/* what's the length of the next word */
+			len = strcspn(ptr, " ");
+
+			/* copy next value in nextstr */
+			memset(nextstr, 0, nextstrlen);
+			strncpy(nextstr, ptr, len);
+
+			return (char*) ptr;
+		}
+
+		ptr += len;
+	}
+	return NULL;
+}
 
 /**
  *	remove_from_list

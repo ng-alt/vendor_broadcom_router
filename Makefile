@@ -448,6 +448,7 @@ obj-$(CONFIG_USBAP) += bmac dongle
 # DHD AP support (PCIe full dongle)
 obj-$(CONFIG_DHDAP) += dhd pciefd
 
+obj-y += mpstat
 # always build libbcmcrypto
 obj-y += libbcmcrypto
 
@@ -738,7 +739,9 @@ ifeq ($(PROFILE),R8000)
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
-
+	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
+	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin
+	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
@@ -752,7 +755,47 @@ ifeq ($(PROFILE),R8000)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
 	install prebuilt/et.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install prebuilt/dhd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
-	cd $(TARGETDIR)/etc && ln -s /tmp/resolv.conf resolv.conf
+	cd $(TARGETDIR)/etc && ln -sf /tmp/resolv.conf resolv.conf
+	$(STRIP) $(TARGETDIR)/bin/ookla
+	$(STRIP) $(TARGETDIR)/usr/sbin/ookla
+	$(STRIP) $(TARGETDIR)/usr/sbin/afpd
+	$(STRIP) $(TARGETDIR)/usr/sbin/afppasswd
+	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-autoipd
+	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-daemon
+	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-dnsconfd
+	$(STRIP) $(TARGETDIR)/usr/sbin/cnid_dbd
+	$(STRIP) $(TARGETDIR)/usr/sbin/cnid_metad
+	$(STRIP) $(TARGETDIR)/usr/sbin/curl
+	$(STRIP) $(TARGETDIR)/usr/sbin/fbwifi_command
+	$(STRIP) $(TARGETDIR)/usr/sbin/ip6tables
+	$(STRIP) $(TARGETDIR)/usr/sbin/ip6tables-restore
+	$(STRIP) $(TARGETDIR)/usr/sbin/ip6tables-save
+	$(STRIP) $(TARGETDIR)/usr/sbin/nas
+	$(STRIP) $(TARGETDIR)/usr/sbin/tcpdump
+	$(STRIP) $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
+	$(STRIP) $(TARGETDIR)/usr/sbin/wol
+	$(STRIP) $(TARGETDIR)/usr/sbin/xtables-multi
+	$(STRIP) $(TARGETDIR)/usr/sbin/zip
+	$(STRIP) $(TARGETDIR)/usr/sbin/zipcloak
+	$(STRIP) $(TARGETDIR)/usr/sbin/zipnote
+	$(STRIP) $(TARGETDIR)/usr/sbin/zipsplit
+	$(STRIP) $(TARGETDIR)/usr/sbin/dnsmasq
+	$(STRIP) $(TARGETDIR)/usr/bin/avahi-browse
+	$(STRIP) $(TARGETDIR)/usr/bin/avahi-publish
+	$(STRIP) $(TARGETDIR)/usr/bin/avahi-resolve
+	$(STRIP) $(TARGETDIR)/usr/bin/avahi-set-host-name
+	$(STRIP) $(TARGETDIR)/usr/bin/iperf
+	$(STRIP) $(TARGETDIR)/bin/wget
+	$(STRIP) $(TARGETDIR)/bin/ipset
+	$(STRIP) $(TARGETDIR)/sbin/curl
+	$(STRIP) $(TARGETDIR)/sbin/hd-idle
+	$(STRIP) $(TARGETDIR)/usr/bin/avahi-set-host-name
+	$(STRIP) $(TARGETDIR)/usr/bin/iperf
+	$(STRIP) $(TARGETDIR)/usr/local/sbin/openssl
+	$(STRIP) $(TARGETDIR)/usr/local/sbin/openvpn
+	rm -rf $(TARGETDIR)/usr/local/share/doc
+	rm -rf $(TARGETDIR)/usr/local/share/man
+	rm -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
 endif
 
 ifneq (2_4,$(LINUX_VERSION))

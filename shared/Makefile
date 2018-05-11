@@ -40,11 +40,7 @@ endif
 LDFLAGS += -L.
 
 
-OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o bcmwifi_channels.o et_linux.o
-
-ifneq ($(CONFIG_WAPI)$(CONFIG_CIFS),)
-OBJS += confmtd_utils.o
-endif
+OBJS := nvparse.o shutils.o wl.o wl_linux.o linux_timer.o defaults.o wlif_utils.o bcmwifi_channels.o et_linux.o confmtd_utils.o
 
 ifeq ($(CONFIG_PLC),y)
 OBJS += dict.o

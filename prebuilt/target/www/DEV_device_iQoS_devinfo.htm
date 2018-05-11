@@ -185,19 +185,19 @@ function loadSettings()
 	var iqos_bw;
 	var bandwidthUp;
 	var bandwidthDown;
-	if("1"=="<%2096%>"){
+	if("1"=="<%2115%>"){
 	//uplink
-    iqos_bw = parseFloat(<%2097%>/1000000);
+    iqos_bw = parseFloat(<%2116%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2098%>/1000000);
+	iqos_bw = parseFloat(<%2117%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   
 	}else{
 	//uplink
-    iqos_bw = parseFloat(<%2654%>/1000000);
+    iqos_bw = parseFloat(<%3134%>/1000000);
 	bandwidthUp = iqos_bw.toFixed(2);
     //downlink
-	iqos_bw = parseFloat(<%2655%>/1000000);
+	iqos_bw = parseFloat(<%3135%>/1000000);
 	bandwidthDown = iqos_bw.toFixed(2);   	
 	}
     document.getElementById('uplink_bd').innerHTML = bandwidthUp + " Mbps";	
@@ -240,7 +240,7 @@ function set_mac()
     <table border="0" cellpadding="3" cellspacing="0" width="100%">
         <tr>
             <td width="10%" align="left">
-            <button value="Back" onclick="window.location.href='DEV_redirect.htm';"  type="BUTTON" name="Back" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%2659%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+            <button value="Back" onclick="window.location.href='DEV_redirect.htm';"  type="BUTTON" name="Back" class="button-rule" ><span class="roundleft_button"><span>&nbsp;&nbsp; <%3139%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
             </td>            
             <td width="40%" align="left">
             <div id="ookla">
@@ -252,7 +252,7 @@ function set_mac()
             <td width="30%" align="left">
             </td>
             <td width="20%" align="right">
-                &nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="buttonClick(this,'Refresh');"  type="SUBMIT" name="refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%720%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                &nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="buttonClick(this,'Refresh');"  type="SUBMIT" name="refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%723%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
             </td>
         </tr>        
     </table>
@@ -262,14 +262,14 @@ function set_mac()
 	<td colspan="2">
 	<table class="sortable" border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr class="table_header">
-		<td nowrap align="center" width="10%" name="show_status"><span class="subheadtext"><%722%></span></td>
-		<td nowrap align="center" width="10%"><span class="subheadtext"><%2000%></span></td>
-		<td nowrap align="center" width="10%"><span class="subheadtext"><%756%></span></td>
-		<td nowrap align="center" width="20%"><span class="subheadtext"><%724%></span></td>
-		<td nowrap align="center" width="25%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%2656%></span></td>
-		<td nowrap align="center" width="25%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%2657%></span></td>
+		<td nowrap align="center" width="10%" name="show_status"><span class="subheadtext"><%725%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%2019%></span></td>
+		<td nowrap align="center" width="10%"><span class="subheadtext"><%759%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%727%></span></td>
+		<td nowrap align="center" width="25%"><span class="subheadtext"><img src="img/down_ookla.png" width="19px" height="25px" class="device-icon"><%3136%></span></td>
+		<td nowrap align="center" width="25%"><span class="subheadtext"><img src="img/up_ookla.png" width="22px" height="25px" class="device-icon"><%3137%></span></td>
 	</tr>
-        <%2660%>
+        <%3140%>
         </table>
 	</td>
 </tr>
@@ -278,11 +278,11 @@ function set_mac()
 	<td colspan="2">
 	<table class="sortable" border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr class="table_header">
-		<td nowrap align="center" width="20%"><span class="subheadtext"><%2661%></span></td>
-		<td nowrap align="center" width="40%" id="download"><span class="subheadtext"><%2662%></span></td>
-		<td nowrap align="center" width="40%" id="upload"><span class="subheadtext"><%2663%></span></td>
+		<td nowrap align="center" width="20%"><span class="subheadtext"><%3141%></span></td>
+		<td nowrap align="center" width="40%" id="download"><span class="subheadtext"><%3142%></span></td>
+		<td nowrap align="center" width="40%" id="upload"><span class="subheadtext"><%3143%></span></td>
 	</tr>
-        <%2664%>
+        <%3144%>
         </table>
 	</td>
 </tr>
@@ -303,8 +303,8 @@ function set_mac()
 
 
 
-    <input name="enable_access_control" type="hidden" value= "<%740%>">
-    <input name="select_dev" type="hidden" value= "<%2665%>">
+    <input name="enable_access_control" type="hidden" value= "<%743%>">
+    <input name="select_dev" type="hidden" value= "<%3145%>">
     <input name="page_submit" type="hidden" value= "get_devinfo">
     <input name="select_mac" type="hidden" value= "">
 <a name="helpframe-anchor"></a>

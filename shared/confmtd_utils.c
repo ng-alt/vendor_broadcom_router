@@ -65,7 +65,8 @@ int
 confmtd_open(const char *mtd, int flags)
 {
 	FILE *fp;
-	char dev[PATH_MAX];
+	//char dev[PATH_MAX];
+	char dev[1024];
 	int i;
 
 	if ((fp = fopen("/proc/mtd", "r"))) {
@@ -92,6 +93,7 @@ confmtd_open(const char *mtd, int flags)
  * @param	mtd	path to or partition name of MTD device
  * @return	0 on success and errno on failure
  */
+#if 0
 int
 confmtd_backup()
 {
@@ -257,3 +259,4 @@ fail:
 
 	return ret;
 }
+#endif

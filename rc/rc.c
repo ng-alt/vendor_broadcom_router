@@ -60,6 +60,9 @@
 #if defined(__CONFIG_WAPI__) || defined(__CONFIG_WAPI_IAS__)
 #include <wapi_utils.h>
 #endif /* __CONFIG_WAPI__ || __CONFIG_WAPI_IAS__ */
+#ifdef __BRCM_GENERIC_IQOS__
+#include "bcmIqosDef.h"
+#endif
 
 /* foxconn added start, zacker, 09/17/2009, @wps_led */
 #include <fcntl.h>
@@ -3558,6 +3561,8 @@ sysinit(void)
 	if (console_init())
 		noconsole = 1;
 
+    system("echo 80 > /proc/sys/vm/overcommit_ratio");
+
 #ifdef LINUX26
 	if (mkdir("/dev/shm", 0777) < 0 && errno != EEXIST) perror("/dev/shm not created");
 	eval("/sbin/hotplug2", "--coldplug");
@@ -3926,6 +3931,26 @@ sysinit(void)
 			system("echo 131072 > /proc/sys/net/ipv4/netfilter/ip_conntrack_max");
             /* contrack table turning for ACOSNAT end */
             nvram_set("brcm_speedtest",   "0");
+#ifdef __BRCM_GENERIC_IQOS__
+			if (stat("/usr/sbin/qos.conf", &file_stat) == 0) {
+				if (mkdir(IQOS_RUNTIME_FOLDER, 0777) < 0 && errno != EEXIST)
+    				perror("IQOS_RUNTIME_FOLDER not created");
+				else {
+					eval("cp", "/lib/modules/tdts.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udb.ko", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/lib/modules/tdts_udbfw.ko", IQOS_RUNTIME_FOLDER);
+
+					eval("cp", "/usr/sbin/tdts_rule_agent", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/rule.trf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/setup.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/upgrade.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.sh", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/qos.conf", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/sample.bin", IQOS_RUNTIME_FOLDER);
+					eval("cp", "/usr/sbin/TmToNtgr_dev_mapping", IQOS_RUNTIME_FOLDER);
+				}
+			}
+#else  /* BRCM_GENERIC_IQOS */
 			if (stat("/usr/sbin/qosd.conf", &file_stat) == 0) {
 				if (mkdir("/tmp/trend", 0777) < 0 && errno != EEXIST)
 				perror("/tmp/trend not created");
@@ -3944,9 +3969,10 @@ sysinit(void)
 					eval("cp", "/usr/sbin/rule.version", "/tmp/trend");
 				}
 			}
+#endif  /* BRCM_GENERIC_IQOS */
 		}
 #if defined(R8000)
-        system("cd /tmp/trend; ./setup.sh start; ./setup.sh stop;"); //Init iQos database once to get version content
+            system("cd /tmp/trend; ./setup.sh start; cat /proc/ips_info > /tmp/trend/eng.version; ./setup.sh stop;"); //Init iQos database once to get version content
 #endif
 #endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
 	}

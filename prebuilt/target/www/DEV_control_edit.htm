@@ -107,10 +107,10 @@ function checkData()
 //	if( cf.dev_name.value.length < 1 )
 //		msg += "Input name can't be empty\n";
     if (cf.dev_name.value.match( /[^\x20-\x7E]/ ))
-        msg+="<%773%>\n";
+        msg+="<%776%>\n";
 
     if (cf.is_edit_itself.value.length > 0 && cf.access_control_option.value.match("block")){
-        msg+="<%777%>\n";
+        msg+="<%780%>\n";
         cf.access_control_option.selectedIndex=0;
     }
     if (msg.length > 1) {
@@ -150,21 +150,21 @@ function checkData()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td nowrap><%388%></td>
+<td nowrap><%390%></td>
 <td nowrap>
   <select name="access_control_option" id="access_control_option">                             
-  <option value='allow' <%778%> > <%754%> </option>
-  <option value='block' <%779%> > <%755%> </option>
+  <option value='allow' <%781%> > <%757%> </option>
+  <option value='block' <%782%> > <%758%> </option>
   </select> 
 </td>
 </tr>
 <tr>
-<td nowrap><%774%></td>
-<td nowrap><input type="text" size="17" maxlength="17" name="mac" disabled="disable" value="<%780%>"></td>
+<td nowrap><%777%></td>
+<td nowrap><input type="text" size="17" maxlength="17" name="mac" disabled="disable" value="<%783%>"></td>
 </tr>
 <tr>
-<td nowrap><%775%></td>
-<td nowrap><input type="text" size="24" maxlength="24" name="dev_name" value="<%781%>"></td>
+<td nowrap><%778%></td>
+<td nowrap><input type="text" size="24" maxlength="24" name="dev_name" value="<%784%>"></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -188,7 +188,7 @@ function checkData()
 
 
     <input name="access_control_add_type" type="hidden" value="allowed_list">
-    <input name="is_edit_itself" type="hidden" value="<%782%>">
+    <input name="is_edit_itself" type="hidden" value="<%785%>">
     <input name="dev_mac" type="hidden" value="">
 </form>
 
