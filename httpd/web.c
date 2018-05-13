@@ -387,6 +387,16 @@ extern char login_url[128];
 extern int login_error_status;
 extern char cloud_file[256];
 
+#ifdef RTCONFIG_LACP
+#if defined(GTAC5300)
+	#define LACP_PORT1		"LACP5"
+	#define LACP_PORT2		"LACP6"
+#else
+	#define LACP_PORT1		"LACP1"
+	#define LACP_PORT2		"LACP2"
+#endif
+#endif
+
 #ifdef RTCONFIG_JFFS2USERICON
 #define JFFS_USERICON		"/jffs/usericon/"
 #endif
@@ -424,6 +434,15 @@ static int get_client_detail_info(struct json_object *clients, struct json_objec
 static int get_custom_clientlist_info(struct json_object *json_object_ptr);
 
 void not_ej_initial_folder_var_file();
+
+int _check_xss_blacklist(char* para, int check_www)
+{
+	char temp[128];
+
+	strlcpy(temp, para, sizeof(temp));
+	return check_xss_blacklist(temp, check_www);
+}
+
 
 static void insert_hook_func(webs_t wp, char *fname, char *param)
 {
@@ -488,7 +507,7 @@ void websRedirect(webs_t wp, char_t *url)
 {
 	char url_str[128];
 
-	if(check_xss_blacklist(url, 1)){
+	if(_check_xss_blacklist(url, 1)){
 		memset(url_str, 0, sizeof(url_str));
 		strlcpy(url_str, INDEXPAGE, sizeof(url_str));
 	}else
@@ -524,7 +543,7 @@ void websRedirect_iframe(webs_t wp, char_t *url)
 {
 	char url_str[32];
 
-	if(check_xss_blacklist(url, 1)){
+	if(_check_xss_blacklist(url, 1)){
 		memset(url_str, 0, sizeof(url_str));
 		strlcpy(url_str, "index.asp", sizeof(url_str));
 	}else
@@ -1140,7 +1159,11 @@ ej_nvram_char_to_ascii(int eid, webs_t wp, int argc, char_t **argv)
 		}
 	}
 
+#ifdef RTCONFIG_UTF8_SSID
+	char_to_ascii_safe_with_utf8(buf, str, ret);
+#else
 	char_to_ascii_safe(buf, str, ret);
+#endif
 	ret = websWrite(wp, "%s", buf);
 
 	if (buf != tmp)
@@ -1497,7 +1520,7 @@ ej_dump(int eid, webs_t wp, int argc, char_t **argv)
 	//csprintf("Script : %s, File: %s\n", script, file);
 
 	// run scrip first to update some status
-	if (strcmp(script,"")!=0) sys_script(script);
+	if (strcmp(script,"syscmd.sh")==0) sys_script(script);
 
 	if (strcmp(file, "wlan11b.log")==0)
 		return (ej_wl_status(eid, wp, 0, NULL, 0));	/* FIXME */
@@ -1526,17 +1549,7 @@ ej_dump(int eid, webs_t wp, int argc, char_t **argv)
 		return wl_wps_info(eid, wp, argc, argv, nvram_get_int("wps_band_x"));
 #endif
 	}
-#if 0
-	else if (strcmp(file, "apselect.log")==0)
-		return (ej_getSiteSurvey(eid, wp, 0, NULL));
-	else if (strcmp(file, "apscan")==0)
-		return (ej_SiteSurvey(eid, wp, 0, NULL));
-	else if (strcmp(file, "urelease")==0)
-		return (ej_urelease(eid, wp, 0, NULL));
-#endif
-
 	ret = 0;
-
 	strcpy(path, get_logfile_path());
 	if (strcmp(file, "syslog.log")==0)
 	{
@@ -1652,7 +1665,23 @@ ej_dump(int eid, webs_t wp, int argc, char_t **argv)
 		ret += dump_file(wp, filename);
 	}
 #endif
-	else {
+	else if (strcmp(file, "connect.log")==0) {
+		sprintf(filename, "/tmp/%s", file);
+		system("/usr/sbin/netstat-nat -r state -xn > /tmp/connect.log 2>&1");
+		ret += dump_file(wp, filename);
+	}
+	else if ( strcmp(file, "syscmd.log")==0
+		|| strcmp(file, "pptp_connected")==0
+		|| strcmp(file, "release_note0.txt")==0
+		|| strcmp(file, "release_note1.txt")==0
+		|| strcmp(file, "release_note.txt")==0
+#ifdef RTCONFIG_DSL
+		|| strcmp(file, "adsl/tc_fw_ver_short.txt")==0
+		|| strcmp(file, "adsl/tc_ras_ver.txt")==0
+		|| strcmp(file, "adsl/tc_fw_ver.txt")==0
+		|| strcmp(file, "adsl/adsllog.log")==0
+#endif
+	){
 		sprintf(filename, "/tmp/%s", file);
 		ret += dump_file(wp, filename);
 	}
@@ -1710,6 +1739,33 @@ int webWriteNvram(webs_t wp, char *name)
 	return ret;
 }
 
+int webWriteUTF8Nvram(webs_t wp, char *name)
+{
+	int ret = 0;
+
+#ifdef RTCONFIG_UTF8_SSID
+	char tmp[MAX_LINE_SIZE];
+	char *buf = tmp;
+	char *c = nvram_safe_get(name);
+	ret = strlen(c) * sizeof(char)*3 + sizeof(char);
+	if (ret > sizeof(tmp)) {
+		buf = (char *)malloc(ret);
+		if (buf == NULL) {
+			csprintf("No memory.\n");
+			return 0;
+		}
+	}
+	char_to_ascii_safe_with_utf8(buf, c, ret);
+	ret = websWrite(wp, "%s", buf);
+
+	if (buf != tmp)
+		free(buf);
+#else
+	webWriteNvram(wp, name);
+#endif
+	return ret;
+}
+
 int webWriteNvram2(webs_t wp, char *name)
 {
 	char *c;
@@ -1757,7 +1813,7 @@ ej_wl_get_guestnetwork(int eid, webs_t wp, int argc, char_t **argv)
 		ret += websWrite(wp, "[\"");
 		ret += webWriteNvram(wp, strcat_r(word2, "_bss_enabled", tmp));
 		ret += websWrite(wp, "\", \"");
-		ret += webWriteNvram(wp, strcat_r(word2, "_ssid", tmp));
+		ret += webWriteUTF8Nvram(wp, strcat_r(word2, "_ssid", tmp));
 		ret += websWrite(wp, "\", \"");
 		ret += webWriteNvram(wp, strcat_r(word2, "_auth_mode_x", tmp));
 		ret += websWrite(wp, "\", \"");
@@ -1873,7 +1929,7 @@ ej_vpn_client_get_parameter(int eid, webs_t wp, int argc, char_t **argv)
 }
 static int
 ej_vpn_crt_server(int eid, webs_t wp, int argc, char **argv) {
-	char buf[4000];
+	char buf[8000];
 	char file_name[32];
 	int idx = 0;
 
@@ -1993,7 +2049,7 @@ ej_vpn_crt_server(int eid, webs_t wp, int argc, char **argv) {
 }
 static int
 ej_vpn_crt_client(int eid, webs_t wp, int argc, char **argv) {
-	char buf[4000];
+	char buf[8000];
 	char file_name[32];
 	int idx = 0;
 
@@ -2099,9 +2155,8 @@ ej_vpn_crt_client(int eid, webs_t wp, int argc, char **argv) {
 
 //2008.08 magic {
 // Largest POST will be the OpenVPN key page:
-// 2*5 fields + 2*4 fields = 18 fields total
-// Each field can have up to 3500 characters, for a potential
-// total of 63KB.  Going for 64KB to account for additional POST/GET data.
+// 7 fields at up to 8000 bytes each, for 56KB in worst-case scenario
+// Add the other settings, would fit in a 64 KB buffer
 
 static char post_buf[65535] = { 0 };
 static char post_buf_backup[65535] = { 0 };
@@ -3945,7 +4000,7 @@ static int ej_set_variables(int eid, webs_t wp, int argc, char_t **argv) {
 }
 #endif
 
-#ifdef RTCONFIG_USB
+#if defined(RTCONFIG_DUALWAN) && defined(RTCONFIG_USB)
 int usb_modem_plugged(){
 	DIR *bus_usb;
 	struct dirent *interface;
@@ -4012,9 +4067,8 @@ static int ej_update_variables(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef RTCONFIG_DUALWAN
 	char new_action_script[128], new_action_wait[16];
 #endif
-	int usb_modem_plug = 0;
-#ifdef RTCONFIG_USB
-	usb_modem_plug = usb_modem_plugged();
+#if defined(RTCONFIG_DUALWAN) && defined(RTCONFIG_USB)
+	int usb_modem_plug = usb_modem_plugged();
 #endif
 
 #if defined(RTCONFIG_RALINK)
@@ -5396,7 +5450,11 @@ static int ej_get_ascii_parameter(int eid, webs_t wp, int argc, char_t **argv){
 		}
 	}
 
+#ifdef RTCONFIG_UTF8_SSID
+	char_to_ascii_safe_with_utf8(buf, str, ret);
+#else
 	char_to_ascii_safe(buf, str, ret);
+#endif
 	ret = websWrite(wp, "%s", buf);
 
 	if (buf != tmp)
@@ -5418,7 +5476,7 @@ static int ej_get_parameter(int eid, webs_t wp, int argc, char_t **argv){
 
 	char *value = websGetVar(wp, argv[0], "");
 	if(value != NULL){
-		if(check_xss_blacklist(value, 0)){
+		if(_check_xss_blacklist(value, 0)){
 			return ret;
 		}
 	}
@@ -7488,6 +7546,49 @@ static int get_amas_re_client_detail_info(struct json_object *json_object_ptr) {
 
 	return have_data;
 }
+static int is_re_node(char *client_mac) {
+	int i;
+	int ret = 0;
+	int shm_client_tbl_id;
+	int lock;
+	P_CM_CLIENT_TABLE p_client_tbl;
+	void *shared_client_info=(void *) 0;
+	unsigned char mac_buf[6] = {0};
+
+	lock = file_lock(CFG_FILE_LOCK);
+	shm_client_tbl_id = shmget((key_t)KEY_SHM_CFG, sizeof(CM_CLIENT_TABLE), 0666|IPC_CREAT);
+	if (shm_client_tbl_id == -1){
+		fprintf(stderr, "shmget failed\n");
+		file_unlock(lock);
+		return 0;
+	}
+
+	shared_client_info = shmat(shm_client_tbl_id,(void *) 0,0);
+	if (shared_client_info == (void *)-1){
+		fprintf(stderr, "shmat failed\n");
+		file_unlock(lock);
+		return 0;
+	}
+
+	ether_atoe(client_mac, mac_buf);
+
+	p_client_tbl = (P_CM_CLIENT_TABLE)shared_client_info;
+	for(i = 1; i < p_client_tbl->count; i++) {
+		if (memcmp(p_client_tbl->realMacAddr[i], mac_buf, sizeof(mac_buf)) == 0 ||
+			memcmp(p_client_tbl->sta2g[i], mac_buf, sizeof(mac_buf)) == 0 ||
+			memcmp(p_client_tbl->sta5g[i], mac_buf, sizeof(mac_buf)) == 0)
+		{
+			ret = 1;
+			break;
+		}
+	}
+
+	shmdt(shared_client_info);
+
+	file_unlock(lock);
+
+	return ret;
+}
 #endif
 
 //2016.09 Rawny add for new networkmap
@@ -7842,6 +7943,9 @@ static int get_client_detail_info(struct json_object *clients, struct json_objec
 					json_object_object_add(client, "rssi", json_object_new_string(json_object_get_string(amas_re_get_rssi)));
 				}
 				CLIENT_DPRINTF("amasReClientDetailList finish\n");
+			}
+			if (is_re_node(mac_buf)) {
+				json_object_object_add(client, "amesh_isRe", json_object_new_string("1"));
 			}
 #endif
 
@@ -10012,7 +10116,7 @@ apply_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 		char *system_cmd;
 		system_cmd = get_cgi_json("SystemCmd",root);
 
-		if(check_xss_blacklist(system_cmd, 0)){
+		if(_check_xss_blacklist(system_cmd, 0)){
 			websRedirect_iframe(wp, current_url);
 			goto APPLY_FINISH;
 		}
@@ -10402,6 +10506,15 @@ wps_finish:
 			nvram_set("vpn_client_unit", action_para);
 
 		websRedirect(wp, current_url);
+	}
+	else if (!strcmp(action_mode, "refresh_vpn_ip"))
+	{
+		char tmp[20];
+
+		snprintf(tmp, sizeof (tmp), "vpn_client%d_rip", nvram_get_int("vpn_client_unit"));
+		nvram_unset(tmp);
+
+		websDone(wp, 200);
 	}
 #endif
 #ifdef  __CONFIG_NORTON__
@@ -11461,40 +11574,11 @@ do_upgrade_post(char *url, FILE *stream, int len, char *boundary)
 	}
 #endif
 
-//#ifdef CONFIG_BCMWL5
-//	if (fw_check() != 0)
-//		goto err;
-//#endif
-#ifdef RTAC68U
-	if (!nvram_match("cpurev", "c0") &&
-		(nvram_match("bl_version", "2.1.2.2") || nvram_match("bl_version", "2.1.2.6"))) {
-		unlink("/tmp/linux.trx");
-		eval("/usr/sbin/webs_update.sh");
-
-		if (nvram_get_int("webs_state_update") &&
-			!nvram_get_int("webs_state_error") &&
-			strlen(nvram_safe_get("webs_state_info"))) {
-			_dprintf("retrieve firmware information\n");
-
-			if (!nvram_get_int("webs_state_flag"))
-			{
-				_dprintf("no need to upgrade firmware\n");
-				goto err;
-			}
-
-			eval("/usr/sbin/webs_upgrade.sh");
-
-			if (nvram_get_int("webs_state_error"))
-			{
-				_dprintf("error execute upgrade script\n");
-				goto err;
-			}
-
-			nvram_set("restore_defaults", "1");
-			system("nvram erase");
-
-		} else _dprintf("could not retrieve firmware information!\n");
-	}
+#ifdef CONFIG_BCMWL5
+#if defined(RTAC68U) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC86U)	// kludge
+	if (fw_check() != 0)
+		goto err;
+#endif
 #endif
 
 	upgrade_err = check_imagefile(upload_fifo);
@@ -14294,7 +14378,7 @@ login_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 
 	/* Is this the right user and password? */
 	//if (!authpass_fail && strcmp( nvram_safe_get("http_username"), authinfo ) == 0 && strcmp( nvram_safe_get("http_passwd"), authpass ) == 0)
-	if(!authpass_fail && compare_passwd_in_shadow(authinfo, authpass))
+	if(!authpass_fail && strcmp( nvram_safe_get("http_username"), authinfo ) == 0 && compare_passwd_in_shadow(authinfo, authpass))
 	{
 		if (fromapp_flag == FROM_BROWSER){
 			if(!cur_login_ip_type)
@@ -14336,7 +14420,7 @@ login_cgi(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 					websWrite(wp, T("<meta http-equiv=\"refresh\" content=\"0; url=cfg_onboarding.cgi?flag=AMesh&id=%s\">\r\n"), cloud_file);
 				}
 				else{
-					if(check_xss_blacklist(next_page, 1) || !useful_redirect_page(next_page))
+					if(_check_xss_blacklist(next_page, 1) || !useful_redirect_page(next_page))
 						websWrite(wp, T("<meta http-equiv=\"refresh\" content=\"0; url=%s\">\r\n"), INDEXPAGE);
 					else
 						websWrite(wp, T("<meta http-equiv=\"refresh\" content=\"0; url=%s\">\r\n"), next_page);
@@ -14431,8 +14515,11 @@ app_call(char *func, FILE *stream, int first_row)
 	if(first_row == 0)
 		websWrite(stream, ",\n");
 
-	if(strcmp(func, "nvram_get") == 0 || strcmp(func, "nvram_default_get") == 0 || strcmp(func, "nvram_char_to_ascii") == 0){
+	if(strcmp(func, "nvram_get") == 0 || strcmp(func, "nvram_default_get") == 0){
 		websWrite(stream,"\"%s\":", argv[0]);
+		websWrite(stream,"\"" );
+	}else if(strcmp(func, "nvram_char_to_ascii") == 0){
+		websWrite(stream,"\"%s\":", argv[1]);
 		websWrite(stream,"\"" );
 	}else if(argv[0] != NULL && strcmp(argv[0], "appobj") == 0 && strncmp(func, "get_clientlist", 14) != 0){
 		websWrite(stream,"\"%s\":", func);
@@ -14495,10 +14582,15 @@ do_appGet_image_path_cgi(char *url, FILE *stream)
 
 	websWrite(stream,"{\n" );
 
-	if (nvram_match("odmpid", "RT-AC66U_B1") || nvram_match("odmpid", "RT-AC1750_B1") || nvram_match("odmpid", "RT-N66U_C1") || nvram_match("odmpid", "RT-AC1900U") || nvram_match("odmpid", "RP-AC1900") ) {
+#ifdef RTAC68U
+	if (is_ac66u_v2_series())
+	{
 		snprintf(file_path, sizeof(file_path), "/images/RT-AC66U_V2");
 		snprintf(file_path1, sizeof(file_path), "/images/RT-AC66U_V2");
-	} else {
+	}
+	else
+#endif
+	{
 		snprintf(file_path, sizeof(file_path), "/images");
 		snprintf(file_path1, sizeof(file_path), "/images/New_ui");
 	}
@@ -14520,8 +14612,8 @@ do_qis_default(char *url, FILE *stream)
 	char redirect_url[128];
 	flag = websGetVar(wp, "flag","");
 	
-	if(flag != NULL || strcmp(flag, "") != 0){
-		sprintf(redirect_url, "QIS_wizard.htm?flag=%s", flag);
+	if(flag != NULL && strcmp(flag, "") != 0){
+		snprintf(redirect_url, sizeof(redirect_url), "QIS_wizard.htm?flag=%s", flag);
 		websRedirect(stream, redirect_url);
 	}
 	else
@@ -14889,7 +14981,7 @@ do_cfg_onboarding_cgi(char *url, FILE *stream)
 		if (strlen(event_msg))
 			send_cfgmnt_event(event_msg);
 	}
-	snprintf(url_str, sizeof(url_str), "%s?flag=%s&id=%s", INDEXPAGE, (!check_xss_blacklist(flag, 0))?flag:"",(!check_xss_blacklist(id, 0))?id:"");
+	snprintf(url_str, sizeof(url_str), "%s?flag=%s&id=%s", INDEXPAGE, (!_check_xss_blacklist(flag, 0))?flag:"",(!_check_xss_blacklist(id, 0))?id:"");
 
 	if(cfg)	json_object_put(cfg);
 	memset(cloud_file, 0, sizeof(cloud_file));
@@ -17977,7 +18069,7 @@ int ej_webdavInfo(int eid, webs_t wp, int argc, char **argv) {
 	websWrite(wp, "'%s',", nvram_safe_get("lan_netmask"));
 	websWrite(wp, "'%s',", get_productid());
 	websWrite(wp, "'%s.%s',", nvram_safe_get("firmver"), nvram_safe_get("buildno"));
-	websWrite(wp, "'%s',", nvram_safe_get("sw_mode"));
+	websWrite(wp, "'%d',", get_sw_mode());
 	websWrite(wp, "'%s',", get_lan_hwaddr());
 	websWrite(wp, "''];\n");
 
@@ -18379,6 +18471,11 @@ static int ej_netdev(int eid, webs_t wp, int argc, char_t **argv)
 #ifdef RTCONFIG_LANTIQ
 	char ifname_buf[10];
 #endif
+#ifdef HND_ROUTER
+	char *lacp_ifs = nvram_safe_get("lacp_ifnames");
+	char *lacp1_ifname = *lacp_ifs?strtok(lacp_ifs, " "):NULL;
+	char *lacp2_ifname = *lacp_ifs?strtok(NULL, " "):NULL;
+#endif
 
 	nv_lan_ifname = nvram_safe_get("lan_ifname");
 	nv_lan_ifnames = nvram_safe_get("lan_ifnames");
@@ -18416,6 +18513,17 @@ static int ej_netdev(int eid, webs_t wp, int argc, char_t **argv)
 					if ((ifname = strrchr(buf, ' ')) == NULL) ifname = buf;
 						else	++ifname;
 					if (sscanf(p + 1, "%llu%*u%*u%*u%*u%*u%*u%*u%llu", &rx, &tx) != 2) continue;
+#if defined(HND_ROUTER) && defined(RTCONFIG_LACP)
+					if(nvram_get_int("lacp_enabled") == 1) {
+						if(lacp1_ifname && strncmp(ifname, lacp1_ifname, strlen(ifname)) == 0) {
+							tx_lacp1 = tx;
+							rx_lacp1 = rx;
+						} else if(lacp2_ifname && strncmp(ifname, lacp2_ifname, strlen(ifname)) == 0) {
+							tx_lacp2 = tx;
+							rx_lacp2 = rx;
+						}
+					}
+#endif
 #ifdef RTCONFIG_LANTIQ
 				}
 				else
@@ -18437,14 +18545,14 @@ static int ej_netdev(int eid, webs_t wp, int argc, char_t **argv)
 					if(nvram_get_int("lacp_enabled") == 1 &&
 							strcmp(ifname, "vlan1") == 0){
 						traffic_trunk(1, (uint32_t *) &rx_lacp1, (uint32_t *) &tx_lacp1);
-						netdev_calc("lacp1", "LACP1",
+						netdev_calc("lacp1", ifname_desc,
 								(long unsigned int *) &rx_lacp1, (long unsigned int *) &tx_lacp1,
 								ifname_desc2_lacp1,
 								(long unsigned int *) &rx2_lacp1, (long unsigned int *) &tx2_lacp1,
 								nv_lan_ifname, nv_lan_ifnames);
 
 						traffic_trunk(2, (uint32_t *) &rx_lacp2, (uint32_t *) &tx_lacp2);
-						netdev_calc("lacp2", "LACP2",
+						netdev_calc("lacp2", ifname_desc,
 								(long unsigned int *) &rx_lacp2, (long unsigned int *) &tx_lacp2,
 								ifname_desc2_lacp2,
 								(long unsigned int *) &rx2_lacp2, (long unsigned int *) &tx2_lacp2,
@@ -18565,6 +18673,7 @@ loopagain:
 				else {
 					ret += websWrite(wp, "%c\"%s_rx\":\"0x%llx\",\"%s_tx\":\"0x%llx\"", comma, "WIRED", wired_all_rx, "WIRED", wired_all_tx);
 				}
+				comma = ',';
 			}
 			if (wl0_valid) {
 				if(from_app == 0){
@@ -18598,19 +18707,18 @@ loopagain:
 				}
 				comma = ',';
 			}
-			if (from_app == 0) {
-				ret += websWrite(wp, "%c'%s':{rx:0x%llx,tx:0x%llx}\n", comma, "WIRED", wired_all_rx, wired_all_tx);
-			} else {
-				ret += websWrite(wp, "%c\"%s_rx\":\"0x%llx\",\"%s_tx\":\"0x%llx\"", comma, "WIRED", wired_all_rx, "WIRED", wired_all_tx);
-			}
-			comma = ',';
 
 #ifdef RTCONFIG_LACP
 	if(nvram_get_int("lacp_enabled") == 1){
 		if(from_app == 0){
-			ret += websWrite(wp, "%c'%s':{rx:0x%llx,tx:0x%llx}\n", comma, "LACP1", rx_lacp1, tx_lacp1);
-			ret += websWrite(wp, "%c'%s':{rx:0x%llx,tx:0x%llx}\n", comma, "LACP2", rx_lacp2, tx_lacp2);
+			ret += websWrite(wp, "%c'%s':{rx:0x%llx,tx:0x%llx}\n", comma, LACP_PORT1, rx_lacp1, tx_lacp1);
+			ret += websWrite(wp, "%c'%s':{rx:0x%llx,tx:0x%llx}\n", comma, LACP_PORT2, rx_lacp2, tx_lacp2);
 		}
+		else{
+			ret += websWrite(wp, "%c\"%s_rx\":\"0x%llx\",\"%s_tx\":\"0x%llx\"", comma, LACP_PORT1, rx_lacp1, LACP_PORT1, tx_lacp1);
+			ret += websWrite(wp, "%c\"%s_rx\":\"0x%llx\",\"%s_tx\":\"0x%llx\"", comma, LACP_PORT2, rx_lacp2, LACP_PORT2, tx_lacp2);
+		}
+		comma = ',';
 	}
 #endif
 #ifdef RTCONFIG_LANTIQ
@@ -19486,7 +19594,7 @@ ej_findasus(int eid, webs_t wp, int argc, char **argv) {
 			strcat(retList, "{");
 			sprintf(strTmp, "modelName:\"%s\",", name);
 			strcat(retList, strTmp);
-			if(check_xss_blacklist(ssid, 0))
+			if(_check_xss_blacklist(ssid, 0))
 				sprintf(strTmp, "ssid:\"\",");
 			else
 				sprintf(strTmp, "ssid:\"%s\",", ssid);
@@ -21766,7 +21874,7 @@ ej_get_header_info(int eid, webs_t wp, int argc, char **argv)
 		snprintf(host_name_temp, sizeof(host_name), "%s", host_name);
 	}
 
-	if(check_xss_blacklist(current_page_name, 1)) {
+	if(_check_xss_blacklist(current_page_name, 1)) {
 		strcpy(current_page_name_temp, INDEXPAGE);
 	}
 	else {
@@ -21795,7 +21903,7 @@ ej_login_error_info(int eid, webs_t wp, int argc, char **argv)
 	json_object_object_add(item,"error_status", json_object_new_int(login_error_status));
 
 	/* url */
-	if(check_xss_blacklist(login_url, 1)){
+	if(_check_xss_blacklist(login_url, 1)){
 		json_object_object_add(item,"page", json_object_new_string(INDEXPAGE));
 	}else{
 		json_object_object_add(item,"page", json_object_new_string(login_url));
@@ -22119,6 +22227,11 @@ ej_get_wan_lan_status(int eid, webs_t wp, int argc, char **argv)
 	while ((item = strsep(&ptr, ";\r\n")) != NULL) {
 		if (vstrsep(item, "=", &port, &speed) < 2)
 			continue;
+#if defined(DSL_AC68U)
+		if(port[0] == 'W') {
+			continue;
+		}
+#endif
 		switch (*port++) {
 		case 'W':
 			snprintf(name, sizeof(name), "%s%s%s", "WAN", *port ? " " : "", port);
@@ -22208,6 +22321,13 @@ ej_generate_trans_id(int eid, webs_t wp, int argc, char **argv) {
 	return 0;
 }
 #endif
+
+static int ej_get_sw_mode(int eid, webs_t wp, int argc, char **argv) {
+
+	websWrite(wp, "\"%d\"", get_sw_mode());
+
+	return 0;
+}
 
 struct ej_handler ej_handlers[] = {
 	{ "nvram_get", ej_nvram_get},
@@ -22495,6 +22615,7 @@ struct ej_handler ej_handlers[] = {
 	{ "get_upnp_array", ej_get_upnp_array},
 	{ "get_route_array", ej_get_route_array},
 	{ "get_tcclass_array", ej_tcclass_dump_array},
+	{ "get_connlist_array", ej_connlist_array},
 #ifdef RTCONFIG_BCMWL6
 	{ "get_wl_status", ej_wl_status_2g_array},
 #endif
@@ -22611,6 +22732,7 @@ struct ej_handler ej_handlers[] = {
 #ifdef RTCONFIG_PUSH_EMAIL
 	{ "generate_trans_id", ej_generate_trans_id},
 #endif
+	{ "get_sw_mode", ej_get_sw_mode},
 	{ NULL, NULL }
 };
 

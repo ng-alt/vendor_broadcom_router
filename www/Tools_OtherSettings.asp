@@ -94,8 +94,10 @@ function initial() {
 		hide_cstats_ip(getRadioValue(document.form.cstats_all));
 	}
 
-	if(!live_update_support)
+	if(!live_update_support) {
 		document.getElementById("fwcheck").style.display="none";
+		document.getElementById("beta_firmware_path").style.display="none";
+	}
 
 	if ((machine_name.search("arm") != -1) || hnd_support) {
 		document.getElementById("ct_established_default").innerHTML = "Default: 2400";
@@ -777,13 +779,6 @@ function done_validating(action){
 					</thead>
 
 					<tr>
-						<th>Resolve IPs on active connections list:<br><i>Can considerably slow down the display</i></th>
-						<td>
-							<input type="radio" name="webui_resolve_conn" class="input" value="1" <% nvram_match_x("", "webui_resolve_conn", "1", "checked"); %>><#checkbox_Yes#>
-							<input type="radio" name="webui_resolve_conn" class="input" value="0" <% nvram_match_x("", "webui_resolve_conn", "0", "checked"); %>><#checkbox_No#>
-						</td>
-	                                </tr>
-					<tr>
 						<th>Stealth Mode (disable all LEDs)</th>
 						<td>
 							<input type="radio" name="led_disable" class="input" value="1" <% nvram_match_x("", "led_disable", "1", "checked"); %>><#checkbox_Yes#>
@@ -791,13 +786,19 @@ function done_validating(action){
 						</td>
 					</tr>
 					<tr id="fwcheck">
-						<th><a name="fwcheck"></a><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,15);">New firmware version check</a></th>
+						<th><a name="fwcheck" id="fwcheck"></a><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,15);">New firmware version check</a></th>
 						<td>
 							<input type="radio" name="firmware_check_enable" class="input" value="1" <% nvram_match("firmware_check_enable", "1", "checked"); %>><#checkbox_Yes#>
 							<input type="radio" name="firmware_check_enable" class="input" value="0" <% nvram_match("firmware_check_enable", "0", "checked"); %>><#checkbox_No#>
 						</td>
 					</tr>
-
+					<tr id="beta_firmware_path">
+						<th>Check for new beta firmware releases</th>
+						<td>
+							<input type="radio" name="firmware_path" class="input" value="1" <% nvram_match("firmware_path", "1", "checked"); %>><#checkbox_Yes#>
+							<input type="radio" name="firmware_path" class="input" value="0" <% nvram_match("firmware_path", "0", "checked"); %><% nvram_match("firmware_path", "", "checked"); %>><#checkbox_No#>
+						</td>
+					</tr>
 				</table>
 
 				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
@@ -926,6 +927,13 @@ function done_validating(action){
 						<td>
 							<input type="radio" name="aae_disable_force" class="input" value="1" <% nvram_match_x("", "aae_disable_force", "1", "checked"); %>><#checkbox_Yes#>
 							<input type="radio" name="aae_disable_force" class="input" value="0" <% nvram_match_x("", "aae_disable_force", "0", "checked"); %>><#checkbox_No#>
+						</td>
+					</tr>
+					<tr>
+						<th><a class="hintstyle" href="javascript:void(0);" onClick="openHint(50,21);">dhcpd: send empty WPAD with a carriage return</a></th>
+						<td>
+							<input type="radio" name="dhcpd_send_wpad" class="input" value="1" <% nvram_match_x("", "dhcpd_send_wpad", "1", "checked"); %>><#checkbox_Yes#>
+							<input type="radio" name="dhcpd_send_wpad" class="input" value="0" <% nvram_match_x("", "dhcpd_send_wpad", "0", "checked"); %>><#checkbox_No#>
 						</td>
 					</tr>
 				</table>

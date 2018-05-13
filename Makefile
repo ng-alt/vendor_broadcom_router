@@ -416,8 +416,8 @@ SEP=echo -e "\033[41;1m   $@   \033[0m"
 # standard packages
 #
 ifeq ($(HND_ROUTER),y)
-export BUSYBOX ?= busybox-1.24.1
-export BUSYBOX_DIR := busybox-1.24.1/busybox-1.24.1
+export BUSYBOX ?= busybox
+export BUSYBOX_DIR := $(BUSYBOX)
 else
 export BUSYBOX ?= busybox
 export BUSYBOX_DIR := $(BUSYBOX)
@@ -1889,7 +1889,7 @@ endif
 
 	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/usbkbd.*o $(PLATFORMDIR)/extras/ || true
 	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/usbmouse.*o $(PLATFORMDIR)/extras/ || true
-	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/hid*.*o $(PLATFORMDIR)/extras/ || true
+#	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/hid*.*o $(PLATFORMDIR)/extras/ || true
 	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/ipw.*o $(PLATFORMDIR)/extras/ || true
 	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/audio.*o $(PLATFORMDIR)/extras/ || true
 	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/usb/ov51*.*o $(PLATFORMDIR)/extras/ || true
@@ -1902,10 +1902,10 @@ endif
 	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/drivers/sound || true
 	@mv $(TARGETDIR)/lib/modules/*/kernel/sound/* $(PLATFORMDIR)/extras/ || true
 	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/sound || true
-	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/input/* $(PLATFORMDIR)/extras/ || true
-	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/drivers/input || true
-	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/hid/* $(PLATFORMDIR)/extras/ || true
-	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/drivers/hid || true
+#	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/input/* $(PLATFORMDIR)/extras/ || true
+#	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/drivers/input || true
+#	@mv $(TARGETDIR)/lib/modules/*/kernel/drivers/hid/* $(PLATFORMDIR)/extras/ || true
+#	@rm -rf $(TARGETDIR)/lib/modules/*/kernel/drivers/hid || true
 	@cp -f $(TARGETDIR)/lib/modules/*/kernel/drivers/net/bcm57*.*o $(PLATFORMDIR)/extras/ || true
 	$(if $(RTCONFIG_PPTP),@cp -f,@mv) $(TARGETDIR)/lib/modules/*/kernel/drivers/net/pptp.*o $(PLATFORMDIR)/extras/ || true
 	$(if $(RTCONFIG_L2TP),@cp -f,@mv) $(TARGETDIR)/lib/modules/*/kernel/drivers/net/pppol2tp.*o $(PLATFORMDIR)/extras/ || true
@@ -2315,9 +2315,6 @@ infosvr-install:
 
 httpd: shared nvram$(BCMEX)$(EX7) libdisk $(if $(RTCONFIG_HTTPS),mssl) $(if $(RTCONFIG_OPENVPN),libvpn) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_BWDPI),bwdpi_source) json-c $(if $(RTCONFIG_CFGSYNC), $(CFGSYNC_PKG))
 	@$(SEP)
-ifeq ($(HND_ROUTER),y)
-	cd httpd && rm -f wlioctl.h && ln -sf $(SRCBASE)/../../dhd/src/include/wlioctl.h  wlioctl.h && rm -f bcmwifi_rates.h && ln -sf $(SRCBASE)/../../dhd/src/shared/bcmwifi/include/bcmwifi_rates.h bcmwifi_rates.h && rm -f wlioctl_defs.h && ln -sf $(SRCBASE)/../../dhd/components/shared/devctrl_if/wlioctl_defs.h wlioctl_defs.h
-endif
 	@-rm -f httpd/prebuild/*.o || true
 	@-cp -f httpd/prebuild/$(BUILD_NAME)/* httpd/prebuild/
 	$(MAKE) -C httpd
@@ -2468,7 +2465,7 @@ openssl-1.0.0q-stage:
 
 openssl/Makefile:
 	cd openssl && \
-	./Configure $(HOSTCONFIG) --prefix=/usr --openssldir=/etc --cross-compile-prefix=' ' \
+	./Configure $(HOSTCONFIG) -DOPENSSL_NO_BUF_FREELISTS --prefix=/usr --openssldir=/etc --cross-compile-prefix=' ' \
 	-ffunction-sections -fdata-sections -Wl,--gc-sections \
 	shared $(OPENSSL_CIPHERS) no-ssl2 no-ssl3
 #	no-sha0 no-smime no-camellia no-krb5 no-rmd160 no-ripemd \
@@ -2818,6 +2815,7 @@ iptables-1.4.21-install:
 ifeq ($(RTCONFIG_IPV6),y)
 	cd $(INSTALLDIR)/iptables-1.4.21/usr/sbin && \
 		ln -sf xtables-multi ip6tables-restore && \
+		ln -sf xtables-multi ip6tables-save && \
 		ln -sf xtables-multi ip6tables
 	install -D iptables-1.4.21/libiptc/.libs/libip6tc.so $(INSTALLDIR)/iptables-1.4.21/usr/lib/libip6tc.so
 	cd $(INSTALLDIR)/iptables-1.4.21/usr/lib && \
@@ -2885,6 +2883,7 @@ iptables-1.4.x-install:
 ifeq ($(RTCONFIG_IPV6),y)
 	cd $(INSTALLDIR)/iptables-1.4.x/usr/sbin && \
 		ln -sf xtables-multi ip6tables-restore && \
+		ln -sf xtables-multi ip6tables-save && \
 		ln -sf xtables-multi ip6tables
 	install -D iptables-1.4.x/libiptc/.libs/libip6tc.so $(INSTALLDIR)/iptables-1.4.x/usr/lib/libip6tc.so
 	cd $(INSTALLDIR)/iptables-1.4.x/usr/lib && \
@@ -4682,7 +4681,11 @@ endif
 
 else
 	[ -d wlexe ] || install -d wlexe
+ifneq ($(wildcard $(SRC_PRE_WLEXE)/prebuilt/$(BUILD_NAME)/wl),)
+	install $(SRC_PRE_WLEXE)/prebuilt/$(BUILD_NAME)/wl wlexe
+else
 	install $(SRC_PRE_WLEXE)/prebuilt/wl wlexe
+endif
 
 endif
 endif
@@ -5119,7 +5122,7 @@ libxml2/stamp-h1:
 	touch $@
 
 libxml2: libxml2/stamp-h1
-	$(MAKE) -C libxml2 all $(PARALLEL_BUILD)
+	$(MAKE) -C libxml2 all $(PARALLEL_BUILD) && $(MAKE) $@-stage
 
 libxml2-install:
 	@$(SEP)
@@ -5307,16 +5310,16 @@ neon/stamp-h1 neon/config.h:
 		--prefix=/usr \
 		--bindir=/usr/sbin \
 		--libdir=/usr/lib \
-		--enable-shared --disable-static --disable-nls --with-zlib --with-ssl=openssl \
-		--with-libs=$(TOP)/openssl:$(TOP)/libxml2 \
-		CFLAGS='-I$(STAGEDIR)/usr/include -I$(TOP)/openssl/include' \
-		LDFLAGS='-L$(TOP)/libxml2/.libs -L$(STAGEDIR)/usr/lib -L$(TOP)/openssl' \
+		--enable-shared --disable-static --disable-nls --with-zlib --with-ssl=openssl --with-libxml2 \
+		--with-libs=$(STAGEDIR)/usr \
+		CFLAGS='-g -O2 -I$(STAGEDIR)/usr/include' \
+		LDFLAGS='-L$(STAGEDIR)/usr/lib' \
 		LIBS='-lxml2 -lssl -lcrypto -lpthread -ldl -lm' \
-		XML2_CONFIG='$(TOP)/libxml2/xml2-config'
+		XML2_CONFIG='$(STAGEDIR)/usr/bin/xml2-config --prefix=$(STAGEDIR)/usr'
 	cp -f neon/config.h neon/src/config.h
 	touch $@
 
-neon: libxml2 neon/stamp-h1 neon/config.h
+neon: libxml2 openssl neon/stamp-h1 neon/config.h
 	$(MAKE) -C neon && $(MAKE) $@-stage
 
 neon-install:
@@ -5688,9 +5691,10 @@ netatalk-3.0.5-clean:
 
 hndck:
 	echo $(obj-y)
+
 expat-2.0.1/stamp-h1:
 	cd $(TOP)/expat-2.0.1 && \
-	$(CONFIGURE) --build=i686-linux --prefix=/usr
+	$(CONFIGURE) --prefix=/usr
 	touch $@
 
 expat-2.0.1: expat-2.0.1/stamp-h1

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <proto/ethernet.h>
 #include <time.h>
 #include <sys/time.h>
 #include <errno.h>
@@ -103,6 +104,11 @@ start_lpd()
 		return;
 	}
 
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
+
 	if (!pids("lpd"))
 	{
 		unlink("/var/run/lpdparent.pid");
@@ -139,6 +145,11 @@ start_u2ec()
 		notify_rc("start_u2ec");
 		return;
 	}
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 	if (!pids("u2ec"))
 	{
@@ -229,7 +240,6 @@ void add_usb_host_module(void)
 #if defined(HND_ROUTER)
 	tweak_usb_affinity(1);
 #endif
-
 #if defined(RTCONFIG_USB_XHCI)
 #if defined(RTN65U) || defined(RTCONFIG_QCA) || defined(RTAC85U)
 	char *u3_param = "u3intf=0";
@@ -237,6 +247,11 @@ void add_usb_host_module(void)
 #endif
 	char param[32];
 	int i;
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 #if LINUX_KERNEL_VERSION >= KERNEL_VERSION(3,2,0)
 	modprobe(USBCOMMON_MOD);
@@ -331,6 +346,10 @@ void add_usb_host_module(void)
 
 #ifdef RTCONFIG_USB_MODEM
 void add_usb_modem_modules(void){
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 #if LINUX_KERNEL_VERSION >= KERNEL_VERSION(4,1,0)
 	modprobe("mii"); // for usbnet.
 #endif
@@ -612,6 +631,11 @@ void start_usb(int orig)
 	int i;
 
 	_dprintf("%s\n", __func__);
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 #if defined(RTCONFIG_SOC_IPQ40XX)
 	_dprintf("insmod dakota usb module....\n");
@@ -1651,7 +1675,7 @@ _dprintf("%s: stop_cloudsync.\n", __func__);
 		stop_usb_swap(mnt->mnt_dir);
 #endif	
 
-	run_custom_script_blocking("unmount", mnt->mnt_dir);
+	run_custom_script_blocking("unmount", mnt->mnt_dir, NULL);
 
 	sync();
 	sleep(1);       // Give some time for buffers to be physically written to disk
@@ -1836,7 +1860,7 @@ int mount_partition(char *dev_name, int host_num, char *dsc_name, char *pt_name,
 
 	find_label_or_uuid(dev_name, the_label, uuid);
 
-	run_custom_script_blocking("pre-mount", dev_name);
+	run_custom_script_blocking("pre-mount", dev_name, NULL);
 
 	if (f_exists("/etc/fstab")) {
 		if (strcmp(type, "swap") == 0) {
@@ -2021,7 +2045,7 @@ _dprintf("usb_path: 4. don't set %s.\n", tmp);
 		if (nvram_get_int("usb_automount"))
 			run_nvscript("script_usbmount", mountpoint, 3);
 
-		run_custom_script_blocking("post-mount", mountpoint);
+		run_custom_script_blocking("post-mount", mountpoint, NULL);
 
 #if defined(RTCONFIG_APP_PREINSTALLED) && defined(RTCONFIG_CLOUDSYNC)
 		char word[PATH_MAX], *next_word;
@@ -2616,13 +2640,18 @@ start_ftpd(void)
 	pid_t pid;
 	char *vsftpd_argv[] = { "vsftpd", "/etc/vsftpd.conf", NULL };
 
-	if (!nvram_get_int("enable_ftp"))
-		return;
-
 	if (getpid() != 1) {
 		notify_rc_after_wait("start_ftpd");
 		return;
 	}
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
+
+	if (!nvram_get_int("enable_ftp"))
+		return;
 
 	if (!sd_partition_num() && !nvram_match("usb_debug", "1"))
 		return;
@@ -3044,15 +3073,16 @@ start_samba(void)
 		return;
 	}
 
-	if ((nvram_match("enable_samba", "0")) &&
-	    (nvram_match("smbd_master", "0")) &&
-	    (nvram_match("smbd_wins", "0"))) {
+#ifdef RTAC68U
+	if (!hw_usb_cap())
 		return;
-	}
+#endif
+
+	if (nvram_match("enable_samba", "0")) return;
 
 	if ((!sd_partition_num() && !nvram_match("usb_debug", "1")) &&
-            (nvram_match("smbd_master", "0")) &&
-            (nvram_match("smbd_wins", "0"))) {
+	    (nvram_match("smbd_master", "0")) &&
+	    (nvram_match("smbd_wins", "0"))) {
 		return;
 	}
 
@@ -3334,18 +3364,23 @@ void start_dms(void)
 	char dbdir[100];
 	char *argv[] = { MEDIA_SERVER_APP, "-f", "/etc/"MEDIA_SERVER_APP".conf", "-R", NULL, NULL, NULL };
 	static int once = 1;
-	int i, j;
-	char serial[18];
+	unsigned char ea[ETHER_ADDR_LEN];
+	char serial[18], uuid[37];
 	char *nv, *nvp, *b, *c;
 	char *nv2, *nvp2;
 	unsigned char type = 0;
 	char types[5];
-	int index = 4;
+	int j, index = 4;
 
 	if (getpid() != 1) {
 		notify_rc("start_dms");
 		return;
 	}
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 #if !(defined(HND_ROUTER) && defined(RTCONFIG_HNDMFG))
 	if (!sd_partition_num() && !nvram_match("usb_debug", "1"))
@@ -3400,13 +3435,12 @@ void start_dms(void)
 
 			nvram_set("dms_dbcwd", dbdir);
 
-			conv_mac2(get_lan_hwaddr(), serial);
-			if (strlen(serial)) {
-				for (i = 0; i < strlen(serial); i++)
-					serial[i] = tolower(serial[i]);
-			}
-			else
-				strcpy(serial, "554e4b4e4f57"); //default if no hwaddr
+			if (!ether_atoe(get_lan_hwaddr(), ea))
+				f_read("/dev/urandom", ea, sizeof(ea));
+			snprintf(serial, sizeof(serial), "%02x:%02x:%02x:%02x:%02x:%02x",
+				 ea[0], ea[1], ea[2], ea[3], ea[4], ea[5]);
+			snprintf(uuid, sizeof(uuid), "4d696e69-444c-164e-9d41-%02x%02x%02x%02x%02x%02x",
+				 ea[0], ea[1], ea[2], ea[3], ea[4], ea[5]);
 
 			fprintf(f,
 				"network_interface=%s\n"
@@ -3435,7 +3469,7 @@ void start_dms(void)
 				fprintf(f, "%s://%s:%d/\n", "http", nvram_safe_get("lan_ipaddr"), nvram_get_int("http_lanport") ? : 80);
 			}
 
-                        if (!nvram_get_int("dms_dir_manual"))
+			if (!nvram_get_int("dms_dir_manual"))
 				fprintf(f, "media_dir=%s\n", nvram_default_get("dms_dir"));
 			else
 			while ((b = strsep(&nvp, "<")) != NULL && (c = strsep(&nvp2, "<")) != NULL) {
@@ -3483,13 +3517,10 @@ void start_dms(void)
 
 			fprintf(f,
 				"serial=%s\n"
-				"model_number=%s\n"
-				//add explicit uuid based on mac(serial)
-				//since some recent change has resulted in a changing uuid at boot
-				"uuid=4d696e69-444c-164e-9d41-%s\n",
-				serial,
-				rt_serialno,
-				serial);
+				"uuid=%s\n"
+				"model_number=%s\n",
+				serial, uuid,
+				rt_serialno);
 
 			append_custom_config(MEDIA_SERVER_APP".conf",f);
 
@@ -3499,10 +3530,8 @@ void start_dms(void)
 		if (nvram_get_int("dms_dbg"))
 			argv[index++] = "-v";
 
-#if 0
 		if (nvram_get_int("dms_web"))
 			argv[index++] = "-W";
-#endif
 
 		use_custom_config(MEDIA_SERVER_APP".conf","/etc/"MEDIA_SERVER_APP".conf");
 		run_postconf(MEDIA_SERVER_APP, "/etc/"MEDIA_SERVER_APP".conf");
@@ -3621,6 +3650,11 @@ start_mt_daapd()
 		notify_rc("start_mt_daapd");
 		return;
 	}
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 	if (nvram_invmatch("daapd_enable", "1"))
 		return;
@@ -4250,6 +4284,11 @@ void start_nas_services(int force)
 		return;
 	}
 
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
+
 #ifdef RTCONFIG_MODEM_BRIDGE
 	if(sw_mode() == SW_MODE_AP && nvram_get_int("modem_bridge"))
 		return;
@@ -4308,7 +4347,6 @@ if (nvram_match("asus_mfg", "0")) {
 	}
 }
 
-
 void stop_nas_services(int force)
 {
 	if(!force && getpid() != 1){
@@ -4357,6 +4395,12 @@ void restart_nas_services(int stop, int start)
 void restart_sambaftp(int stop, int start)
 {
 	int fd = file_lock("sambaftp");
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
+
 	/* restart all NAS applications */
 	if (stop) {
 #ifdef RTCONFIG_SAMBASRV
@@ -4909,7 +4953,7 @@ static void diskmon_sighandler(int sig)
 			diskmon_signal = sig;
 			break;
 		case SIGALRM:
-			logmessage("disk_monitor", "Got SIGALRM...");
+			//logmessage("disk_monitor", "Got SIGALRM...");
 			cprintf("disk_monitor: Got SIGALRM...\n");
 			diskmon_signal = sig;
 			break;
@@ -4925,6 +4969,11 @@ void start_diskmon(void)
 		notify_rc("start_diskmon");
 		return;
 	}
+
+#ifdef RTAC68U
+	if (!hw_usb_cap())
+		return;
+#endif
 
 	_eval(diskmon_argv, NULL, 0, &pid);
 }

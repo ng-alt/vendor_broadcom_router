@@ -12,7 +12,6 @@
 <link rel="stylesheet" type="text/css" href="index_style.css">
 <link rel="stylesheet" type="text/css" href="form_style.css">
 <link rel="stylesheet" type="text/css" href="css/confirm_block.css"></script>
-<link rel="stylesheet" type="text/css" href="/device-map/amesh.css" />
 <style>
 .FormTable{
  	margin-top:10px;	
@@ -78,6 +77,11 @@
 <script language="JavaScript" type="text/javascript" src="/switcherplugin/jquery.iphone-switch.js"></script>
 <script language="JavaScript" type="text/javascript" src="/form.js"></script>
 <script>
+$(function () {
+	if(amesh_support && (isSwMode("rt") || isSwMode("ap"))) {
+		addNewCSS('/device-map/amesh.css');
+	}
+});
 var webs_state_update = '<% nvram_get("webs_state_update"); %>';
 var webs_state_upgrade = '<% nvram_get("webs_state_upgrade"); %>';
 var webs_state_error = '<% nvram_get("webs_state_error"); %>';
@@ -210,7 +214,7 @@ function initial(){
 				html += "<th>";
 				html += model_name + " ( " + mac + " )";
 				html += "<br>";
-				html += "Location : " + alias;/* untranslated */
+				html += "<#AiMesh_NodeLocation#> : " + alias;
 				html += "</th>";
 				html += "<td id='amas_" + mac_id + "'>";
 				html += "<div id='current_version'>Current Version : " + fwver + "</div>";/*untranslated*/
@@ -275,9 +279,9 @@ function initial(){
 		} 
 		else{
 			document.getElementById("update_div").style.display = "";
-			document.getElementById("beta_firmware_path_span").style.display = "";
+			//document.getElementById("beta_firmware_path_span").style.display = "";
 			document.getElementById("linkpage_div").style.display = "none";
-			change_firmware_path(document.getElementById("beta_firmware_path").checked==true);
+			change_firmware_path("<% nvram_get("firmware_path"); %>" == "1");
 			if(confirm_show.length > 0 && confirm_show == 1){
 				do_show_confirm(webs_state_info_beta, confirm_show, current_firmware_path);	//Show beta path result
 			}
@@ -604,7 +608,7 @@ function detect_httpd(){
 		},
 
 		success: function(){
-			location.href = '<% abs_index_page(); %>';
+			location.href = "/";
 		}
 	});
 }
@@ -949,7 +953,7 @@ function show_offline_msg(_checkFlag) {
 
 	var $amesh_hint_text = $('<div>');
 	$amesh_hint_text.addClass("amesh_hint_text");
-	$amesh_hint_text.html("Offline tips :");/*untranslated*/
+	$amesh_hint_text.html("<#AiMesh_OfflineTips#> :");
 	$offlineHtml.append($amesh_hint_text);
 
 	var $amesh_hint_content = $('<div>');
@@ -958,11 +962,11 @@ function show_offline_msg(_checkFlag) {
 	$offlineHtml.append($amesh_hint_content);
 
 	var $msg_item =  $('<ol>');
-	var msg_text = "<li>Make sure your AiMesh node is power on.</li>";/*untranslated*/
-	msg_text += "<li>Reboot this AiMesh node and try again.</li>";/*untranslated*/
-	msg_text += "<li>If you are using Wi-Fi connection, please try to find a place closer to other AiMesh node.</li>";/*untranslated*/
-	msg_text += "<li>If you are using wired connection, please make sure cable are installed properly.</li>";/*untranslated*/
-	msg_text += "<li>If still no help, please try to reset this AiMesh node by \"Reset button\" and try to add again.</li>";/*untranslated*/
+	var msg_text = "<li><#AiMesh_OfflineTips1#></li>";
+	msg_text += "<li><#AiMesh_OfflineTips2#></li>";
+	msg_text += "<li><#AiMesh_OfflineTips3#></li>";
+	msg_text += "<li><#AiMesh_OfflineTips4#></li>";
+	msg_text += "<li><#AiMesh_OfflineTips5#></li>";
 	$msg_item.html(msg_text);
 	$amesh_hint_content.append($msg_item);
 
@@ -1119,7 +1123,7 @@ function gen_AiMesh_fw_status(_manual_status, _node_ip, _online) {
 	if(_manual_status) {
 		html += "Manual Firmware Update : ";/*untranslated*/
 		if(_online == "0") {
-			html += "<span class='aimesh_fw_update_offline' style='margin-left:0px;' onclick='show_offline_msg(false);'>Offline</span>";/*untranslated*/
+			html += "<span class='aimesh_fw_update_offline' style='margin-left:0px;' onclick='show_offline_msg(false);'><#Clientlist_OffLine#></span>";
 			amesh_offline_flag = true;
 		}
 		else {
@@ -1270,7 +1274,7 @@ function check_AiMesh_fw_version(_fw) {
 				<th><#sig_ver#></th>
 				<td >
 					<div style="height:33px;margin-top:5px;"><span id="sig_ver_word" style="color:#FFFFFF;"></span><span id="sig_update_date"></span></div>
-					<div style="margin-left:200px;margin-top:-38px;">
+					<div style="margin-left:300px;margin-top:-38px;">
 						<input type="button" id="sig_check" name="sig_check" class="button_gen" onclick="sig_version_check();" value="<#liveupdate#>">
 					</div>
 					<div>
@@ -1281,20 +1285,19 @@ function check_AiMesh_fw_version(_fw) {
 			</tr>
 
 			<tr id="fw_check_link">
-				<th>Scheduled new firmware check</th>
-				<td>Click <a href="Tools_OtherSettings.asp#fwcheck" style="text-decoration:underline;color:#FFCC00;">here</a> to toggle new firmware notification.</td>
+				<th>New firmware notification</th>
+				<td>Click <a href="Tools_OtherSettings.asp#fwcheck" style="text-decoration:underline;color:#FFCC00;">here</a> to configure settings.</td>
 			</tr>
 			<tr id="fw_version_tr">
 				<th><#FW_item2#></th>
 				<td>
 					<div id="FWString" style="height:33px;margin-top:5px;"></div>
-					<div id="update_div" style="margin-left:200px;margin-top:-38px;display:none;">
+					<div id="update_div" style="margin-left:300px;margin-top:-38px;display:none;">
 						<input type="button" id="update" name="update" class="button_gen" onclick="detect_update(document.start_update.firmware_path.value);" value="<#liveupdate#>" />
-						<span id="beta_firmware_path_span" style="display:none;">
-							<input type="checkbox" name="beta_firmware_path" id="beta_firmware_path" onclick="change_firmware_path(this.checked==true);"  <% nvram_match("firmware_path", "1", "checked"); %>><#get_beta#></input>
-						</span>
 					</div>
-					<div id="linkpage_div" class="button_helplink" style="margin-left:200px;margin-top:-38px;display:none;">
+					<span id="beta_firmware_path_span" style="display:none;">
+					</span>
+					<div id="linkpage_div" class="button_helplink" style="margin-left:300px;margin-top:-38px;display:none;">
 						<a id="linkpage" target="_blank"><div style="padding-top:5px;"><#liveupdate#></div></a>
 					</div>
 					<div id="check_states">
@@ -1306,13 +1309,13 @@ function check_AiMesh_fw_version(_fw) {
 			<tr id="manually_upgrade_tr">
 				<th><#FW_item5#></th>
 				<td>
-					<input type="file" name="file" class="input" style="color:#FFCC00;*color:#000;width: 194px;">
+					<input type="file" name="file" class="input" style="color:#FFCC00;*color:#000;width: 294px;">
 					<input type="button" name="upload" class="button_gen" onclick="submitForm()" value="<#CTL_upload#>" />
 				</td>
 			</tr>			
 		</table>
 		<div class="aimesh_manual_fw_update_hint" style="display:none;">
-			Note : Manual firmware update will update this AiMesh router / node only, if you are using AiMesh system, please make sure you are uploading proper firmware version.<!-- untranslated -->
+			Note : A manual firmware update will only update the selected AiMesh router / node. If you are using the AiMesh system, please make sure you are uploading the correct AiMesh firmware version for the each applicable router / node.<!-- Untranslated -->
 		</div>
 		
 </form>
@@ -1321,7 +1324,7 @@ function check_AiMesh_fw_version(_fw) {
 <input type="hidden" name="productid" value="<% nvram_get("productid"); %>">
 <input type="hidden" name="current_page" value="Advanced_FirmwareUpgrade_Content.asp">
 <input type="hidden" name="next_page" value="Advanced_FirmwareUpgrade_Content.asp">
-<input type="hidden" name="preferred_lang" id="preferred_lang" value="<% nvram_get("preferred_lang"); %>">
+<input type="hidden" name="preferred_lang" value="<% nvram_get("preferred_lang"); %>">
 <input type="hidden" name="firmver" value="<% nvram_get("firmver"); %>">
 <input type="hidden" name="modified" value="0">
 <input type="hidden" name="flag" value="">
