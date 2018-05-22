@@ -749,6 +749,8 @@ ifeq ($(PROFILE),R6400)
 	install utelnetd/ookla $(TARGETDIR)/usr/sbin
 	install utelnetd/settings.txt $(TARGETDIR)/usr/sbin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
+	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
+	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib

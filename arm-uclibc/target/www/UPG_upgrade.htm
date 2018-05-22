@@ -123,7 +123,7 @@ function showAnimation()
 
 function checkData()
 {
-	var up_msg = "<%1361%>\n";
+	var up_msg = "<%1366%>\n";
 	var a;
 	var msg="";
 	var temp_win;
@@ -142,13 +142,13 @@ function checkData()
 		a = cdisplit(t_str,".");
 	if(t_str.length == 0)
 	{
-		alert("<%1362%>\n");
+		alert("<%1367%>\n");
 		return false;
 	}
 	//if((a.length<2)||(a[0]=="")||((a[a.length-1].toLowerCase()!="img") && (a[a.length-1].toLowerCase()!="chk") && (a[a.length-1].toLowerCase()!="bin")))
 	if((a.length<2)||(a[0]=="")||(a[a.length-1].toLowerCase()!="chk"))
 	{
-	 alert("<%1363%>chk\n");
+	 alert("<%1368%>chk\n");
 	 return false;
 	}
     if (!confirm(up_msg))
@@ -177,7 +177,7 @@ function enableFwCheck()
 
 var pchar = "|"; // progress char
 var maxchars = 94;
-var delay_time = <%1364%>;
+var delay_time = <%847%>;
 var charcount = 0;
 
 function makeStr(strSize, fillChar)
@@ -193,11 +193,15 @@ function updateProgress()
 	var cf = document;
 	var pf = document.forms[0];
 	var df = document.forms[0];
+	var af = document.forms[1];
+	var bf = document.forms[1];
 	if ( charcount == 1 )
 	{
         pf.Upgrade.style.display="none";
         pf.Cancel.style.display="none";
         df.Check.style.display="none";
+        af.agree.style.display="none";
+        bf.reset.style.display="none";
         setVisible('animation', showit);
         setVisible('pgbar', showit);
 	}
@@ -234,35 +238,59 @@ function set_check_upgrade()
 
     document.location.href="UPG_upgrade_ver_check.htm";
 }
-
+function check_opt_state()
+{
+	var cf = document.forms[1];
+	if(cf.auto_update_state.value==1)
+        cf.auto_update_enable[0].checked=true;
+	else if(cf.auto_update_state.value==2)
+        cf.auto_update_enable[1].checked=true;
+	if(cf.ra_state.value==1)
+        cf.ra_enable[0].checked=true;
+	else if(cf.ra_state.value==2)
+        cf.ra_enable[1].checked=true;
+}
+function fresh()
+{
+window.location.href="UPG_upgrade.htm";
+}
+function pre_check()
+{
+    /* Region is US(11) or AU(3), default check is set as enable for data collection */
+    var cf = document.forms[1];
+    if(cf.ra_state.value==0 && (cf.wla_region.value==3 || cf.wla_region.value==11))
+        cf.ra_enable[0].checked=true;
+}
 //-->
 </script>
 </head>
-<body  onload="change_size();stopAnimation();" class="page-body" onResize="change_size();">
+<body  onload="change_size();stopAnimation();check_opt_state();pre_check();" class="page-body" onResize="change_size();">
 <img class="cover-image" src="<%66%>">
 <img class="body-image" src="<%67%>">
 <div id="full-page-container">
 
-<form method="POST" action="upgrade_check.cgi" ENCTYPE="multipart/form-data" style="margin:0px"  >
-<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-<input type="hidden" name="IS_check_upgrade" value="0">
 <img class="subtop-image" src="<%68%>">
 <div class="subhead2"> <%379%></div>
 
 <table border="0" class="subhead2-table" >
 
 
-<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
+<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto">
+<form method="POST" action="upgrade_check.cgi" ENCTYPE="multipart/form-data" style="margin:0px"  >
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+<input type="hidden" name="IS_check_upgrade" value="0">
+
+<table style="border-collapse:collapse;width:97%">
 
  <TR>
- <td class="subhead2-text-menu" ><a href="javascript:loadhelp('UPG_upgrade','check')" tabindex="-1"><b><%1365%></b></a></td>
+ <td class="subhead2-text-menu" ><a href="javascript:loadhelp('UPG_upgrade','check')" tabindex="-1"><b><%1369%></b></a></td>
  <td align="left" class="subhead2-text-context" >
- <button type="button" name="Check" class="button-rule"  value="<%1366%>" onClick="buttonClick(this,'<%1366%>');set_check_upgrade();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1366%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+ <button type="button" name="Check" class="button-rule"  value="<%1370%>" onClick="buttonClick(this,'<%1370%>');set_check_upgrade();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1370%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
  </TD>
  </tr>
 <!--
 <tr>
-    <td colspan="2" class="table-seperate-border"><input type="checkbox" <%1367%> name="enable" value="1" onclick="enableFwCheck();submit();"><b><%1368%></b></td></tr>
+    <td colspan="2" class="table-seperate-border"><input type="checkbox" <%1371%> name="enable" value="1" onclick="enableFwCheck();submit();"><b><%1372%></b></td></tr>
 -->
 </table>
 <input type="hidden" name="ver_check_enable" value="1">
@@ -271,7 +299,7 @@ function set_check_upgrade()
 
 <tr><td colspan="2" height="12" class="" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1369%></b></a></td>
+	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1373%></b></a></td>
 
 </tr>
 <tr>
@@ -288,7 +316,7 @@ function set_check_upgrade()
 
 <tr>
  <td colspan="2" align="center" class="" >
-	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1370%>" class="button-rule" onClick="buttonClick(this,'<%1370%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1370%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1374%>" class="button-rule" onClick="buttonClick(this,'<%1374%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1374%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;<button type="RESET" name="Cancel" VALUE=" <%72%>" class="button-rule" onClick="stopAnimation();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%72%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 
 </tr>
@@ -303,7 +331,7 @@ function set_check_upgrade()
 <table border="0" style="border-collapse:collapse;" >
 
 <tr>
- <td colspan="2" ><BIG><%1371%>  2  <%1372%>
+ <td colspan="2" ><BIG><%1375%>  2  <%1376%>
  </BIG></td>
 </tr>
 <tr>
@@ -320,11 +348,77 @@ function set_check_upgrade()
 </div>
 </td>
 </tr>
-</table></div></td></tr>
+</table>
+</form>
+<form method="POST" action="router_tnc_config.cgi">
+<input type="hidden" name="auto_update_state" value="<%1377%>">
+<input type="hidden" name="ra_state" value="<%1378%>">
+<input type="hidden" name="wla_region" value="<%24%>">
+<table style="border-collapse:collapse;width:97%">
+<tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr align="center">
+<td colspan="2" height="12" class="">
+<button value="Apply" type="SUBMIT" name="agree" class=button-apply > <span class="roundleft_apply" ><%70%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="fresh();"  type="button" name="reset" class="button-rule" ><span class="roundleft_button"><span class ="">&nbsp;&nbsp;&nbsp;&nbsp;<%72%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+<tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr>
+<td colspan="2" height="12" class="">
+
+<b><%1379%></b>
+<br><br>
+<%1380%>
+
+<br>
+
+<%1381%>
+
+<br>
+<input type="radio" name="auto_update_enable" value="Yes" onclick="" ><font color="gray"> <%1382%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="auto_update_enable" value="No"  onclick="" ><font color="gray"> <%1383%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<br>
+</td>
+</tr>
+
+<tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr>
+<td colspan="2" height="12" class="">
+
+<b><%1384%></b>
+<br><br>
+<%1385%>
+
+<br>
+
+<%1381%>
+
+<br>
+<input type="radio" name="ra_enable" value="Yes" onclick="" ><font color="gray"> <%1382%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="ra_enable" value="No"  onclick=""> <font color="gray"> <%1383%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!--<a href="javascript:window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400')" target="_blank" style="color: rgb(000,000,255);text-decoration:underline"><font><%1386%></font></a>
+--><br>
+</td>
+</tr>
+<tr><td colspan="2" height="12" class="">
+<div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div>
+<div align="right" style="width:100%;">
+<a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"><%1386%></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#" onclick="window.open('router_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1387%></a>
+</div>
+</td></tr>
+</table>
+</form>
+</div></td></tr>
 
 <tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe" src="UPG_upgrade_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
 </table>
-</form>
+
 <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <!--
 <div align="center" ID="animation" style="position:relative;top:0;left:0;visibility:hide;visibility:hidden;">

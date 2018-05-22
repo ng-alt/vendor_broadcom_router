@@ -62,11 +62,11 @@ function checkData(index)
 	var msg = "";
 	var region_gui = cf.gui_region.value;
 	
-	msg+= checkBlank(cf.pptp_username, "<%510%>");
+	msg+= checkBlank(cf.pptp_username, "<%511%>");
 	if(cf.pptp_idletime.value.length<=0)
-		msg+= "<%506%>";
-	else if(!_isNumeric(cf.pptp_idletime.value))
 		msg+= "<%507%>";
+	else if(!_isNumeric(cf.pptp_idletime.value))
+		msg+= "<%508%>";
 	
 	if((cf.myip_1.value.length>0)||(cf.myip_2.value.length>0)||(cf.myip_3.value.length>0)||(cf.myip_4.value.length>0))
 	{
@@ -98,12 +98,12 @@ function checkData(index)
 			}
 		}
 		else if(checkIP(cf.mymask_1,cf.mymask_2,cf.mymask_3,cf.mymask_4,255))
-			msg += "<%459%>";
+			msg += "<%460%>";
 		
 		
 		if(checkIP(cf.myip_1,cf.myip_2,cf.myip_3,cf.myip_4,255) ||
 		   checkIPMatchWithNetmask(cf.mymask_1,cf.mymask_2,cf.mymask_3,cf.mymask_4,cf.myip_1,cf.myip_2,cf.myip_3,cf.myip_4))
-			msg+= "<%511%>";
+			msg+= "<%512%>";
 		else
 		{
 			cf.myip_1.value = parseInt(cf.myip_1.value,10);
@@ -125,10 +125,10 @@ function checkData(index)
 		var tmpgateway = cf.mygw_1.value+'.'+cf.mygw_2.value+'.'+cf.mygw_3.value+'.'+cf.mygw_4.value;
 	
 		if(checkIP(cf.mygw_1,cf.mygw_2,cf.mygw_3,cf.mygw_4,255))
-			msg+= "<%460%>";
+			msg+= "<%461%>";
 		else if((myIpAddr&netMask) != (myGateway&netMask))
 		{
-			msg+= '<%461%>' +tmpip+ '<%462%>'+ tmpgateway+'\n';
+			msg+= '<%462%>' +tmpip+ '<%463%>'+ tmpgateway+'\n';
 		}
 		else
 		{
@@ -144,7 +144,7 @@ function checkData(index)
 	if ((data && !isValidIPaddr(cf.pptp_serv_ip.value))
 		|| cf.pptp_serv_ip.value == ""
 		|| cf.pptp_serv_ip.value.match( /[^\x20-\x7E]/ ))
-		msg+= "<%561%>";
+		msg+= "<%562%>";
 
 	if (msg.length > 1)
 	{
@@ -223,17 +223,17 @@ function myip_update()
 </head>
 
 <body  onload="loadSettings();loadcheck();goTestApply();" style="margin:0px;background-color:#e5e5e5">
-<%1458%>
+<%1471%>
 <form id="target"  name="formname" method="POST" action="wiz_pptp.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue"> 
-<%1459%>
-<%1460%>
+<%1472%>
+<%1473%>
 <form id="target"  name="formname" method="POST" action="bsw_pptp.cgi"> 
-<%1461%>
+<%1474%>
 <table border="0"   width="99%">
 
 <tr>
-	<td colspan="2"><h1><%516%></h1></td>
+	<td colspan="2"><h1><%517%></h1></td>
 </tr>
 
 <tr>
@@ -241,16 +241,16 @@ function myip_update()
 </tr>
 
 <tr>
-	<td><a href="javascript:loadhelp('WIZ_pptp','login')" tabindex="-1"><b><%522%></b></a></td>
-	<td align="right"><input type="text" name="pptp_username" size="15" maxlength="60" value="<%562%>"></td>
+	<td><a href="javascript:loadhelp('WIZ_pptp','login')" tabindex="-1"><b><%523%></b></a></td>
+	<td align="right"><input type="text" name="pptp_username" size="15" maxlength="60" value="<%563%>"></td>
 </tr>
 <tr>
-	<td><a href="javascript:loadhelp('WIZ_pptp','password')" tabindex="-1"><b><%524%></b></a></td>
-	<td align="right"><input type="password" name="pptp_passwd" size="15" maxlength="50" value="<%563%>"></td>
+	<td><a href="javascript:loadhelp('WIZ_pptp','password')" tabindex="-1"><b><%525%></b></a></td>
+	<td align="right"><input type="password" name="pptp_passwd" size="15" maxlength="50" value="<%564%>"></td>
 </tr>
 <tr>
-	<td nowrap><a href="javascript:loadhelp('WIZ_pptp','idletime')" tabindex="-1"><%532%></a></td>
-	<td align="right"><input type="text" class="num" name="pptp_idletime" size="3" maxlength="3" value="<%564%>"></td>
+	<td nowrap><a href="javascript:loadhelp('WIZ_pptp','idletime')" tabindex="-1"><%533%></a></td>
+	<td align="right"><input type="text" class="num" name="pptp_idletime" size="3" maxlength="3" value="<%565%>"></td>
 </tr>
 
 <tr> <!-- RULE -->
@@ -258,23 +258,23 @@ function myip_update()
 </tr>
 
 <tr>
- <TD NOWRAP><a href="javascript:loadhelp('WIZ_pptp','myip')" tabindex="-1"><b><%534%></b></a></td>
+ <TD NOWRAP><a href="javascript:loadhelp('WIZ_pptp','myip')" tabindex="-1"><b><%535%></b></a></td>
  <TD NOWRAP align="right" class="num"><input type="text" name="myip_1" class="num" size="4" maxlength="3" onChange="myip_update()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="myip_2" class="num" size="4" maxlength="3" onChange="myip_update()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="myip_3" class="num" size="4" maxlength="3" onChange="myip_update()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="myip_4" class="num" size="4" maxlength="3" onChange="myip_update()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 
 <tr>
-	<td nowrap><b><%535%></b></td>
+	<td nowrap><b><%536%></b></td>
 	<td align="right" class="num">
 	<input type="text" name="mymask_1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mymask_2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mymask_3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mymask_4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 
 <tr>
- <TD NOWRAP><a href="javascript:loadhelp('WIZ_pptp','serverip')" tabindex="-1"><b><%565%></b></a></td>
- <td align="right"><input type="text" name="pptp_serv_ip" size="24" maxlength="63" value="<%570%>"></td>
+ <TD NOWRAP><a href="javascript:loadhelp('WIZ_pptp','serverip')" tabindex="-1"><b><%566%></b></a></td>
+ <td align="right"><input type="text" name="pptp_serv_ip" size="24" maxlength="63" value="<%571%>"></td>
 </tr>
 
 <tr>
- <td><a href="javascript:loadhelp('BAS_pptp','gwip')" tabindex="-1"><b><%566%></b></a></td>
+ <td><a href="javascript:loadhelp('BAS_pptp','gwip')" tabindex="-1"><b><%567%></b></a></td>
  <td align="right" class="num"><input type="text" name="mygw_1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mygw_2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mygw_3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="mygw_4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 
@@ -283,22 +283,22 @@ function myip_update()
 </tr>
 <tr>
 	<td colspan="2" align="center" nowrap><div ID="buttons" onmouseover="loadhelp('WIZ_pptp','buttons')">
-<%1458%>
+<%1471%>
 	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%70%>" name="apply" class="button-rule" onClick="buttonClick(this,'<%70%>');checkData(1)"><span class="roundleft_button">&nbsp;&nbsp; <%70%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%72%>" name="Cancel" class="button-rule" onClick="buttonClick(this,'<%72%>');reset();loadSettings();"><span class="roundleft_button">&nbsp;&nbsp; <%72%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%468%>" name="Test" class="button-rule" onClick="buttonClick(this,'<%468%>');checkData(2)"><span class="roundleft_button">&nbsp;&nbsp; <%468%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%1459%>
-<%1460%>
-	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1452%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1452%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1452%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%1461%>
+	&nbsp;&nbsp;&nbsp;<button type="BUTTON" value="<%469%>" name="Test" class="button-rule" onClick="buttonClick(this,'<%469%>');checkData(2)"><span class="roundleft_button">&nbsp;&nbsp; <%469%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%1472%>
+<%1473%>
+	&nbsp;&nbsp;&nbsp;<button type="SUBMIT" value="<%1465%>" name="Next" class="button-rule" onClick="buttonClick(this,'<%1465%>');return checkData()"><span class="roundleft_button">&nbsp;&nbsp; <%1465%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%1474%>
 </div></td></tr>
 </table>
 <input type="hidden" name="runtest" value="no">
-<INPUT name=pptp_user_ip type=hidden value= "<%560%>">
-<INPUT name=pptp_gateway type=hidden value="<%571%>">
-<INPUT name=pptp_user_netmask type=hidden value="<%572%>">
-<INPUT name=static_pptp_enable type=hidden value= "<%573%>">
-<INPUT name=gui_region type=hidden value="<%551%>">
+<INPUT name=pptp_user_ip type=hidden value= "<%561%>">
+<INPUT name=pptp_gateway type=hidden value="<%572%>">
+<INPUT name=pptp_user_netmask type=hidden value="<%573%>">
+<INPUT name=static_pptp_enable type=hidden value= "<%574%>">
+<INPUT name=gui_region type=hidden value="<%552%>">
 <INPUT name=action type=hidden value="">
 </form>
 <p></p>
