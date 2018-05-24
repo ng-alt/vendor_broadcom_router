@@ -774,6 +774,7 @@ ifeq ($(PROFILE),R7000)
 	$(STRIP) $(TARGETDIR)/lib/libssl.so
 	$(STRIP) $(TARGETDIR)/lib/libcrypto.so
 	$(STRIP) $(TARGETDIR)/usr/local/sbin/openvpn
+	$(STRIP) $(TARGETDIR)/usr/local/sbin/openssl
 	$(STRIP) $(TARGETDIR)/bin/wget
 	$(STRIP) $(TARGETDIR)/sbin/curl
 	$(STRIP) $(TARGETDIR)/usr/sbin/tcpdump*
@@ -796,6 +797,15 @@ ifeq ($(PROFILE),R7000)
 	rm -r -f $(TARGETDIR)/usr/local/share/gtk-doc
 	rm -r -f $(TARGETDIR)/usr/local/share/man
 #	rm $(TARGETDIR)/usr/bin/soapcpp2
+	#L reduce size add 
+	$(STRIP) $(TARGETDIR)/usr/sbin/ookla
+	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-daemon
+	$(STRIP) $(TARGETDIR)/usr/bin/KC_PRINT
+	$(STRIP) $(TARGETDIR)/usr/bin/KC_BONJOUR
+	$(STRIP) $(TARGETDIR)/lib/libmnl.so.0.2.0
+	rm -r -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
+	rm -r -f $(TARGETDIR)/www/QOS_down_streaming_iqos.htm
+	#L reduce size add 
 	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
