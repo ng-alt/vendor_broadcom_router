@@ -1,7 +1,7 @@
 /*
  * Shell-like utility functions
  *
- * Copyright (C) 2014, Broadcom Corporation. All Rights Reserved.
+ * Copyright (C) 2012, Broadcom Corporation. All Rights Reserved.
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,9 +15,12 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: shutils.c 456526 2014-02-19 01:53:41Z $
+ * $Id: shutils.c 337155 2012-06-06 12:17:08Z $
  */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
 #include <typedefs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +38,12 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/ioctl.h>
+#include <assert.h>
+#include <sys/sysinfo.h>
+#include <sys/mman.h>
+#include <syslog.h>
+#include <typedefs.h>
+#include <wlioctl.h>
 
 #include <bcmnvram.h>
 #include <shutils.h>
@@ -44,14 +53,98 @@
 #include <error.h>
 #include <termios.h>
 #include <sys/time.h>
-#include <net/ethernet.h>
+//#include <net/ethernet.h>
 #else
 #include <proto/ethernet.h>
 #endif /* linux */
 
-#define MAX_NVPARSE 255
+#include "shared.h"
+
+#define T(x)		__TXT(x)
+#define __TXT(s)	L ## s
+
+#ifndef B_L
+#define B_L		T(__FILE__),__LINE__
+#define B_ARGS_DEC	char *file, int line
+#define B_ARGS		file, line
+#endif /* B_L */
+
+#define bfree(B_ARGS, p) free(p)
+#define balloc(B_ARGS, num) malloc(num)
+#define brealloc(B_ARGS, p, num) realloc(p, num)
+
+#define STR_REALLOC		0x1				/* Reallocate the buffer as required */
+#define STR_INC			64				/* Growth increment */
+
+unsigned char	used_shift='C';
+
+typedef struct {
+	char		*s;						/* Pointer to buffer */
+	int		size;						/* Current buffer size */
+	int		max;						/* Maximum buffer size */
+	int		count;						/* Buffer count */
+	int		flags;						/* Allocation flags */
+} strbuf_t;
 
 #if defined(linux) || defined(__NetBSD__)
+/*
+ *	Sprintf formatting flags
+ */
+enum flag {
+	flag_none = 0,
+	flag_minus = 1,
+	flag_plus = 2,
+	flag_space = 4,
+	flag_hash = 8,
+	flag_zero = 16,
+	flag_short = 32,
+	flag_long = 64
+};
+
+/*
+ * Print out message on console.
+ */
+void dbgprintf (const char * format, ...)
+{
+	FILE *f;
+	int nfd;
+	va_list args;
+
+	if((nfd = open("/dev/console", O_WRONLY | O_NONBLOCK)) > 0){
+		if((f = fdopen(nfd, "w")) != NULL){
+			va_start(args, format);
+			vfprintf(f, format, args);
+			va_end(args);
+			fclose(f);
+		}
+		close(nfd);
+	}
+}
+
+void dbg(const char * format, ...)
+{
+	FILE *f;
+	int nfd;
+	va_list args;
+
+	if (((nfd = open("/dev/console", O_WRONLY | O_NONBLOCK)) > 0) &&
+	    (f = fdopen(nfd, "w")))
+	{
+		va_start(args, format);
+		vfprintf(f, format, args);
+		va_end(args);
+		fclose(f);
+	}
+	else
+	{
+		va_start(args, format);
+		vfprintf(stderr, format, args);
+		va_end(args);
+	}
+
+	if (nfd != -1) close(nfd);
+}
+
 /*
  * Reads file and returns contents
  * @param	fd	file descriptor
@@ -61,7 +154,7 @@ char *
 fd2str(int fd)
 {
 	char *buf = NULL;
-	ssize_t count = 0, n;
+	size_t count = 0, n;
 
 	do {
 		buf = realloc(buf, count + 512);
@@ -122,9 +215,10 @@ waitfor(int fd, int timeout)
  * @param	timeout	seconds to wait before timing out or 0 for no timeout
  * @param	ppid	NULL to wait for child termination or pointer to pid
  * @return	return value of executed command or errno
+ *
+ * Ref: http://www.open-std.org/jtc1/sc22/WG15/docs/rr/9945-2/9945-2-28.html
  */
-int
-_eval(char *const argv[], char *path, int timeout, int *ppid)
+int _eval(char *const argv[], const char *path, int timeout, int *ppid)
 {
 	pid_t pid;
 	int status;
@@ -615,14 +709,14 @@ found_next:
 int
 remove_from_list(const char *name, char *list, int listsize)
 {
-	int listlen = 0;
+//	int listlen = 0;
 	int namelen = 0;
 	char *occurrence = list;
 
 	if (!list || !name || (listsize <= 0))
 		return EINVAL;
 
-	listlen = strlen(list);
+//	listlen = strlen(list);
 	namelen = strlen(name);
 
 	occurrence = find_in_list(occurrence, name);
@@ -1071,4 +1165,374 @@ remove_dups(char *inlist, int inlist_size)
 	free(outlist);
 	return inlist;
 
+}
+
+/******************************************************************************/
+/*
+ *	Add a character to a string buffer
+ */
+
+static void put_char(strbuf_t *buf, char c)
+{
+	if (buf->count >= (buf->size - 1)) {
+		if (! (buf->flags & STR_REALLOC)) {
+			return;
+		}
+		buf->size += STR_INC;
+		if (buf->size > buf->max && buf->size > STR_INC) {
+/*
+ *			Caller should increase the size of the calling buffer
+ */
+			buf->size -= STR_INC;
+			return;
+		}
+		if (buf->s == NULL) {
+			buf->s = balloc(B_L, buf->size * sizeof(char));
+		} else {
+			buf->s = brealloc(B_L, buf->s, buf->size * sizeof(char));
+		}
+	}
+	buf->s[buf->count] = c;
+	if (c != '\0') {
+		++buf->count;
+	}
+}
+
+/******************************************************************************/
+/*
+ *	Add a string to a string buffer
+ */
+
+static void put_string(strbuf_t *buf, char *s, int len, int width,
+		int prec, enum flag f)
+{
+	int		i;
+
+	if (len < 0) {
+		len = strnlen(s, prec >= 0 ? prec : ULONG_MAX);
+	} else if (prec >= 0 && prec < len) {
+		len = prec;
+	}
+	if (width > len && !(f & flag_minus)) {
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
+	for (i = 0; i < len; ++i) {
+		put_char(buf, s[i]);
+	}
+	if (width > len && f & flag_minus) {
+		for (i = len; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
+}
+
+/******************************************************************************/
+/*
+ *	Add a long to a string buffer
+ */
+
+static void put_ulong(strbuf_t *buf, unsigned long int value, int base,
+		int upper, char *prefix, int width, int prec, enum flag f)
+{
+	unsigned long	x, x2;
+	int				len, zeros, i;
+
+	for (len = 1, x = 1; x < ULONG_MAX / base; ++len, x = x2) {
+		x2 = x * base;
+		if (x2 > value) {
+			break;
+		}
+	}
+	zeros = (prec > len) ? prec - len : 0;
+	width -= zeros + len;
+	if (prefix != NULL) {
+		width -= strnlen(prefix, ULONG_MAX);
+	}
+	if (!(f & flag_minus)) {
+		if (f & flag_zero) {
+			for (i = 0; i < width; ++i) {
+				put_char(buf, '0');
+			}
+		} else {
+			for (i = 0; i < width; ++i) {
+				put_char(buf, ' ');
+			}
+		}
+	}
+	if (prefix != NULL) {
+		put_string(buf, prefix, -1, 0, -1, flag_none);
+	}
+	for (i = 0; i < zeros; ++i) {
+		put_char(buf, '0');
+	}
+	for ( ; x > 0; x /= base) {
+		int digit = (value / x) % base;
+		put_char(buf, (char) ((digit < 10 ? '0' : (upper ? 'A' : 'a') - 10) +
+			digit));
+	}
+	if (f & flag_minus) {
+		for (i = 0; i < width; ++i) {
+			put_char(buf, ' ');
+		}
+	}
+}
+
+/******************************************************************************/
+/*
+ *	Dynamic sprintf implementation. Supports dynamic buffer allocation.
+ *	This function can be called multiple times to grow an existing allocated
+ *	buffer. In this case, msize is set to the size of the previously allocated
+ *	buffer. The buffer will be realloced, as required. If msize is set, we
+ *	return the size of the allocated buffer for use with the next call. For
+ *	the first call, msize can be set to -1.
+ */
+
+static int dsnprintf(char **s, int size, char *fmt, va_list arg, int msize)
+{
+	strbuf_t	buf;
+	char		c;
+
+	assert(s);
+	assert(fmt);
+
+	memset(&buf, 0, sizeof(buf));
+	buf.s = *s;
+
+	if (*s == NULL || msize != 0) {
+		buf.max = size;
+		buf.flags |= STR_REALLOC;
+		if (msize != 0) {
+			buf.size = max(msize, 0);
+		}
+		if (*s != NULL && msize != 0) {
+			buf.count = strlen(*s);
+		}
+	} else {
+		buf.size = size;
+	}
+
+	while ((c = *fmt++) != '\0') {
+		if (c != '%' || (c = *fmt++) == '%') {
+			put_char(&buf, c);
+		} else {
+			enum flag f = flag_none;
+			int width = 0;
+			int prec = -1;
+			for ( ; c != '\0'; c = *fmt++) {
+				if (c == '-') {
+					f |= flag_minus;
+				} else if (c == '+') {
+					f |= flag_plus;
+				} else if (c == ' ') {
+					f |= flag_space;
+				} else if (c == '#') {
+					f |= flag_hash;
+				} else if (c == '0') {
+					f |= flag_zero;
+				} else {
+					break;
+				}
+			}
+			if (c == '*') {
+				width = va_arg(arg, int);
+				if (width < 0) {
+					f |= flag_minus;
+					width = -width;
+				}
+				c = *fmt++;
+			} else {
+				for ( ; isdigit((int)c); c = *fmt++) {
+					width = width * 10 + (c - '0');
+				}
+			}
+			if (c == '.') {
+				f &= ~flag_zero;
+				c = *fmt++;
+				if (c == '*') {
+					prec = va_arg(arg, int);
+					c = *fmt++;
+				} else {
+					for (prec = 0; isdigit((int)c); c = *fmt++) {
+						prec = prec * 10 + (c - '0');
+					}
+				}
+			}
+			if (c == 'h' || c == 'l') {
+				f |= (c == 'h' ? flag_short : flag_long);
+				c = *fmt++;
+			}
+			if (c == 'd' || c == 'i') {
+				long int value;
+				if (f & flag_short) {
+					value = (short int) va_arg(arg, int);
+				} else if (f & flag_long) {
+					value = va_arg(arg, long int);
+				} else {
+					value = va_arg(arg, int);
+				}
+				if (value >= 0) {
+					if (f & flag_plus) {
+						put_ulong(&buf, value, 10, 0, ("+"), width, prec, f);
+					} else if (f & flag_space) {
+						put_ulong(&buf, value, 10, 0, (" "), width, prec, f);
+					} else {
+						put_ulong(&buf, value, 10, 0, NULL, width, prec, f);
+					}
+				} else {
+					put_ulong(&buf, -value, 10, 0, ("-"), width, prec, f);
+				}
+			} else if (c == 'o' || c == 'u' || c == 'x' || c == 'X') {
+				unsigned long int value;
+				if (f & flag_short) {
+					value = (unsigned short int) va_arg(arg, unsigned int);
+				} else if (f & flag_long) {
+					value = va_arg(arg, unsigned long int);
+				} else {
+					value = va_arg(arg, unsigned int);
+				}
+				if (c == 'o') {
+					if (f & flag_hash && value != 0) {
+						put_ulong(&buf, value, 8, 0, ("0"), width, prec, f);
+					} else {
+						put_ulong(&buf, value, 8, 0, NULL, width, prec, f);
+					}
+				} else if (c == 'u') {
+					put_ulong(&buf, value, 10, 0, NULL, width, prec, f);
+				} else {
+					if (f & flag_hash && value != 0) {
+						if (c == 'x') {
+							put_ulong(&buf, value, 16, 0, ("0x"), width,
+								prec, f);
+						} else {
+							put_ulong(&buf, value, 16, 1, ("0X"), width,
+								prec, f);
+						}
+					} else {
+                  /* 04 Apr 02 BgP -- changed so that %X correctly outputs
+                   * uppercase hex digits when requested.
+						put_ulong(&buf, value, 16, 0, NULL, width, prec, f);
+                   */
+						put_ulong(&buf, value, 16, ('X' == c) , NULL, width, prec, f);
+					}
+				}
+
+			} else if (c == 'c') {
+				char value = va_arg(arg, int);
+				put_char(&buf, value);
+
+			} else if (c == 's' || c == 'S') {
+				char *value = va_arg(arg, char *);
+				if (value == NULL) {
+					put_string(&buf, ("(null)"), -1, width, prec, f);
+				} else if (f & flag_hash) {
+					put_string(&buf,
+						value + 1, (char) *value, width, prec, f);
+				} else {
+					put_string(&buf, value, -1, width, prec, f);
+				}
+			} else if (c == 'p') {
+				void *value = va_arg(arg, void *);
+				put_ulong(&buf,
+					(unsigned long int) value, 16, 0, ("0x"), width, prec, f);
+			} else if (c == 'n') {
+				if (f & flag_short) {
+					short int *value = va_arg(arg, short int *);
+					*value = buf.count;
+				} else if (f & flag_long) {
+					long int *value = va_arg(arg, long int *);
+					*value = buf.count;
+				} else {
+					int *value = va_arg(arg, int *);
+					*value = buf.count;
+				}
+			} else {
+				put_char(&buf, c);
+			}
+		}
+	}
+	if (buf.s == NULL) {
+		put_char(&buf, '\0');
+	}
+
+/*
+ *	If the user requested a dynamic buffer (*s == NULL), ensure it is returned.
+ */
+	if (*s == NULL || msize != 0) {
+		*s = buf.s;
+	}
+
+	if (*s != NULL && size > 0) {
+		if (buf.count < size) {
+			(*s)[buf.count] = '\0';
+		} else {
+			(*s)[buf.size - 1] = '\0';
+		}
+	}
+
+	if (msize != 0) {
+		return buf.size;
+	}
+	return buf.count;
+}
+
+/******************************************************************************/
+/*
+ *	sprintf and vsprintf are bad, ok. You can easily clobber memory. Use
+ *	fmtAlloc and fmtValloc instead! These functions do _not_ support floating
+ *	point, like %e, %f, %g...
+ */
+
+int fmtAlloc(char **s, int n, char *fmt, ...)
+{
+	va_list	ap;
+	int		result;
+
+	assert(s);
+	assert(fmt);
+
+	*s = NULL;
+	va_start(ap, fmt);
+	result = dsnprintf(s, n, fmt, ap, 0);
+	va_end(ap);
+	return result;
+}
+
+/******************************************************************************/
+/*
+ *	A vsprintf replacement.
+ */
+
+int fmtValloc(char **s, int n, char *fmt, va_list arg)
+{
+	assert(s);
+	assert(fmt);
+
+	*s = NULL;
+	return dsnprintf(s, n, fmt, arg, 0);
+}
+
+/*
+ *  * description: parse va and do system
+ *  */
+int doSystem(char *fmt, ...)
+{
+	va_list		vargs;
+	char		*cmd = NULL;
+	int 		rc = 0;
+	#define CMD_BUFSIZE 256
+	va_start(vargs, fmt);
+	if (fmtValloc(&cmd, CMD_BUFSIZE, fmt, vargs) >= CMD_BUFSIZE) {
+		fprintf(stderr, "doSystem: lost data, buffer overflow\n");
+	}
+	va_end(vargs);
+
+	if(cmd) {
+		if (!strncmp(cmd, "iwpriv", 6))
+			_dprintf("[doSystem] %s\n", cmd);
+		rc = system(cmd);
+		bfree(B_L, cmd);
+	}
+	return rc;
 }

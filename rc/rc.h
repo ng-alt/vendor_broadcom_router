@@ -18,7 +18,7 @@
 #include <bcmconfig.h>
 #include <netinet/in.h>
 #ifdef __CONFIG_BUSYBOX__
-#include <Config.h>
+#include <include/autoconf.h>
 #endif
 
 

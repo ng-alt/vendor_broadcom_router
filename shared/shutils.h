@@ -20,6 +20,27 @@
 
 #ifndef _shutils_h_
 #define _shutils_h_
+#include <string.h>
+#include <rtconfig.h>
+
+#ifndef MAX_NVPARSE
+#define MAX_NVPARSE 16
+#endif
+#define sin_addr(s) (((struct sockaddr_in *)(s))->sin_addr)
+
+#ifndef max
+#define max(a,b)  (((a) > (b)) ? (a) : (b))
+#endif /* max */
+
+#ifndef min
+#define min(a,b)  (((a) < (b)) ? (a) : (b))
+#endif /* min */
+
+#define ENC_XOR     (0x74)
+#define DATA_WORDS_LEN (120)
+#define ENC_WORDS_LEN  (384)
+
+extern int doSystem(char *fmt, ...);
 
 /*
  * Reads file and returns contents
@@ -53,7 +74,7 @@ extern int waitfor(int fd, int timeout);
  * @param	ppid	NULL to wait for child termination or pointer to pid
  * @return	return value of executed command or errno
  */
-extern int _eval(char *const argv[], char *path, int timeout, pid_t *ppid);
+extern int _eval(char *const argv[], const char *path, int timeout, pid_t *ppid);
 #endif /* defined(linux) */
 
 /*
@@ -131,6 +152,120 @@ static inline char * strcat_r(const char *s1, const char *s2, char *buf)
 	strcat(buf, s2);
 	return buf;
 }
+
+/* Strip trailing CR/NL from string <s> */
+#define chomp(s) ({ \
+	char *c = (s) + strlen((s)) - 1; \
+	while ((c > (s)) && (*c == '\n' || *c == '\r' || *c == ' ')) \
+		*c-- = '\0'; \
+	s; \
+})
+
+
+/* Simple version of _eval() (no timeout and wait for child termination) */
+#if 1
+#define eval(cmd, args...) ({ \
+	char * const argv[] = { cmd, ## args, NULL }; \
+	_eval(argv, NULL, 0, NULL); \
+})
+#else
+#define eval(cmd, args...) ({ \
+	char * const argv[] = { cmd, ## args, NULL }; \
+	_eval(argv, ">/dev/console", 0, NULL); \
+})
+#endif
+
+/* another _cpu_eval form */
+#define cpu_eval(ppid, cmd, args...) ({ \
+	char * argv[] = { cmd, ## args, NULL }; \
+	_cpu_eval(ppid, argv); \
+})
+
+/* Copy each token in wordlist delimited by space into word */
+#define foreach(word, wordlist, next) \
+		for (next = &wordlist[strspn(wordlist, " ")], \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, " ")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ' '); \
+				strlen(word); \
+				next = next ? &next[strspn(next, " ")] : "", \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, " ")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ' '))
+
+/* Copy each token in wordlist delimited by ascii_44 into word */
+#define foreach_44(word, wordlist, next) \
+		for (next = &wordlist[strspn(wordlist, ",")], \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ",")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ','); \
+				strlen(word); \
+				next = next ? &next[strspn(next, ",")] : "", \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ",")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ','))
+
+/* Copy each token in wordlist delimited by ascii_58 into word */
+#define foreach_58(word, wordlist, next) \
+		for (next = &wordlist[strspn(wordlist, ":")], \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ":")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ':'); \
+				strlen(word); \
+				next = next ? &next[strspn(next, ":")] : "", \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ":")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, ':'))
+
+/* Copy each token in wordlist delimited by ascii_60 into word */
+#define foreach_60(word, wordlist, next) \
+		for (next = &wordlist[strspn(wordlist, "<")], \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, "<")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, '<'); \
+				strlen(word); \
+				next = next ? &next[strspn(next, "<")] : "", \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, "<")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, '<'))
+
+/* Copy each token in wordlist delimited by ascii_62 into word */
+#define foreach_62(word, wordlist, next) \
+		for (next = &wordlist[strspn(wordlist, ">")], \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ">")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, '>'); \
+				strlen(word); \
+				next = next ? &next[strspn(next, ">")] : "", \
+				strncpy(word, next, sizeof(word)), \
+				word[strcspn(word, ">")] = '\0', \
+				word[sizeof(word) - 1] = '\0', \
+				next = strchr(next, '>'))
+
+/* Return NUL instead of NULL if undefined */
+#define safe_getenv(s) (getenv(s) ? : "")
+
+#define ONE_ENTRANT()                               \
+do {                                                            \
+	static int served = 0;  \
+	if(served ++ > 0)       \
+		return;         \
+} while (0)
+
+//#define dbg(fmt, args...) do { FILE *fp = fopen("/dev/console", "w"); if (fp) { fprintf(fp, fmt, ## args); fclose(fp); } else fprintf(stderr, fmt, ## args); } while (0)
+extern void dbg(const char * format, ...);
+#define dbG(fmt, args...) dbg("%s(0x%04x): " fmt , __FUNCTION__ , __LINE__, ## args)
+extern void cprintf(const char *format, ...);
+
 
 /*
  * Parse the unit and subunit from an interface string such as wlXX or wlXX.YY

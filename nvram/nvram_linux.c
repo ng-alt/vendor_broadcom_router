@@ -108,7 +108,7 @@ nvram_init(void *unused)
 
 	return 0;
 
- err:
+err:
 	perror(PATH_DEV_NVRAM);
 	return errno;
 }
@@ -168,6 +168,40 @@ nvram_getall(char *buf, int count)
 		perror(PATH_DEV_NVRAM);
 
 	return (ret == count) ? 0 : ret;
+}
+
+static char *nvram_xfr_buf = NULL;
+
+char *
+nvram_xfr(const char *buf)
+{
+        size_t count = strlen(buf)*2+1; // ham 1120
+        int ret;
+        char tmpbuf[1024];
+
+        if(nvram_fd < 0)
+                if ((ret = nvram_init(NULL)))
+                        return NULL;
+
+        if(count > sizeof(tmpbuf))
+                return NULL;
+
+        strcpy(tmpbuf, buf);
+
+        if(!nvram_xfr_buf)
+                nvram_xfr_buf = (char *)malloc(1024+1);
+
+        if(!nvram_xfr_buf) return NULL;
+
+        ret = ioctl(nvram_fd, NVRAM_MAGIC, tmpbuf);
+
+        if(ret<0) {
+                return NULL;
+        }
+        else {
+                strcpy(nvram_xfr_buf, tmpbuf);
+                return nvram_xfr_buf;
+        }
 }
 
 static int
