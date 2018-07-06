@@ -1240,7 +1240,7 @@ function checkData()
         if (wps_version == "2.0")
         {   
 	    /* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */
-            if (!confirm("<%1727%>")){
+            if (!confirm("<%1730%>")){
                 return false;
             }
             show_tkip_or_wps_v20_msg = true;
@@ -1314,7 +1314,7 @@ function checkData()
         {
 	    /* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */
             if (!show_tkip_or_wps_v20_msg) {
-                if (!confirm("<%1727%>")){
+                if (!confirm("<%1730%>")){
                     return false;
                 }
             }
@@ -1368,7 +1368,7 @@ function checkData()
         {
             if (cf.security_type_2G.value == "WPA-PSK")
             {
-                if (!confirm("<%1727%>")){
+                if (!confirm("<%1730%>")){
                     return false;
                 }
                 show_tkip_or_wps_v20_msg = true;
@@ -1410,15 +1410,15 @@ function checkData()
         {
             cf.ssid_bc.value = "";
         }
-        if("<%1628%>" == "checked")
+        if("<%1630%>" == "checked")
         {
             cf.security_type.value = "WPA-PSK";
         }
-        else if("<%1629%>" == "checked")
+        else if("<%1631%>" == "checked")
         {
             cf.security_type.value = "WPA2-PSK";
         }
-        else if("<%1630%>" == "checked")
+        else if("<%1632%>" == "checked")
         {
             cf.security_type.value = "AUTO-PSK";
         }
@@ -1434,7 +1434,7 @@ function checkData()
             if (cf.security_type_5G.value == "WPA-PSK")
             {
                 if (!show_tkip_or_wps_v20_msg) {
-                    if (!confirm("<%1727%>")){
+                    if (!confirm("<%1730%>")){
                         return false;
                     }
                 }
@@ -1480,15 +1480,15 @@ function checkData()
         {
             cf.ssid_bc_an.value = "";
         }
-        if("<%1728%>" == "checked")
+        if("<%1731%>" == "checked")
         {
             cf.security_type_an.value = "WPA-PSK";
         }
-        else if("<%1729%>" == "checked")
+        else if("<%1732%>" == "checked")
         {
             cf.security_type_an.value = "WPA2-PSK";
         }
-        else if("<%1730%>" == "checked")
+        else if("<%1733%>" == "checked")
         {
             cf.security_type_an.value = "AUTO-PSK";
         }
@@ -1515,7 +1515,7 @@ function showWpsAlert()
 
 function ShowWEPAlert()
 {
-	alert("<%1731%>");
+	alert("<%1734%>");
 }
 
 // -->
@@ -1681,7 +1681,7 @@ function ShowWEPAlert()
     <tr>
       <td nowrap colspan="2">
         <%197%>: <input type="text" autocomplete="off" name="passphraseStr" size="14" maxlength="32" value=""> &nbsp;
-        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1621%>" name="keygen" class="button-rule" onClick="buttonClick(this,'<%1621%>');calcPassphrase(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1621%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
+        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1623%>" name="keygen" class="button-rule" onClick="buttonClick(this,'<%1623%>');calcPassphrase(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1623%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
@@ -1807,13 +1807,13 @@ function ShowWEPAlert()
     <tr>
         <td colspan="2">
         <div id="wpa_radio_5g" style="display: block;">
-        <input type="radio" name="security_type_an" value="WPA-PSK" <%256%> onClick="securityCheck(1);" ><%174%>
+        <input type="radio" name="security_type_an" value="WPA-PSK" <%258%> onClick="securityCheck(1);" ><%174%>
         </div>
         </td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%256%> onClick="securityCheck(1);"><%175%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="WPA2-PSK" <%258%> onClick="securityCheck(1);"><%175%></td></tr>
     <tr>
-        <td colspan="2"><input type="radio" name="security_type_an" value="AUTO-PSK" <%256%> onClick="securityCheck(1);" ><%176%></td></tr>
+        <td colspan="2"><input type="radio" name="security_type_an" value="AUTO-PSK" <%258%> onClick="securityCheck(1);" ><%176%></td></tr>
     <tr>
         <td colspan="2" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -1832,7 +1832,7 @@ function ShowWEPAlert()
       <td nowrap="nowrap"><select name="authAlgm_an" size=1><option value="automatic"><%180%></option><option value="sharedkey"><%181%></option></select></td></tr>
     <tr>
       <td nowrap><%182%>:</td>
-      <td nowrap="nowrap"><select name="wepenc_an" size=1 onchange="setKeys();"><option <%257%> value="1"><%184%></option><option <%258%> value="2"><%186%>
+      <td nowrap="nowrap"><select name="wepenc_an" size=1 onchange="setKeys();"><option <%259%> value="1"><%184%></option><option <%260%> value="2"><%186%>
       </option>
       </select>
       </td>
@@ -1844,17 +1844,17 @@ function ShowWEPAlert()
     <tr>
       <td nowrap colspan="2">
         <%197%>: <input type="text" name="passphraseStr_an" autocomplete="off" size="14" maxlength="32" value=""> &nbsp;
-        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1621%>" name="Generate_an" class="button-rule" onClick="buttonClick(this,'<%1621%>');calcPassphrase_an(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1621%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
+        &nbsp;&nbsp;&nbsp;<button type="button" value="<%1623%>" name="Generate_an" class="button-rule" onClick="buttonClick(this,'<%1623%>');calcPassphrase_an(this.form)"><span class="roundleft_button">&nbsp;&nbsp; <%1623%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="2">
           <tr>
-            <td nowrap="nowrap"><%188%> :<input type="radio"  checked name="wep_key_no_an" value="1"><input type="text" autocomplete="off" name="KEY1_an" maxLength=32 size=34 value="<%259%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%188%> :<input type="radio"  checked name="wep_key_no_an" value="1"><input type="text" autocomplete="off" name="KEY1_an" maxLength=32 size=34 value="<%261%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[0].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%190%> :<input type="radio" name="wep_key_no_an" value="2"><input type="text" autocomplete="off" name="KEY2_an" maxLength=32 size=34 value="<%260%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%190%> :<input type="radio" name="wep_key_no_an" value="2"><input type="text" autocomplete="off" name="KEY2_an" maxLength=32 size=34 value="<%262%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[1].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%192%> :<input type="radio" name="wep_key_no_an" value="3"><input type="text" autocomplete="off" name="KEY3_an" maxLength=32 size=34 value="<%261%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%192%> :<input type="radio" name="wep_key_no_an" value="3"><input type="text" autocomplete="off" name="KEY3_an" maxLength=32 size=34 value="<%263%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[2].checked=true;"></td></tr>
           <tr>
-            <td nowrap="nowrap"><%194%> :<input type="radio" name="wep_key_no_an" value="4"><input type="text" autocomplete="off" name="KEY4_an" maxLength=32 size=34 value="<%262%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
+            <td nowrap="nowrap"><%194%> :<input type="radio" name="wep_key_no_an" value="4"><input type="text" autocomplete="off" name="KEY4_an" maxLength=32 size=34 value="<%264%>" onkeydown="keyCheck_an(this)" onfocus="this.form.wep_key_no_an[3].checked=true;"></td></tr>
        </td>
     </tr>
     <tr>
@@ -1870,12 +1870,12 @@ function ShowWEPAlert()
     <table align="left" border="0" width="100%">
     <tr>
         <td nowrap="nowrap">
-        <%263%>
+        <%265%>
         </td nowrap="nowrap">
     </tr> 
     <tr>
       <td nowrap="nowrap" colspan="2">&nbsp;&nbsp;<%197%>: </td>
-      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" autocomplete="off" size=20 maxLength=64 value="<%264%>">&nbsp;&nbsp;<%199%></td></tr>
+      <td nowrap="nowrap" colspan="2"><input type="text" name="passphrase_an" autocomplete="off" size=20 maxLength=64 value="<%266%>">&nbsp;&nbsp;<%199%></td></tr>
     <tr>
       <td nowrap="nowrap" colspan="4" background="liteblue.gif" height="12">&nbsp; </td></tr>
     </table>
@@ -1889,39 +1889,39 @@ function ShowWEPAlert()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%268%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%270%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%271%> </span>
       </div>
 
 
  
-  <input type="hidden" name="tempSetting" value="<%270%>">
-  <input type="hidden" name="tempRegion" value="<%271%>">
+  <input type="hidden" name="tempSetting" value="<%272%>">
+  <input type="hidden" name="tempRegion" value="<%273%>">
   <input type="hidden" name="setRegion" value="<%20%>">
-  <input type="hidden" name="wds_enable" value="<%272%>">    
-  <input type="hidden" name="wds_enable_an" value="<%273%>">    
+  <input type="hidden" name="wds_enable" value="<%274%>">    
+  <input type="hidden" name="wds_enable_an" value="<%275%>">    
   <input type="hidden" name="only_mode" value="0">
-  <input type="hidden" name="show_wps_alert" value="<%274%>">
-  <input type="hidden" name="security_type_2G" value="<%275%>">
+  <input type="hidden" name="show_wps_alert" value="<%276%>">
+  <input type="hidden" name="security_type_2G" value="<%277%>">
   <input type="hidden" name="security_type_5G" value="<%52%>">
-  <input type="hidden" name="init_security_type_2G" value="<%275%>">
+  <input type="hidden" name="init_security_type_2G" value="<%277%>">
   <input type="hidden" name="init_security_type_5G" value="<%52%>">
-  <input type="hidden" name="initChannel" value="<%276%>">
-  <input type="hidden" name="initAuthType" value="<%277%>">
-  <input type="hidden" name="initDefaultKey" value="<%278%>">
+  <input type="hidden" name="initChannel" value="<%278%>">
+  <input type="hidden" name="initAuthType" value="<%279%>">
+  <input type="hidden" name="initDefaultKey" value="<%280%>">
   <input type="hidden" name="initChannel_an" value="<%21%>">
-  <input type="hidden" name="initAuthType_an" value="<%279%>">
-  <input type="hidden" name="initDefaultKey_an" value="<%280%>">
-  <input type="hidden" name="telec_dfs_ch_enable" value="<%281%>">  
-  <input type="hidden" name="ce_dfs_ch_enable" value="<%282%>"> 
-  <input type="hidden" name="auto_channel_5G" value="<%284%>">  
-  <input type="hidden" name="support_ac_mode" value="<%285%>">
-  <input type="hidden" name="board_id" value="<%286%>">
-  <%288%>
+  <input type="hidden" name="initAuthType_an" value="<%281%>">
+  <input type="hidden" name="initDefaultKey_an" value="<%282%>">
+  <input type="hidden" name="telec_dfs_ch_enable" value="<%283%>">  
+  <input type="hidden" name="ce_dfs_ch_enable" value="<%284%>"> 
+  <input type="hidden" name="auto_channel_5G" value="<%286%>">  
+  <input type="hidden" name="support_ac_mode" value="<%287%>">
+  <input type="hidden" name="board_id" value="<%288%>">
+  <%290%>
   <input type="hidden" name="fw_sku" value="SKU_WW">
-  <%289%>
+  <%291%>
   <%140%>
   <input type="hidden" name="fw_sku" value="SKU_NA">
   <%141%>

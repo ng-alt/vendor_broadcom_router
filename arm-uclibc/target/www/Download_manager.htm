@@ -122,13 +122,13 @@ function isURL(url)
                 return true;
             else
             {
-                alert("<%2322%>");
+                alert("<%2325%>");
                 return false;
             }
         }
         else
         {
-            alert("<%2323%>");
+            alert("<%2326%>");
             return false;
         }
 }
@@ -149,13 +149,13 @@ function check_data(index)
         {
             if(cf.fh_url.value == "")
             {
-                alert("<%2324%>");
+                alert("<%2327%>");
                 return false;
             }
             strLower = cf.fh_url.value.toLowerCase();
             if((strLower.indexOf("ftp://") == -1)&&(strLower.indexOf("http://") == -1))
             {
-                alert("<%2323%>");
+                alert("<%2326%>");
                 return false;
             }
         }
@@ -165,13 +165,13 @@ function check_data(index)
             {
                 if (cf.usb_bt_file.value == "")
                 {
-                    alert("<%2323%>");
+                    alert("<%2326%>");
                     return false;
                 }
                 ext=GetFileExt(cf.usb_bt_file.value);
                 if(ext!=".torrent")
                 {
-                    alert("<%2323%>");
+                    alert("<%2326%>");
                     return false;
                 }
                 cf.btSeedUpload.disabled=false;
@@ -180,13 +180,13 @@ function check_data(index)
             {
                 if (cf.usb_bt_file.value == "")
                 {
-                    alert("<%2323%>");
+                    alert("<%2326%>");
                     return false;
                 }
                 ext=GetFileExt(cf.usb_bt_file.value);
                 if(ext!=".torrent")
                 {
-                    alert("<%2323%>");
+                    alert("<%2326%>");
                     return false;
                 }
             }
@@ -194,7 +194,7 @@ function check_data(index)
             {
                 if (cf.bt_url.value == "")
                 {
-                    alert("<%2323%>");
+                    alert("<%2326%>");
                     return false;
                 }
                 if(!isURL(cf.bt_url.value))
@@ -207,20 +207,20 @@ function check_data(index)
         {
             if(cf.ed_url.value == "")
             {
-                alert("<%2325%>");
+                alert("<%2328%>");
                 return false;
             }
             strLower = cf.ed_url.value.toLowerCase();
             if(strLower.indexOf("ed2k://") == -1)
             {
-                alert("<%2326%>");
+                alert("<%2329%>");
                 return false;
             }
         }
         total_task=document.getElementsByName('download_task_sel');
         if(total_task.length==20)
         {
-            alert("<%2327%>");
+            alert("<%2330%>");
             //cf.add_task.disabled = true;
             return false;
         }
@@ -335,25 +335,25 @@ function loadSettings()
     display_download_type();
     disable_choose_file();
     
-    if("<%2328%>" == "1")
-        alert("<%2329%>");
+    if("<%2331%>" == "1")
+        alert("<%2332%>");
     
-    if("<%2330%>" == "1")
-        alert("<%2331%>");
+    if("<%2333%>" == "1")
+        alert("<%2334%>");
     
-    if("<%2332%>" == "1")
-        alert("<%2333%>");
+    if("<%2335%>" == "1")
+        alert("<%2336%>");
 
-    if("<%2334%>" == "1")
-        alert("<%2335%>");
+    if("<%2337%>" == "1")
+        alert("<%2338%>");
     
-    if("<%2336%>" == "1")
-        alert("<%2337%>");
+    if("<%2339%>" == "1")
+        alert("<%2340%>");
 
-    if("<%2338%>" == "1")
-        alert("<%2339%>");
-    if("<%2340%>" == "1")
-        alert("<%2341%>");
+    if("<%2341%>" == "1")
+        alert("<%2342%>");
+    if("<%2343%>" == "1")
+        alert("<%2344%>");
 
     if(cf.enable_netgear_downloader.checked)
     {
@@ -686,10 +686,10 @@ function change_pri(from)
 
 function refresh_page() 
 {
-    var refresh_rate = <%2342%>;
+    var refresh_rate = <%2345%>;
     var timeout;
     
-    if ("<%2343%>" == "1")
+    if ("<%2346%>" == "1")
     {
         if (refresh_rate > 0)
         {
@@ -702,10 +702,10 @@ function refresh_page()
 
 function check_usb_exist2()
 {
-    var isUsbAttached = <%474%>;
+    var isUsbAttached = <%476%>;
     if(isUsbAttached==0)
     {   
-        alert("<%2344%>");
+        alert("<%2347%>");
         window.top.location.href="start.htm";
     }
 }
@@ -714,9 +714,9 @@ function checkSel()
 {
     var cf = document.forms[0]; 
     var ret;
-    if("<%2345%>" == "1")
+    if("<%2348%>" == "1")
     {
-        ret = confirm("<%2346%>");
+        ret = confirm("<%2349%>");
         if(ret==1)
         {
             cf.action_type.value = "Add_Task";
@@ -728,9 +728,9 @@ function checkSel()
             cf.duplicatetask.value=0;
         }
     }
-    if("<%2347%>" == "1")
+    if("<%2350%>" == "1")
     {
-        ret = confirm("<%2348%>");
+        ret = confirm("<%2351%>");
         if(ret==1)
         {
             cf.action_type.value = "Add_Task";
@@ -781,11 +781,11 @@ function display_download_type()
     <form id="target"  name="frmService" method="post" action="downloader.cgi" ENCTYPE="multipart/form-data">
       <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
       <input name="action_type" type="hidden" value="">
-      <input name="download_type" type="hidden" value= "<%2349%>">
+      <input name="download_type" type="hidden" value= "<%2352%>">
       <input name="usb_bt_file" type="hidden" value= "">
       <input name="bt_torrent_loc" type="hidden" value="">
       <img class="subtop-image" src="<%76%>">
-      <div class="subhead2"> <%404%></div>
+      <div class="subhead2"> <%406%></div>
       <table border="0"    style="height:370px"  class="subhead2-table">
         <tr align="left" valign="middle">
           <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
@@ -799,7 +799,7 @@ function display_download_type()
               <table style="border-collapse:collapse;width:97%">
                 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
                 <tr>
-                  <td colspan="2"><input type="checkbox" name="enable_netgear_downloader" value="checkboxValue" onClick="refresh_cancel();"><b><%2350%></b></td>
+                  <td colspan="2"><input type="checkbox" name="enable_netgear_downloader" value="checkboxValue" onClick="refresh_cancel();"><b><%2353%></b></td>
                 </tr>
                 <tr>
                   <td align="left">
@@ -807,18 +807,18 @@ function display_download_type()
                       <table>
                         <tr>
                           <td>
-                   	        <%2351%>:&nbsp;<input type="text" name="usb_folder" value= "<%2352%>" readonly>
+                   	        <%2354%>:&nbsp;<input type="text" name="usb_folder" value= "<%2355%>" readonly>
                    	      </td>
-                          <td align="left"><button type="button" value="configure_settings" name="configure_settings" class="button-rule" onClick="highLightMenu('downloader_header', 'down_set');location.href='Download_settings.htm';"><span class="roundleft_button">&nbsp;&nbsp; <%2353%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+                          <td align="left"><button type="button" value="configure_settings" name="configure_settings" class="button-rule" onClick="highLightMenu('downloader_header', 'down_set');location.href='Download_settings.htm';"><span class="roundleft_button">&nbsp;&nbsp; <%2356%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
                         </tr>
                         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
                         <tr>
                           <td nowrap align="left">
-                            <b><%2354%></b>
+                            <b><%2357%></b>
                             <select id="selType" onchange="display_download_type();refresh_cancel();">
-                              <option value="0" ><%2355%></option>
-                              <option value="1"><%2356%></option>
-                              <option value="2"><%2357%></option>
+                              <option value="0" ><%2358%></option>
+                              <option value="1"><%2359%></option>
+                              <option value="2"><%2360%></option>
                             </select>
                           </td>
                         </tr>
@@ -831,15 +831,15 @@ function display_download_type()
               <div id="fh_tbody" style="display: block;">
                 <table style="border-collapse:collapse;width:97%">
                   <tr>
-                    <td><%2358%></td>
+                    <td><%2361%></td>
                     <td><input type="text" maxLength="512" name="fh_url" size="64"></td>
                   </tr>
                   <tr>
-                    <td><%586%>(<%2359%>)</td>
+                    <td><%588%>(<%2362%>)</td>
                     <td><input type="text" maxLength="63" name="fh_username" size="24"></td>
                   </tr>
                   <tr>
-                    <td><%600%>(<%2359%>)</td>
+                    <td><%602%>(<%2362%>)</td>
                     <td><input type="text" maxLength="63" name="fh_password" size="24"></td>
                   </tr>
                 </table>
@@ -847,13 +847,13 @@ function display_download_type()
               <div id="bt_tbody1" style="display: none;">
                 <table style="border-collapse:collapse;width:97%">
                   <tr>
-                    <td colspan="2" nowrap="nowrap"><b><%2360%></b>
-                      <input type="radio" <%2361%> name="btfileloca" value="pc" onClick="disable_choose_file();refresh_cancel();" ><%2362%>
-                      <input type="radio" <%2363%> name="btfileloca" value="usb" onClick="disable_choose_file();refresh_cancel();" ><%2364%>
-                      <input type="radio" <%2365%> name="btfileloca" value="btlink" onClick="disable_choose_file();refresh_cancel();" ><%2366%>
+                    <td colspan="2" nowrap="nowrap"><b><%2363%></b>
+                      <input type="radio" <%2364%> name="btfileloca" value="pc" onClick="disable_choose_file();refresh_cancel();" ><%2365%>
+                      <input type="radio" <%2366%> name="btfileloca" value="usb" onClick="disable_choose_file();refresh_cancel();" ><%2367%>
+                      <input type="radio" <%2368%> name="btfileloca" value="btlink" onClick="disable_choose_file();refresh_cancel();" ><%2369%>
                     </td>
                     <td>
-                      <input type="text" maxLength="512" name="bt_url" size="48" value= "<%2367%>">
+                      <input type="text" maxLength="512" name="bt_url" size="48" value= "<%2370%>">
                     </td>
                   </tr>
                 </table>
@@ -864,9 +864,9 @@ function display_download_type()
                     <td>
                       <div id="choose_file" style="display: block;">
                         <input type="file" name="btSeedUpload" id="file1" size="0" maxlength="1024" style="position:absolute;opacity:0;filter:alpha(opacity=0);" hidefocus onmousemove="floatFile(event)" onchange="Change_file();" onClick="refresh_cancel();">
-                          <button type="button" value="<%481%>" name="Browse" id="browser1" class="button-rule" onClick="buttonClick(this,'<%481%>');Browse_file();" onmousemove="floatFile(event)"><span class="roundleft_button"><%481%></span><span class="roundright_button">&nbsp;</span></button>
+                          <button type="button" value="<%483%>" name="Browse" id="browser1" class="button-rule" onClick="buttonClick(this,'<%483%>');Browse_file();" onmousemove="floatFile(event)"><span class="roundleft_button"><%483%></span><span class="roundright_button">&nbsp;</span></button>
                           &nbsp;&nbsp;
-                        <a id=display_file_path><%2368%></a>
+                        <a id=display_file_path><%2371%></a>
                       </div>
                     </td>
                   </tr> 
@@ -875,7 +875,7 @@ function display_download_type()
               <div id="ed_tbody" style="display: none;">
                 <table style="border-collapse:collapse;width:97%">
                   <tr>
-                    <td><%2369%></td>
+                    <td><%2372%></td>
                     <td><input type="text" maxLength="512" name="ed_url" size="64"></td>
                   </tr> 
                 </table>
@@ -886,57 +886,57 @@ function display_download_type()
                   <tr align="left" valign="middle">
                     <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2">
                       &nbsp;&nbsp;&nbsp;
-                      <button type="submit" name="add_task" value="<%693%>" onclick="buttonClick(this,'<%693%>'); return check_data(2);" class=<%79%> ><span class="<%80%>"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%693%></span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;&nbsp;
-                      <button type="button" name="cancel" value="<%2054%>" onClick="buttonClick(this,'<%83%>'); location.href='Download_manager.htm';" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%2054%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      <button type="submit" name="add_task" value="<%695%>" onclick="buttonClick(this,'<%695%>'); return check_data(2);" class=<%79%> ><span class="<%80%>"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%695%></span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" name="cancel" value="<%2057%>" onClick="buttonClick(this,'<%83%>'); location.href='Download_manager.htm';" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%2057%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                     </td>
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <b><%2370%></b></td>
+                      <b><%2373%></b></td>
                   </tr>
                   <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
                   <tr>
                     <td colspan="2">
                       <table border="1" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                          <td align="center" nowrap="nowrap" width="5%"><span class="thead"><%2371%></span><input type="checkbox" name="select_all" value="selectall" onclick = "seclect_all();"></td>
-                          <td align="center" nowrap="nowrap" width="5%"><span class="thead"><%2372%></span></td>
-                          <td align="center" nowrap="nowrap" width="25%"><span class="thead"><%2373%></span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2374%></span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%1965%></span></td>
-                          <td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2375%> <%2376%></span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2375%>(%)</span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%774%></span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%710%></span></td>
+                          <td align="center" nowrap="nowrap" width="5%"><span class="thead"><%2374%></span><input type="checkbox" name="select_all" value="selectall" onclick = "seclect_all();"></td>
+                          <td align="center" nowrap="nowrap" width="5%"><span class="thead"><%2375%></span></td>
+                          <td align="center" nowrap="nowrap" width="25%"><span class="thead"><%2376%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2377%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%1968%></span></td>
+                          <td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2378%> <%2379%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2378%>(%)</span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%776%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%712%></span></td>
                         </tr>
-                        <%2377%>
+                        <%2380%>
                       </table>
                     </td>
                   </tr>
                   <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
                   <tr>
                     <td colspan="2" align="center">
-                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Resume" name="Resume_task" class=<%483%> onClick="buttonClick(this,'<%693%>'); getCbxByName(); return check_data(3);"><span class="<%484%>">&nbsp;&nbsp; <%2378%></span><span class="<%485%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Refresh" name="Refresh_task" class="button-rule" onClick="buttonClick(this,'<%693%>'); return check_data(4);"><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%747%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Pause" name="Pause_task" class=<%483%> onClick="buttonClick(this,'<%693%>'); getCbxByName(); return check_data(5);"><span class="<%484%>">&nbsp;&nbsp; <%2379%></span><span class="<%485%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Remove" name="Delete_task" class=<%483%> onclick="buttonClick(this,'<%693%>'); getCbxByName(); return check_data(6);" ><span class="<%484%>"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%2380%></span></span><span class="<%485%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Resume" name="Resume_task" class=<%485%> onClick="buttonClick(this,'<%695%>'); getCbxByName(); return check_data(3);"><span class="<%486%>">&nbsp;&nbsp; <%2381%></span><span class="<%487%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Refresh" name="Refresh_task" class="button-rule" onClick="buttonClick(this,'<%695%>'); return check_data(4);"><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%749%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Pause" name="Pause_task" class=<%485%> onClick="buttonClick(this,'<%695%>'); getCbxByName(); return check_data(5);"><span class="<%486%>">&nbsp;&nbsp; <%2382%></span><span class="<%487%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      &nbsp;&nbsp;&nbsp;<button type="Submit" value="Remove" name="Delete_task" class=<%485%> onclick="buttonClick(this,'<%695%>'); getCbxByName(); return check_data(6);" ><span class="<%486%>"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%2383%></span></span><span class="<%487%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                       </td>
                     </tr>
                   <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
                   <tr>
                     <td colspan="2">
-                      <b><%2381%></b></td>
+                      <b><%2384%></b></td>
                     </tr>
                   <tr>
                     <td colspan="2">
                       <table border="1" cellpadding="2" cellspacing="0" width="100%">
                         <tr>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2372%></span></td>
-                          <td align="center" nowrap="nowrap" width="30%"><span class="thead"><%2373%></span></td>
-                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2374%></span></td>
-                          <td align="center" nowrap="nowrap" width="50%"><span class="thead"><%2351%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2375%></span></td>
+                          <td align="center" nowrap="nowrap" width="30%"><span class="thead"><%2376%></span></td>
+                          <td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2377%></span></td>
+                          <td align="center" nowrap="nowrap" width="50%"><span class="thead"><%2354%></span></td>
                         </tr>
-                        <%2382%>
+                        <%2385%>
                       </table>
                     </td>
                   </tr>
@@ -944,7 +944,7 @@ function display_download_type()
                   <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
                   <tr align="left" valign="middle">
                     <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2">
-                      &nbsp;&nbsp;&nbsp;<button TYPE="Submit" value="Remove History" name="Removehistory" class=<%483%> onClick="buttonClick(this,'<%693%>'); return check_data(7);"><span class="<%484%>">&nbsp;&nbsp; <%2383%></span><span class="<%485%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                      &nbsp;&nbsp;&nbsp;<button TYPE="Submit" value="Remove History" name="Removehistory" class=<%485%> onClick="buttonClick(this,'<%695%>'); return check_data(7);"><span class="<%486%>">&nbsp;&nbsp; <%2386%></span><span class="<%487%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                     </td>
                   </tr>
                 </table>
@@ -957,14 +957,14 @@ function display_download_type()
       <img class="subfooter-image" src="img/subhead2-bottom.gif">
       <div class="subhead2-bottom" >
         <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-        <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%268%> </span>
+        <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%270%> </span>
         <span class="button-help-arrow">
         <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-        <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
+        <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%271%> </span>
       </div>
       <input name="pri_sel_num" type="hidden" value="">
       <input name="pri_sel_value" type="hidden" value="">
-      <input name="enablenetgeardownloader" type="hidden" value="<%2384%>">
+      <input name="enablenetgeardownloader" type="hidden" value="<%2387%>">
       <input name="save_path" type="hidden" value="">
       <input name="select" type="hidden" value="">
       <input name="select_all_checkbox" type="hidden" value="">

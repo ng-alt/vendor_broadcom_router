@@ -104,17 +104,17 @@ function checkData()
 
     if (cf.vlan_name.value.match( /[^\x21-\x7E]/ ) || cf.vlan_name.value == "" )
     {
-        msg+="<%4246%>\n";
+        msg+="<%4249%>\n";
         alert(msg);
         return false;
     }
     if ((!_isNumeric(cf.vlan_id.value)) || isNaN(vlan_id) || vlan_id > 4094 || vlan_id < 1) {
-        alert("<%4247%>");
+        alert("<%4250%>");
         return false;
     }
         
     if ((!_isNumeric(cf.vlan_prio.value)) || isNaN(vlan_prio) || vlan_prio > 7 || vlan_prio < 0) {
-        alert("<%4248%>");
+        alert("<%4251%>");
         return false;
     }
     while(typeof vlan_rule[i] != "undefined")
@@ -127,29 +127,29 @@ function checkData()
         i++;
     }
     if (conflict) {
-        alert("<%4249%> "+cf.vlan_name.value+" <%4250%>");
+        alert("<%4252%> "+cf.vlan_name.value+" <%4253%>");
         return false;
     }
-<%4251%>	    
+<%4254%>	    
     if(cf.vlan_ports_0.checked || cf.vlan_ports_1.checked || cf.vlan_ports_2.checked || cf.vlan_ports_3.checked || cf.vlan_ports_4.checked || cf.vlan_ports_5.checked )
     {
         if(cf.vlan_ports_0.checked && cf.vlan_ports_1.checked && cf.vlan_ports_2.checked && cf.vlan_ports_3.checked && cf.vlan_ports_4.checked && cf.vlan_ports_5.checked )
-<%4252%>	    
-<%4253%>	    
+<%4255%>	    
+<%4256%>	    
 
     if(cf.vlan_ports_0.checked || cf.vlan_ports_1.checked || cf.vlan_ports_2.checked || cf.vlan_ports_3.checked || cf.vlan_ports_4.checked || cf.vlan_ports_5.checked || cf.vlan_ports_6.checked )
     {
         if(cf.vlan_ports_0.checked && cf.vlan_ports_1.checked && cf.vlan_ports_2.checked && cf.vlan_ports_3.checked && cf.vlan_ports_4.checked && cf.vlan_ports_5.checked && cf.vlan_ports_6.checked)
-<%4254%>	    
+<%4257%>	    
 
         {
-            alert("<%4255%>");
+            alert("<%4258%>");
             return false;
         }
     }
     else
     {
-        alert("<%4256%>");
+        alert("<%4259%>");
         return false;
     }
 
@@ -170,12 +170,12 @@ function checkData()
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%4257%></div>
+<div class="subhead2"> <%4260%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%693%>" onClick="buttonClick(this,'<%693%>');if(!checkData()) return false;" type="SUBMIT" name="apply" class=<%79%> ><span class="<%80%>"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%693%></span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;&nbsp;<button value="<%83%>" onClick="buttonClick(this,'<%83%>');location.href='VLAN_IPTV.htm'" type="Button" name="cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%695%>" onClick="buttonClick(this,'<%695%>');if(!checkData()) return false;" type="SUBMIT" name="apply" class=<%79%> ><span class="<%80%>"><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%695%></span></span><span class="<%82%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>&nbsp;&nbsp;&nbsp;<button value="<%83%>" onClick="buttonClick(this,'<%83%>');location.href='VLAN_IPTV.htm'" type="Button" name="cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -188,21 +188,21 @@ function checkData()
 <table border="0"   width="100%">
 
 <tr>
-    <td nowrap><%4236%></td>
+    <td nowrap><%4239%></td>
     <td width="50%" align="left" class="num"><input type="text" name="vlan_name" class="num" size="15" maxlength="10"></td>
 </tr>
 <tr>
-    <td nowrap><%4237%></td>
+    <td nowrap><%4240%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_id" size="10" maxlength="4">
-    <%4258%>
+    <%4261%>
     </td>
 </tr>
 <tr>
-    <td nowrap><%4238%></td>
+    <td nowrap><%4241%></td>
     <td width="50%" align="left">
         <input type="text" name="vlan_prio" size="10" maxlength="1" value="0">
-    <%4259%>
+    <%4262%>
     </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
@@ -214,9 +214,9 @@ function checkData()
     <input type="checkbox" name="vlan_ports_3">Port4
     <input type="checkbox" name="vlan_ports_4">WiFi-2.4G
     <input type="checkbox" name="vlan_ports_5">WiFi-5G
-<%4232%>
+<%4235%>
     <input type="checkbox" name="vlan_ports_6">WiFi-5G-2
-<%4233%>
+<%4236%>
 
    </td>
     
@@ -231,15 +231,15 @@ function checkData()
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%268%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%270%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%269%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%271%> </span>
       </div>
 
-<input type="hidden" name="vlan_rule_name" value="<%4243%>">
+<input type="hidden" name="vlan_rule_name" value="<%4246%>">
 <INPUT name="vlan_mode" type="hidden" value="add">
-  <input type="hidden" name="wifi_dual_5g_band" value="<%2111%>">
+  <input type="hidden" name="wifi_dual_5g_band" value="<%2114%>">
 
 <a name="helpframe-anchor"></a>
 </form>
