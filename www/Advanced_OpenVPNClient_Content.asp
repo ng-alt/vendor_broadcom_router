@@ -169,6 +169,9 @@ ciphersarray = [
 		["AES-256-CBC"],
 		["AES-256-CFB"],
 		["AES-256-OFB"],
+		["AES-128-GCM"],
+		["AES-192-GCM"],
+		["AES-256-GCM"],
 		["BF-CBC"],
 		["BF-CFB"],
 		["BF-OFB"],
@@ -1251,7 +1254,7 @@ function refreshVPNIP() {
 					<tr>
 						<th>Server Address and Port</th>
 						<td>
-							<label>Address:</label><input type="text" maxlength="128" class="input_25_table" name="vpn_client_addr" value="<% nvram_get("vpn_client_addr"); %>">
+							<label>Address:</label><input type="text" maxlength="128" class="input_25_table" name="vpn_client_addr" value="<% nvram_get("vpn_client_addr"); %>" autocorrect="off" autocapitalize="off" spellcheck="false">
 							<label style="margin-left: 4em;">Port:</label><input type="text" maxlength="5" class="input_6_table" name="vpn_client_port" onKeyPress="return validator.isNumber(this,event);" value="<% nvram_get("vpn_client_port"); %>" >
 						</td>
 					</tr>
@@ -1323,7 +1326,7 @@ function refreshVPNIP() {
 					<tr id="client_username">
 						<th>Username</th>
 						<td>
-							<input type="text" maxlength="255" class="input_25_table" name="vpn_client_username" value="<% nvram_clean_get("vpn_client_username"); %>" >
+							<input type="text" maxlength="255" class="input_25_table" name="vpn_client_username" value="<% nvram_clean_get("vpn_client_username"); %>" autocorrect="off" autocapitalize="off" spellcheck="false">
 						</td>
 					</tr>
 					<tr id="client_password">
@@ -1368,7 +1371,7 @@ function refreshVPNIP() {
 					<tr id="ncp_ciphers">
 						<th>Negotiable ciphers</th>
 						<td>
-							<input type="text" maxlength="255" class="input_32_table" name="vpn_client_ncp_ciphers" value="<% nvram_get("vpn_client_ncp_ciphers"); %>" >
+							<input type="text" maxlength="255" class="input_32_table" name="vpn_client_ncp_ciphers" value="<% nvram_get("vpn_client_ncp_ciphers"); %>" autocorrect="off" autocapitalize="off" spellcheck="false">
 						</td>
 					</tr>
 					<tr id="client_cipher">

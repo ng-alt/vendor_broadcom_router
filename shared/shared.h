@@ -270,6 +270,7 @@ enum {
 #define RTF_REINSTATE   0x0008  /* reinstate route after tmout	*/
 #define RTF_DYNAMIC     0x0010  /* created dyn. (by redirect)	*/
 #define RTF_MODIFIED    0x0020  /* modified dyn. (by redirect)	*/
+#define RTF_REJECT      0x0200  /* Reject route			*/
 #endif
 #ifndef RTF_DEFAULT
 #define	RTF_DEFAULT	0x00010000	/* default - learned via ND	*/
@@ -303,7 +304,7 @@ enum {
 #define GIF_PREFIXLEN  0x0002  /* return prefix length */
 #define GIF_PREFIX     0x0004  /* return prefix, not addr */
 
-#define EXTEND_AIHOME_API_LEVEL		15
+#define EXTEND_AIHOME_API_LEVEL		16
 #define EXTEND_HTTPD_AIHOME_VER		0
 
 #define EXTEND_ASSIA_API_LEVEL		1
@@ -1142,7 +1143,7 @@ static inline int __mediabridge_mode(int __attribute__((__unused__)) sw_mode) { 
 static inline int mediabridge_mode(void) { return 0; }
 #endif
 #else
-/* Should be Broadcom platform. */
+/* Broadcom platform and others */
 static inline int __access_point_mode(int sw_mode)
 {
 	return (sw_mode == SW_MODE_AP
@@ -1171,7 +1172,7 @@ static inline int __repeater_mode(int sw_mode) { return 0; }
 static inline int repeater_mode(void) { return 0; }
 #endif
 
-#if defined(RTCONFIG_WIRELESSREPEATER) && defined(RTCONFIG_PROXYSTA)
+#ifdef RTCONFIG_PROXYSTA
 static inline int __mediabridge_mode(int sw_mode)
 {
 	return (sw_mode == SW_MODE_AP && nvram_get_int("wlc_psta") == 1);
@@ -1209,6 +1210,13 @@ static inline int dpsr_mode()
 {
 	return ((sw_mode() == SW_MODE_AP) && (nvram_get_int("wlc_dpsta") == 2));
 }
+
+#if defined(RTCONFIG_BCMWL6) && defined(RTCONFIG_PROXYSTA)
+static inline int psr_mode()
+{
+        return (sw_mode() == SW_MODE_AP && nvram_get_int("wlc_psta") == 2 && !nvram_get_int("wlc_dpsta"));
+}
+#endif
 
 static inline int get_wps_multiband(void)
 {
@@ -1322,7 +1330,6 @@ static inline int guest_wlif(char *ifname)
 {
 	return strncmp(ifname, "wl", 2) == 0 && !strchr(ifname, '0');
 }
-/* Broadcom platform. */
 #elif defined RTCONFIG_LANTIQ
 static inline int guest_wlif(char *ifname)
 {
@@ -1690,7 +1697,6 @@ extern int get_wifi_unit(char *wif);
 #ifdef RTCONFIG_DPSTA
 extern int is_dpsta(int unit);
 #endif
-extern int is_dpsr(int unit);
 extern int is_psta(int unit);
 extern int is_psr(int unit);
 extern int psta_exist(void);
@@ -2192,6 +2198,7 @@ extern int is_ac66u_v2_series();
 extern int is_n66u_v2();
 extern int hw_usb_cap();
 extern int is_ssid_rev3_series();
+extern int is_dpsta_repeater();
 extern void ac68u_cofs();
 #endif
 
@@ -2257,6 +2264,7 @@ enum {
 	CKN_STR4096 = 4096,
 	CKN_STR5500 = 5500,
 	CKN_STR7999 = 7999,
+	CKN_STR8192 = 8192,
 	CKN_STR_MAX = 65535
 };
 

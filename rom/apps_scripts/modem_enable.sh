@@ -225,6 +225,16 @@ _is_Docomo_modem(){
 	echo -n "$ret"
 }
 
+_is_ET128(){
+	ret="0"
+
+	if [ "$modem_vid" == "4817" -a "$modem_pid" == "7433" ]; then
+		ret="1"
+	fi
+
+	echo -n "$ret"
+}
+
 
 if [ "$modem_type" == "" ]; then
 	/usr/sbin/find_modem_type.sh
@@ -370,7 +380,8 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 		echo "Got the int node: $modem_act_node."
 	fi
 
-	if [ "$modem_enable" != "2" ]; then
+	et128=`_is_ET128`
+	if [ "$modem_enable" != "2" ] && [ "$et128" != "1" ]; then
 		# Set full functionality
 		at_ret=`/usr/sbin/modem_at.sh '+CFUN?' 2>&1`
 
@@ -426,7 +437,11 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 	# input PIN if need.
 	echo "PIN: detect PIN if it's needed."
 	/usr/sbin/modem_status.sh sim
-	/usr/sbin/modem_status.sh simauth
+	if [ "$et128" == "1" ]; then
+		sleep 2
+	else
+		/usr/sbin/modem_status.sh simauth
+	fi
 	ret=`nvram get ${prefix}act_sim`
 	if [ "$ret" != "1" ]; then
 		if [ "$ret" == "2" -a "$modem_pin" != "" ]; then
@@ -449,7 +464,9 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 		if [ "$modem_type" != "gobi" ]; then
 			/usr/sbin/modem_status.sh imsi
 		fi
-		/usr/sbin/modem_status.sh iccid
+		if [ "$et128" != "1" ]; then
+			/usr/sbin/modem_status.sh iccid
+		fi
 
 		# Auto-APN
 		echo "Running autoapn..."
@@ -566,28 +583,21 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 		#	exit 0
 		#fi
 
-		if [ "$modem_user" != "" -o "$modem_pass" != "" ]; then
-			if [ "$modem_authmode" == "3" ]; then
-				flag_auth="--auth-type both"
-			elif [ "$modem_authmode" == "2" ]; then
-				flag_auth="--auth-type chap"
-			elif [ "$modem_authmode" == "1" ]; then
-				flag_auth="--auth-type pap"
-			else
-				flag_auth="--auth-type none"
-			fi
-
-			if [ "$modem_user" != "" ]; then
-				flag_auth="$flag_auth --username $modem_user"
-			fi
-			if [ "$modem_pass" != "" ]; then
-				flag_auth="$flag_auth --password $modem_pass"
-			fi
-
-			echo "$modem_type: set the flag_auth be \"$flag_auth\"."
-
-			echo "uqmi -d $wdm --keep-client-id wds --start-network --apn \"$modem_apn\" \"$flag_auth\" --ip-family $pdp_str"
-			uqmi -d $wdm --keep-client-id wds --start-network --apn "$modem_apn" "$flag_auth" --ip-family $pdp_str
+		if [ -n "$modem_user" -o -n "$modem_pass" ]; then
+			case "$modem_authmode" in
+				1) flag_auth="pap" ;;
+				2) flag_auth="chap" ;;
+				3) flag_auth="both" ;;
+				*) flag_auth="none" ;;
+			esac
+			echo "uqmi -d $wdm --keep-client-id wds --start-network --apn \"$modem_apn\" --ip-family $pdp_str" \
+				${flag_auth:+--auth-type \"$flag_auth\"} \
+				${modem_user:+--username \"$modem_user\"} \
+				${modem_pass:+--password \"$modem_pass\"}
+			uqmi -d $wdm --keep-client-id wds --start-network --apn "$modem_apn" --ip-family $pdp_str \
+				${flag_auth:+--auth-type "$flag_auth"} \
+				${modem_user:+--username "$modem_user"} \
+				${modem_pass:+--password "$modem_pass"}
 		else
 			echo "uqmi -d $wdm --keep-client-id wds --start-network --apn \"$modem_apn\" --ip-family $pdp_str"
 			uqmi -d $wdm --keep-client-id wds --start-network --apn "$modem_apn" --ip-family $pdp_str
@@ -648,6 +658,8 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 	is_Docomo=`_is_Docomo_modem`
 	if [ "$Dev3G" == "Docomo_dongles" ] || [ "$is_Docomo" == "1" ]; then
 		echo "COPS: Docomo dongles cannot COPS=0, so skip it."
+	elif [ "$et128" == "1" ]; then
+		echo "COPS: Huawei ET128 skip to reset COPS."
 	elif [ "$modem_vid" == "6797" -a "$modem_pid" == "4098" ]; then # BandLuxe C120.
 		echo "COPS: BandLuxe C120 start with CFUN=0, so don't need to unregister the network."
 	elif [ "$modem_vid" == "4817" -a "$modem_pid" == "5382" ]; then # Huawei E3276.
@@ -719,6 +731,8 @@ if [ "$modem_type" == "tty" -o "$modem_type" == "qmi" -o "$modem_type" == "mbim"
 		# check the register state after set COPS.
 		if [ "$Dev3G" == "Docomo_dongles" ] || [ "$is_Docomo" == "1" ]; then
 			echo "COPS: Docomo dongles cannot CGATT=1, so skip it."
+		elif [ "$et128" == "1" ]; then
+			echo "COPS: Huawei ET128 cannot CGATT=1, so skip it."
 		elif [ "$modem_vid" == "4204" -a "$modem_pid" == "14104" ]; then # Pantech UML290VW: VID=0x106c, PID=0x3718
 			echo "COPS: Pantech UML290VW cannot CGATT?, so skip it."
 		else
