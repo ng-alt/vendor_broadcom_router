@@ -1366,6 +1366,7 @@ CONFIG_IN := config/config.in
 config/conf config/mconf:
 	$(MAKE) -C config
 
+ifeq ($(ROOTDIR),)
 rconf: config/conf
 	config/conf $(CONFIG_IN)
 
@@ -1419,7 +1420,13 @@ config conf: rconf kconf
 menuconfig mconf: rmconf kmconf
 
 oldconfig oldconf: koldconf roldconf bboldconf
+else
 
+# it's triggered by buildroot kconfig
+oldconfig: config/conf
+	$< -d config/config.in .config
+
+endif # ROOTDIR
 
 #
 # overrides and extra dependencies
