@@ -466,6 +466,7 @@ conf_childs:
 int main(int ac, char **av)
 {
 	const char *name;
+    const char *defconfig = NULL;
 	struct stat tmpstat;
 
 	if (ac > 1 && av[1][0] == '-') {
@@ -479,6 +480,7 @@ int main(int ac, char **av)
 			break;
 		case 'd':
 			input_mode = set_default;
+			if (ac > 3) defconfig = av[3];
 			break;
 		case 'n':
 			input_mode = set_no;
@@ -505,11 +507,12 @@ int main(int ac, char **av)
 	//zconfdump(stdout);
 	switch (input_mode) {
 	case set_default:
-		name = conf_get_default_confname();
-		if (conf_read(name)) {
+		if (defconfig == NULL)
+			defconfig = conf_get_default_confname();
+		if (conf_read(defconfig)) {
 			printf("***\n"
 				"*** Can't find default configuration \"%s\"!\n"
-				"***\n", name);
+				"***\n", defconfig);
 			exit(1);
 		}
 		break;
