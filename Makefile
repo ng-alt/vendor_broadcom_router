@@ -801,6 +801,7 @@ endif # ROOTDIR
 # Configuration rules
 #
 
+ifdef ($(ROOTDIR),)
 conf mconf:
 	$(MAKE) -C config LINUX_OUTDIR=${LINUX_OUTDIR}
 	@LINUX_OUTDIR=${LINUX_OUTDIR} ./config/$@ ./config/Config
@@ -828,6 +829,13 @@ config: conf
 menuconfig: mconf
 
 oldconfig: oldconf
+else
+config/conf config/mconf:
+	$(MAKE) -C config
+
+oldconfig: config/conf
+	$< -d config/Config .config
+endif
 
 # Platform file
 .config.plt:
