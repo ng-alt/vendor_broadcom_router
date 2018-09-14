@@ -150,7 +150,7 @@ function BlockAllClickCheck()
 	}
     BlockPeriodClick(cf);
     
-    if (cf.enable_apmode.value == "1" || cf.enable_extmode.value == "1") {
+    if (cf.enable_apmode.value == "1") {
 		cf.checkboxNameAll.disabled = true;
 		cf.checkboxNameSun.disabled = true;
 		cf.checkboxNameMon.disabled = true;
@@ -177,10 +177,6 @@ function init()
 	var temp;
 	var old;
 	BIN=new Array(4);
-	cf.adjust.checked = false;
-	
-	if (cf.schedule_daylightadjust.value == 1)
-		cf.adjust.checked = true;
 
 	if (cf.schedule_day.value == 127) //check everyday if all check except everyday
 	{
@@ -253,31 +249,12 @@ function init()
 	BlockAllClickCheck();
 
     isInited = 1;
-
-  if(cf.timezone_manual_ntp_server.value == 1)
-  {
-  	cf.specify_ntp_server.checked=true;
-    cf.ntp_server.disabled=false; 
-  }
-  else
-  {
-  	cf.specify_ntp_server.checked=false;
-    cf.ntp_server.disabled=true; 
-  }
-  
-    cf.ntp_server.value=cf.timezone_ntp_server.value; 
-  	
 }
 
 function checkSchedule()
 {
 	var cf = document.forms[0];
 	var value = 0;
-
-    if (cf.adjust.checked)
-		cf.schedule_daylightadjust.value = 1;
-	else
-		cf.schedule_daylightadjust.value = 0;
 
 	if (cf.checkboxNamehours.checked)
 		cf.schedule_alldayenable.value = 1;
@@ -309,7 +286,7 @@ function checkSchedule()
 		  ||isNumeric(cf.startminute,59) || isNumeric(cf.endminute,59)) 
 		  && ( cf.endhour.value != 24 && cf.endminute.value != 0 ) )
 		{
-			alert("<%1093%>");
+			alert("<%1090%>");
 			return false;
 		}
 		else
@@ -323,13 +300,13 @@ function checkSchedule()
     	if (cf.starthour.value == cf.endhour.value &&
     	    cf.startminute.value == cf.endminute.value)
     	{
-    		alert("<%1093%>");
+    		alert("<%1090%>");
     		return false;
         }
 
         if (cf.starthour.value == 24 && cf.startminute.value == 0)
         {
-			alert("<%1093%>");
+			alert("<%1090%>");
 			return false;
 		}
 
@@ -339,7 +316,7 @@ function checkSchedule()
             if ((cf.starthour.value < 0) || (cf.starthour.value > 23) ||
                 (cf.startminute.value < 0) || (cf.startminute.value > 59))
             {
-                alert("<%1093%>");
+                alert("<%1090%>");
                 return false;
             }
 		}
@@ -349,7 +326,7 @@ function checkSchedule()
             (cf.startminute.value < 0) || (cf.startminute.value > 59) ||
             (cf.endminute.value < 0) || (cf.endminute.value > 59))
     	{
-    		alert("<%1093%>");
+    		alert("<%1090%>");
     		return false;
     	}
 
@@ -358,13 +335,13 @@ function checkSchedule()
     	    (!_isNumeric(cf.startminute.value)) ||
     	    (!_isNumeric(cf.endminute.value)))
     	{
-    		alert("<%1093%>");
+    		alert("<%1090%>");
     		return false;
     	}
 
     	if ((cf.starthour.value == '') || (cf.endhour.value == ''))
     	{
-    		alert("<%1093%>");
+    		alert("<%1090%>");
     		return false;
     	}
 
@@ -376,26 +353,7 @@ function checkSchedule()
     			cf.endminute.value = 0;
     	}
 	}
-	
- 	if (cf.specify_ntp_server.checked==true)
- 	{
-      if(cf.ntp_server.value=="")
-      {
-        	alert("<%639%>");
-          return false;
-      }
-  }
-
 	return true;
-}
-
-function clickNTPCheckbox()
-{
-    var cf = document.forms[0];
-    if(cf.specify_ntp_server.checked==true)
-        cf.ntp_server.disabled=false;
-    else
-        cf.ntp_server.disabled=true;
 }
 
 function CancelAction()
@@ -406,7 +364,7 @@ function CancelAction()
     return true;
 }
 
-<%658%>
+<%654%>
 function chSession(newsession)
 {
     if(newsession == 2)
@@ -414,7 +372,7 @@ function chSession(newsession)
     else if(newsession == 1)
         location.href = "FW_schedule.htm";		
 }
-<%659%>
+<%655%>
 //-->
 </script>
 </head>
@@ -426,7 +384,7 @@ function chSession(newsession)
 <form id="target"  method="POST" action="fwSchedule.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 	<img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%413%></div>
+<div class="subhead2"> <%414%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -439,100 +397,55 @@ function chSession(newsession)
 <tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
 		
         <tr> <td colspan="2">
-<%660%>			
-    			<input checked type="radio" name=pppoesession value=session1 onClick="chSession(1);"><%661%>
-    			<input type="radio" name=pppoesession value=session2 onClick="chSession(2);"><%662%><br>
-<%663%>			
+<%656%>			
+    			<input checked type="radio" name=pppoesession value=session1 onClick="chSession(1);"><%657%>
+    			<input type="radio" name=pppoesession value=session2 onClick="chSession(2);"><%658%><br>
+<%659%>			
             </td>
         </tr>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 		<tr>
-			<td colspan="2"><b><a href="javascript:loadhelp('FW_schedule','blocksch')" tabindex="-1"><%1094%>:</a></b></td></tr>
+			<td colspan="2"><b><a href="javascript:loadhelp('FW_schedule','blocksch')" tabindex="-1"><%1091%>:</a></b></td></tr>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameAll onclick=BlockAllClickCheck(); type=checkbox value=checkboxValue><%1095%> </TD></TR>
+                <INPUT name=checkboxNameAll onclick=BlockAllClickCheck(); type=checkbox value=checkboxValue><%1092%> </TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameSun type=checkbox value=checkboxValue ><%985%></TD></TR>
+                <INPUT name=checkboxNameSun type=checkbox value=checkboxValue ><%982%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameMon type=checkbox value=checkboxValue><%986%></TD></TR>
+                <INPUT name=checkboxNameMon type=checkbox value=checkboxValue><%983%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameTue type=checkbox value=checkboxValue><%987%></TD></TR>
+                <INPUT name=checkboxNameTue type=checkbox value=checkboxValue><%984%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameWed type=checkbox value=checkboxValue><%988%></TD></TR>
+                <INPUT name=checkboxNameWed type=checkbox value=checkboxValue><%985%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameThu type=checkbox value=checkboxValue><%989%></TD></TR>
+                <INPUT name=checkboxNameThu type=checkbox value=checkboxValue><%986%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameFri type=checkbox value=checkboxValue><%990%></TD></TR>
+                <INPUT name=checkboxNameFri type=checkbox value=checkboxValue><%987%></TD></TR>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNameSat type=checkbox value=checkboxValue><%991%></TD></TR>
+                <INPUT name=checkboxNameSat type=checkbox value=checkboxValue><%988%></TD></TR>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 		<tr>
-			<td colspan="2"><b><a href="javascript:loadhelp('FW_schedule','blocksch')" tabindex="-1"><%1096%></a></b><%1097%></td></tr>
+			<td colspan="2"><b><a href="javascript:loadhelp('FW_schedule','blocksch')" tabindex="-1"><%1093%></a></b><%1094%></td></tr>
         <TR>
             <TD colSpan=2 colspan="2" >
-                <INPUT name=checkboxNamehours onclick=BlockPeriodClick(this.form); type=checkbox value=checkboxValue> <%1098%></TD></TR>
+                <INPUT name=checkboxNamehours onclick=BlockPeriodClick(this.form); type=checkbox value=checkboxValue> <%1095%></TD></TR>
+        <TR>
+            <TD width="50%"><%1096%></TD>
+            <TD width="50%">
+                <INPUT class=num maxLength=2 name=starthour onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1097%>
+                <INPUT class=num maxLength=2 name=startminute onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1098%></TD></TR>
         <TR>
             <TD width="50%"><%1099%></TD>
-            <TD width="50%">
-                <INPUT class=num maxLength=2 name=starthour onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1100%>
-                <INPUT class=num maxLength=2 name=startminute onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1101%></TD></TR>
-        <TR>
-            <TD width="50%"><%1102%></TD>
             <TD>
-                <INPUT class=num maxLength=2 name=endhour onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1100%>
-                <INPUT class=num maxLength=2 name=endminute onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1101%></TD></TR>
-        <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-        <tr>
-            <td colspan="2"><a href="javascript:loadhelp('FW_schedule','timezone')" tabindex="-1"><b><%1103%></b></a></td></tr>
-        <tr>
-            <td colspan="2">
-                <SELECT name=time_zone size=1>
-                    <OPTION value=-12 <%1104%>><%1105%></OPTION>
-                    <OPTION value=-11 <%1106%>><%1107%></OPTION>
-                    <OPTION value=-10 <%1108%>><%1109%></OPTION>
-                    <OPTION value=-9 <%1110%>><%1111%></OPTION>
-                    <OPTION value=-8 <%1112%>><%1113%></OPTION>
-                    <OPTION value=-7 <%1114%>><%1115%></OPTION>
-                    <OPTION value=-6 <%1116%>><%1117%></OPTION>
-                    <OPTION value=-5 <%1118%>><%1119%></OPTION>
-                    <OPTION value=-4 <%1120%>><%1121%></OPTION>
-                    <OPTION value=-35 <%1122%>><%1123%></OPTION>
-                    <OPTION value=-3 <%1124%>><%1125%></OPTION>
-                    <OPTION value=-2 <%1126%>><%1127%></OPTION>
-                    <OPTION value=-1 <%1128%>><%1129%></OPTION>
-                    <OPTION value=0 <%1130%>><%1131%></OPTION>
-                    <OPTION value=1 <%1132%>><%1133%></OPTION>
-                    <OPTION value=2 <%1134%>><%1135%></OPTION>
-                    <OPTION value=3 <%1136%>><%1137%></OPTION>
-                    <OPTION value=4 <%1138%>><%1139%></OPTION>
-                    <OPTION value=5 <%1140%>><%1141%></OPTION>
-                    <OPTION value=55 <%1142%>><%1143%></OPTION>
-                    <OPTION value=6 <%1144%>><%1145%></OPTION>
-                    <OPTION value=7 <%1146%>><%1147%></OPTION>
-                    <OPTION value=8 <%1148%>><%1149%></OPTION>
-                    <OPTION value=9 <%1150%>><%1151%></OPTION>
-                    <OPTION value=10 <%1152%>><%1153%></OPTION>
-                    <OPTION value=11 <%1154%>><%1155%></OPTION>
-                    <OPTION value=12 <%1156%>><%1157%></OPTION>
-                    <OPTION value=13 <%1158%>><%1159%></OPTION></SELECT></td></tr>
-        <tr>
-            <td colspan="2">
-                <input type="checkbox" name="adjust" value="adjust" ><%1160%></td></tr>
-        <tr>
-            <td colspan="2">
-                <input type="checkbox" name="specify_ntp_server" value="1" onClick="clickNTPCheckbox();"><%1161%></td></tr>
-        <tr>
-            <td colspan="2">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%643%>:&nbsp;<INPUT maxLength=128 type="text" name="ntp_server"></td></tr>
-        <tr>
-            <td colspan="2" align="center"><BR><b><%1054%>: &nbsp; <%1162%></b><BR> &nbsp; </td></tr>
+                <INPUT class=num maxLength=2 name=endhour onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1097%>
+                <INPUT class=num maxLength=2 name=endminute onfocus="if(TimePeriodDisabled) this.blur()" size=3><%1098%></TD></TR>
         <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
         
     </table></div></td></tr>
@@ -549,18 +462,14 @@ function chSession(newsession)
 
 
 
-    <INPUT name=schedule_day type=hidden value= "<%1163%>">
+    <INPUT name=schedule_day type=hidden value= "<%1100%>">
     <INPUT name=schedule_alldayenable type=hidden>
-    <INPUT name=schedule_starthour type=hidden value= "<%1164%>">
-    <INPUT name=schedule_startminute type=hidden value= "<%1165%>">
-    <INPUT name=schedule_endhour type=hidden value= "<%1166%>">
-    <INPUT name=schedule_endminute type=hidden value= "<%1167%>">
-    <INPUT name=schedule_daylightadjust type=hidden value= "<%1168%>">
+    <INPUT name=schedule_starthour type=hidden value= "<%1101%>">
+    <INPUT name=schedule_startminute type=hidden value= "<%1102%>">
+    <INPUT name=schedule_endhour type=hidden value= "<%1103%>">
+    <INPUT name=schedule_endminute type=hidden value= "<%1104%>">
     <INPUT name=result type=hidden value= "apply">
-    <INPUT type="hidden" name="enable_apmode" value="<%472%>">
-    <INPUT type="hidden" name="timezone_manual_ntp_server" value="<%1169%>">
-    <INPUT type="hidden" name="timezone_ntp_server" value="<%1170%>">
-    <INPUT type="hidden" name="enable_extmode" value="<%474%>">
+    <INPUT type="hidden" name="enable_apmode" value="<%473%>">
 <a name="helpframe-anchor"></a>
 </form>
 

@@ -85,24 +85,24 @@ function showWarningMsg()
         if (cf.watermark.value == "0")
             return true;
         
-        msg+="<%2171%>";
+        msg+="<%2183%>";
         if (cf.contrl_type.value == "1")
-            msg+=cf.watermark.value + " <%2172%> ";
+            msg+=cf.watermark.value + " <%2184%> ";
         else
-            msg+=cf.watermark.value + " <%2173%> ";
+            msg+=cf.watermark.value + " <%2185%> ";
 
-        msg+="<%2174%> ";
+        msg+="<%2186%> ";
         msg+=cf.warning_time.value;
         submitflag = true;
     }
     else if (cf.warning_state.value == "3")
     {
-        msg+="<%2175%>";
+        msg+="<%2187%>";
         if (cf.contrl_type.value == "1")
-            msg+= cf.cntime_limit.value + " <%2176%>) ";
+            msg+= cf.cntime_limit.value + " <%2188%>) ";
         else
-            msg+=cf.volume_limit.value + " <%2173%>) ";
-        msg+="<%2177%> ";
+            msg+=cf.volume_limit.value + " <%2185%>) ";
+        msg+="<%2189%> ";
         msg+=cf.warning_time.value;
     }
     
@@ -124,20 +124,20 @@ function showWarningMsg()
 <TABLE BORDER=0 WIDTH=400 HEIGHT=34 VALIGN=top>
 
 <tr>
-    <td><b><%1394%>:</b><INPUT TYPE="TEXT" NAME="interval" SIZE="4" MAXLENGTH="4" VALUE=" "> <%2178%></td>
-    <td>&nbsp;&nbsp;&nbsp;<button TYPE="BUTTON" value="<%1396%>" NAME="SetIntvl" class="button-rule" onClick="buttonClick(this,'<%1396%>');resetInterval(document.SetIntervalForm.interval.value)"><span class="roundleft_button">&nbsp;&nbsp; <%1396%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+    <td><b><%1332%>:</b><INPUT TYPE="TEXT" NAME="interval" SIZE="4" MAXLENGTH="4" VALUE=" "> <%2190%></td>
+    <td>&nbsp;&nbsp;&nbsp;<button TYPE="BUTTON" value="<%1334%>" NAME="SetIntvl" class="button-rule" onClick="buttonClick(this,'<%1334%>');resetInterval(document.SetIntervalForm.interval.value)"><span class="roundleft_button">&nbsp;&nbsp; <%1334%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 </tr>
 </TABLE>
 </div>
 <input type="hidden" name="Button" value="Apply">
-<input name=traffic_on type=hidden value= "<%2179%>">
-<input name=contrl_type type=hidden value= "<%2180%>">
-<input name=contrl_dir type=hidden value= "<%2181%>">
-<input name=volume_limit type=hidden value= "<%2182%>">
-<input name=cntime_limit type=hidden value= "<%2183%>">
-<input name=watermark type=hidden value= "<%2184%>">
+<input name=traffic_on type=hidden value= "<%2191%>">
+<input name=contrl_type type=hidden value= "<%2192%>">
+<input name=contrl_dir type=hidden value= "<%2193%>">
+<input name=volume_limit type=hidden value= "<%2194%>">
+<input name=cntime_limit type=hidden value= "<%2195%>">
+<input name=watermark type=hidden value= "<%2196%>">
 <input name=warning_state type=hidden value= "<%303%>">
-<input name=warning_time type=hidden value= "<%2185%>">
+<input name=warning_time type=hidden value= "<%2197%>">
 </FORM>
 </BODY>
 </HTML>

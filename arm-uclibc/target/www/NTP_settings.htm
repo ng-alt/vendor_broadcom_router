@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<!DOCTYPE HTML>
+<html>
+<head>
+<%11%>
+<title>NETGEAR Router <%12%></title>
+<link rel="stylesheet" href="<%13%>">
+<link rel="stylesheet" href="css/scrollbar.css">
+<link rel="stylesheet" href="css/button.css">
+
+<script src="jquery.js"></script>
+<script src="script/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="script/jquery.jscrollpane.min.js"></script>
+
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="form.css">
+<STYLE TYPE="text/javascript">
+    classes.num.all.fontFamily = "Courier";
+    classes.num.all.fontSize = "10pt" ;
+</style>
+<%14%>
+<script language="javascript" type="text/javascript">
+<!--
+function changeCursorPointer()
+{
+    document.body.style.cursor='pointer';
+}
+
+function changeCursorDefault()
+{
+    document.body.style.cursor='default';
+}
+
+function buttonFilter()
+{
+    var buttonElements;
+    var i;
+
+    buttonElements=document.getElementsByTagName('button');
+
+    for(i=0;i<buttonElements.length;i++)
+    {
+        if(buttonElements[i].type=='submit' || buttonElements[i].type=='button'|| buttonElements[i].type=='reset')
+        {
+            if((buttonElements[i].value!=document.forms[0].buttonHit.name))
+                buttonElements[i].disabled=1;
+            else
+            {
+                var name;
+                name=buttonElements[i].name;
+                buttonElements[i].name='NoUse';
+                buttonElements[i].disabled=1;
+                document.forms[0].buttonValue.name=name;
+                document.forms[0].buttonHit.disabled=1;
+            }
+        }
+    }
+}
+
+function buttonClick(btn,value)
+{
+    document.forms[0].buttonHit.value=btn.name;
+    document.forms[0].buttonValue.value=value;
+    return true;
+}
+
+$("#target").submit(function() {
+    buttonFilter();
+});
+
+function setHelpIframeVisible() {
+    $('.help-frame-div').css("visibility","visible");
+}
+
+function showHelpIframe() {
+
+    var imgSrc=document.getElementById('help-button');
+
+    if(imgSrc.src.search("up")>=0)
+    {
+        $(".help-frame-div").show();
+        window.frames["helpframe"].$('#content').jScrollPane({showArrows:true});
+        imgSrc.src="img/helparrowdown-icon.gif";
+    }
+    else
+    {
+        $(".help-frame-div").hide();
+        imgSrc.src="img/helparrowup-icon.gif";
+        setTimeout(setHelpIframeVisible,500);
+    }
+    if((navigator.appName.indexOf("Internet Explorer")==-1) ||
+       (navigator.appVersion.indexOf("MSIE 9")==-1))
+         change_size();
+}
+
+function moveToHTMLend()
+{
+    window.location.href='#helpframe-anchor';
+    setHelpIframeVisible();
+}
+
+function loadhelp(fname,anchname)
+{
+    var pane = window.frames["helpframe"].$('#content');
+    var imgSrc=document.getElementById('help-button');
+
+    if(imgSrc.src.search("up")<0)
+    {
+        $(".help-frame-div").show();
+        pane.jScrollPane({showArrows:true});
+
+        if ((loadhelp.arguments.length == 1 ) || (anchname == "" ))
+        {
+            window.frames["helpframe"].location.href=fname+"_h.htm";
+            $(".help-frame-div").show();
+        }
+        else
+        {
+            window.frames["helpframe"].location.href=fname+"_h.htm#" + anchname;
+            $(".help-frame-div").show();
+        }
+
+        $(".help-frame-div").show();
+        pane.jScrollPane({showArrows:true});
+    }
+}
+
+function init()
+{
+    var cf = document.forms[0]; 
+
+    if (cf.ntp_manual_server.value == 1)
+        cf.user_ntp_server.disabled = false;
+    else
+        cf.user_ntp_server.disabled = true;
+
+    cf.user_ntp_server.value = cf.ntp_user_server.value;
+
+    if (cf.schedule_daylightadjust.value == 1)
+		cf.adjust.checked = true;
+    else
+        cf.adjust.checked = false;
+}
+
+function checkData()
+{
+    var cf = document.forms[0];
+
+    if (cf.adjust.checked)
+		cf.schedule_daylightadjust.value = 1;
+	else
+		cf.schedule_daylightadjust.value = 0;
+
+    if (cf.ntp_method.value == "mntp")
+ 	{
+        if (cf.user_ntp_server.value.length == 0)
+        {
+            cf.user_ntp_server.focus();
+            alert("<%635%>");
+            return false;
+        }
+        if (cf.user_ntp_server.value.match( /[^\x20-\x7E]/ ))
+        {
+            alert("<%635%>");
+            return false;
+        }
+    }
+    return true;
+}
+
+function doNTPChange(change)
+{
+    var cf = document.forms[0];
+
+    if(change == 1)
+        cf.user_ntp_server.disabled = false;
+    else
+        cf.user_ntp_server.disabled = true;
+}
+//-->
+</script>
+</head>
+
+<body  onload="change_size(); init();" class="page-body"  onResize="change_size();" >
+<img class="cover-image" src="<%74%>">
+<img class="body-image" src="<%75%>">
+<div id="full-page-container">
+
+
+<form id="target"  method="POST" action="ntp_settings.cgi">
+<input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
+<img class="subtop-image" src="<%76%>">
+<div class="subhead2"> <%1396%></div>
+<table border="0"    style="height:370px"  class="subhead2-table">
+
+<tr align="left" valign="middle">
+<td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
+&nbsp;&nbsp;&nbsp;<button value="<%78%>"  onClick="buttonClick(this,'<%78%>');return checkData()" type="SUBMIT" name="cfAlert_Apply" class="button-apply" > <span class="roundleft_apply" ><%81%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%83%>" onclick="buttonClick(this,'<%83%>');"  type="RESET" name="Cancel" class="button-rule" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+</td>
+</tr>
+
+<tr><td class="scrollpane-table-seperate-border" colspan="2"><div class="scroll-pane" style="height:365px;width:620px;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%">
+
+<tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr><td colspan="2"><b><label id="current_time" for="current_time"><%1051%></label>: <%1397%></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<%1398%><%1399%>
+<span style="color:#FF0000"><%1400%></span>
+<%1401%><%1402%>
+</td></tr>
+<tr><td><br></td></tr>
+<tr><td colspan="2"><a href="javascript:loadhelp('NTP_settings','timezone')" tabindex="-1"><b><%1403%></b></a></td></tr>
+    <tr>
+        <td colspan="2">
+            <SELECT name=time_zone size=1>
+                <OPTION value=-12 <%1404%>><%1405%></OPTION>
+                <OPTION value=-11 <%1406%>><%1407%></OPTION>
+                <OPTION value=-10 <%1408%>><%1409%></OPTION>
+                <OPTION value=-9 <%1410%>><%1411%></OPTION>
+                <OPTION value=-8 <%1412%>><%1413%></OPTION>
+                <OPTION value=-7 <%1414%>><%1415%></OPTION>
+                <OPTION value=-6 <%1416%>><%1417%></OPTION>
+                <OPTION value=-5 <%1418%>><%1419%></OPTION>
+                <OPTION value=-4 <%1420%>><%1421%></OPTION>
+                <OPTION value=-35 <%1422%>><%1423%></OPTION>
+                <OPTION value=-3 <%1424%>><%1425%></OPTION>
+                <OPTION value=-2 <%1426%>><%1427%></OPTION>
+                <OPTION value=-1 <%1428%>><%1429%></OPTION>
+                <OPTION value=0 <%1430%>><%1431%></OPTION>
+                <OPTION value=1 <%1432%>><%1433%></OPTION>
+                <OPTION value=2 <%1434%>><%1435%></OPTION>
+                <OPTION value=3 <%1436%>><%1437%></OPTION>
+                <OPTION value=4 <%1438%>><%1439%></OPTION>
+                <OPTION value=5 <%1440%>><%1441%></OPTION>
+                <OPTION value=55 <%1442%>><%1443%></OPTION>
+                <OPTION value=6 <%1444%>><%1445%></OPTION>
+                <OPTION value=7 <%1446%>><%1447%></OPTION>
+                <OPTION value=8 <%1448%>><%1449%></OPTION>
+                <OPTION value=9 <%1450%>><%1451%></OPTION>
+                <OPTION value=10 <%1452%>><%1453%></OPTION>
+                <OPTION value=11 <%1454%>><%1455%></OPTION>
+                <OPTION value=12 <%1456%>><%1457%></OPTION>
+                <OPTION value=13 <%1458%>><%1459%></OPTION></SELECT></td></tr>
+    <tr>
+        <td colspan="2">
+            <input type="checkbox" name="adjust" value="adjust"><%1460%></td></tr>
+
+<tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+<tr><td colspan="2"><input type="radio" <%1461%> name="ntp_method" value="dntp" onClick="doNTPChange(0)"><%1462%></td></tr>
+<tr><td colspan="2"><input type="radio" <%1463%> name="ntp_method" value="mntp" onClick="doNTPChange(1)"><%1464%></td></tr>
+
+<tr><td colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%1465%>:&nbsp;<INPUT maxLength=128 type="text" name="user_ntp_server"></td></tr>
+
+<tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
+
+</table></div></td></tr>
+
+<tr valign="middle" align="center"><td class="table-seperate-border" colspan="2" style="padding-left:0px"><div class="help-frame-div" > <iframe id="helpframe" src="NTP_h.htm" class="help-iframe" scrolling="no" name="helpframe" frameborder="0" onload="showHelpIframe();"></iframe> </div> </td> </tr>
+</table>
+
+<img class="subfooter-image" src="img/subhead2-bottom.gif">
+  <div class="subhead2-bottom" >
+    <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%270%> </span>
+    <span class="button-help-arrow">
+      <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%271%> </span>
+  </div>
+
+<INPUT name=schedule_daylightadjust type=hidden value= "<%1466%>">
+<INPUT name=ntp_manual_server type=hidden value= "<%1467%>">
+<INPUT name=ntp_user_server type=hidden value= "<%1468%>">
+<a name="helpframe-anchor"></a>
+</form>
+
+</div>
+</body>
+</html>

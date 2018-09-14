@@ -789,6 +789,7 @@ ifeq ($(PROFILE),R7000)
 	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 	cp -f $(PLATFORMDIR)/hosts $(TARGETDIR)/etc/hosts
 	#remove uncessary file
+	rm -r -f $(TARGETDIR)/share/man
 	rm -r -f $(TARGETDIR)/usr/share/doc
 	rm -r -f $(TARGETDIR)/usr/share/man
 	rm -r -f $(TARGETDIR)/usr/share/gtk-doc
@@ -799,12 +800,17 @@ ifeq ($(PROFILE),R7000)
 #	rm $(TARGETDIR)/usr/bin/soapcpp2
 	#L reduce size add 
 	$(STRIP) $(TARGETDIR)/usr/sbin/ookla
+	$(STRIP) $(TARGETDIR)/usr/sbin/dnsmasq
+	$(STRIP) $(TARGETDIR)/usr/sbin/trafficUsageDetailsD
+	$(STRIP) $(TARGETDIR)/usr/sbin/nas
 	$(STRIP) $(TARGETDIR)/usr/sbin/avahi-daemon
 	$(STRIP) $(TARGETDIR)/usr/bin/KC_PRINT
 	$(STRIP) $(TARGETDIR)/usr/bin/KC_BONJOUR
 	$(STRIP) $(TARGETDIR)/lib/libmnl.so.0.2.0
 	rm -r -f $(TARGETDIR)/usr/sbin/tcpdump.4.4.0
 	rm -r -f $(TARGETDIR)/www/QOS_down_streaming_iqos.htm
+	rm -r -f $(TARGETDIR)/www/genie_strtab_Korean
+	rm -r -f $(TARGETDIR)/www/genie_strtab_Spanish
 	#L reduce size add 
 	
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib

@@ -103,13 +103,13 @@ function check_data()
 	{
 		if(checkIP(cf.dmzip1,cf.dmzip2,cf.dmzip3,cf.dmzip4,254)
 			|| (parseInt(cf.dmzip4.value,10) == 0))
-			msg += "<%1520%>\n";
+			msg += "<%1532%>\n";
 	}
 	msg+= checkInt(cf.wan_mtu, "MTU value", 1, parseInt(cf.wan_way.value,10), true);
 
 	if((parseInt(cf.wan_mtu.value,10)>parseInt(cf.wan_way.value,10))
 			||(parseInt(cf.wan_mtu.value,10)<616))
-		msg += "<%1521%> "+cf.wan_way.value+"\n"; 
+		msg += "<%1533%> "+cf.wan_way.value+"\n"; 
 
 	if (msg.length > 1)
 	{
@@ -129,7 +129,7 @@ function check_data()
 function display_ru_iptv()
 {
 	var cf = document.forms[0];
-	var ru_iptv_en = "<%1522%>";
+	var ru_iptv_en = "<%1534%>";
 	var wlan1_en = "<%68%>";
 	var wlan2_en = "<%69%>";
 
@@ -160,49 +160,49 @@ function display_ru_iptv()
 
 function igmp_disable_click()
 {
-<%1523%>
+<%1535%>
 	var cf = document.forms[0];
 
 	if(cf.disable_gproxy.checked == true)
 		cf.bt_igmp_enable.disabled = true;
 	else
 		cf.bt_igmp_enable.disabled = false;
-<%1524%>
+<%1536%>
 }
 
 function loadSettings()
 {
 	var cf = document.forms[0];
-	var openvpnEnable = "<%528%>";
-	var spiEnable = "<%1525%>";
-	var dmzEnable = "<%1526%>";
-	var resp2ping = "<%869%>";
+	var openvpnEnable = "<%527%>";
+	var spiEnable = "<%1537%>";
+	var dmzEnable = "<%1538%>";
+	var resp2ping = "<%866%>";
 	var nat_inbound_filtering = cf.nat_inbound_filtering.value;
-<%1527%>
+<%1539%>
 	var ipsec_passthrough = cf.ipsec_passthrough.value;
 	var pptp_passthrough = cf.pptp_passthrough.value;
 	var l2tp_passthrough = cf.l2tp_passthrough.value;
-<%1528%>
-	var sipenable = "<%1529%>";
-	var gproxy_enable = "<%1530%>";
-<%1523%>
-	var bt_igmp_enable = "<%1531%>";
-<%1524%>
+<%1540%>
+	var sipenable = "<%1541%>";
+	var gproxy_enable = "<%1542%>";
+<%1535%>
+	var bt_igmp_enable = "<%1543%>";
+<%1536%>
 
 /*
-	var ipv6_enable = "<%1532%>";
+	var ipv6_enable = "<%1544%>";
 */
 	//RU_IPTV start
-<%1533%>
+<%1545%>
 	var var_iptv_lan1 = cf.iptv_intf_lan1.value;
 	var var_iptv_lan2 = cf.iptv_intf_lan2.value;
 	var var_iptv_lan3 = cf.iptv_intf_lan3.value;
 	var var_iptv_lan4 = cf.iptv_intf_lan4.value;
 	var var_iptv_wlan1 = cf.iptv_intf_wlan1.value;
 	var var_iptv_wlan2 = cf.iptv_intf_wlan2.value;
-<%1534%>
+<%1546%>
 
-	var ru_iptv_en = "<%1522%>";
+	var ru_iptv_en = "<%1534%>";
 	//RU_IPTV end
 
 
@@ -211,7 +211,7 @@ function loadSettings()
 	else
 		cf.NatInboundFiltering[1].checked = true;
 		
-<%1527%>
+<%1539%>
 	if (ipsec_passthrough == "1")
 	    cf.IPSecPassthrough[0].checked = true;
 	else
@@ -226,7 +226,7 @@ function loadSettings()
 	    cf.L2TPPassthrough[0].checked = true;
 	else
 	    cf.L2TPPassthrough[1].checked = true;
-<%1528%>
+<%1540%>
 
 	if (spiEnable == "1")
 		cf.disable_spi.checked = false;
@@ -265,7 +265,7 @@ function loadSettings()
 
   
 
-<%1523%>
+<%1535%>
 	if(cf.disable_gproxy.checked == true)
 		cf.bt_igmp_enable.disabled = true;
 	else
@@ -276,7 +276,7 @@ function loadSettings()
 		cf.bt_igmp_enable.checked = true;
 	else
 		cf.bt_igmp_enable.checked = false;
-<%1524%>
+<%1536%>
 
 /*
     if (ipv6_enable == "1")
@@ -311,7 +311,7 @@ function loadSettings()
 	
     //RU_IPTV start
     display_ru_iptv();
-<%1533%>
+<%1545%>
     if (ru_iptv_en == "Enable")
     {
         if (var_iptv_lan1 == 1)
@@ -327,7 +327,7 @@ function loadSettings()
         if (var_iptv_wlan2 == 6)
             cf.enable_iptv_wlan2.checked = true;
     }
-<%1534%>
+<%1546%>
     //RU_IPTV end
 }
 
@@ -358,7 +358,7 @@ function loadSettings()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
- <td colspan="2"><input type="checkbox"  name="disable_spi" value="disable_spi"><a href="javascript:loadhelp('WAN_wan','spi')" tabindex="-1"> <b><%1535%></b></a></td>
+ <td colspan="2"><input type="checkbox"  name="disable_spi" value="disable_spi"><a href="javascript:loadhelp('WAN_wan','spi')" tabindex="-1"> <b><%1547%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -366,7 +366,7 @@ function loadSettings()
 
 <tr>
 	<td nowrap align="left" width="50%"><input type="checkbox"  name="dmz_enable" value="dmz_enable">
-	<a href="javascript:loadhelp('WAN_wan','dmz')" tabindex="-1"><b><%1536%></b></a></td>
+	<a href="javascript:loadhelp('WAN_wan','dmz')" tabindex="-1"><b><%1548%></b></a></td>
 <td nowrap align="left"><span class="num"><input type="text" name="dmzip1" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="dmzip2" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="dmzip3" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="dmzip4" class="num" size="4" maxlength="3" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></span></td>
 </tr>
 
@@ -374,31 +374,31 @@ function loadSettings()
 
 
 <tr>
-<td colspan="2"><input type="checkbox" name="rspToPing" value="rspToPing"><a href="javascript:loadhelp('WAN_wan','ping')" tabindex="-1"> <b><%1537%></b></a></td>
+<td colspan="2"><input type="checkbox" name="rspToPing" value="rspToPing"><a href="javascript:loadhelp('WAN_wan','ping')" tabindex="-1"> <b><%1549%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="2"><input type="checkbox" name="disable_gproxy" value="disable_gproxy" onClick="igmp_disable_click();"><a href="javascript:loadhelp('WAN_wan','gproxy')" tabindex="-1"> <b><%1538%></b></a></td>
+<td colspan="2"><input type="checkbox" name="disable_gproxy" value="disable_gproxy" onClick="igmp_disable_click();"><a href="javascript:loadhelp('WAN_wan','gproxy')" tabindex="-1"> <b><%1550%></b></a></td>
 </tr>
-<%1539%>
+<%1551%>
 <tr>
 <td colspan="2" style="padding-left:20px">
-	<input type="checkbox" name="bt_igmp_enable" value="enable_bt_igmp"><a href="javascript:loadhelp('WAN_wan','gproxy')" tabindex="-1"> <b><%1540%></b></a></td>
+	<input type="checkbox" name="bt_igmp_enable" value="enable_bt_igmp"><a href="javascript:loadhelp('WAN_wan','gproxy')" tabindex="-1"> <b><%1552%></b></a></td>
 </tr>
-<%1541%>
+<%1553%>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <!--
 <tr>
-<td colspan="2"><input type="checkbox" name="ipv6disable" value="ipv6disable"><a href="javascript:loadhelp('WAN_wan','ipv6')"> <b><%1542%></b></a></td>
+<td colspan="2"><input type="checkbox" name="ipv6disable" value="ipv6disable"><a href="javascript:loadhelp('WAN_wan','ipv6')"> <b><%1554%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 -->
 <tr>
-	<td>&nbsp;<a href="javascript:loadhelp('WAN_wan','mtu')" tabindex="-1"><b><%1543%></b><%1544%></a></td>
+	<td>&nbsp;<a href="javascript:loadhelp('WAN_wan','mtu')" tabindex="-1"><b><%1555%></b><%1556%></a></td>
 	<td align="left" class="num"><input type="text" name="wan_mtu" size="5" maxlength="4"></td>
 </tr>
 
@@ -406,64 +406,64 @@ function loadSettings()
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-	<td>&nbsp;<a href="javascript:loadhelp('WAN_wan','nat')" tabindex="-1"><b><%1545%></b></a></td>
+	<td>&nbsp;<a href="javascript:loadhelp('WAN_wan','nat')" tabindex="-1"><b><%1557%></b></a></td>
 	<td align="left">
-	    <input type="radio" name="NatInboundFiltering" value="Secured"><%1546%>
-	    <input type="radio" name="NatInboundFiltering" value="Open"><%1547%>
+	    <input type="radio" name="NatInboundFiltering" value="Secured"><%1558%>
+	    <input type="radio" name="NatInboundFiltering" value="Open"><%1559%>
     </td>
 </tr>
 
 <tr> 
-    <td colspan="2"><input type="checkbox" name="disable_sip" value="disable_sip"><a href="javascript:loadhelp('WAN_wan','sipalg')" tabindex="-1"> <b><%1548%></b></a></td>
+    <td colspan="2"><input type="checkbox" name="disable_sip" value="disable_sip"><a href="javascript:loadhelp('WAN_wan','sipalg')" tabindex="-1"> <b><%1560%></b></a></td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-<%1549%>
+<%1561%>
 <tr>
-    <td colspan="2">&nbsp;<a href="javascript:loadhelp('WAN_wan','vpn')" tabindex="-1"><b><%1550%><BR></b></a></td>
+    <td colspan="2">&nbsp;<a href="javascript:loadhelp('WAN_wan','vpn')" tabindex="-1"><b><%1562%><BR></b></a></td>
 </tr>
 
 <tr>
-    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"><%1551%></a></td>
+    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"><%1563%></a></td>
         <td align="left">
-        <input type="radio" name="IPSecPassthrough" value="enable"><%1494%>
-	    <input type="radio" name="IPSecPassthrough" value="disable"><%1495%>
+        <input type="radio" name="IPSecPassthrough" value="enable"><%1506%>
+	    <input type="radio" name="IPSecPassthrough" value="disable"><%1507%>
     </td>
 </tr>
 <tr>
-    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"><%1552%></a></td>
+    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"><%1564%></a></td>
         <td align="left">
-	    <input type="radio" name="PPTPPassthrough" value="enable"><%1494%>
-	    <input type="radio" name="PPTPPassthrough" value="disable"><%1495%>
+	    <input type="radio" name="PPTPPassthrough" value="enable"><%1506%>
+	    <input type="radio" name="PPTPPassthrough" value="disable"><%1507%>
     </td>
 </tr>
 <tr>
-    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"> <%1553%></a></td>
+    <td>&nbsp;<a href="javascript:loadhelp('WAN_wan','ipsec')" tabindex="-1"> <%1565%></a></td>
         <td align="left">
-	    <input type="radio" name="L2TPPassthrough" value="enable"><%1494%>
-	    <input type="radio" name="L2TPPassthrough" value="disable"><%1495%>
+	    <input type="radio" name="L2TPPassthrough" value="enable"><%1506%>
+	    <input type="radio" name="L2TPPassthrough" value="disable"><%1507%>
     </td>
 </tr>
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
-<%1554%>
+<%1566%>
 <!-- /* RU_IPTV start */ -->
 <tr id="ru_iptv_support_str" style="display: block;">
-    <td>&nbsp;<b><%1555%></b></td>
+    <td>&nbsp;<b><%1567%></b></td>
 </tr>
 <tr id="ru_iptv_support_lan" style="display: block;">
     <td colspan="4">
-        <input type="checkbox" name="enable_iptv_lan1" value="iptv_lan1"><b><%1352%> 1</b>&nbsp;&nbsp;&nbsp;
-        <input type="checkbox" name="enable_iptv_lan2" value="iptv_lan2"><b><%1352%> 2</b>&nbsp;&nbsp;&nbsp;
-        <input type="checkbox" name="enable_iptv_lan3" value="iptv_lan3"><b><%1352%> 3</b>&nbsp;&nbsp;&nbsp;
-        <input type="checkbox" name="enable_iptv_lan4" value="iptv_lan4"><b><%1352%> 4</b>
+        <input type="checkbox" name="enable_iptv_lan1" value="iptv_lan1"><b><%1290%> 1</b>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="enable_iptv_lan2" value="iptv_lan2"><b><%1290%> 2</b>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="enable_iptv_lan3" value="iptv_lan3"><b><%1290%> 3</b>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="enable_iptv_lan4" value="iptv_lan4"><b><%1290%> 4</b>
     </td>
 </tr>
 <tr id="ru_iptv_support_wlan1" style="display: block;">
-    <td colspan="2"><input type="checkbox" name="enable_iptv_wlan1" value="iptv_wlan1"><b><%1556%> <%1557%></b></a></td>
+    <td colspan="2"><input type="checkbox" name="enable_iptv_wlan1" value="iptv_wlan1"><b><%1568%> <%1569%></b></a></td>
 </tr>
 <tr id="ru_iptv_support_wlan2" style="display: block;">
-    <td colspan="2"><input type="checkbox" name="enable_iptv_wlan2" value="iptv_wlan2"><b><%1556%> <%1558%></b></a></td>
+    <td colspan="2"><input type="checkbox" name="enable_iptv_wlan2" value="iptv_wlan2"><b><%1568%> <%1570%></b></a></td>
 </tr>
 <tr id="ru_iptv_support_line" style="display: block;">
     <td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td>
@@ -473,25 +473,25 @@ function loadSettings()
 
 <tr>
  <input type="hidden" name="wan_way" value="1500">
- <INPUT name="nat_inbound_filtering" type=hidden value= "<%1559%>">
- <input type="hidden" name="wan_proto" value= "<%501%>">
- <input type="hidden" name="nvram_mtu" value= "<%1560%>">
- <INPUT name="dmz_ip" type=hidden value= "<%1561%>">
+ <INPUT name="nat_inbound_filtering" type=hidden value= "<%1571%>">
+ <input type="hidden" name="wan_proto" value= "<%502%>">
+ <input type="hidden" name="nvram_mtu" value= "<%1572%>">
+ <INPUT name="dmz_ip" type=hidden value= "<%1573%>">
  <!-- /* VPN */ -->
-<%1549%>
- <input type="hidden" name="ipsec_passthrough" value= "<%1562%>">
- <input type="hidden" name="pptp_passthrough" value= "<%1563%>">
- <input type="hidden" name="l2tp_passthrough" value= "<%1564%>">
-<%1554%>
+<%1561%>
+ <input type="hidden" name="ipsec_passthrough" value= "<%1574%>">
+ <input type="hidden" name="pptp_passthrough" value= "<%1575%>">
+ <input type="hidden" name="l2tp_passthrough" value= "<%1576%>">
+<%1566%>
  <!-- /* RU_IPTV start */ -->
-<%1565%>
- <INPUT name="iptv_intf_lan1" type=hidden value= "<%1566%>">
- <INPUT name="iptv_intf_lan2" type=hidden value= "<%1567%>">
- <INPUT name="iptv_intf_lan3" type=hidden value= "<%1568%>">
- <INPUT name="iptv_intf_lan4" type=hidden value= "<%1569%>">
- <INPUT name="iptv_intf_wlan1" type=hidden value= "<%1570%>">
- <INPUT name="iptv_intf_wlan2" type=hidden value= "<%1571%>">
-<%1572%>
+<%1577%>
+ <INPUT name="iptv_intf_lan1" type=hidden value= "<%1578%>">
+ <INPUT name="iptv_intf_lan2" type=hidden value= "<%1579%>">
+ <INPUT name="iptv_intf_lan3" type=hidden value= "<%1580%>">
+ <INPUT name="iptv_intf_lan4" type=hidden value= "<%1581%>">
+ <INPUT name="iptv_intf_wlan1" type=hidden value= "<%1582%>">
+ <INPUT name="iptv_intf_wlan2" type=hidden value= "<%1583%>">
+<%1584%>
  <!-- /* RU_IPTV end */ -->
 </tr>
 </table></div></td></tr>

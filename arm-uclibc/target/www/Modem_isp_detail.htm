@@ -1,7 +1,7 @@
 <html>
 <head>
 <%11%>
-<title><%3777%></title>
+<title><%3791%></title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <%14%>
 <script language="JavaScript" type="text/javascript">
@@ -13,7 +13,7 @@ function CloseWindow()
 }
 function msg_close()
 {
-     alert("<%3778%>");
+     alert("<%3792%>");
      CloseWindow();
 }
 
@@ -53,16 +53,16 @@ function username_passwd_convert()
 function init()
 {
     var cf = document.forms[0];
-    var isp_index = "<%3659%>";
-    var mode = "<%3920%>";
-    var country_index = "<%3655%>";
+    var isp_index = "<%3673%>";
+    var mode = "<%3934%>";
+    var country_index = "<%3669%>";
     cf.ppp_username.value = cf.w_ppp_username.value;
     cf.ppp_passwd.value = cf.w_ppp_passwd.value;
-    cf.sysNewPIN.value= "<%3660%>";
-    cf.sysNewPIN2.value= "<%3893%>";
-    cf.sysNewPUK.value= "<%3894%>";
-    cf.sysNewPIN2.value= "<%3895%>";
-    cf.sysUnlockCode.value= "<%3896%>";
+    cf.sysNewPIN.value= "<%3674%>";
+    cf.sysNewPIN2.value= "<%3907%>";
+    cf.sysNewPUK.value= "<%3908%>";
+    cf.sysNewPIN2.value= "<%3909%>";
+    cf.sysUnlockCode.value= "<%3910%>";
 			
     username_passwd_convert();
 	
@@ -79,10 +79,10 @@ function init()
 
 function checkCPINData()
 {
-    var pukEnable = "<%3845%>";
-    var puk2Enable = "<%3846%>";
-    var pin2Enable = "<%3847%>";
-    var state = "<%3717%>";
+    var pukEnable = "<%3859%>";
+    var puk2Enable = "<%3860%>";
+    var pin2Enable = "<%3861%>";
+    var state = "<%3731%>";
     var cf = document.forms[0];
 	
     if(state == "PIN Required" || state == "PIN Number Error" ||
@@ -92,7 +92,7 @@ function checkCPINData()
     {
         if (cf.sysNewPIN.value.length != 4) 
         {
-            alert("<%3955%>");
+            alert("<%3969%>");
             return false;
         }
 	    
@@ -100,21 +100,21 @@ function checkCPINData()
         {
             if (cf.sysNewPIN.value.match(/[^\x30-\x39]/))
             {
-                alert("<%3955%>");
+                alert("<%3969%>");
                 return false;
             }
         }
 	    
         if (cf.sysNewPIN.value != cf.sysNewPINconfirm.value)  
         {    
-            alert("<%3848%>");
+            alert("<%3862%>");
             return false;
         }
         if(pin2Enable == "1")
         {
             if (cf.sysNewPIN2.value.length != 4) 
             {
-                alert("<%3956%>");
+                alert("<%3970%>");
                 return false;
             }
 	    
@@ -122,13 +122,13 @@ function checkCPINData()
             {
                 if (cf.sysNewPIN2.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3956%>");
+                    alert("<%3970%>");
                     return false;
                 }
             }
             if (cf.sysNewPIN2.value != cf.sysNewPIN2confirm.value)  
             {    
-                alert("<%3850%>");
+                alert("<%3864%>");
                 return false;
             }
         }
@@ -137,7 +137,7 @@ function checkCPINData()
         {
             if (cf.sysNewPUK.value.length != 8) 
             {
-                alert("<%3851%>");
+                alert("<%3865%>");
                 return false;
             }
 	    
@@ -145,14 +145,14 @@ function checkCPINData()
             {
                 if (cf.sysNewPUK.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3851%>");
+                    alert("<%3865%>");
                     return false;
                 }
             }		
 	    	
             if (cf.sysNewPUK.value != cf.sysNewPUKconfirm.value)  
             {    
-                alert("<%3852%>");
+                alert("<%3866%>");
                 return false;
             }		
         }
@@ -161,7 +161,7 @@ function checkCPINData()
         {
             if (cf.sysNewPUK2.value.length != 8) 
             {
-                alert("<%3853%>");
+                alert("<%3867%>");
                 return false;
             }
 	    
@@ -169,13 +169,13 @@ function checkCPINData()
             {
                 if (cf.sysNewPUK2.value.match(/[^\x30-\x39]/))
                 {
-                    alert("<%3853%>");
+                    alert("<%3867%>");
                     return false;
                 }
             }	
             if (cf.sysNewPUK2.value != cf.sysNewPUK2Confirm.value)  
             {    
-                alert("<%3854%>");
+                alert("<%3868%>");
                 return false;
             }	
         }	
@@ -216,149 +216,149 @@ function checkData()
 <table border="0" cellpadding="0" cellspacing="3" width="100%">
  <tr>
    <td colspan="2" align="center">
-     <h1><%3897%></h1>
+     <h1><%3911%></h1>
    </td>
  </tr>
-    <%3902%>
+    <%3916%>
 <tr>
   <td colspan="2" background="liteblue.gif" height="12"></td>
 </tr>     
     <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3903%><%3904%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3917%><%3918%></ul></ul></td>
       </tr>      
-     <%3905%>
+     <%3919%>
     
-     <%3906%>
+     <%3920%>
 <tr>
   <td colspan="2" background="liteblue.gif" height="12"></td>
 </tr>      
      <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3903%><%3907%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3917%><%3921%></ul></ul></td>
       </tr>
        <tr>         
-     <%3908%>
+     <%3922%>
       
-     <%3909%>
+     <%3923%>
        <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3903%><%3910%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3917%><%3924%></ul></ul></td>
       </tr>
-     <%3911%>
+     <%3925%>
         
-     <%3912%>
+     <%3926%>
        <tr>
-         <td colspan="2" valign="top" align="left"><ul><ul><%3903%><%3913%></ul></ul></td>
+         <td colspan="2" valign="top" align="left"><ul><ul><%3917%><%3927%></ul></ul></td>
       </tr>
-     <%3914%>       
-<%3860%>
+     <%3928%>       
+<%3874%>
 <tr>
   <td colspan="2" background="liteblue.gif" height="12"></td>
 </tr> 
   <tr>
    <td colspan="2" valign="top" align="left">
-     <ul><ul><br><%3915%></br></ul></ul>
+     <ul><ul><br><%3929%></br></ul></ul>
    </td>
   </tr>  
-<%3916%>  
-    <%3902%>
+<%3930%>  
+    <%3916%>
        <tr>
-         <td><ul><ul><strong><%3866%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3880%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN" size="4" maxlength="4"</td>
       </tr>      
         <tr>
-         <td><ul><ul><strong><%3867%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3881%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPINconfirm" size="4" maxlength="4"</td>
         </tr>        
-     <%3905%>
+     <%3919%>
     
-     <%3906%>
+     <%3920%>
        <tr>
-         <td><ul><ul><strong><%3870%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3884%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN2" size="4" maxlength="4"</td>
         </tr>
         <tr>
-         <td><ul><ul><strong><%3871%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3885%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPIN2confirm" size="4" maxlength="4"</td>
         </tr>
-     <%3908%>
+     <%3922%>
       
-     <%3909%>
+     <%3923%>
        <tr>
-         <td><ul><ul><strong><%3873%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3887%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK" size="8" maxlength="8"</td>
         </tr>
         <tr>
-         <td><ul><ul><strong><%3874%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3888%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUKconfirm" size="8" maxlength="8"</td>
         </tr>
-     <%3911%>
+     <%3925%>
         
-     <%3912%>
+     <%3926%>
        <tr>
-         <td><ul><ul><strong><%3875%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3889%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK2" size="8" maxlength="8"</td>
         </tr>
        <tr>
-         <td><ul><ul><strong><%3876%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3890%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysNewPUK2Confirm" size="8" maxlength="8"</td>
         </tr>
-     <%3914%>     
-<%3860%>
+     <%3928%>     
+<%3874%>
        <tr>
-         <td><ul><ul><strong><%3877%></strong></ul></ul></td>
+         <td><ul><ul><strong><%3891%></strong></ul></ul></td>
          <td align="left" class="text">
          <input type="text" name="sysUnlockCode" size="16" maxlength="8"</td>
         </tr>
-<%3916%>
+<%3930%>
   </tr>  
 <tr>
   <td colspan="2" background="liteblue.gif" height="12"></td>  
   <tr>
    <td colspan="2" valign="top" align="left"><ul><ul>
-     <br><%3957%>
+     <br><%3971%>
 </ul></ul>
    </td>
   </tr>  
  
 <tr>
-<td><ul><ul><b><%600%></ul></ul></td>
-<td align="left" class="text"><input type="text" name="ppp_username" size="15" maxlength="60" value="<%3656%>"></td>
+<td><ul><ul><b><%596%></ul></ul></td>
+<td align="left" class="text"><input type="text" name="ppp_username" size="15" maxlength="60" value="<%3670%>"></td>
 </tr>
 <tr>
-<td><ul><ul><b><%602%></ul></ul></td>
-<td align="left" class="text"><input type="text" name="ppp_passwd" size="15" maxlength="50" value="<%3657%>"></td>
+<td><ul><ul><b><%598%></ul></ul></td>
+<td align="left" class="text"><input type="text" name="ppp_passwd" size="15" maxlength="50" value="<%3671%>"></td>
 </tr>
 
 <tr>
-<td><ul><ul><b><%3689%></ul></ul></td>
+<td><ul><ul><b><%3703%></ul></ul></td>
 <td align="left">
-    <select name="cid" value="<%3654%>" size="1" tabindex="10" >
-        <option <%3690%> value=0 >*99#</option>
-	 <option <%3691%> value=1 >*99***1#</option>
-        <option <%3692%> value=2 >*99***2#</option>
-        <option <%3693%> value=3 >*99***3#</option>
-        <option <%3694%> value=4 >*99***4#</option>
+    <select name="cid" value="<%3668%>" size="1" tabindex="10" >
+        <option <%3704%> value=0 >*99#</option>
+	 <option <%3705%> value=1 >*99***1#</option>
+        <option <%3706%> value=2 >*99***2#</option>
+        <option <%3707%> value=3 >*99***3#</option>
+        <option <%3708%> value=4 >*99***4#</option>
     </select></td>
 </tr>
 <tr>
-<td><ul><ul><b><%3687%></ul></ul></td>
-<td align="left" class="num"><input type="text" name="apn" value="<%3688%>"></td>
+<td><ul><ul><b><%3701%></ul></ul></td>
+<td align="left" class="num"><input type="text" name="apn" value="<%3702%>"></td>
 </tr>
 <tr>
-<td><ul><ul><b><%3697%></ul></ul></td>
+<td><ul><ul><b><%3711%></ul></ul></td>
 <td align="left">
-    <select name="pdp_type" value="<%3698%>" size="1" tabindex="10" >
-	<option <%3699%> value=0 ><%3700%></option>
-        <option <%3701%> value=1 ><%3702%></option>
-        <option <%3703%> value=2 ><%3704%></option>
-        <option <%3705%> value=3 ><%3706%></option>
+    <select name="pdp_type" value="<%3712%>" size="1" tabindex="10" >
+	<option <%3713%> value=0 ><%3714%></option>
+        <option <%3715%> value=1 ><%3716%></option>
+        <option <%3717%> value=2 ><%3718%></option>
+        <option <%3719%> value=3 ><%3720%></option>
     </select></td>
 </tr>
 <tr>
@@ -367,36 +367,36 @@ function checkData()
 </table>
  <tr>
     <td align="center"> 
-    <input type="hidden" name="Back" value="   <%1593%>   " onclick="location.href='Modem_dual_wan_welcome.htm'">
+    <input type="hidden" name="Back" value="   <%1605%>   " onclick="location.href='Modem_dual_wan_welcome.htm'">
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="button" name="Quit" value="    <%1461%>   " onClick="msg_close()">
+    <input type="button" name="Quit" value="    <%1473%>   " onClick="msg_close()">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" name="Next" value="   <%1579%>   " onclick="checkData()">
+	<input type="submit" name="Next" value="   <%1591%>   " onclick="checkData()">
 	</td>
  </tr>
 <tr>
  <input type="hidden" name="wan_way" value="1500">
 </tr>
 </table>
-<INPUT name=pdp_type_org type=hidden value= "<%3698%>">
-<INPUT name=apn_org type=hidden value= "<%3718%>">
-<INPUT name=w_ppp_username type=hidden value= "<%3656%>">
-<INPUT name=w_ppp_passwd type=hidden value= "<%3657%>">
-<%3921%>
+<INPUT name=pdp_type_org type=hidden value= "<%3712%>">
+<INPUT name=apn_org type=hidden value= "<%3732%>">
+<INPUT name=w_ppp_username type=hidden value= "<%3670%>">
+<INPUT name=w_ppp_passwd type=hidden value= "<%3671%>">
+<%3935%>
 <INPUT name=sysNewPIN type=hidden>
-<%3922%>
-<%3923%>
+<%3936%>
+<%3937%>
 <INPUT name=sysNewPIN2 type=hidden>
-<%3924%>
-<%3925%>
+<%3938%>
+<%3939%>
 <INPUT name=sysNewPUK type=hidden>
-<%3926%>
-<%3927%>
+<%3940%>
+<%3941%>
 <INPUT name=sysNewPUK2 type=hidden>
-<%3928%>
-<%3929%>
+<%3942%>
+<%3943%>
 <INPUT name=sysUnlockCode  type=hidden>
-<%3930%>
+<%3944%>
 <INPUT name=reboot_options type=hidden> 
 </form>
 </body>

@@ -120,7 +120,7 @@ function checkData()
     			cf.WPethr4.value = parseInt(cf.WPethr4.value,10);
     		}
     		if(checkIP(cf.WMask1,cf.WMask2,cf.WMask3,cf.WMask4,255))
-    			msg+= "<%533%>";
+    			msg+= "<%532%>";
     		else
     		{
     			cf.WMask1.value = parseInt(cf.WMask1.value,10);
@@ -130,7 +130,7 @@ function checkData()
     		}
     		if(checkIP(cf.WGateway1,cf.WGateway2,cf.WGateway3,cf.WGateway4,255)
     		    ||checkIPMatchWithNetmask(cf.WMask1,cf.WMask2,cf.WMask3,cf.WMask4,cf.WGateway1,cf.WGateway2,cf.WGateway3,cf.WGateway4))
-    			msg+= "<%534%>";
+    			msg+= "<%533%>";
     		else
     		{
     			cf.WGateway1.value = parseInt(cf.WGateway1.value,10);
@@ -144,12 +144,12 @@ function checkData()
     		var tmpgwip = cf.WGateway1.value+'.'+cf.WGateway2.value+'.'+cf.WGateway3.value+'.'+cf.WGateway4.value;
     		if((ap_ipaddr&ap_netmask) != (ap_gateway&ap_netmask))
     		{
-    			alert("<%535%>" + tmpip + "<%536%>" + tmpgwip);
+    			alert("<%534%>" + tmpip + "<%535%>" + tmpgwip);
     			return false;
     		}
 
     		if(checkIP(cf.DAddr1,cf.DAddr2,cf.DAddr3,cf.DAddr4,254)||(parseInt(cf.DAddr4.value,10)==0))
-    			msg+= "<%537%>";
+    			msg+= "<%536%>";
     		else
     		{
     			cf.DAddr1.value = parseInt(cf.DAddr1.value,10);
@@ -160,7 +160,7 @@ function checkData()
     		if(cf.PDAddr1.value.length>0 || cf.PDAddr2.value.length>0 || cf.PDAddr3.value.length>0 || cf.PDAddr4.value.length>0)
     		{
     			if(checkIP(cf.PDAddr1,cf.PDAddr2,cf.PDAddr3,cf.PDAddr4,254)||(parseInt(cf.PDAddr4.value,10)==0))
-    				msg+= "<%538%>";
+    				msg+= "<%537%>";
     			else
     			{
     				cf.PDAddr1.value = parseInt(cf.PDAddr1.value,10);
@@ -178,15 +178,15 @@ function checkData()
     	cf.apmode_dns1_pri.value = cf.DAddr1.value+'.'+cf.DAddr2.value+'.'+cf.DAddr3.value+'.'+cf.DAddr4.value;
     	cf.apmode_dns1_sec.value = cf.PDAddr1.value+'.'+cf.PDAddr2.value+'.'+cf.PDAddr3.value+'.'+cf.PDAddr4.value;
         
-       if(<%472%>=="0")
-            alert("<%1176%>");        
+       if(<%473%>=="0")
+            alert("<%1112%>");        
 	}
 	else
 	{
         ap_mode_ungrayout();
         
-       if(<%472%>=="1")
-            alert("<%1176%>");        
+       if(<%473%>=="1")
+            alert("<%1112%>");        
 	}
 	if (msg.length > 1)
 	{
@@ -289,7 +289,7 @@ function setIP_DNS()
 <form id="target"  name="formname" method="POST" action="ap_mode.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
 <img class="subtop-image" src="<%76%>">
-<div class="subhead2"> <%435%></div>
+<div class="subhead2"> <%436%></div>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
@@ -303,15 +303,15 @@ function setIP_DNS()
 
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-  <td width="60%" colspan="2" ><b><%1705%></b></td>
+  <td width="60%" colspan="2" ><b><%1717%></b></td>
 </tr>
 <tr>
   <td width="60%" height="12" colspan="2" ></td>
 </tr>
 <tr>
   <td colspan=2>
-  <INPUT TYPE="checkbox" NAME="enable_ap_mode" value="enable_ap_mode" <%1675%> onclick="display_apmode();">
-  <%1676%>
+  <INPUT TYPE="checkbox" NAME="enable_ap_mode" value="enable_ap_mode" <%1687%> onclick="display_apmode();">
+  <%1688%>
   </td>
 </tr>
 
@@ -328,15 +328,15 @@ function setIP_DNS()
 </tr>
 <!--
 <tr>
-  <td width="60%" colspan="2" ><b><%1705%></b></td>
+  <td width="60%" colspan="2" ><b><%1717%></b></td>
 </tr>
 <tr>
   <td width="60%" height="12" colspan="2" ></td>
 </tr>
 <tr>
   <td colspan=2>
-  <INPUT TYPE="checkbox" NAME="enable_ap_mode" value="enable_ap_mode" <%1675%> onclick="display_apmode();">
-  <%1676%>
+  <INPUT TYPE="checkbox" NAME="enable_ap_mode" value="enable_ap_mode" <%1687%> onclick="display_apmode();">
+  <%1688%>
   </td>
 </tr>
 -->
@@ -346,35 +346,35 @@ function setIP_DNS()
   <div id="apmode_display" style="display: none;">
   <table align="left" border="0" width="100%" >
  <tr><td colspan="3" height="6"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1706%></td></tr>
-  <tr><td width="20%"><img src="spacer.gif" width="38" height="12" border="0"><%1707%></td><td width="10%"><%161%></td><td><%216%></td></tr>
-  <tr><td width="20%"><img src="spacer.gif" width="38" height="12" border="0"><%1708%></td><td width="10%"><%1709%><%1710%><%198%><%1711%></td><td><%1712%><%1713%><%266%><%1714%> </td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1715%></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1716%></td></tr>
- <tr><td colspan="3" height="8"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1717%></td></tr>
   <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1718%></td></tr>
+  <tr><td width="20%"><img src="spacer.gif" width="38" height="12" border="0"><%1719%></td><td width="10%"><%161%></td><td><%216%></td></tr>
+  <tr><td width="20%"><img src="spacer.gif" width="38" height="12" border="0"><%1720%></td><td width="10%"><%1721%><%1722%><%198%><%1723%></td><td><%1724%><%1725%><%266%><%1726%> </td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1727%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1728%></td></tr>
  <tr><td colspan="3" height="8"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1719%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1729%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1730%></td></tr>
+ <tr><td colspan="3" height="8"></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1731%></td></tr>
   <tr><td colspan="3" height="6"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1720%></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1721%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1732%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1733%></td></tr>
   <tr><td colspan="3" height="10"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1722%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="76" height="12" border="0"><%1734%></td></tr>
 
 
 <tr>
     <td colspan="3">
     <img src="spacer.gif" width="72" height="12" border="0">
-    <INPUT TYPE="radio" NAME="enable_fixed_ip_setting" value="enable_dynamic_ip_setting" <%1677%>  onclick="display_fixed_ip_setting();" >
-    <%1723%>
+    <INPUT TYPE="radio" NAME="enable_fixed_ip_setting" value="enable_dynamic_ip_setting" <%1689%>  onclick="display_fixed_ip_setting();" >
+    <%1735%>
     </td>
   </tr>
   <tr>
     <td colspan="3">
     <img src="spacer.gif" width="72" height="12" border="0">
-    <INPUT TYPE="radio" NAME="enable_fixed_ip_setting" value="enable_fixed_ip_setting" <%1724%>  onclick="display_fixed_ip_setting();">
-    <%1725%>
+    <INPUT TYPE="radio" NAME="enable_fixed_ip_setting" value="enable_fixed_ip_setting" <%1736%>  onclick="display_fixed_ip_setting();">
+    <%1737%>
     </td>
   </tr>
 
@@ -383,23 +383,23 @@ function setIP_DNS()
       <div id="fixed_ip_setting_display" style="display: none;">
       <table align="left" border="0" width="100%">
       <tr>
-        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%552%></td>
+        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%548%></td>
         <td nowrap align="right" class="num"><input type="text" name="WPethr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WPethr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)" >.<input type="text" name="WPethr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WPethr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
       </tr>
       <tr>
-        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%553%></td>
+        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%549%></td>
         <td align="right" class="num"><input type="text" name="WMask1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
       </tr>
       <tr>
-        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%554%></td>
+        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%550%></td>
         <td align="right" class="num"><input type="text" name="WGateway1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
       </tr>
       <tr>
-        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%558%></td>
+        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%554%></td>
         <td nowrap align="right" class="num"><input type="text" name="DAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="DAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="DAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="DAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
       </tr>
       <tr>
-        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%559%></td>
+        <td nowrap><img src="spacer.gif" width="72" height="12" border="0"><%555%></td>
         <td nowrap align="right" class="num"><input type="text" name="PDAddr1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="PDAddr2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="PDAddr3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="PDAddr4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIPDNS) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
       </tr>
       </table>
@@ -407,9 +407,9 @@ function setIP_DNS()
   </td>
   </tr>
   <tr><td colspan="3" height="16"></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1726%></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1727%></td></tr>
-  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1728%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1738%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1739%></td></tr>
+  <tr><td colspan="3" ><img src="spacer.gif" width="38" height="12" border="0"><%1740%></td></tr>
 
   </table>
   </div>
@@ -430,12 +430,12 @@ function setIP_DNS()
 
 
 
-<INPUT name=apmode_ipaddr type=hidden value= "<%1411%>">
-<INPUT name=apmode_netmask type=hidden value= "<%1412%>">
-<INPUT name=apmode_gateway type=hidden value= "<%1414%>">
-<INPUT name=apmode_dns_sel type=hidden value= "<%1686%>">
-<INPUT name=apmode_dns1_pri type=hidden value= "<%1419%>">
-<INPUT name=apmode_dns1_sec type=hidden value= "<%1420%>">
+<INPUT name=apmode_ipaddr type=hidden value= "<%1349%>">
+<INPUT name=apmode_netmask type=hidden value= "<%1350%>">
+<INPUT name=apmode_gateway type=hidden value= "<%1352%>">
+<INPUT name=apmode_dns_sel type=hidden value= "<%1698%>">
+<INPUT name=apmode_dns1_pri type=hidden value= "<%1357%>">
+<INPUT name=apmode_dns1_sec type=hidden value= "<%1358%>">
 <INPUT name=apmode_page type=hidden value= "1">
 <a name="helpframe-anchor"></a>
 </form>
