@@ -5015,9 +5015,9 @@ void regular_ddns_check(void)
 {
 #ifdef RPAC68U
 /* The workaround solution avoiding watchdog segfault on RP-AC68U. */
-	int r, wan_unit = rtk_wan_primary_ifunit(), last_unit = nvram_get_int("ddns_last_wan_unit");
+	int wan_unit = rtk_wan_primary_ifunit();
 #else
-	int r, wan_unit = wan_primary_ifunit(), last_unit = nvram_get_int("ddns_last_wan_unit");
+	int wan_unit = wan_primary_ifunit();
 #endif
 	char prefix[sizeof("wanX_YYY")];
 	struct in_addr ip_addr;
@@ -5037,9 +5037,12 @@ void regular_ddns_check(void)
 		if (ddns_wan_unit >= WAN_UNIT_FIRST && ddns_wan_unit < WAN_UNIT_MAX) {
 			wan_unit = ddns_wan_unit;
 		} else {
-			int u = get_first_configured_connected_wan_unit();
+			int u = get_first_connected_public_wan_unit();
 			if (u < WAN_UNIT_FIRST || u >= WAN_UNIT_MAX)
+			{
+				logmessage("DDNS", "[%s] dual WAN load balance DDNS cannot succeed to work, because none of wan is public IP.", __FUNCTION__);
 				return;
+			}
 
 			wan_unit = u;
 		}
@@ -5049,27 +5052,20 @@ void regular_ddns_check(void)
 	if (!nvram_match("wans_mode", "lb") && !is_wan_connect(wan_unit))
 		return;
 
-	snprintf(prefix, sizeof(prefix), "wan%d_", wan_unit);
-	ip_addr.s_addr = *(unsigned long *)hostinfo -> h_addr_list[0];
-	//_dprintf("%s ?= %s\n", nvram_pf_get(prefix, "ipaddr"), inet_ntoa(ip_addr));
-	if (nvram_pf_match(prefix, "ipaddr", inet_ntoa(ip_addr)))
-		return;
+	// Only check nvram IP for internal IP check mode
+	if (nvram_get_int("ddns_ipcheck") == 0) {
+		snprintf(prefix, sizeof(prefix), "wan%d_", wan_unit);
+		ip_addr.s_addr = *(unsigned long *)hostinfo -> h_addr_list[0];
+		//_dprintf("%s ?= %s\n", nvram_pf_get(prefix, "ipaddr"), inet_ntoa(ip_addr));
+		if (nvram_pf_match(prefix, "ipaddr", inet_ntoa(ip_addr)))
+			return;
 
-	//_dprintf("WAN IP change!\n");
+		logmessage("watchdog", "DDNS hostname does not match current IP - launching DDNS update");
+	}
+
 	nvram_set("ddns_update_by_wdog", "1");
-	if (wan_unit != last_unit)
-		unlink("/tmp/ddns.cache");
-	logmessage("watchdog", "Hostname/IP mapping error! Restart ddns.");
-	if (last_unit != wan_unit)
-		r = notify_rc("restart_ddns");
-	else
-		r = notify_rc("start_ddns");
 
-	if (!r)
-		nvram_set_int("ddns_last_wan_unit", wan_unit);
-
-
-	return;
+	notify_rc("start_ddns");
 }
 
 void ddns_check(void)
@@ -5082,8 +5078,10 @@ void ddns_check(void)
 #endif
 
 	//_dprintf("ddns_check... %d\n", ddns_check_count);
-	if (!nvram_match("ddns_enable_x", "1"))
-		return;
+
+	// First time called (i.e. after boot)
+	if (last_unit == -1)
+		last_unit = wan_unit;
 
 #if defined(RTCONFIG_DUALWAN)
 	if (nvram_match("wans_mode", "lb")) {
@@ -5092,9 +5090,12 @@ void ddns_check(void)
 		if (ddns_wan_unit >= WAN_UNIT_FIRST && ddns_wan_unit < WAN_UNIT_MAX) {
 			wan_unit = ddns_wan_unit;
 		} else {
-			int u = get_first_configured_connected_wan_unit();
+			int u = get_first_connected_public_wan_unit();
 			if (u < WAN_UNIT_FIRST || u >= WAN_UNIT_MAX)
+			{
+				logmessage("DDNS", "[%s] dual WAN load balance DDNS cannot succeed to work, because none of wan is public IP.", __FUNCTION__);
 				return;
+			}
 
 			wan_unit = u;
 		}
@@ -5104,17 +5105,17 @@ void ddns_check(void)
 	if (!nvram_match("wans_mode", "lb") && !is_wan_connect(wan_unit))
 		return;
 
-	/* Check existence of ez-ipupdate/phddns
+	/* Check existence of inadyn/phddns
 	 * if and only if last WAN unit is equal to new WAN unit.
 	 */
 	if (last_unit == wan_unit) {
-		if (pids("ez-ipupdate"))	//ez-ipupdate is running!
-			return;
 		if (pids("phddns"))		//phddns is running!
+			return;
+		if (pids("inadyn"))
 			return;
 	}
 
-	if (nvram_match("ddns_regular_check", "1")&& !nvram_match("ddns_server_x", "WWW.ASUS.COM")) {
+	if (nvram_match("ddns_regular_check", "1")/*&& !nvram_match("ddns_server_x", "WWW.ASUS.COM")*/) {
 		int period = nvram_get_int("ddns_regular_period");
 		if (period < 30) period = 60;
 		if (ddns_check_count >= (period*2)) {
@@ -5125,7 +5126,7 @@ void ddns_check(void)
 		ddns_check_count++;
 	}
 
-	if (wan_unit == last_unit && nvram_match("ddns_updated", "1")) //already updated success
+	if ((wan_unit == last_unit) && nvram_match("ddns_updated", "1")) //already updated success
 		return;
 
 	if (wan_unit == last_unit) {
@@ -5136,7 +5137,7 @@ void ddns_check(void)
 				return;
 		}
 		else{ //non asusddns service
-			if ( !strcmp(nvram_safe_get("ddns_return_code_chk"),"auth_fail") )
+			if ( !strcmp(nvram_safe_get("ddns_return_code_chk"),"Update failed") )
 				return;
 		}
 	}
@@ -5145,8 +5146,13 @@ void ddns_check(void)
 		return;
 
 	nvram_set("ddns_update_by_wdog", "1");
-	if (wan_unit != last_unit)
+	if (wan_unit != last_unit) {
 		unlink("/tmp/ddns.cache");
+	}
+	system("rm -f /tmp/inadyn.cache/*"); /* */
+
+	ddns_update_timer = 0;	// Reset forced update timer
+
 	logmessage("watchdog", "start ddns.");
 	if (last_unit != wan_unit)
 		r = notify_rc("restart_ddns");
@@ -5156,7 +5162,6 @@ void ddns_check(void)
 	if (!r)
 		nvram_set_int("ddns_last_wan_unit", wan_unit);
 
-	return;
 }
 
 void networkmap_check()
@@ -7018,14 +7023,18 @@ wdp:
 #endif
 #endif
 
-	/* Force a DDNS update every "x" days - default is 21 days */
-	period = nvram_get_int("ddns_refresh_x");
-	if ((period) && (++ddns_update_timer >= (DAY_PERIOD * period))) {
-		ddns_update_timer = 0;
-		nvram_set("ddns_updated", "0");
+	if (nvram_match("ddns_enable_x", "1")) {
+		/* Force a DDNS update every "x" days - default is 21 days */
+		period = nvram_get_int("ddns_refresh_x");
+		if ((period) && (++ddns_update_timer >= (DAY_PERIOD * period))) {
+			ddns_update_timer = 0;
+			logmessage("watchdog", "Forced DDNS update (after %d days)", period);
+			notify_rc("restart_ddns");
+		} else {
+			ddns_check();
+		}
 	}
 
-	ddns_check();
 	networkmap_check();
 	httpd_check();
 	dnsmasq_check();
