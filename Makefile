@@ -37,6 +37,11 @@ $(strip \
     $(if $(call eq, $(1), $(subst .,_,$(LINUX_VERSION))), true)))
 endef
 
+# merge the files in arm-uclibc to prebuilt
+ifneq ($(ROOTDIR),)
+obj-y=prebuilt
+endif
+
 #
 # Paths
 #
