@@ -190,7 +190,7 @@ retry:
         snprintf(buf, 128, "mount -t ufsd -o force %s %s", source, target);
         cprintf("***[%s] %s\n", __FUNCTION__, buf);
 #else        
-        snprintf(buf, 128, "/bin/ntfs-3g -o large_read %s %s 2> /dev/null", source, target);
+        snprintf(buf, 128, "/bin/ntfs-3g -o large_read %s %s", source, target);
 #endif        
 /* Foxconn Silver added end, 2011/12/21, for kernel_ntfs */       
         ret = system(buf);
@@ -573,7 +573,7 @@ int usb_mount_block(int major_no, int minor_no, char *mntdev)
     /* to avoid user can't detect USB device when power on,
      * check httpd's status before send signal to httpd
      */
-    for (i=0; i<5; i++) {
+    for (i=0; i<50; i++) {
         if (0 == access("/var/run/httpd.pid", R_OK))
             break;
         sleep(2);
@@ -845,11 +845,11 @@ hotplug_block(void)
 		USB_LOCK();
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
-        system("killall -9 bftpd 2> /dev/null");
+        system("killall -9 bftpd");
 #ifndef CONFIG_SAMBA_NO_RESTART
-        system("killall -9 smbd 2> /dev/null");
+        system("killall -9 smbd");
 #endif
-        system("killall -9 nmbd 2> /dev/null");
+        system("killall -9 nmbd");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */
@@ -918,11 +918,11 @@ hotplug_block(void)
 		USB_LOCK();
         /* foxconn wklin added start, 01/19/2011, avoid zombie issue */
         system("killall -9 minidlna.exe");
-        system("killall -9 bftpd 2> /dev/null");
+        system("killall -9 bftpd");
 #ifndef CONFIG_SAMBA_NO_RESTART
-        system("killall -9 smbd 2> /dev/null");
+        system("killall -9 smbd");
 #endif
-        system("killall -9 nmbd 2> /dev/null");
+        system("killall -9 nmbd");
         usleep(500000);
         /* foxconn wklin added end, 01/19/2011 */
         /* Foxconn modified start, Wins, 04/11/2011 */

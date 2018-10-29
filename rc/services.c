@@ -1242,7 +1242,7 @@ int start_bsd(void)
 #ifdef NETGEAR_PATCH
     system("wl -i eth2 bssload 0");
     system("wl -i eth3 bssload 0");
-	int ret = eval("/usr/sbin/gbsd");
+	int ret = eval("/bin/gbsd");
 #else /* !NETGEAR_PATCH */
 	int ret = eval("/usr/sbin/bsd");
 #endif /* !NETGEAR_PATCH */
@@ -1789,13 +1789,8 @@ start_services(void)
 #if defined(BCM_DCS) || defined(EXT_ACS)
 	start_acsd();
 #endif
-#if defined(R8000)
-		if(nvram_match("wl_5g_bandsteering", "1") && nvram_match("wla_wlanstate", "Enable")&& nvram_match("wlg_wlanstate", "Enable"))
-	    start_bsd();
-#else	
-		if(nvram_match("enable_band_steering", "1") && nvram_match("wlg_wlanstate", "Enable")&& nvram_match("wlh_wlanstate", "Enable"))
-	    start_bsd();
-#endif	    
+        if(nvram_match("enable_band_steering", "1") && nvram_match("wlg_wlanstate", "Enable")&& nvram_match("wlh_wlanstate", "Enable"))
+            start_bsd();
 #ifdef __CONFIG_SAMBA__
 	start_samba();
 #endif

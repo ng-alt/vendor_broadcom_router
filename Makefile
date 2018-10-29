@@ -327,6 +327,9 @@ export CFLAGS +=  -DCONFIG_SAMBA_NO_RESTART
 ifeq ($(CONFIG_GPIO_LED_SWITCH),y)
 export CFLAGS += -DLED_GPIO_SWITCH
 endif
+ifeq ($(CONFIG_CIRCLE_PARENTAL_CONTROL),y)
+export CFLAGS += -DCIRCLE_PARENTAL_CONTROL
+endif
 ifeq ($(INCLUDE_FBWIFI_FLAG),y)
 export CFLAGS += -DFBWIFI_FLAG
 endif
@@ -529,12 +532,10 @@ obj-$(CONFIG_SWRESETD) += swresetd
 obj-$(CONFIG_PHYMON_UTILITY) += phymon
 #endif
 #if defined(EXT_ACS)
-#obj-$(CONFIG_EXTACS) += acsd
+obj-$(CONFIG_EXTACS) += acsd
 #endif
-ifeq ($(NETGEAR_PATCH),1)
-#obj-$(CONFIG_BCMBSD) += gbsd
-else
-#obj-$(CONFIG_BCMBSD) += bsd
+ifneq ($(NETGEAR_PATCH),1)
+obj-$(CONFIG_BCMBSD) += bsd
 endif
 obj-$(CONFIG_VMSTAT) += vmstat
 
@@ -563,18 +564,25 @@ ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
 obj-$(CONFIG_TREND_IQOS) += iqos
 
-#obj-$(CONFIG_TREND_IQOS) += bcmiqosd
+obj-$(CONFIG_TREND_IQOS) += bcmiqosd
 # Speedtest_cli
-#obj-$(CONFIG_TREND_IQOS) += speedtest-cli
+obj-$(CONFIG_TREND_IQOS) += speedtest-cli
 # curl
 #obj-$(CONFIG_TREND_IQOS) += curl
 export CFLAGS += -D__CONFIG_TREND_IQOS__
+ifeq ($(CONFIG_BRCM_GENERIC_IQOS),y)
+obj-$(CONFIG_TREND_IQOS) += bcmiqosd
+export CFLAGS += -D__BRCM_GENERIC_IQOS__
+endif
 endif
 endif
 #endif /* __CONFIG_TREND_IQOS__ */
 
 # always build eap dispatcher
 obj-y += eapd/linux
+ifeq ($(NETGEAR_PATCH),1)
+obj-y += gbsd/linux
+endif
 obj-y += parser
 
 ifeq ($(CONFIG_VOIP),y)
@@ -753,8 +761,10 @@ ifeq ($(PROFILE),R8000)
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/ipset
 	install prebuilt/et.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/et
 	install prebuilt/dhd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/dhd
+	install prebuilt/ipset/* $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/net/ipset
 	cd $(TARGETDIR)/etc && ln -sf /tmp/resolv.conf resolv.conf
 	$(STRIP) $(TARGETDIR)/bin/ookla
 	$(STRIP) $(TARGETDIR)/usr/sbin/ookla
@@ -1104,7 +1114,7 @@ norton-clean:
 #ifdef __CONFIG_TREND_IQOS__
 ifeq ($(LINUX_VERSION),2_6_36)
 ifeq ($(CONFIG_TREND_IQOS),y)
-IQOS_DIR := $(BASEDIR)/components/vendor/trend/iqos
+IQOS_DIR := $(BASEDIR)/components/vendor/trend_brcm_generic_iqos/iqos
 
 iqos-install:
 	+$(MAKE) -C $(IQOS_DIR) install INSTALLDIR=$(INSTALLDIR)/iqos

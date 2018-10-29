@@ -159,23 +159,23 @@ function initStartTimeChange()
 <table width="100%">
 <tr>
 <td width="22%"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPU Load</b><br><br></td>
-<td width="78%"><b>CPU1: <%3302%>% CPU2: <%3303%>%</b><br><br></td>
+<td width="78%"><b>CPU1: <%3318%>% CPU2: <%3319%>%</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Memory Usage (Used/Total)</b><br><br></td>
-<td><b><%3304%>MB/<%3305%>MB</b><br><br></td>
+<td><b><%3320%>MB/<%3321%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flash Usage (Used/Total)</b><br><br></td>
-<td><b><%3306%>MB/<%3307%>MB</b><br><br></td>
+<td><b><%3322%>MB/<%3323%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Network Session (Active/Total)</b><br><br></td>
-<td><b><%3308%></b><br><br></td>
+<td><b><%3324%></b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System Uptime</b><br><br></td>
-<td><b><%3309%></b><br><br></td>
+<td><b><%3325%></b><br><br></td>
 </tr>
 </table>
 </form>
@@ -186,7 +186,7 @@ function initStartTimeChange()
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="checkbox" name="action_Start_When_Boot_Up" value="Start_When_Boot_Up" onclick="document.forms[1].submit();" ><b> Start Debug Log Capture when boot up</b>
 <br><br>
-<input type="hidden" name="Start_When_Boot_Up" value="<%3310%>">
+<input type="hidden" name="Start_When_Boot_Up" value="<%3326%>">
 <input type="hidden" name="form" value="1" >
 </form>
 <form id="cf2" action=newdebug.cgi method="POST">
@@ -198,8 +198,8 @@ function initStartTimeChange()
 <b>Store location</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <select name="store_location">
-<option value="memory" <%3311%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-<option value="usb" <%3312%>>USB Storage</option>
+<option value="memory" <%3327%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+<option value="usb" <%3328%>>USB Storage</option>
 </select>
 <br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -212,22 +212,22 @@ function initStartTimeChange()
 <span class="roundleft_button">Save Debug Log</span><span class="roundright_button">&nbsp;</span>
 </button> 
 <br><br>
-<input type="hidden" name="capture_in_process" value="<%3313%>">
-<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3314%>">
+<input type="hidden" name="capture_in_process" value="<%3329%>">
+<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3330%>">
 <input type="hidden" name="form" value="2" >
 </form>
 <form id="cf3" action=newdebug.cgi method="POST">
 &nbsp;&nbsp;
 <!--
 <input type="checkbox" name="action_Enable_Telnet" value="Telnet_Enable" onclick="document.forms[3].submit();"><b> Enable Telnet</b>
-<input type="hidden" name="Enable_Telnet" value="<%3315%>">
+<input type="hidden" name="Enable_Telnet" value="<%3331%>">
 <br><br>-->
 &nbsp;&nbsp;
 <input type="checkbox" name="action_Mirror_Port" value="Port_mirror" onclick="document.forms[3].submit();"><b> WAN Port mirror to LAN port 1</b>
-<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3316%>">
+<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3332%>">
 <input type="hidden" name="form" value="3" >
 </form>
-<%3317%>
+<%3333%>
 <br>
 <form id="cf4" action=radebug.cgi method="POST">
 &nbsp;&nbsp;
@@ -235,39 +235,39 @@ function initStartTimeChange()
 <br><br>
 <table width="45%">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="checkbox" name="stageDev" value="<%3318%>" <%3319%> onclick="stageDevChange();" ><b> Dev </b>
+<input type="checkbox" name="stageDev" value="<%3334%>" <%3335%> onclick="stageDevChange();" ><b> Dev </b>
 &nbsp;&nbsp;
-<input type="checkbox" name="stageProd" value="<%3320%>" <%3321%> onclick="stageProdChange();" ><b> prod </b>
+<input type="checkbox" name="stageProd" value="<%3336%>" <%3337%> onclick="stageProdChange();" ><b> prod </b>
 &nbsp;&nbsp;
 <button type="SUBMIT" value="raChange" id="raParamSetting" disabled="disabled" class="button-rule" >
 <span id="raBtnLeft" class="roundleft_grey">&nbsp;&nbsp; Restart RA Process </span><span id="raBtnRight" class="roundright_grey">&nbsp;&nbsp;</span>
 </button>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ftp server:</b><br><br></td>
-<td nowrap width="20%" align="left"><input type="text" name="serverIP" value="<%3322%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
+<td nowrap width="20%" align="left"><input type="text" name="serverIP" value="<%3338%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https server:</b><br><br></td>
-<td nowrap width="20%" align="left"><input type="text" name="HTTPserverIP" value="<%3323%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
+<td nowrap width="20%" align="left"><input type="text" name="HTTPserverIP" value="<%3339%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Directory path:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="serverPath" value="<%3324%>" onchange="serverPathChange();" size="18" maxlength="33"></td>
+<td nowrap width="50%" align="left"><input type="text" name="serverPath" value="<%3340%>" onchange="serverPathChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initial start time:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3325%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
+<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3341%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
 <br><br>
 </tr>
 </table>
 <input type="hidden" name="form" value="4" >
-<input type="hidden" name="raStageDev" value="<%3318%>" >
-<input type="hidden" name="raStageProd" value="<%3320%>" >
-<input type="hidden" name="raServerIP" value="<%3322%>" >
-<input type="hidden" name="raHTTPServerIP" value="<%3323%>" >
-<input type="hidden" name="raServerPath" value="<%3324%>" >
-<input type="hidden" name="raInitStartTime" value="<%3325%>" >
+<input type="hidden" name="raStageDev" value="<%3334%>" >
+<input type="hidden" name="raStageProd" value="<%3336%>" >
+<input type="hidden" name="raServerIP" value="<%3338%>" >
+<input type="hidden" name="raHTTPServerIP" value="<%3339%>" >
+<input type="hidden" name="raServerPath" value="<%3340%>" >
+<input type="hidden" name="raInitStartTime" value="<%3341%>" >
 </form>
-<%3326%>
+<%3342%>
 </body>
 </html>

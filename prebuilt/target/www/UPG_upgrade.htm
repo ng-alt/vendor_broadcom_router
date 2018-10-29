@@ -123,7 +123,7 @@ function showAnimation()
 
 function checkData()
 {
-	var up_msg = "<%1486%>\n";
+	var up_msg = "<%1510%>\n";
 	var a;
 	var msg="";
 	var temp_win;
@@ -142,13 +142,13 @@ function checkData()
 		a = cdisplit(t_str,".");
 	if(t_str.length == 0)
 	{
-		alert("<%1487%>\n");
+		alert("<%1511%>\n");
 		return false;
 	}
 	//if((a.length<2)||(a[0]=="")||((a[a.length-1].toLowerCase()!="img") && (a[a.length-1].toLowerCase()!="chk") && (a[a.length-1].toLowerCase()!="bin")))
 	if((a.length<2)||(a[0]=="")||(a[a.length-1].toLowerCase()!="chk"))
 	{
-	 alert("<%1488%>chk\n");
+	 alert("<%1512%>chk\n");
 	 return false;
 	}
     if (!confirm(up_msg))
@@ -177,7 +177,7 @@ function enableFwCheck()
 
 var pchar = "|"; // progress char
 var maxchars = 94;
-var delay_time = <%926%>;
+var delay_time = <%936%>;
 var charcount = 0;
 
 function makeStr(strSize, fillChar)
@@ -268,12 +268,12 @@ function pre_check()
 </script>
 </head>
 <body  onload="change_size();stopAnimation();check_opt_state();pre_check();" class="page-body" onResize="change_size();">
-<img class="cover-image" src="<%60%>">
-<img class="body-image" src="<%61%>">
+<img class="cover-image" src="<%65%>">
+<img class="body-image" src="<%66%>">
 <div id="full-page-container">
 
-<img class="subtop-image" src="<%62%>">
-<div class="subhead2"> <%406%></div>
+<img class="subtop-image" src="<%67%>">
+<div class="subhead2"> <%416%></div>
 
 <table border="0" class="subhead2-table" >
 
@@ -285,14 +285,14 @@ function pre_check()
 <table style="border-collapse:collapse;width:97%">
 
  <TR>
- <td class="subhead2-text-menu" ><a href="javascript:loadhelp('UPG_upgrade','check')" tabindex="-1"><b><%1489%></b></a></td>
+ <td class="subhead2-text-menu" ><a href="javascript:loadhelp('UPG_upgrade','check')" tabindex="-1"><b><%1513%></b></a></td>
  <td align="left" class="subhead2-text-context" >
- <button type="button" name="Check" class="button-rule"  value="<%1490%>" onClick="buttonClick(this,'<%1490%>');set_check_upgrade();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1490%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+ <button type="button" name="Check" class="button-rule"  value="<%1514%>" onClick="buttonClick(this,'<%1514%>');set_check_upgrade();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1514%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
  </TD>
  </tr>
 <!--
 <tr>
-    <td colspan="2" class="table-seperate-border"><input type="checkbox" <%1491%> name="enable" value="1" onclick="enableFwCheck();submit();"><b><%1492%></b></td></tr>
+    <td colspan="2" class="table-seperate-border"><input type="checkbox" <%1515%> name="enable" value="1" onclick="enableFwCheck();submit();"><b><%1516%></b></td></tr>
 -->
 </table>
 <input type="hidden" name="ver_check_enable" value="1">
@@ -301,7 +301,7 @@ function pre_check()
 
 <tr><td colspan="2" height="12" class="" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1493%></b></a></td>
+	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1517%></b></a></td>
 
 </tr>
 <tr>
@@ -310,7 +310,7 @@ function pre_check()
 			onchange="this.form.upfile.value=this.value.substr(this.value.lastIndexOf('\\')+1);"
 			contentEditable=false  onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;" onmouseover="this.style.cursor='pointer';">
 		<input type="text" name="upfile" size="20" maxlength="1024" readonly>
-      &nbsp;&nbsp;&nbsp;<button type="button" value="browse"  class="button-rule" onclick="if(!is_ie6()){this.form.file.click();}" onmouseover="this.style.cursor='default';"><span class="roundleft_button"><%462%></span><span class="roundright_button">&nbsp;</span></button>
+      &nbsp;&nbsp;&nbsp;<button type="button" value="browse"  class="button-rule" onclick="if(!is_ie6()){this.form.file.click();}" onmouseover="this.style.cursor='default';"><span class="roundleft_button"><%472%></span><span class="roundright_button">&nbsp;</span></button>
 
 	</td>
 </tr>
@@ -318,8 +318,8 @@ function pre_check()
 
 <tr>
  <td colspan="2" align="center" class="" >
-	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1494%>" class="button-rule" onClick="buttonClick(this,'<%1494%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1494%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-	&nbsp;&nbsp;&nbsp;<button type="RESET" name="Cancel" VALUE=" <%66%>" class="button-rule" onClick="stopAnimation();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%66%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1518%>" class="button-rule" onClick="buttonClick(this,'<%1518%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1518%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	&nbsp;&nbsp;&nbsp;<button type="RESET" name="Cancel" VALUE=" <%71%>" class="button-rule" onClick="stopAnimation();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%71%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 
 </tr>
 <tr style="height:10px"><td colspan="2" height="12" class="">&nbsp;</td></tr>
@@ -333,7 +333,7 @@ function pre_check()
 <table border="0" style="border-collapse:collapse;" >
 
 <tr>
- <td colspan="2" ><BIG><%1495%>  2  <%1496%>
+ <td colspan="2" ><BIG><%1519%>  2  <%1520%>
  </BIG></td>
 </tr>
 <tr>
@@ -353,16 +353,16 @@ function pre_check()
 </table>
 </form>
 <form method="POST" action="router_tnc_config.cgi">
-<input type="hidden" name="auto_update_state" value="<%1497%>">
-<input type="hidden" name="ra_state" value="<%1498%>">
+<input type="hidden" name="auto_update_state" value="<%1521%>">
+<input type="hidden" name="ra_state" value="<%1522%>">
 <input type="hidden" name="wla_region" value="<%20%>">
 <table style="border-collapse:collapse;width:97%">
 <tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr align="center">
 <td colspan="2" height="12" class="">
-<button value="Apply" type="SUBMIT" name="agree" class=button-apply > <span class="roundleft_apply" ><%64%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="fresh();"  type="button" name="reset" class="button-rule" ><span class="roundleft_button"><span class ="">&nbsp;&nbsp;&nbsp;&nbsp;<%66%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<button value="Apply" type="SUBMIT" name="agree" class=button-apply > <span class="roundleft_apply" ><%69%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="Cancel" onclick="fresh();"  type="button" name="reset" class="button-rule" ><span class="roundleft_button"><span class ="">&nbsp;&nbsp;&nbsp;&nbsp;<%71%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -370,53 +370,53 @@ function pre_check()
 <tr>
 <td colspan="2" height="12" class="">
 
-<b><%1499%></b>
+<b><%1523%></b>
 <br><br>
-<%1500%>
+<%1524%>
 
 <br>
 
-<%1501%>
+<%1525%>
 
 <br>
-<input type="radio" name="auto_update_enable" value="Yes" onclick="" ><font color="gray"> <%1502%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="radio" name="auto_update_enable" value="No"  onclick="" ><font color="gray"> <%1503%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="auto_update_enable" value="Yes" onclick="" ><font color="gray"> <%1526%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="auto_update_enable" value="No"  onclick="" ><font color="gray"> <%1527%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 <br>
 </td>
 </tr>
-<%1504%>
+<%1528%>
 <tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
 <td colspan="2" height="12" class="">
 
-<b><%1505%></b>
+<b><%1529%></b>
 <br><br>
-<%1506%>
+<%1530%>
 
 <br>
 
-<%1501%>
+<%1525%>
 
 <br>
-<input type="radio" name="ra_enable" value="Yes" onclick="" ><font color="gray"> <%1502%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="radio" name="ra_enable" value="No"  onclick=""> <font color="gray"> <%1503%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="ra_enable" value="Yes" onclick="" ><font color="gray"> <%1526%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="ra_enable" value="No"  onclick=""> <font color="gray"> <%1527%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <br>
 </td>
-<%1507%>
+<%1531%>
 </tr>
 <tr><td colspan="2" height="12" class="">
 <div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div>
 <div align="right" style="width:100%;">
-<a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"><%1508%></a>
+<a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"><%1532%></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<%1509%>
-<a href="#" onclick="window.open('router_full_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1510%></a>
-<%1511%>
-<%1504%>
-<a href="#" onclick="window.open('router_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1510%></a>
-<%1507%>
+<%1533%>
+<a href="#" onclick="window.open('router_full_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1534%></a>
+<%1535%>
+<%1528%>
+<a href="#" onclick="window.open('router_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1534%></a>
+<%1531%>
 </div>
 </td></tr>
 </table>
@@ -433,11 +433,11 @@ function pre_check()
 
   <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%207%> </span>
 
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%208%> </span>
       </div>
 <a name="helpframe-anchor"></a>      
 </div>      

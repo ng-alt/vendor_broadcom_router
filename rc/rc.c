@@ -3620,7 +3620,19 @@ sysinit(void)
         if ((nvram_match("enable_vlan","enable") || nvram_match("iptv_enabled","1")) &&
             !nvram_match("ctf_disable", "1"))
         {
+        }
+        if(!nvram_match("bs_enable", "0") ||
+           nvram_match("traffic_enable", "1") ||
+           nvram_match("video_qos_enable", "1") ||
+           nvram_match("qos_down_streaming_enable", "1") ||
+           nvram_match("access_control_mode", "1")
+          )
+        {
             nvram_set("ctf_disable", "1");
+        }
+        else
+        {
+            nvram_set("ctf_disable", "0");
         }
 
     /* Foxconn added start pling 08/19/2010 */

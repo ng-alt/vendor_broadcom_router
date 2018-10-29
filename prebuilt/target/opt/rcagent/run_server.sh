@@ -1,4 +1,9 @@
 #!/bin/sh
 
+echo "" > /tmp/rcagent_token_mutex
+
 /opt/rcagent/nas_service &
-/opt/rcagent/cgi_processor &
+while true;
+do
+    /opt/rcagent/cgi_processor
+done

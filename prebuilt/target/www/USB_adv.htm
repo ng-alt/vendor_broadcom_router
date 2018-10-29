@@ -124,7 +124,7 @@ function remove_disk()
 	
 	if(cf.usb_num.value == 0)
 	{
-        msg+= "<%2403%>.\n";
+        msg+= "<%2426%>.\n";
     }
     if (msg.length > 1)
 	{
@@ -139,12 +139,12 @@ function edit_folder()
 	cf = document.forms[0];
 	if(cf.no_usb_device.value == 1)
 	{
-	    alert("<%2403%>.");
+	    alert("<%2426%>.");
 		return false;
 	}
 	if(cf.select.value == -1)
 	{
-		alert("<%2429%>");
+		alert("<%2452%>");
 		return false;
 	}
 	cf.action.value = "edit";
@@ -157,12 +157,12 @@ function delete_folder()
 	cf=document.forms[0];
 	if(cf.no_usb_device.value == 1)
 	{
-	    alert("<%2403%>.");
+	    alert("<%2426%>.");
 		return false;
 	}
 	if(cf.select.value == -1)
 	{
-		alert("<%2429%>\n");
+		alert("<%2452%>\n");
 		return false;
 	}
     
@@ -188,7 +188,7 @@ function delete_folder()
 
     if ( cf.no_dlna.value != 1 )  {
         if(checkAdminFolder==1 && folderNum>1)
-            alert("<%2430%>");
+            alert("<%2453%>");
     }
     return true;
 }
@@ -215,25 +215,25 @@ function checkData()
         || (cf.deviceName.value.match( /[^\x21-\x7E]/ ))
        )
 	{
-		alert("<%776%>\n");
+		alert("<%786%>\n");
 		return false;
 	}
 
 	if(cf.workGroup.value == ""){
-		alert("<%2431%>.\n");
+		alert("<%2454%>.\n");
 		return false;
 	}
 	if (cf.workGroup.value.match( /[^\x20-\x7E]/ ))
 	{
 		cf.workGroup.focus();
-		alert("<%2431%>.\n");
+		alert("<%2454%>.\n");
 		return false;
 	}
 	
 	var portvalue=parseInt(cf.http_via_port.value);
 	if ((cf.is_https.value == "1") && (portvalue == 80) )
 	{
-		alert("<%2432%>");
+		alert("<%2455%>");
 		return false;
 	} else
 	if( (isNaN(cf.http_via_port.value) || !_isNumeric(cf.http_via_port.value)||
@@ -241,22 +241,22 @@ function checkData()
 	   parseInt(cf.http_via_port.value,10) > 65534 ||
 	   cf.http_via_port.value.indexOf(".") != -1 ) && (cf.http_via_port.value !=443) )
 	{
-		alert("<%2432%>");
+		alert("<%2455%>");
 		return false;
 	} else if ( (cf.is_https.value == "0") && (portvalue == 443) ) {
-		alert("<%2432%>");
+		alert("<%2455%>");
                 return false;
         }		
 
     portvalue=parseInt(cf.ftp_via_port.value);
     if( isNaN(cf.ftp_via_port.value) || cf.ftp_via_port.value < 21 || (cf.ftp_via_port.value > 21 & cf.ftp_via_port.value < 1024) || cf.ftp_via_port.value > 65534)
     {
-	    alert("<%2433%>");
+	    alert("<%2456%>");
 	    return false;
     }
     if (cf.ftp_via_port.value == cf.http_via_port.value)
     {
-        alert("<%2434%>");
+        alert("<%2457%>");
 	    return false;
     }
     
@@ -287,20 +287,20 @@ function adjust_table_column()
 function loadSettings()
 {
     var cf=document.forms[0];
-    var adv_add_edit_page = <%2435%>;
+    var adv_add_edit_page = <%2458%>;
 	if (cf.no_usb_device.value == 1)
         {
 
 var removeButton;
 cf.Remove.disabled = 'true';
 removeButton=document.getElementsByName("Remove");
-removeButton[0].outerHTML='<button type="submit" disabled value="<%2405%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%2405%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%2405%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+removeButton[0].outerHTML='<button type="submit" disabled value="<%2428%>" name="Remove" class="button-grey" onClick="buttonClick(this,\'<%2428%>\');return remove_disk();"><span class="roundleft_grey">&nbsp;&nbsp; <%2428%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
 removeButton[0].style.cursor='default';
 }
 
     if (cf.umountsucc.value == "1")
     {
-         alert("<%2406%>");
+         alert("<%2429%>");
     }
     else if (cf.umountsucc.value == "2")
     {
@@ -350,7 +350,7 @@ function creat_folder()
     var cf=document.forms[0];
     if(cf.no_usb_device.value == 1)
 	{
-	    alert("<%2403%>.\n");
+	    alert("<%2426%>.\n");
 		return false;
 	}
 	if(cf.sharefolderNum.value >= 256)
@@ -368,7 +368,7 @@ function adv_folder(index)
 	var cf = document.forms[0];
 	if(cf.no_usb_device.value == 1)
 	{
-	    alert("<%2403%>.");
+	    alert("<%2426%>.");
 		return false;
 	}
 
@@ -376,7 +376,7 @@ function adv_folder(index)
 	{
 		if(cf.select.value == -1)
 		{
-			alert("<%2429%>");
+			alert("<%2452%>");
 			return false;
 		}
 		cf.action.value = "edit";
@@ -403,22 +403,22 @@ function adv_folder(index)
 //-->
 </script></head>
 <body onload="change_size();loadSettings();"  class="subpage-body" onResize="change_size();" >
-<img class="cover-image" src="<%60%>">
-<img class="body-image" src="<%61%>">
+<img class="cover-image" src="<%65%>">
+<img class="body-image" src="<%66%>">
 <div id="full-page-container">
 
 <form id="target"  name="frmService" method="post" action="usb_adv.cgi">
 <input type="hidden" name="buttonHit"><input type="hidden" name="buttonValue">
-<img class="subtop-image" src="<%62%>">
-<%2436%>
-<div class="subhead2"> <%2437%></div>
-<%2438%>
+<img class="subtop-image" src="<%67%>">
+<%2459%>
+<div class="subhead2"> <%2460%></div>
+<%2461%>
 <table border="0"    style="height:370px"  class="subhead2-table">
 
 <tr align="left" valign="middle">
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
-&nbsp;&nbsp;&nbsp;<button value="<%64%>"  onclick="buttonClick(this,'<%64%>');checkData();" type="button" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%65%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
-&nbsp;&nbsp;&nbsp;<button value="<%66%>" onclick="buttonClick(this,'<%723%>');location.href='USB_adv.htm'" type="button" name="Refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%723%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%69%>"  onclick="buttonClick(this,'<%69%>');checkData();" type="button" name="Apply" class="button-apply" > <span class="roundleft_apply" ><%70%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button value="<%71%>" onclick="buttonClick(this,'<%733%>');location.href='USB_adv.htm'" type="button" name="Refresh" class="button-rule" ><span class="roundleft_button"><span class="refresh-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%733%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 
@@ -432,14 +432,14 @@ function adv_folder(index)
 <table border="0" cellpadding="2" cellspacing="0" width="60%">
 <tr>
 <td><a href="javascript:loadhelp('USB_adv','device')" 
-	tabindex="-1"><b><%2414%> :</b></a></td>
-<td width="30%"><input type="text" name="deviceName" size="21" maxlength="15" value="<%2439%>"></td>
+	tabindex="-1"><b><%2437%> :</b></a></td>
+<td width="30%"><input type="text" name="deviceName" size="21" maxlength="15" value="<%2462%>"></td>
 </tr>
 <tr><td></td></tr>
 <tr>
 <td><a href="javascript:loadhelp('USB_adv','workgroup')" 
-	tabindex="-1"><b><%2440%> :</b></a></td>
-<td width="30%"><input type="text" name="workGroup" size="21" maxlength="15" value="<%2441%>"></td>
+	tabindex="-1"><b><%2463%> :</b></a></td>
+<td width="30%"><input type="text" name="workGroup" size="21" maxlength="15" value="<%2464%>"></td>
 </tr>
 </table>
 </td>
@@ -450,44 +450,44 @@ function adv_folder(index)
 <td colspan="2">
 <table border="1" cellpadding="2" cellspacing="0" width="60%">
 <tr>
-<td align="center" nowrap="nowrap"><span class="thead"><%591%></span></td>
-<td align="center" nowrap="nowrap"><span class="thead"><%2442%></span></td>
-<td align="center" nowrap="nowrap"><span class="thead"><%2443%></span></td>
-<td align="center" nowrap="nowrap"><span class="thead"><%658%></span></td>
+<td align="center" nowrap="nowrap"><span class="thead"><%601%></span></td>
+<td align="center" nowrap="nowrap"><span class="thead"><%2465%></span></td>
+<td align="center" nowrap="nowrap"><span class="thead"><%2466%></span></td>
+<td align="center" nowrap="nowrap"><span class="thead"><%668%></span></td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_samba" value="enable_samba" <%2444%>></td>
-<td align="center" nowrap="nowrap"><%2445%></td>
-<td align="center" nowrap="nowrap"><%2415%></td>
+<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_samba" value="enable_samba" <%2467%>></td>
+<td align="center" nowrap="nowrap"><%2468%></td>
+<td align="center" nowrap="nowrap"><%2438%></td>
 <td align="center" nowrap="nowrap">-</td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_http" value="enable_http" <%2446%>></td>
-<td align="center" nowrap="nowrap"><%2447%></td>
-<td align="center" nowrap="nowrap"><%2448%></td>
+<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_http" value="enable_http" <%2469%>></td>
+<td align="center" nowrap="nowrap"><%2470%></td>
+<td align="center" nowrap="nowrap"><%2471%></td>
 <td align="center" nowrap="nowrap">80</td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_wan_http" value="enable_wan_http" <%2449%>></td>
-<%2450%>
-<td align="center" nowrap="nowrap"><%2447%>S (<%2451%>)</td>
-<%2452%>
-<td align="center" nowrap="nowrap"><%2447%> (<%2451%>)</td>
-<%2453%>
-<td align="center" nowrap="nowrap"><%2454%></td>
-<td align="center" nowrap="nowrap"><input type="text" name="http_via_port" size="5" maxlength="5" value="<%2455%>"></td>
+<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_wan_http" value="enable_wan_http" <%2472%>></td>
+<%2473%>
+<td align="center" nowrap="nowrap"><%2470%>S (<%2474%>)</td>
+<%2475%>
+<td align="center" nowrap="nowrap"><%2470%> (<%2474%>)</td>
+<%2476%>
+<td align="center" nowrap="nowrap"><%2477%></td>
+<td align="center" nowrap="nowrap"><input type="text" name="http_via_port" size="5" maxlength="5" value="<%2478%>"></td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_ftp" value="enable_ftp" <%2456%>></td>
-<td align="center" nowrap="nowrap"><%2457%></td>
-<td align="center" nowrap="nowrap"><%2458%></td>
+<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_ftp" value="enable_ftp" <%2479%>></td>
+<td align="center" nowrap="nowrap"><%2480%></td>
+<td align="center" nowrap="nowrap"><%2481%></td>
 <td align="center" nowrap="nowrap">21</td>
 </tr>
 <tr>
-<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_wan_ftp" value="enable_wan_ftp" <%2459%>></td>
-<td align="center" nowrap="nowrap"><%2457%> (<%2451%>)</td>
-<td align="center" nowrap="nowrap"><%2460%></td>
-<td align="center" nowrap="nowrap"><input type="text" name="ftp_via_port" size="5" maxlength="5" value="<%2461%>"></td>
+<td align="center" nowrap="nowrap"><input type="checkbox" name="enable_wan_ftp" value="enable_wan_ftp" <%2482%>></td>
+<td align="center" nowrap="nowrap"><%2480%> (<%2474%>)</td>
+<td align="center" nowrap="nowrap"><%2483%></td>
+<td align="center" nowrap="nowrap"><input type="text" name="ftp_via_port" size="5" maxlength="5" value="<%2484%>"></td>
 </tr>
 </table>
 </td>
@@ -496,7 +496,7 @@ function adv_folder(index)
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
-<td colspan="2" ><a href="javascript:loadhelp('USB_adv','available')" tabindex="-1"><b><%2416%></b></a></td>
+<td colspan="2" ><a href="javascript:loadhelp('USB_adv','available')" tabindex="-1"><b><%2439%></b></a></td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
@@ -504,16 +504,16 @@ function adv_folder(index)
 	<table border="1" cellpadding="2" cellspacing="0" width="100%">
 	<tr>
 	<td align="center" nowrap="nowrap" width="5%"><span class="thead"> &nbsp;</span></td>
-	<td align="center" nowrap="nowrap" width="17%"><span class="thead"><%2417%></span></td>
-	<td align="center" nowrap="nowrap" width="14%"><span class="thead"><%2418%></span></td>
-	<td align="center" nowrap="nowrap" width="14%"><span class="thead"><%2419%></span></td>
-	<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2420%></span></td>
-	<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2421%></span></td>
-	<td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2422%></span></td>
-	<td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2423%></span></td>
+	<td align="center" nowrap="nowrap" width="17%"><span class="thead"><%2440%></span></td>
+	<td align="center" nowrap="nowrap" width="14%"><span class="thead"><%2441%></span></td>
+	<td align="center" nowrap="nowrap" width="14%"><span class="thead"><%2442%></span></td>
+	<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2443%></span></td>
+	<td align="center" nowrap="nowrap" width="15%"><span class="thead"><%2444%></span></td>
+	<td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2445%></span></td>
+	<td align="center" nowrap="nowrap" width="10%"><span class="thead"><%2446%></span></td>
 	</tr>
 
-	<%2462%>
+	<%2485%>
 	</table>
 	</td>
 </tr>
@@ -524,30 +524,30 @@ function adv_folder(index)
 	<td colspan="3" >
 	<table ><tr>
 	 <td colspan="1" class="button-rule"   onClick="adv_folder(0);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();">
-		 <span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%662%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		 <span class="roundleft_button"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%672%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	&nbsp;&nbsp;&nbsp;		 
 	</td>
 	 <td colspan="1" class="button-rule"  onClick="adv_folder(1);" onMouseOver="changeCursorPointer();" onMouseOut="changeCursorDefault();">
-		 <span class="roundleft_button">&nbsp;&nbsp; <%2463%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		 <span class="roundleft_button">&nbsp;&nbsp; <%2486%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span>
 	&nbsp;&nbsp;&nbsp;
 	</td>
 	 <td colspan="1" >
-		 <button type="submit" value="<%663%>" name="Delete" class="button-rule" onclick="buttonClick(this,'<%663%>');return delete_folder();"><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%663%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+		 <button type="submit" value="<%673%>" name="Delete" class="button-rule" onclick="buttonClick(this,'<%673%>');return delete_folder();"><span class="roundleft_button"><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%673%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	</td>	
 	</tr>
 	</table></td>
 </tr>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
-<%2411%>
-<tr><td colspan="2" ><%2464%></td></tr>
-<%2413%>
+<%2434%>
+<tr><td colspan="2" ><%2487%></td></tr>
+<%2436%>
 <tr><td colspan="2" ></td></tr>
 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
 <tr>
 <td colspan="2" >
-&nbsp;&nbsp;&nbsp;<button type="submit" value="<%2405%>" name="Remove" class="button-rule" onClick="buttonClick(this,'<%2405%>');return remove_disk();"><span class="roundleft_button">&nbsp;&nbsp; <%2405%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+&nbsp;&nbsp;&nbsp;<button type="submit" value="<%2428%>" name="Remove" class="button-rule" onClick="buttonClick(this,'<%2428%>');return remove_disk();"><span class="roundleft_button">&nbsp;&nbsp; <%2428%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 </td>
 </tr>
 <tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr><tr><td colspan="2" ></td></tr>
@@ -560,23 +560,23 @@ function adv_folder(index)
    <img class="subfooter-image" src="img/subhead2-bottom.gif">
 <div class="subhead2-bottom" >
     <span style="float:left;padding-left:10px;padding-top:5px"><img src="img/help-icon.gif" onmouseover="changeCursorPointer();" onclick="showHelpIframe();" onmouseout="changeCursorDefault();"></span>
-    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%197%> </span>
+    <span class="subhead2-text" style="float:left;padding-left:3px;" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%207%> </span>
     <span class="button-help-arrow">
       <img src="img/helparrowdown-icon.gif" id="help-button" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();" ></span>
-    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%198%> </span>
+    <span class="subhead2-text" style="text-decoration:underline;float:right;padding-right:10px" onclick="showHelpIframe();" onmouseover="changeCursorPointer();" onmouseout="changeCursorDefault();"> <%208%> </span>
       </div>
 
 
 
-<input type="hidden" name="usb_num" value="<%2425%>">
+<input type="hidden" name="usb_num" value="<%2448%>">
 <input type="hidden" name="select" value="0">
 <input type="hidden" name="action" value="advance">
-<INPUT name=umountsucc type=hidden value="<%2426%>">
-<input type="hidden" name="enable_apmode" value="<%452%>">
-<input type="hidden" name="enable_stamode" value="<%453%>">
-<input type="hidden" name="is_https" value="<%2465%>">
-<INPUT name=router_smb_link_style type=hidden value="<%2427%>">
-<input name="no_dlna" type="hidden" value="<%2466%>">
+<INPUT name=umountsucc type=hidden value="<%2449%>">
+<input type="hidden" name="enable_apmode" value="<%462%>">
+<input type="hidden" name="enable_stamode" value="<%463%>">
+<input type="hidden" name="is_https" value="<%2488%>">
+<INPUT name=router_smb_link_style type=hidden value="<%2450%>">
+<input name="no_dlna" type="hidden" value="<%2489%>">
 <a name="helpframe-anchor"></a>
 </form>
 </div>

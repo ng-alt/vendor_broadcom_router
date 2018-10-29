@@ -147,6 +147,7 @@ static inline char * strcat_r(const char *s1, const char *s2, char *buf)
  */
 extern int get_ifname_unit(const char* ifname, int *unit, int *subunit);
 
+extern char* make_wl_prefix(char *prefix, int prefix_size, int mode, char *ifname);
 /*
  * Get interfaces belonging to a specific bridge.
  *
