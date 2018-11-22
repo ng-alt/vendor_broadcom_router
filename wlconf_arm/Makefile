@@ -12,7 +12,7 @@
 # $Id: Makefile 382650 2013-02-03 04:37:57Z $
 #
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 CFLAGS	+= -I. -I$(TOP)/shared -I$(SRCBASE)/include -I$(SRCBASE)/common/include -Wall
 CFLAGS	+= $(WLAN_ComponentIncPath)
@@ -34,12 +34,12 @@ vpath %.c $(SRCBASE)/shared $(WLAN_ComponentSrcDirs)
 
 OBJS := wlconf.o bcmwifi_channels.o
 
-ifeq ($(wildcard $(SRCBASE)/router/wlconf$(BCMEX)/*.c),)
+ifeq ($(wildcard *.c),)
 all:
 ifeq ($(RTCONFIG_QTN),y)
-	-cp -f $(SRCBASE)/router/wlconf$(BCMEX)/prebuilt/wlconf_qtn wlconf
+	-cp -f prebuilt/wlconf_qtn wlconf
 else
-	-cp -f $(SRCBASE)/router/wlconf$(BCMEX)/prebuilt/wlconf wlconf
+	-cp -f prebuilt/wlconf wlconf
 endif
 else
 all: wlconf

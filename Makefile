@@ -11,8 +11,30 @@
 #
 #
 
+ifneq ($(SRC_BASE_DIR),)
+export SRCBASE=$(SRC_BASE_DIR)
+endif
+
 include common.mak
 include $(SRCBASE)/.config
+
+ifneq ($(ROOTDIR),)
+ROUTER_EXTERNAL_PACKAGES := busybox kernel_header kernel \
+    6relayd accel-pptp accel-pptpd avahi-0.6.31 bridge curl db-4.8.30 dnsmasq \
+    dropbear e2fsprogs ebtables email-3.1.3 expat-2.0.1 ez-ipupdate ffmpeg flac gctwimax-0.0.3rc4 hotplug2 \
+    igmpproxy ipset iptables iproute2 json-c \
+    libdaemon libevent-2.0.21 libexif libgcrypt-1.5.1 libgdbm libgpg-error-1.10 \
+    libiconv-1.14 libid3tag libogg libusb libusb10 libusb-0.1.12 libvorbis libxml2 lighttpd-1.4.39 \
+    lzo jpeg madwimax-0.1.1 minidlna miniupnpc miniupnpd mt-daapd \
+    net-snmp-5.7.2 nano ncurses netatalk-3.0.5 neon netstat-nat nettle nfs-utils \
+    odhcp6c openpam openssl openssl-1.0.0q openvpn pcre-8.31 phddns portmap pppd quagga rp-pppoe rp-l2tp \
+    samba samba-3.5.8 samba-3.6.x sdparm-1.02 sqlite tor udpxy \
+    udev usb-modeswitch vsftpd-3.x wget wpa_supplicant wpa_supplicant-0.7.3 xl2tpd zlib
+endif
+
+define filter-out-external-packages
+$(filter-out $(ROUTER_EXTERNAL_PACKAGES),$1)
+endef
 
 ifeq ($(RTCONFIG_RALINK),y)
 else ifeq ($(RTCONFIG_QCA),y)
@@ -90,7 +112,9 @@ export BCMSRC=src-rt-6.x.4708
 endif
 include $(SRCBASE)/makefiles/WLAN_Common.mk
 export BASEDIR := $(WLAN_TreeBaseA)
+ifneq ($(LINUXDIR),)
 export LINUXDIR := $(SRCBASE)/linux/linux-2.6.36
+endif # LINUXDIR
 
 export EXTRALDFLAGS = -lgcc_s
 export EXTRALDFLAGS2 = -L$(TOP)/nvram$(BCMEX) -lnvram -L$(TOP)/shared -lshared
@@ -119,15 +143,20 @@ ifeq ($(or $(RTCONFIG_BCMWL6A),$(RTAC53U)),y)
 WLAN_ComponentsInUse += olpc
 endif
 
-include ../../$(SRCBASE)/makefiles/WLAN_Common.mk
+include $(SRCBASE)/makefiles/WLAN_Common.mk
 endif
 
 ifneq ($(RTCONFIG_BCMARM),y)
 KDIR=$(TOP)/kernel_header
 KERNEL_HEADER_DIR=$(TOP)/kernel_header/include
 else
+ifneq ($(wildcard $(LINUX_DIR)),)
+KDIR=$(LINUX_DIR)
+KERNEL_HEADER_DIR=$(LINUX_DIR)/include
+else
 KDIR=$(LINUXDIR)
 KERNEL_HEADER_DIR=$(LINUXDIR)/include
+endif # LINUX_DIR
 endif
 
 export KDIR KERNEL_HEADER_DIR
@@ -234,7 +263,7 @@ endif
 #
 #
 #
-SEP=echo "\033[41;1m   $@   \033[0m"
+SEP=echo -e "\033[41;1m   $@   \033[0m"
 
 #
 # standard packages
@@ -770,8 +799,8 @@ obj-y += asm1042
 endif
 
 ifeq ($(RTCONFIG_BCMARM),y)
-obj-prelibs =$(filter busybox% nvram$(BCMEX) libbcmcrypto shared netconf libupnp$(BCMEX)$(EX7) libz libbcm pciefd, $(obj-y))
-obj-postlibs := $(filter-out $(obj-prelibs), $(obj-y))
+obj-prelibs = $(call filter-out-external-packages, $(filter busybox% nvram$(BCMEX) libbcmcrypto shared netconf libupnp$(BCMEX)$(EX7) libz libbcm pciefd, $(obj-y)))
+obj-postlibs := $(call filter-out-external-packages, $(filter-out $(obj-prelibs), $(obj-y)))
 endif
 
 obj-$(RTCONFIG_OPENSWAN) += $(if $(RTCONFIG_WIFI_QCA9994_QCA9994),openswan-nss gmp,)
@@ -823,8 +852,8 @@ ifneq ($(find lighttpd-1.4.39, $(obj-y)),"")
 released_dir += APP-IPK
 endif
 
-obj-clean := $(foreach obj, $(obj-y) $(obj-n) $(obj-), $(obj)-clean)
-obj-install := $(foreach obj,$(obj-y),$(obj)-install)
+obj-clean := $(foreach obj, $(call filter-out-external-packages, $(obj-y) $(obj-n) $(obj-)), $(obj)-clean)
+obj-install := $(foreach obj, $(call filter-out-external-packages, $(obj-y)),$(obj)-install)
 
 MKSQUASHFS_TARGET = mksquashfs
 MKSQUASHFS = $(MKSQUASHFS_TARGET)
@@ -835,7 +864,7 @@ LINUX_ARCH_ASM_INCL_DIR = $(if ($KPATH_3X),$(LINUXDIR)/arch/mips/include/asm,$(L
 # Basic rules
 #
 
-all: clean-build kernel_header libc version obj_prelibs kernel $(obj-y)
+all: $(call filter-out-external-packages, clean-build kernel_header libc version obj_prelibs kernel $(obj-y))
 
 ifeq ($(RTCONFIG_BCMARM),y)
 version:  $(SRCBASE)/include/epivers.h
@@ -978,7 +1007,15 @@ testfind:
 	cd $(TARGETDIR)/lib/modules/* && find -name "*.o" -exec mv -i {} . \; || true
 	cd $(TARGETDIR)/lib/modules/* && find -type d -delete || true
 
-install package: $(obj-install) $(LINUXDIR)/.config gen_target gen_gpl_excludes_router
+package: $(call filter-out-external-packages, $(obj-install) $(LINUXDIR)/.config gen_target gen_gpl_excludes_router)
+install: package
+ifneq ($(ROOTDIR),)
+	install -d $(TARGETDIR)
+
+	for dir in $(wildcard $(patsubst %,$(INSTALLDIR)/%,$(obj-y) $(subst $(BCMEX)$(EX7),,$(obj-y)))) ; do \
+	    (cd $${dir} && tar cpf - .) | (cd $(TARGETDIR) && tar xpf -) \
+	done
+endif
 
 gen_target:
 	@$(SEP)
@@ -987,13 +1024,16 @@ gen_target:
 
 
 # kernel modules
+ifeq ($(ROOTDIR),)
 	$(MAKE) -C $(LINUXDIR) modules_install DEPMOD=/bin/true INSTALL_MOD_PATH=$(TARGETDIR)
-	@if grep -q "CONFIG_RT3352_INIC_AP=y" $(LINUXDIR)/.config ; then \
+endif # ROOTDIR
+	@if grep -q "CONFIG_RT3352_INIC_AP=y" $(LINUX_DIR)/.config ; then \
 		install -d $(TARGETDIR)/iNIC_RT3352/ ; \
 		install -D $(LINUXDIR)/drivers/net/wireless/iNIC_RT3352/firmware/mii/iNIC_ap.bin $(TARGETDIR)/iNIC_RT3352/ ; \
 	else \
 		rm -rf $(TARGETDIR)/iNIC_RT3352/ ; \
 	fi
+ifeq ($(ROOTDIR),)
 ##!!TB	find $(TARGETDIR)/lib/modules -name *.o -exec mipsel-linux-strip --strip-unneeded {} \;
 	find $(TARGETDIR)/lib/modules -name *.o -exec $(STRIP) --strip-debug -x -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo {} \;
 	find $(TARGETDIR)/lib/modules -name *.ko -exec $(STRIP) --strip-debug -x -R .comment -R .pdr -R .mdebug.abi32 -R .note.gnu.build-id -R .gnu.attributes -R .reginfo {} \;
@@ -1075,6 +1115,7 @@ ifeq ($(RTCONFIG_RTL8370MB),y)
 	cd $(TARGETDIR)/lib/modules/*/kernel/drivers/char && mv rtl8365mb/* . && rm -rf rtl8365mb || true
 endif
 	cd $(TARGETDIR)/lib/modules && rm -f */source || true
+endif # ROOTDIR
 
 # misc
 	for dir in $(wildcard $(patsubst %,$(INSTALLDIR)/%,$(obj-y))) ; do \
@@ -1088,6 +1129,7 @@ ifneq ($(RTCONFIG_SNMPD),y)
 	rm -f $(TARGETDIR)/usr/lib/libnmp.so
 endif
 
+ifeq ($(ROOTDIR),)
 # uClibc
 	install $(LIBDIR)/ld-uClibc.so.0 $(TARGETDIR)/lib/
 	install $(LIBDIR)/libcrypt.so.0 $(TARGETDIR)/lib/
@@ -1104,6 +1146,7 @@ endif
 ifneq ($(RTCONFIG_OPTIMIZE_SHARED_LIBS),y)
 	install $(LIBDIR)/libresolv.so.0 $(TARGETDIR)/lib/
 	$(STRIP) $(TARGETDIR)/lib/*.so.0
+endif # ROOTDIR
 endif
 
 	@cd $(TARGETDIR) && $(TOP)/others/rootprep${BCMEX}.sh
@@ -1131,6 +1174,7 @@ endif
 	@mkdir $(PLATFORM)/extras/bluetooth
 	@mkdir $(PLATFORM)/extras/bluetooth/net
 	@mkdir $(PLATFORM)/extras/bluetooth/drivers
+ifeq ($(ROOTDIR),)
 	@mv $(TARGETDIR)/lib/modules/*/kernel/net/ipv4/ip_gre.*o $(PLATFORMDIR)/extras/ || true
 
 	$(if $(RTCONFIG_OPENVPN),@cp -f,$(if $(RTCONFIG_USB_MODEM),@cp -f,@mv)) $(TARGETDIR)/lib/modules/*/kernel/drivers/net/tun.*o $(PLATFORMDIR)/extras/ || true
@@ -1237,6 +1281,7 @@ endif
 	[ ! -f $(TARGETDIR)/lib/modules/*/kernel/lib/* ] && rm -rf $(TARGETDIR)/lib/modules/*/kernel/lib || true
 	$(if $(RTCONFIG_L7),@cp -f,@mv) $(TARGETDIR)/lib/modules/*/kernel/net/ipv4/netfilter/ipt_layer7.*o $(PLATFORMDIR)/extras/ || true
 	$(if $(RTCONFIG_L7),@cp -f,@mv) $(TARGETDIR)/lib/modules/*/kernel/net/netfilter/xt_layer7.*o $(PLATFORMDIR)/extras/ || true
+endif # ROOTDIR
 
 	@mkdir -p $(TARGETDIR)/asus_jffs
 	@mkdir -p $(PLATFORMDIR)/extras/apps
@@ -1249,13 +1294,14 @@ endif
 	$(if $(NEED_EX_USB),@cp -f,@mv) $(TARGETDIR)/usr/lib/libusb* $(PLATFORMDIR)/extras/lib/ || true
 	$(if $(RTCONFIG_USB_MODEM),@cp -f,@mv) $(TARGETDIR)/usr/sbin/chat $(PLATFORMDIR)/extras/apps/ || true
 
+ifeq ($(ROOTDIR),)
 	@mkdir -p $(TARGETDIR)/rom/etc/l7-protocols
 ifeq ($(RTCONFIG_L7PAT),y)
 	@cd layer7 && ./squish.sh
 	cp layer7/squished/*.pat $(TARGETDIR)/rom/etc/l7-protocols
 endif
-
-	busybox/examples/depmod.pl -k $(LINUXDIR)/vmlinux -b $(TARGETDIR)/lib/modules/*/
+endif # ROOTDIR
+	$(firstword $(wildcard $(BUSYBOXDIR) busybox))/examples/depmod.pl -k $(firstword $(wildcard $(LINUX_DIR)/vmlinux $(LINUXDIR)/vmlinux)) -b $(TARGETDIR)/lib/modules/*/
 
 ifeq ($(RTCONFIG_ROMCFE),y)
 	-cp $(SRCBASE)/cfe/cfe_`echo $(BUILD_NAME)|tr A-Z a-z`.bin $(TARGETDIR)/rom/cfe
@@ -1287,7 +1333,9 @@ ifeq ($(RTCONFIG_BWDPI),y)
 	install -D bwdpi_bin/dc_monitor.sh $(TARGETDIR)/usr/sbin/dc_monitor.sh
 	install -D bwdpi_bin/bwdpi-rule-agent $(TARGETDIR)/usr/sbin/bwdpi-rule-agent
 	install -D bwdpi_bin/ntdasus2014.cert $(TARGETDIR)/usr/bwdpi/ntdasus2014.cert
+ifeq ($(ROOTDIR),)
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/librt.so.0 $(TARGETDIR)/lib/librt.so.0
+endif # ROOTDIR
 endif
 
 ifeq ($(RTCONFIG_BCMARM),y)
@@ -1518,14 +1566,14 @@ endif
 
 infosvr: shared nvram${BCMEX}
 
-httpd: shared nvram$(BCMEX) libdisk $(if $(RTCONFIG_HTTPS),mssl) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_BWDPI),bwdpi) $(if $(RTCONFIG_BWDPI),bwdpi_sqlite) json-c
+httpd: $(call filter-out-external-packages, shared nvram$(BCMEX) libdisk $(if $(RTCONFIG_HTTPS),mssl) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_BWDPI),bwdpi) $(if $(RTCONFIG_BWDPI),bwdpi_sqlite) json-c)
 
 	@$(SEP)
 	@-rm -f httpd/prebuild/*.o || true
 	@-cp -f httpd/prebuild/models/$(BUILD_NAME)/* httpd/prebuild/
-	@$(MAKE) -C httpd
+	@$(MAKE) -C httpd TARGET_DIR=$(TARGET_DIR) STAGING_DIR=$(STAGING_DIR)
 
-httpd_uam: shared nvram$(BCMEX)$(EX7) libdisk $(if $(RTCONFIG_HTTPS),mssl) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_FBWIFI),fb_wifi)
+httpd_uam: $(call filter-out-external-packages, shared nvram$(BCMEX)$(EX7) libdisk $(if $(RTCONFIG_HTTPS),mssl) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_FBWIFI),fb_wifi))
 	@$(SEP)
 	@$(MAKE) -C httpd_uam
 
@@ -1667,20 +1715,20 @@ endif
 openssl-stage:
 	@$(MAKE) -C openssl install_sw INSTALL_PREFIX=$(STAGEDIR)
 
-mssl:	openssl
+mssl: $(call filter-out-external-packages, openssl)
 
 mdu:	shared mssl
 
-wb: openssl libxml2 curl
+wb: $(call filter-out-external-packages, openssl libxml2 curl)
 
 push_log: wb
 
-rc: nvram$(BCMEX) shared libbcmcrypto libdisk $(if $(RTCONFIG_FBWIFI),fb_wifi) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_QTN),libqcsapi_client) $(if $(CONFIG_LIBBCM),libbcm) $(if $(RTCONFIG_BWDPI),bwdpi) $(if $(RTCONFIG_USB_SMS_MODEM),smspdu)
+rc: $(call filter-out-external-packages, nvram$(BCMEX) shared libbcmcrypto libdisk $(if $(RTCONFIG_FBWIFI),fb_wifi) $(if $(RTCONFIG_PUSH_EMAIL),push_log) $(if $(RTCONFIG_QTN),libqcsapi_client) $(if $(CONFIG_LIBBCM),libbcm) $(if $(RTCONFIG_BWDPI),bwdpi) $(if $(RTCONFIG_USB_SMS_MODEM),smspdu))
 	@$(SEP)
 # Dig into our collection of prebuilt objects based on model
 	@-rm -f rc/prebuild/*.o || true
 	@-cp -f rc/prebuild/models/$(BUILD_NAME)/* rc/prebuild/
-	@$(MAKE) -C rc
+	@$(MAKE) -C rc LINUX_DIR=$(LINUX_DIR) LINUXDIR=$(LINUXDIR)
 
 networkmap: shared
 
@@ -2054,7 +2102,7 @@ miniupnpc-install:
 	$(STRIP) $(INSTALLDIR)/miniupnpc/usr/sbin/miniupnpc
 
 # !!TB
-shared: busybox $(if $(RTCONFIG_QTN),libqcsapi_client) $(if $(RTCONFIG_HTTPS),openssl)
+shared: $(call filter-out-external-packages, busybox $(if $(RTCONFIG_QTN),libqcsapi_client) $(if $(RTCONFIG_HTTPS),openssl))
 # Dig into our collection of prebuilt objects based on model.
 	@-rm -f shared/prebuild/*.o || true
 	@-cp -f shared/prebuild/models/$(BUILD_NAME)/* shared/prebuild/
@@ -2062,7 +2110,7 @@ shared: busybox $(if $(RTCONFIG_QTN),libqcsapi_client) $(if $(RTCONFIG_HTTPS),op
 ifeq ($(RTCONFIG_RALINK)$(RTCONFIG_QCA),y)
 	make -C wireless_tools wireless.h	
 endif
-	$(MAKE) -C shared
+	$(MAKE) -C shared BUSYBOX_OUTDIR=$(BUSYBOX_OUTDIR) BUSYBOXDIR=$(BUSYBOXDIR) ROUTER_DIR=$(ROUTER_DIR)
 
 ifeq ($(RTCONFIG_FTP_SSL),y)
 ftp_dep=openssl
@@ -2698,13 +2746,14 @@ protect_srv/stamp-h1:
 	touch $@
 
 protect_srv-stage:
-	$(MAKE) -C protect_srv/lib
+	$(MAKE) -C protect_srv/lib ROUTER_DIR=$(ROUTER_DIR)
 	install -D protect_srv/lib/libptcsrv.so $(STAGEDIR)/usr/lib/libptcsrv.so
 	install -D -m 644 -p protect_srv/include/protect_srv.h $(STAGEDIR)/usr/include/protect_srv.h
 	install -D -m 644 -p protect_srv/include/libptcsrv.h $(STAGEDIR)/usr/include/libptcsrv.h
 
 protect_srv: shared nvram$(BCMEX) protect_srv/stamp-h1
-	$(MAKE) -C $@ && $(MAKE) $@-stage
+	@$(SEP)
+	$(MAKE) -C $@ && $(MAKE) ROUTER_DIR=$(ROUTER_DIR) $@-stage
 
 protect_srv-install: protect_srv
 	install -d $(INSTALLDIR)/protect_srv/usr/lib/
@@ -3312,9 +3361,12 @@ igmp-clean:
 	$(MAKE) -C igmp clean
 
 wps$(BCMEX)$(EX7): nvram$(BCMEX) shared libupnp$(BCMEX)$(EX7)
+	$(SEP)
 ifeq ($(RTCONFIG_WPS),y)
+ifeq ($(ROOTDIR),)
 	-rm -rf $(OLD_SRC)/wps
 	-ln -s $(SRCBASE)/wps $(OLD_SRC)/wps
+endif # ROOTDIR
 	[ ! -f wps$(BCMEX)$(EX7)/Makefile ] || $(MAKE) -C wps$(BCMEX)$(EX7) EXTRA_LDFLAGS=$(EXTRALDFLAGS)
 else
 	# Prevent to use generic rules"
@@ -3827,10 +3879,12 @@ ftpclient-install:
 	@$(SEP)
 	install -D ftpclient/ftpclient $(INSTALLDIR)/ftpclient/usr/sbin/ftpclient
 	$(STRIP) $(INSTALLDIR)/ftpclient/usr/sbin/ftpclient
+ifeq ($(ROOTDIR),)
 ifeq ($(RTCONFIG_BCMARM),y)
 	install -D $(shell dirname $(shell which $(CXX)))/../arm-brcm-linux-uclibcgnueabi/lib/libstdc++.so.6 $(INSTALLDIR)/ftpclient/usr/lib/libstdc++.so.6
 else
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/libstdc++.so.6 $(INSTALLDIR)/ftpclient/usr/lib/libstdc++.so.6
+endif # ROOTDIR
 endif
 
 ftpclient-clean:
@@ -3847,10 +3901,12 @@ sambaclient-install:
 	@$(SEP)
 	install -D sambaclient/sambaclient $(INSTALLDIR)/sambaclient/usr/sbin/sambaclient
 	$(STRIP) $(INSTALLDIR)/sambaclient/usr/sbin/sambaclient
+ifeq ($(ROOTDIR),)
 ifeq ($(RTCONFIG_BCMARM),y)
 	install -D $(shell dirname $(shell which $(CXX)))/../arm-brcm-linux-uclibcgnueabi/lib/libstdc++.so.6 $(INSTALLDIR)/sambaclient/usr/lib/libstdc++.so.6
 else
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/libstdc++.so.6 $(INSTALLDIR)/sambaclient/usr/lib/libstdc++.so.6
+endif # ROOTDIR
 endif
 
 sambaclient-clean:
@@ -3868,10 +3924,12 @@ usbclient-install:
 	@$(SEP)
 	install -D usbclient/usbclient $(INSTALLDIR)/usbclient/usr/sbin/usbclient
 	$(STRIP) $(INSTALLDIR)/usbclient/usr/sbin/usbclient
+ifeq ($(ROOTDIR),)
 ifeq ($(RTCONFIG_BCMARM),y)
 	install -D $(shell dirname $(shell which $(CXX)))/../arm-brcm-linux-uclibcgnueabi/lib/libstdc++.so.6 $(INSTALLDIR)/usbclient/usr/lib/libstdc++.so.6
 else
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/libstdc++.so.6 $(INSTALLDIR)/usbclient/usr/lib/libstdc++.so.6
+endif # ROOTDIR
 endif
 
 usbclient-clean:
@@ -3948,7 +4006,7 @@ neon-stage:
 #webdav_client
 webdav_client$(BCMEX)/stamp-h1:
 	touch $@
-webdav_client$(BCMEX): webdav_client$(BCMEX)/stamp-h1 nvram$(BCMEX) zlib libxml2 neon
+webdav_client$(BCMEX): $(call filter-out-external-packages, webdav_client$(BCMEX)/stamp-h1 nvram$(BCMEX) zlib libxml2 neon)
 	@$(MAKE) -C webdav_client$(BCMEX)
 
 webdav_client$(BCMEX)-install:
@@ -4062,6 +4120,7 @@ asuswebstorage$(BCMEX)/stamp-h1:
 	touch $@
 
 asuswebstorage$(BCMEX): asuswebstorage$(BCMEX)/stamp-h1
+	@$(SEP)
 	@$(MAKE) -C asuswebstorage$(BCMEX)
 
 asuswebstorage$(BCMEX)-install: asuswebstorage$(BCMEX)
@@ -4545,7 +4604,7 @@ tftp-install:
 bwdpi: nvram$(BCMEX)
 	cd bwdpi && CC=$(CC) && $(MAKE)
 
-bwdpi_sqlite: bwdpi sqlite
+bwdpi_sqlite: $(call filter-out-external-packages, bwdpi sqlite)
 	cd bwdpi_sqlite && CC=$(CC) && $(MAKE)
 
 bwdpi_sqlite-clean:
@@ -5223,8 +5282,8 @@ sysstat-10.0.3-install:
 # tunnel related 
 #
 
-asusnatnl: openssl
-	$(MAKE) -C $@
+asusnatnl: $(call filter-out-external-packages, openssl)
+	$(MAKE) -C $@ OPENSSL_DIR=$(OPENSSLDIR)
 
 asusnatnl-clean:
 	$(MAKE) -C asusnatnl clean
@@ -5267,10 +5326,12 @@ aaews-install:
 	$(STRIP) -s $(INSTALLDIR)/wb/usr/lib/libws.so
 	install -D aaews/aaews $(INSTALLDIR)/wb/usr/sbin/aaews
 	$(STRIP) -s $(INSTALLDIR)/wb/usr/sbin/aaews
+ifeq ($(ROOTDIR),)
 ifeq ($(RTCONFIG_BCMARM),y)
 	install -D $(shell dirname $(shell which $(CXX)))/../arm-brcm-linux-uclibcgnueabi/lib/libstdc++.so.6 $(INSTALLDIR)/wb/usr/lib/libstdc++.so.6
 else
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/libstdc++.so.6 $(INSTALLDIR)/wb/usr/lib/libstdc++.so.6
+endif
 endif
 
 aaews-clean:

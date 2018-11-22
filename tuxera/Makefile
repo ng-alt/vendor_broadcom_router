@@ -40,7 +40,7 @@ SRCFILE = broadcom_arm
 endif # ARMCPUSMP
 endif # RTCONFIG_BCM_7114
 endif # RTCONFIG_BCM7
-DSTDIR = $(INSTALLDIR)/lib/modules/2.6.36.4brcmarm/kernel/fs
+DSTDIR = $(INSTALLDIR)/lib/modules/$(call kernel-release-string)/kernel/fs
 else # RTCONFIG_BCMARM
 SRCFILE = broadcom
 DSTDIR = $(INSTALLDIR)/lib/modules/2.6.22.19/kernel/fs

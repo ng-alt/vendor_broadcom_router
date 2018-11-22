@@ -15,7 +15,7 @@ OBJS=$(patsubst %.c, %.o, $(SRC))
 WS_SOURCES := $(wildcard $(WS_SRC)/*.c)
 WSLIB_OBJS := $(WS_SOURCES:%.c=$(OUTPUT)/%.o)
 
-ifeq ($(wildcard $(TOP)/wb/ws_src/*.c),)
+ifeq ($(wildcard *.c),)
 all:
 	-cp -f $(TOP)/wb/prebuild/libws$(BCMEX).so libws.so
 else

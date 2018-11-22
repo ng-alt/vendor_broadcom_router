@@ -1,7 +1,7 @@
 include ./Makefile.config
 
 ifeq ($(ASUSWRT_SDK),y)
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 MAKE = make
 CFLAGS = -Wall -O2 -g  $(EXTRACFLAGS)
 CFLAGS += -I$(TOP)/shared -I$(SRCBASE)/include -I$(SRCBASE)/common/include
@@ -34,7 +34,7 @@ LIBS = -lpthread -lgcc_s
 
 MDIRS = lib
 
-ifeq ($(wildcard $(SRCBASE)/router/protect_srv/*.c),)
+ifeq ($(wildcard *.c),)
 all: 
 	-cp -f prebuilt/protect_srv protect_srv
 	-cp -f prebuilt/Send_Event2ptcsrv Send_Event2ptcsrv
@@ -49,7 +49,7 @@ protect_srv: protect_srv.o
 Send_Event2ptcsrv: Send_Event2ptcsrv.o
 
 ptcsrvdir:
-	set -e; for d in ${MDIRS}; do $(MAKE) -C $${d}; done
+	set -e; for d in ${MDIRS}; do $(MAKE) -C $${d} LDFLAGS="$(filter-out -lptcsrv,$(LDFLAGS))"; done
 protect_srv:
 	@$(CC) ${CFLAGS} $< -o $@ ${LDFLAGS} $(LIBS)
 	@$(STRIP) $@

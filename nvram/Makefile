@@ -31,7 +31,7 @@ nvram: nvram.o ../shared/defaults.o libnvram.so
 ifeq ($(STATIC),1)
 	$(CC) $(CFLAGS) -static -o $@ nvram.o ../shared/defaults.o $(LDFLAGS) -lnvram
 else
-	@$(CC) $(CFLAGS) -o $@ nvram.o ../shared/defaults.o $(LDFLAGS) -lnvram
+	@$(CC) $(CFLAGS) -o $@ nvram.o ../shared/defaults.o $(LDFLAGS) -lnvram -lgcc_s
 endif
 	
 	$(SIZECHECK)

@@ -131,8 +131,17 @@ OBJS += openvpn_options.o
 LIBS += -L$(TOP)/openssl -lssl -lcrypto -ldl
 endif
 
+ifneq ($(TARGET_DIR),)
+ifneq ($(STAGING_DIR),)
+CFLAGS += -I$(STAGING_DIR)/usr/include/json-c
+else
+CFLAGS += -I$(TARGET_DIR)/usr/include/json-c
+endif
+LIBS += -L$(TARGET_DIR)/usr/lib -ljson-c
+else
 CFLAGS += -I$(TOP)/json-c
 LIBS += -L$(TOP)/json-c/.libs -ljson-c
+endif
 
 ifeq ($(RTCONFIG_BWDPI),y)
 LIBS += -L$(TOP)/bwdpi -lbwdpi

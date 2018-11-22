@@ -1,7 +1,7 @@
 include ../Makefile.config
 
 ifeq ($(ASUSWRT_SDK),y)
--include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 CFLAGS = -Os -Wall $(EXTRACFLAGS) -fPIC
 CFLAGS += -I. -I$(TOP)/protect_srv/include
@@ -21,9 +21,9 @@ ifneq ($(RTCONFIG_NOTIFICATION_CENTER),y)
 OBJS += linklist.o
 endif
 
-vpath %.c $(SRCBASE)/protect_srv/
+vpath %.c $(TOP)/protect_srv/
 
-ifeq ($(wildcard $(SRCBASE)/router/protect_srv/lib/*.c),)
+ifeq ($(wildcard *.c),)
 all: 
 	-cp -f prebuilt/libptcsrv.so libptcsrv.so
 else

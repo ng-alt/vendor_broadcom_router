@@ -12,7 +12,7 @@
 # $Id: Makefile 382640 2013-02-03 04:35:49Z $
 #
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
 ifneq ($(wildcard $(SRCBASE)/wl/exe/wlu_common.c),)
@@ -61,23 +61,23 @@ endif
 
 vpath %.c $(SRCBASE)/tools/misc $(WLAN_ComponentSrcDirs)
 
-ifneq ($(wildcard $(SRCBASE)/et/linux/et.c),)
+ifneq ($(wildcard $(SRCBASE)/et/linux/et.c $(SRCBASE_A)/et/linux/et.c),)
 UTILS += et
-vpath %.c $(SRCBASE)/et/linux
+vpath %.c $(SRCBASE)/et/linux $(SRCBASE_A)/et/linux
 endif
 
-ifneq ($(wildcard $(SRCBASE)/wl/exe),)
-CFLAGS += -I$(SRCBASE)/wl/exe
+ifneq ($(wildcard $(SRCBASE)/wl/exe $(SRCBASE_A)/wl/exe),)
+CFLAGS += -I$(SRCBASE)/wl/exe -I$(SRCBASE_A)/wl/exe
 UTILS += wl
-vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/wl/clm/src $(SRCBASE)/shared
+vpath %.c $(foreach d,$(SRCBASE) $(SRCBASE_A),$d/wl/exe $d/wl/clm/src $d/shared)
 endif
 
 ifeq ($(RWL),1)
 ifeq ($(BUILD_WFA_APUT),1)
-ifneq ($(wildcard $(SRCBASE)/router/aput),)
-CFLAGS += -I$(SRCBASE)/router/aput
+ifneq ($(wildcard $(TOP)/aput),)
+CFLAGS += -I$(TOP)/aput
 UTILS += $(WFA_APUT_ALL)
-vpath %.c $(SRCBASE)/router/aput
+vpath %.c $(TOP)/aput
 endif
 endif
 
@@ -99,9 +99,9 @@ UTILS += robocfg
 
 all: $(UTILS)
 
-ifeq ($(wildcard $(SRCBASE)/wl/exe/*.c),)
+ifeq ($(wildcard $(SRCBASE)/wl/exe/*.c $(SRCBASE_A)/wl/exe/*.c),)
 wl:
-	-cp -f $(SRCBASE)/wl/exe/prebuilt/wl wl
+	-cp -f $(firstword $(wildcard $(SRCBASE)/wl/exe/prebuilt/wl $(SRCBASE_A)/wl/exe/prebuilt/wl)) wl
 else
 wl: $(WLU_OBJS)
 	$(CC) $^ -o $@ $(LDFLAGS)
@@ -129,7 +129,7 @@ wifi/%.o: %.c
 	$(CC) -c $(CFLAGS) -DRWL_WIFI -o $@ $^
 endif
 
-ifeq ($(wildcard $(SRCBASE)/router/utils/robocfg.c),)
+ifeq ($(wildcard robocfg.c),)
 robocfg:
 	-cp -f $(SRCBASE)/wl/exe/prebuilt/robocfg robocfg
 else

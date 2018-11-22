@@ -16,8 +16,8 @@ ln -sf tmp/opt opt
 # !!TB
 mkdir -p -m 0755 mmc
 mkdir -p -m 0755 usr/local
-ln -sf /tmp/share usr/share
-ln -sf /tmp/share usr/local/share
+ln -sf ../tmp/share usr/share
+ln -sf ../../tmp/share usr/local/share
 
 ln -sf tmp/mnt mnt
 ln -sf tmp/var var

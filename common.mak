@@ -10,6 +10,14 @@ else
 	export TOP := $(SRCBASE)/router
 endif
 
+define kernel-release-string
+$(strip \
+  $(eval KERNEL_RELEASE_FILE:=$(LINUX_OUTDIR)/include/config/kernel.release) \
+  $(if $(wildcard $(KERNEL_RELEASE_FILE)), \
+    $(shell cat $(KERNEL_RELEASE_FILE)), \
+	2.6.36.4brcmarm))
+endef
+
 -include $(TOP)/.config
 include $(SRCBASE)/profile.mak
 include $(SRCBASE)/target.mak
@@ -62,6 +70,10 @@ include $(SRCBASE)/target.mak
 
 export LIBDIR := $(TOOLCHAIN)/lib
 export USRLIBDIR := $(TOOLCHAIN)/usr/lib
+
+ifeq ($(PLATFORM),)
+export PLATFORM := arm-uclibc
+endif
 
 export PLATFORMDIR := $(TOP)/$(PLATFORM)
 export INSTALLDIR := $(PLATFORMDIR)/install

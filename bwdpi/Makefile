@@ -25,7 +25,7 @@ ifeq ($(RTCONFIG_BCMARM),y)
 vpath %.c $(SRCBASE)/shared
 endif
 
-ifeq ($(wildcard $(SRCBASE)/router/bwdpi/*.c),)
+ifeq ($(wildcard *.c),)
 all:
 	-cp -f $(PBDIR)/libbwdpi.so libbwdpi.so
 	-cp -f $(PBDIR)/wrs wrs

@@ -1,6 +1,6 @@
 #Linux Makefile
 
-include $(SRCBASE)/router/.config
+include $(TOP)/.config
 
 INCLUDE += -I. -I.. -I$(SRCBASE)/include -I$(SRCBASE)/common/include -I$(SRCBASE)/shared -I$(SRCBASE)/router/shared -I$(SRCBASE)/router/nas${BCMEX}
 

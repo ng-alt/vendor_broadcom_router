@@ -26,7 +26,7 @@ export BLDTYPE = release
 include $(TOP)/.config
 
 # linux kernel config
-include $(LINUXDIR)/.config
+include $(wildcard $(LINUXDIR)/.config $(LINUX_DIR)/.config)
 
 export WPSSRC = $(SRCBASE)/wps
 
@@ -47,6 +47,7 @@ else
   WPS_LIB_FILE = wps_ap
 endif
 
+ifeq ($(wildcard ./prebuilt),)
 # Include wps common make file
 include $(WPSSRC)/common/config/$(WPS_CONF_FILE)
 ifneq ($(CONFIG_WFI),y)
@@ -60,6 +61,7 @@ CFLAGS += -DWPS_PLC
 endif
 include $(WPSSRC)/common/config/wps.mk
 EXTRA_CFLAGS = $(WPS_FLAGS)
+endif
 
 # Generate list of supported variants
 VLIST  = AP STA APSTA

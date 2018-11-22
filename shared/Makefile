@@ -1,8 +1,24 @@
 include ../common.mak
 include $(SRCBASE)/.config
 
+define wildcard-in-router-dir
+$(firstword $(wildcard $(ROUTER_DIR)/$(strip $1) $(if $2,$(strip $2)/$(strip $1))))
+endef
+
+define wildcard-in-busybox-dir
+$(patsubst %.c,%.o,\
+  $(firstword \
+    $(wildcard \
+      $(patsubst %.o,%.c, \
+        $(if $3,$(strip $3)/$(strip $1)) \
+        $(if $2,$(strip $2)/$(strip $1)) \
+        $(BUSYBOXDIR)/$(strip $1) \
+        $(BUSYBOX_OUTDIR)/$(strip $1)))))
+endef
+
+
 CFLAGS += -Os -Wall $(EXTRACFLAGS) -fPIC
-CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -I$(SRCBASE)/shared $(if $(BUSYBOXDIR),-I$(BUSYBOXDIR)/include)
 ifneq ($(RTCONFIG_BCMARM),y)
 CFLAGS += -I$(TOP)/kernel_header/include
 else
@@ -128,19 +144,20 @@ endif
 ifeq ($(RTCONFIG_USB),y)
 OBJS += usb.o
 
-ID_CFLAGS += -I$(TOP)/busybox/include
-ID_CFLAGS += -I$(TOP)/busybox/util-linux/volume_id
-ID_CFLAGS += -include $(TOP)/busybox/include/autoconf.h
+ID_CFLAGS += -I$(call wildcard-in-busybox-dir, include, $(BUSYBOX_OUTDIR), $(TOP)/busybox)
+ID_CFLAGS += -I$(call wildcard-in-busybox-dir, util-linux/volume_id, $(TOP)/busybox)
+ID_CFLAGS += -include $(call wildcard-in-busybox-dir, include/autoconf.h, $(TOP)/busybox)
 ID_CFLAGS += -D_GNU_SOURCE -DNDEBUG -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 #ID_CFLAGS += -fdata-sections -ffunction-sections
-ID_OBJS  = $(TOP)/busybox/util-linux/volume_id/util.o
-ID_OBJS += $(TOP)/busybox/util-linux/volume_id/linux_swap.o
-ID_OBJS += $(TOP)/busybox/util-linux/volume_id/ext.o
-ID_OBJS += $(TOP)/busybox/util-linux/volume_id/fat.o
-ID_OBJS += $(TOP)/busybox/util-linux/volume_id/ntfs.o
-ID_OBJS += $(if $(HFS),$(TOP)/busybox/util-linux/volume_id/hfs.o)
-ID_OBJS += $(if $(HFS),$(patsubst %.c,%.o,$(wildcard $(TOP)/busybox/libbb/hash_md5.c)))
-ID_OBJS += $(if $(HFS),$(patsubst %.c,%.o,$(wildcard $(TOP)/busybox/libbb/bb_bswap_64.c)))
+ID_OBJS  = $(call wildcard-in-busybox-dir, util-linux/volume_id/util.o, $(TOP)/busybox)
+ID_OBJS += $(call wildcard-in-busybox-dir, util-linux/volume_id/linux_swap.o, $(TOP)/busybox)
+ID_OBJS += $(call wildcard-in-busybox-dir, util-linux/volume_id/ext.o, $(TOP)/busybox)
+ID_OBJS += $(call wildcard-in-busybox-dir, util-linux/volume_id/fat.o, $(TOP)/busybox)
+ID_OBJS += $(call wildcard-in-busybox-dir, util-linux/volume_id/ntfs.o, $(TOP)/busybox)
+ID_OBJS += $(if $(HFS),$(call wildcard-in-busybox-dir, util-linux/volume_id/hfs.o, $(TOP)/busybox))
+ID_OBJS += $(if $(HFS),$(patsubst %.c,%.o,$(call wildcard-in-busybox-dir, libbb/hash_md5.c, $(TOP)/busybox)))
+ID_OBJS += $(if $(HFS),$(patsubst %.c,%.o,$(call wildcard-in-busybox-dir, libbb/bb_bswap_64.c, $(TOP)/busybox)))
+
 ID_OBJS += volume_id.o
 #OBJS += volume_id.lib.o
 OBJS += $(notdir $(ID_OBJS))
@@ -209,7 +226,7 @@ libshared.a: $(OBJS)
 	@rm -f $@
 	@$(AR) cru $@ $^
 
-install: all
+install:
 	@echo " [shared] Installing as $(INSTALLDIR)/usr/lib/libshared.so"
 	@install -d $(INSTALLDIR)/usr/lib
 	@install -m 755 libshared.so $(INSTALLDIR)/usr/lib

@@ -18,7 +18,7 @@ LDFLAGS += -L$(TOP)/libqcsapi_client
 LIBS += -lqcsapi_client
 endif
 
-ifeq ($(wildcard $(TOP)/webdav_client_arm/*.c),)
+ifeq ($(wildcard *.c),)
 all:
 ifeq ($(RTCONFIG_QTN),y)
 	-cp -f $(TOP)/webdav_client_arm/prebuilt/webdav_client_qtn webdav_client

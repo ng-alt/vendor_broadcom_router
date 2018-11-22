@@ -1,7 +1,7 @@
 include ../common.mak
 
 CFLAGS += -Wall -Os $(EXTRACFLAGS)
-CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/include -idirafter$(LINUXDIR)/include
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/shared -I$(SRCBASE)/include -I$(SRCBASE_A)/include -idirafter$(LINUXDIR)/include
 CFLAGS += -I$(TOP)/openssl/include
 CFLAGS += -I$(TOP)/push_log
 ifeq ($(RTCONFIG_DPSTA),y)
@@ -13,15 +13,15 @@ CFLAGS += -DDLM -DASUS_DDNS -DASUS_EXT -DBTN_SETUP -DWEB_REDIRECT -DRTCONFIG_CRO
 CFLAGS += -DDEBUG_RCTEST
 
 ifeq ($(RTCONFIG_WPS),y)
-CFLAGS += -I$(SRCBASE)/wps/brcm_apps/include
+CFLAGS += -I$(firstword $(wildcard $(SRCBASE)/wps/brcm_apps/include $(SRCBASE_A)/wps/brcm_apps/include))
 endif
 
 ifeq ($(RTCONFIG_RALINK),y)
 CFLAGS += -I$(TOP)/shared/sysdeps/ralink -I$(TOP)/wireless_tools
-ifneq ($(findstring MAC_REPEATER=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring MAC_REPEATER=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 export CFLAGS += -DMAC_REPEATER
 endif
-ifneq ($(findstring CONFIG_RT2860V2_AP_EDCCA_MONITOR=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring CONFIG_RT2860V2_AP_EDCCA_MONITOR=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 export CFLAGS += -DCE_ADAPTIVITY
 else
 ifeq (y,$(filter y,$(RTN56UB1) $(RTN56UB2)))
@@ -42,7 +42,7 @@ LDFLAGS = -L$(TOP)/nvram${BCMEX} -lnvram -L$(TOP)/shared -lshared -lcrypt -L$(TO
 ifeq ($(RTCONFIG_BCMARM),y)
 CFLAGS += -I$(SRCBASE)/shared/bcmwifi/include -DTYPEDEF_FLOAT_T
 CFLAGS += -I$(SRCBASE)/common/include
-ifneq ($(findstring CONFIG_DUMP_PREV_OOPS_MSG=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring CONFIG_DUMP_PREV_OOPS_MSG=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 CFLAGS += -DDUMP_PREV_OOPS_MSG
 endif
 LDFLAGS += -L$(TOP)/libbcm -lbcm
@@ -119,14 +119,14 @@ endif
 
 #CFLAGS += -DRC_BUILDTIME=$(shell date -d "now" +"%s")
 
-ifneq ($(findstring NET_CLS_POLICE=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring NET_CLS_POLICE=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 else
-ifneq ($(findstring IMQ=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring IMQ=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 export CFLAGS += -DCLS_ACT
 endif
 endif
 
-ifneq ($(findstring DEVTMPFS=, $(shell cat $(LINUXDIR)/.config)),)
+ifneq ($(findstring DEVTMPFS=, $(shell cat $(wildcard $(LINUX_DIR)/.config $(LINUXDIR)/.config))),)
 export CFLAGS += -DDEVTMPFS
 endif
 

@@ -20,9 +20,9 @@
 
 include ../common.mak
 
-# Default mips
+# Default arm
 ifeq ($(ARCH),)
-ARCH := mips
+ARCH := arm
 endif
 
 ifeq ($(ARCH), arm)
@@ -62,7 +62,7 @@ CFLAGS		:= $(subst -pg,,$(CFLAGS))
 endif
 CFLAGS		+= -ffunction-sections $(call check_gcc, -fvtable-gc, )
 
-SYSTEM		?= $(LINUXDIR)/vmlinux
+SYSTEM		?= $(if $(LINUX_OUTDIR),$(LINUX_OUTDIR),$(LINUXDIR))/vmlinux
 
 # Note: siutils.o appeared seperately on purpose to solve post reference problem of GCC
 OBJS-mips = boot.o sisdram.o sbsdram.o aisdram.o sflash.o hndmips.o sbutils.o aiutils.o siutils.o nicpci.o
@@ -87,8 +87,8 @@ CFLAGS		+= $(CFLAGS-$(ARCH))
 ASFLAGS		+= $(ASFLAGS-$(ARCH))
 
 # Default to lzma_4k
-COMPRESS	?= $(SRCBASE)/ctools/lzma_4k e
-CFLAGS		+= -DUSE_LZMA -D_LZMA_NO_SYSTEM_SIZE_T -DBCMLZMA -I$(SRCBASE)/tools/misc/lzma_src/C
+COMPRESS	?= $(if $(BR2_EXTERNAL),lzma_4k,../../../tools/lzma_4k) e
+CFLAGS		+= -DUSE_LZMA -D_LZMA_NO_SYSTEM_SIZE_T -DBCMLZMA -I$(if $(ROOTDIR),$(ROOTDIR)external/lzma-sdk/C,$(SRCBASE)/tools/misc/lzma_src/C)
 
 CFLAGS		+= -I$(SRCBASE)/include -DBCMDRIVER
 ifeq ($(RTCONFIG_BCMARM),y)

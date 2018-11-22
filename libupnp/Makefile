@@ -13,7 +13,7 @@
 include ../common.mak
 
 UPNPLIB_NAME = libupnp.so
-UPNPLIB = $(SRCBASE)/router/libupnp
+UPNPLIB = $(TOP)/libupnp
 SRCPATH = $(UPNPLIB)/upnp
 
 INCLUDES += -I$(UPNPLIB)/include -I$(SRCBASE)/include -I$(SRCBASE)/include/bcmcrypto -I$(SRCBASE)/router/shared
@@ -34,6 +34,7 @@ endif
 vpath %.c $(SRCPATH) $(UPNPLIB)/linux
 ifeq ($(RTCONFIG_BCMARM),y)
 vpath %.o $(UPNPLIB)/prebuilt$(BCMEX)$(EX7)
+vpath %.o libupnp/prebuilt$(BCMEX)$(EX7)
 else
 vpath %.o $(UPNPLIB)/prebuilt.mipsel
 endif

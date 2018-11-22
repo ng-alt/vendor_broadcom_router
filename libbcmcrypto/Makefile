@@ -20,9 +20,10 @@ CFLAGS	+= -s
 LDFLAGS += -L.
 
 
-vpath %.c $(SRCBASE)/bcmcrypto
+vpath %.c $(TOP)/bcmcrypto
 ifeq ($(RTCONFIG_BCMARM),y)
-vpath %.o $(SRCBASE)/router/libbcmcrypto/prebuilt.arm
+vpath %.o $(TOP)/libbcmcrypto/prebuilt.arm
+vpath %.o libbcmcrypto/prebuilt.arm
 else ifeq ($(RTCONFIG_RALINK),y)
 vpath %.o $(SRCBASE)/router/libbcmcrypto/prebuilt.mipsel
 else ifeq ($(RTCONFIG_QCA_ARM),y)
@@ -45,7 +46,7 @@ OBJS += sha256.o hmac_sha256.o
 #endif
 
 # Find all ELF binaries (including extra libraries)
-BINARIES := $(shell find $(TARGETDIR) -path $(TARGETDIR)/lib -prune -o -type f -print | file -f - | grep ELF | cut -d':' -f1)
+BINARIES := $(shell mkdir -p $(TARGETDIR) && find $(TARGETDIR) -path $(TARGETDIR)/lib -prune -o -type f -print | file -f - | grep ELF | cut -d':' -f1)
 MAP := .map
 UNR := .unresolved
 SYM := .symbols
