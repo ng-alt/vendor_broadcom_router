@@ -1,12 +1,12 @@
 #
 # Broadcom Linux Router Makefile
-#
+# 
 # Copyright (C) 2014, Broadcom Corporation. All Rights Reserved.
-#
+# 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
 # WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
 # MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -21,11 +21,16 @@
 
 include .config
 
-export FW_TYPE = WW
+ifneq ($(ROOTDIR),)
+ROUTER_EXTERNAL_PACKAGES := busybox kernel linux_kernel $(LINUX_OUTDIR)/.config \
+	bridge dhcp6c dhcp6s dnsmasq ffmpeg gpl hotplug2 iptables libflow libid3tag \
+	libmnl libnfnetlink libnetfilter_conntrack libnetfilter_queue \
+	ntpclient radvd ppp udev udhcpd vlan
+endif
 
-
-BOARDID_FILE=compatible_r6300v2.txt
-FW_NAME=R6300v2
+define filter-out-external-packages
+$(filter-out $(ROUTER_EXTERNAL_PACKAGES),$1)
+endef
 
 define eq
 $(and $(findstring $(1),$(2)),$(findstring $(2),$(1)))
@@ -37,10 +42,13 @@ $(strip \
     $(if $(call eq, $(1), $(subst .,_,$(LINUX_VERSION))), true)))
 endef
 
-# merge the files in arm-uclibc to prebuilt
-ifneq ($(ROOTDIR),)
-obj-y=prebuilt
-endif
+export FW_TYPE = WW
+
+
+BOARDID_FILE=compatible_r6300v2.txt
+FW_NAME=R6300v2
+
+
 
 #
 # Paths
@@ -361,7 +369,7 @@ endif
 
 export PLATFORMDIR := $(TOP)/$(PLATFORM)
 export INSTALLDIR := $(PLATFORMDIR)/install
-export TARGETDIR := $(if $(DESTDIR),$(DESTDIR),$(PLATFORMDIR)/target)
+export TARGETDIR := $(PLATFORMDIR)/target
 
 define STRIP_DEBUG_SYMBOLS
 	@dbgsymf=$(basename $(1))_dbgsym$(suffix $(1)); \
@@ -374,7 +382,7 @@ define STRIP_DEBUG_SYMBOLS
 endef
 
 # USB AP support
-# note : the dongle target is only for after pre-build
+# note : the dongle target is only for after pre-build 
 obj-$(CONFIG_USBAP) += bmac dongle
 
 # always build libbcmcrypto
@@ -395,9 +403,6 @@ obj-$(CONFIG_APLAY) += alsa-utils/aplay
 #endif
 obj-$(CONFIG_NVRAM) += nvram
 obj-$(CONFIG_SHARED) += shared
-ifndef ($(ROOTDIR),)
-obj-$(CONFIG_SHARED) += acos_shared
-endif
 obj-$(CONFIG_LIBBCM) += libbcm
 
 #obj-$(CONFIG_OPENSSL) += openssl
@@ -482,6 +487,11 @@ ifeq ($(CONFIG_VOIP),y)
 obj-y += voipd
 endif
 
+# merge the files in arm-uclibc to prebuilt
+ifneq ($(ROOTDIR),)
+obj-y += prebuilt
+endif
+
 ifeq ($(CONFIG_ACOS_MODULES),y)
 #obj-y += ../../ap/acos
 obj-y += ../../ap/gpl
@@ -495,21 +505,18 @@ obj-$(CONFIG_HTTPD) += httpd
 obj-$(CONFIG_WWW) += www
 endif
 
-ifneq ($(ROOTDIR),)
-obj-y += compressed
-endif
 
-obj-clean := $(foreach obj,$(obj-y) $(obj-n),$(obj)-clean)
-obj-install := $(foreach obj,$(obj-y),$(obj)-install)
+obj-clean := $(foreach obj,$(call filter-out-external-packages,$(obj-y) $(obj-n)),$(obj)-clean)
+obj-install := $(foreach obj,$(call filter-out-external-packages,$(obj-y)),$(obj)-install)
 
 # separate the libraries which need to be built first
-obj-prelibs =$(filter nvram libbcmcrypto shared netconf libupnp libz libid3tag ffmpeg libbcm nfc, $(obj-y))
+obj-prelibs =$(filter nvram libbcmcrypto shared netconf libupnp libz libid3tag ffmpeg libbcm nfc, $(obj-y)) 
 # remaining libraries that are built next
 obj-postlibs := $(filter-out $(obj-prelibs), $(obj-y))
 
 ifneq (2_4,$(LINUX_VERSION))
-ifneq ($(shell grep "CONFIG_BLK_DEV_INITRD=y" $(LINUX_OUTDIR)/.config),)
-ifeq ($(shell grep "CONFIG_BLK_DEV_RAM=y" $(LINUX_OUTDIR)/.config),)
+ifneq ($(shell grep "CONFIG_BLK_DEV_INITRD=y" $(LINUXDIR)/.config),)
+ifeq ($(shell grep "CONFIG_BLK_DEV_RAM=y" $(LINUXDIR)/.config),)
 export BUILD_MFG := 1
 export WLTEST := 1
 endif
@@ -517,7 +524,7 @@ endif
 endif
 
 ifneq ($(WLTEST),1)
-ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUX_OUTDIR)/.config),)
+ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config),)
 export WLTEST := 1
 endif
 endif
@@ -537,66 +544,65 @@ endif
 # Basic rules
 #
 
-# Following export values will be used in wl/config/wlconfig_apdef
+# Following export values will be used in wl/config/wlconfig_apdef 
 export CONFIG_MFP
 export CONFIG_HSPOT
 export CONFIG_WNM
 
-all: acos_link version $(LINUX_OUTDIR)/.config linux_kernel $(obj-y)
+all: $(call filter-out-external-packages, acos_link version $(LINUX_OUTDIR)/.config linux_kernel $(obj-y))
         # Also build kernel
-
-ifeq ($(ROOTDIR),)
-linux_kernel:
-ifeq ($(LINUX_OUTDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
-	$(MAKE) -C $(LINUX_OUTDIR) zImage
+        
+        
+linux_kernel:        
+ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+	$(MAKE) -C $(LINUXDIR) zImage
 	$(MAKE) CONFIG_SQUASHFS=$(CONFIG_SQUASHFS) -C $(SRCBASE)/router/compressed
 else
-	if ! grep -q "CONFIG_EMBEDDED_RAMDISK=y" $(LINUX_OUTDIR)/.config ; then \
-	    $(MAKE) -C $(LINUX_OUTDIR) zImage ; \
+	if ! grep -q "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config ; then \
+	    $(MAKE) -C $(LINUXDIR) zImage ; \
 	fi
 endif
-	if grep -q "CONFIG_MODULES=y" $(LINUX_OUTDIR)/.config ; then \
-	    $(MAKE) -C $(LINUX_OUTDIR) modules ; \
+	if grep -q "CONFIG_MODULES=y" $(LINUXDIR)/.config ; then \
+	    $(MAKE) -C $(LINUXDIR) modules ; \
 	fi
 	# Preserve the debug versions of these and strip for release
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/vmlinux)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/vmlinux)
 ifneq (2_4,$(LINUX_VERSION))
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/wl/wl.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/wl/wl.ko)
 ifeq ("$(CONFIG_USBAP)","y")
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/wl/wl_high/wl_high.ko)
-#$(STRIP) $(LINUX_OUTDIR)/drivers/net/wl/wl_high.ko
-endif
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/et/et.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/ctf/ctf.ko)
-	#$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/bcm57xx/bcm57xx.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/emf/emf.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/igs/igs.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/dpsta/dpsta.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/connector/cn.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/scsi/scsi_wait_scan.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/usb/host/xhci-hcd.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/usb/host/ehci-hcd.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/usb/host/ohci-hcd.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/lib/libcrc32c.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/net/sched/sch_tbf.ko)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/net/sched/sch_hfsc.ko)
-else # LINUX_OUTDIR
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/wl/wl.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/wl/wl_high/wl_high.ko)
+#$(STRIP) $(LINUXDIR)/drivers/net/wl/wl_high.ko
+endif 
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/et/et.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/ctf/ctf.ko)
+	#$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/bcm57xx/bcm57xx.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/emf/emf.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/igs/igs.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/dpsta/dpsta.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/connector/cn.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/scsi/scsi_wait_scan.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/usb/host/xhci-hcd.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/usb/host/ehci-hcd.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/usb/host/ohci-hcd.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/lib/libcrc32c.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/net/sched/sch_tbf.ko)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/net/sched/sch_hfsc.ko)
+else # LINUXDIR
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/wl/wl.o)
 ifeq ("$(CONFIG_USBAP)","y")
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/wl/wl_high/wl_high.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/wl/wl_high/wl_high.o)
 endif
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/et/et.o)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/ctf/ctf.o)
-	#$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/bcm57xx/bcm57xx.o)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/emf/emf.o)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/igs/igs.o)
-	$(call STRIP_DEBUG_SYMBOLS,$(LINUX_OUTDIR)/drivers/net/ubd/ubd.o)
-endif
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/et/et.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/ctf/ctf.o)
+	#$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/bcm57xx/bcm57xx.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/emf/emf.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/igs/igs.o)
+	$(call STRIP_DEBUG_SYMBOLS,$(LINUXDIR)/drivers/net/ubd/ubd.o)
 endif
 
 
 # well, we should always be able to use the BOM, but right now, the last build step on
-# the build machine doesn't have it, so we don't rerun this is the file already
+# the build machine doesn't have it, so we don't rerun this is the file already 
 # exists
 
 version:  $(SRCBASE)/router/shared/router_version.h
@@ -615,22 +621,22 @@ router-clean: $(obj-clean) config-clean
 	rm -rf $(INSTALLDIR)/busybox
 
 clean: router-clean
-	@echo cleaning LINUX_OUTDIR = $(LINUX_OUTDIR)
+	@echo cleaning LINUXDIR = $(LINUXDIR)
 ifneq (2_4,$(LINUX_VERSION))
-	# we need to pass some conf file for cleaning 2.6. The kbuild clean doesn't seem to
+	# we need to pass some conf file for cleaning 2.6. The kbuild clean doesn't seem to 
 	# to load the .config the way our wl Makefile  is expecting.
-	$(MAKE) CONFIG_WL_CONF=wlconfig_lx_router_ap -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) clean
+	$(MAKE) CONFIG_WL_CONF=wlconfig_lx_router_ap -C $(LINUXDIR) $(SUBMAKE_SETTINGS) clean
 	$(MAKE) -C $(SRCBASE)/router/compressed ARCH=$(ARCH) clean
 else
-	$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) clean
+	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) clean
 endif
 	$(MAKE) -C $(SRCBASE)/cfe/build/broadcom/bcm947xx ARCH=$(ARCH) clean
 #	[ ! -f $(SRCBASE)/tools/misc/Makefile ] || $(MAKE) -C $(SRCBASE)/tools/misc clean
 
 distclean mrproper: clean
-	rm -f .config .config.plt $(LINUX_OUTDIR)/.config
+	rm -f .config .config.plt $(LINUXDIR)/.config
 
-install package: $(filter-out lib-install,$(obj-install)) $(LINUX_OUTDIR)/.config
+install package: $(call filter-out-external-packages, $(filter-out lib-install,$(obj-install)) $(LINUX_OUTDIR)/.config)
         # Install binaries into target directory
 	install -d $(TARGETDIR)
 	for dir in $(wildcard $(patsubst %,$(INSTALLDIR)/%,$(obj-y))) ; do \
@@ -638,7 +644,7 @@ install package: $(filter-out lib-install,$(obj-install)) $(LINUX_OUTDIR)/.confi
 	done
 	# optimize the crypto library by removing unneeded symbols
 #	[ ! -d libbcmcrypto ] || $(MAKE) -C libbcmcrypto optimize
-
+	
 ifneq ("$(CONFIG_WAPI)$(CONFIG_WAPI_IAS)","")
 	# optimize the OPENSSL library by removing unneeded symbols
 #	[ ! -d wapi/wapid ] || $(MAKE) -C wapi/wapid optimize
@@ -647,20 +653,22 @@ endif
 	$(MAKE) lib-install
 ifeq ($(ROOTDIR),)
 	# Install modules into filesystem
-	if grep -q "CONFIG_MODULES=y" $(LINUX_OUTDIR)/.config ; then \
-	    $(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) \
+	if grep -q "CONFIG_MODULES=y" $(LINUXDIR)/.config ; then \
+	    $(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) \
 		modules_install DEPMOD=/bin/true INSTALL_MOD_PATH=$(TARGETDIR) ; \
 	fi
+endif # ROOTDIR
 	#	$(MAKE) acos-install
+ifeq ($(ROOTDIR),)
 	for dir in $(SRCBASE)/prebuilt/$(FW_TYPE); do \
         (cd $${dir} && tar cpf - .) | (cd $(TARGETDIR) && tar xpf -) \
     done
-endif
+endif # ROOTDIR
 	#water, 08/11/2009
-	rm -rf $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/build
-	rm -rf $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/source
-	rm -rf $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/modules.*
-	rm -rf $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/extra
+	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/build
+	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/source
+	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/modules.*
+	rm -rf $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/extra
 	find $(TARGETDIR) -name .svn  | xargs rm -rf
 	rm -rf $(TARGETDIR)/usr/bin/[
 	rm -rf $(TARGETDIR)/usr/bin/[[
@@ -671,14 +679,16 @@ endif
 	rm -rf $(TARGETDIR)/usr/sbin/epi_ttcp
 	$(STRIP) $(TARGETDIR)/bin/eapd
 	install fbwifi/fbwifi $(TARGETDIR)/bin
-	install -d $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
-	#install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
-	#install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/usbprinter
-	install -d $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
-	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
-	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/drivers/ufsd
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	#install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	#install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
+	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
+	install ufsd/jnl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
+	install ufsd/ufsd.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/ufsd
 	install ufsd/chkntfs $(TARGETDIR)/bin
-	#install utelnetd/utelnetd $(TARGETDIR)/bin
+ifeq ($(ROOTDIR),)
+	install utelnetd/utelnetd $(TARGETDIR)/bin
+endif # ROOTDIR
 	cd $(TARGETDIR)/etc && ln -sf /tmp/resolv.conf resolv.conf
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
@@ -704,7 +714,7 @@ endif
 	#cp -f $(PLATFORMDIR)/cp_checkbox.sh $(TARGETDIR)/usr/sbin/cp_checkbox.sh
 	#cp -f $(PLATFORMDIR)/cp_platform.sh $(TARGETDIR)/usr/sbin/cp_platform.sh
 	#cp -f $(PLATFORMDIR)/CAs.txt $(TARGETDIR)/etc/CAs.txt
-	#  add end by Hank for ecosystem support 08/14/2012
+	#  add end by Hank for ecosystem support 08/14/2012 
 	#cp -f $(PLATFORMDIR)/acsd $(TARGETDIR)/usr/sbin/acsd
 	#cp -f $(PLATFORMDIR)/acs_cli $(TARGETDIR)/usr/sbin/acs_cli
 
@@ -745,36 +755,36 @@ ifneq (2_4,$(LINUX_VERSION))
 	# Package kernel and filesystem
 ifeq ($(BUILD_MFG), 1)
 	cd $(TARGETDIR) ; \
-	find . | cpio -o -H newc | gzip > $(LINUX_OUTDIR)/usr/initramfs_data.cpio.gz
-	ls -l $(LINUX_OUTDIR)/usr/initramfs_data.cpio.gz
-	$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) zImage
+	find . | cpio -o -H newc | gzip > $(LINUXDIR)/usr/initramfs_data.cpio.gz
+	ls -l $(LINUXDIR)/usr/initramfs_data.cpio.gz
+	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) zImage
 	$(MAKE) -C $(SRCBASE)/router/compressed ARCH=$(ARCH)
 else
 	cp $(SRCBASE)/router/compressed/vmlinuz $(PLATFORMDIR)/
 	trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG)
 	    addpattern -i $(PLATFORMDIR)/linux.trx -o $(PLATFORMDIR)/linux_lsys.bin ; \
-	if grep -q "CONFIG_SQUASHFS=y" $(LINUX_OUTDIR)/.config ; then \
+	if grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
 	cp $(SRCBASE)/router/compressed/vmlinuz-gzip $(PLATFORMDIR)/ ; \
 	trx -o $(PLATFORMDIR)/linux-gzip.trx $(PLATFORMDIR)/vmlinuz-gzip $(PLATFORMDIR)/$(ROOT_IMG) ; \
 	fi
 endif
 	# Pad self-booting Linux to a 64 KB boundary
 	cp $(SRCBASE)/router/compressed/zImage $(PLATFORMDIR)/
-else # LINUX_OUTDIR
+else # LINUXDIR
 	# Package kernel and filesystem
-	if grep -q "CONFIG_EMBEDDED_RAMDISK=y" $(LINUX_OUTDIR)/.config ; then \
-	    cp $(PLATFORMDIR)/$(ROOT_IMG) $(LINUX_OUTDIR)/arch/mips/ramdisk/$${CONFIG_EMBEDDED_RAMDISK_IMAGE} ; \
-		$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) zImage ; \
+	if grep -q "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config ; then \
+	    cp $(PLATFORMDIR)/$(ROOT_IMG) $(LINUXDIR)/arch/mips/ramdisk/$${CONFIG_EMBEDDED_RAMDISK_IMAGE} ; \
+		$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) zImage ; \
 	else \
-		cp $(LINUX_OUTDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz $(PLATFORMDIR)/ ; \
+		cp $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz $(PLATFORMDIR)/ ; \
 		trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinuz $(PLATFORMDIR)/$(ROOT_IMG) ; \
-		if grep -q "CONFIG_SQUASHFS=y" $(LINUX_OUTDIR)/.config ; then \
-			cp $(LINUX_OUTDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz-lzma $(PLATFORMDIR)/ ; \
+		if grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
+			cp $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/vmlinuz-lzma $(PLATFORMDIR)/ ; \
 			trx -o $(PLATFORMDIR)/linux-lzma.trx $(PLATFORMDIR)/vmlinuz-lzma $(PLATFORMDIR)/$(ROOT_IMG) ; \
 		fi \
 	fi
 	# Pad self-booting Linux to a 64 KB boundary
-	cp $(LINUX_OUTDIR)/arch/mips/brcm-boards/bcm947xx/compressed/zImage $(PLATFORMDIR)/
+	cp $(LINUXDIR)/arch/mips/brcm-boards/bcm947xx/compressed/zImage $(PLATFORMDIR)/
 endif
 	dd conv=sync bs=64k < $(PLATFORMDIR)/zImage > $(PLATFORMDIR)/linux.bin
 	# Append filesystem to self-booting Linux
@@ -782,10 +792,10 @@ endif
 
 	###########################################
 	### Create LZMA kernel ####################
-	#$(OBJCOPY) -O binary -g $(LINUX_OUTDIR)/vmlinux $(PLATFORMDIR)/vmlinux.bin
-	#../../tools/lzma e $(PLATFORMDIR)/vmlinux.bin $(PLATFORMDIR)/vmlinux.lzma
-	#trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinux.lzma $(PLATFORMDIR)/$(ROOT_IMG)
-	#rm -f $(PLATFORMDIR)/vmlinux.bin $(PLATFORMDIR)/vmlinux.lzma
+	#$(OBJCOPY) -O binary -g $(LINUXDIR)/vmlinux $(PLATFORMDIR)/vmlinux.bin 
+	#../../tools/lzma e $(PLATFORMDIR)/vmlinux.bin $(PLATFORMDIR)/vmlinux.lzma 
+	#trx -o $(PLATFORMDIR)/linux.trx $(PLATFORMDIR)/vmlinux.lzma $(PLATFORMDIR)/$(ROOT_IMG) 
+	#rm -f $(PLATFORMDIR)/vmlinux.bin $(PLATFORMDIR)/vmlinux.lzma 
 
 	###########################################
 	### Create .chk files for Web UI upgrade ##
@@ -801,27 +811,26 @@ endif # ROOTDIR
 # Configuration rules
 #
 
-ifdef ($(ROOTDIR),)
 conf mconf:
-	$(MAKE) -C config LINUX_OUTDIR=${LINUX_OUTDIR}
-	@LINUX_OUTDIR=${LINUX_OUTDIR} ./config/$@ ./config/Config
+	$(MAKE) -C config LINUXDIR=${LINUXDIR}
+	@LINUXDIR=${LINUXDIR} ./config/$@ ./config/Config
 	# Also configure kernel
-	$(MAKE) LINUX_OUTDIR=${LINUX_OUTDIR} k$@
+	$(MAKE) LINUXDIR=${LINUXDIR} k$@
 
 oldconf: .config
-	$(MAKE) -C config LINUX_OUTDIR=${LINUX_OUTDIR}
-	@LINUX_OUTDIR=${LINUX_OUTDIR} ./config/conf -o ./config/Config
+	$(MAKE) -C config LINUXDIR=${LINUXDIR}
+	@LINUXDIR=${LINUXDIR} ./config/conf -o ./config/Config
 	# Also configure kernel
-	$(MAKE) LINUX_OUTDIR=${LINUX_OUTDIR} k$@
+	$(MAKE) LINUXDIR=${LINUXDIR} k$@
 
 kconf:
-	$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) config
+	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) config
 
-kmconf: $(LINUX_OUTDIR)/.config
-	$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) menuconfig
+kmconf: $(LINUXDIR)/.config 
+	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) menuconfig
 
-koldconf: $(LINUX_OUTDIR)/.config
-	$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) oldconfig
+koldconf: $(LINUXDIR)/.config
+	$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) oldconfig
 
 # Convenience
 config: conf
@@ -829,22 +838,12 @@ config: conf
 menuconfig: mconf
 
 oldconfig: oldconf
-else
-config/conf config/mconf:
-	$(MAKE) -C config
-
-oldconfig: config/conf
-	$< -d config/Config .config
-endif
 
 # Platform file
 .config.plt:
 	@echo "PLT=$(PLT)" > $@
 	@echo "LINUX_VERSION=$(LINUX_VERSION)" >> $@
 
-ifneq ($(ROOTDIR),)
-.config:
-else
 # Default configurations
 .config:
 ifneq (2_4,$(LINUX_VERSION))
@@ -852,124 +851,114 @@ ifneq (2_4,$(LINUX_VERSION))
 else
 	cp config/defconfig $@
 endif
-	$(MAKE) SRCBASE=$(SRCBASE) LINUX_OUTDIR=$(LINUX_OUTDIR) oldconfig
+	$(MAKE) SRCBASE=$(SRCBASE) LINUXDIR=$(LINUXDIR) oldconfig
 
-$(LINUX_OUTDIR)/.config: $(LINUX_OUTDIR)/.config_$(PROFILE)
+$(LINUXDIR)/.config:
 ifneq (2_4,$(LINUX_VERSION))
-	cp -f $(LINUX_OUTDIR)/.config_$(PROFILE) $@
+	cp $(LINUXDIR)/.config_$(PROFILE) $@
 else
-	cp -f $(LINUX_OUTDIR)/.config_$(PROFILE) $@
+	cp $(LINUXDIR)/.config_$(PROFILE) $@
 endif
 
 # Overwrite Kernel .config
-check_kernel_config: $(LINUX_OUTDIR)/.config
-	cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.tmp
+check_kernel_config: $(LINUXDIR)/.config
+	cp $(LINUXDIR)/.config $(LINUXDIR)/.config.tmp
 ifeq ($(CONFIG_SQUASHFS), y)
-	if ! grep -q "CONFIG_SQUASHFS=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_CRAMFS=y/# CONFIG_CRAMFS is not set/g" $(LINUX_OUTDIR)/.config.chk | \
+	if ! grep -q "CONFIG_SQUASHFS=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_CRAMFS=y/# CONFIG_CRAMFS is not set/g" $(LINUXDIR)/.config.chk | \
 		sed -e "s/# CONFIG_SQUASHFS is not set/CONFIG_SQUASHFS=y/g" > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 endif
 ifeq ($(CONFIG_CRAMFS), y)
-	if ! grep -q "CONFIG_CRAMFS=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_SQUASHFS=y/# CONFIG_SQUASHFS is not set/g" $(LINUX_OUTDIR)/.config.chk | \
+	if ! grep -q "CONFIG_CRAMFS=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_SQUASHFS=y/# CONFIG_SQUASHFS is not set/g" $(LINUXDIR)/.config.chk | \
 		sed -e "s/# CONFIG_CRAMFS is not set/CONFIG_CRAMFS=y/g" > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 endif
 ifeq ($(CONFIG_SHRINK_MEMORY), y)
-	if ! grep -q "CONFIG_SHRINKMEM=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/# CONFIG_SHRINKMEM is not set/CONFIG_SHRINKMEM=y/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if ! grep -q "CONFIG_SHRINKMEM=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/# CONFIG_SHRINKMEM is not set/CONFIG_SHRINKMEM=y/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 else
-	if grep -q "CONFIG_SHRINKMEM=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_SHRINKMEM=y/# CONFIG_SHRINKMEM is not set/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if grep -q "CONFIG_SHRINKMEM=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_SHRINKMEM=y/# CONFIG_SHRINKMEM is not set/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 endif
 ifeq ($(CONFIG_PLC), y)
-	if ! grep -q "CONFIG_PLC=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/# CONFIG_PLC is not set/CONFIG_PLC=y/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if ! grep -q "CONFIG_PLC=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/# CONFIG_PLC is not set/CONFIG_PLC=y/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 else
-	if grep -q "CONFIG_PLC=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_PLC=y/# CONFIG_PLC is not set/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if grep -q "CONFIG_PLC=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_PLC=y/# CONFIG_PLC is not set/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 endif
 ifeq ($(CONFIG_NFC), y)
-	if ! grep -q "CONFIG_PLAT_MUX_CONSOLE=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/# CONFIG_PLAT_MUX_CONSOLE is not set/CONFIG_PLAT_MUX_CONSOLE=y/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if ! grep -q "CONFIG_PLAT_MUX_CONSOLE=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/# CONFIG_PLAT_MUX_CONSOLE is not set/CONFIG_PLAT_MUX_CONSOLE=y/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 	# Force UP before we fix NFC GKI communication issue
-	if grep -q "CONFIG_SMP=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_SMP=y/# CONFIG_SMP is not set/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
-		echo "# CONFIG_TINY_RCU is not set" >> $(LINUX_OUTDIR)/.config ; \
+	if grep -q "CONFIG_SMP=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_SMP=y/# CONFIG_SMP is not set/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
+		echo "# CONFIG_TINY_RCU is not set" >> $(LINUXDIR)/.config ; \
 	fi
 else
-	if grep -q "CONFIG_PLAT_MUX_CONSOLE=y" $(LINUX_OUTDIR)/.config ; then \
-		cp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.chk ; \
-		sed -e "s/CONFIG_PLAT_MUX_CONSOLE=y/# CONFIG_PLAT_MUX_CONSOLE is not set/g" $(LINUX_OUTDIR)/.config.chk > \
-		$(LINUX_OUTDIR)/.config ; \
-		rm -f $(LINUX_OUTDIR)/.config.chk ; \
+	if grep -q "CONFIG_PLAT_MUX_CONSOLE=y" $(LINUXDIR)/.config ; then \
+		cp $(LINUXDIR)/.config $(LINUXDIR)/.config.chk ; \
+		sed -e "s/CONFIG_PLAT_MUX_CONSOLE=y/# CONFIG_PLAT_MUX_CONSOLE is not set/g" $(LINUXDIR)/.config.chk > \
+		$(LINUXDIR)/.config ; \
+		rm -f $(LINUXDIR)/.config.chk ; \
 	fi
 endif
 	# Make kernel config again if changed
-	if ! cmp $(LINUX_OUTDIR)/.config $(LINUX_OUTDIR)/.config.tmp ; then \
-		$(MAKE) -C $(LINUX_OUTDIR) $(SUBMAKE_SETTINGS) oldconfig ; \
+	if ! cmp $(LINUXDIR)/.config $(LINUXDIR)/.config.tmp ; then \
+		$(MAKE) -C $(LINUXDIR) $(SUBMAKE_SETTINGS) oldconfig ; \
 	fi
-endif
 
 #
 # Overrides
 #
 
-ifneq ($(ROOTDIR),)
-# build compressed kernel image here
-compressed:
-	$(MAKE) CONFIG_SQUASHFS=$(CONFIG_SQUASHFS) -C compressed
-
-compressed-install:
-	[ -e compressed/vmlinuz ] && cp compressed/vmlinuz $(BINARIES_DIR)/
-endif
-
 ifneq (2_4,$(LINUX_VERSION))
 busybox-1.x/Config.h: dummy
-	[ ! -d busybox-1.x ] || cd busybox-1.x && rm -f Config.h && ln -sf include/autoconf.h Config.h && touch Config.h
-	[ ! -d busybox-1.x ] || cd busybox-1.x && cp configs/bbconfig-$(CONFIG_BUSYBOX_CONFIG)_$(PROFILE) .config && chmod 0644 .config && $(MAKE) clean
+	cd busybox-1.x && rm -f Config.h && ln -sf include/autoconf.h Config.h && touch Config.h
+	cd busybox-1.x && cp configs/bbconfig-$(CONFIG_BUSYBOX_CONFIG)_$(PROFILE) .config && $(MAKE) clean
 
-busybox: #busybox-1.x/Config.h
-	[ ! -d busybox-1.x ] || $(MAKE) -C busybox-1.x ARCH=$(ARCH) INSTALL
+busybox: busybox-1.x/Config.h
+	$(MAKE) -C busybox-1.x ARCH=$(ARCH) INSTALL
 
 busybox-install:
-	[ ! -d busybox-1.x ] || $(MAKE) -C busybox-1.x ARCH=$(ARCH) CONFIG_PREFIX=$(INSTALLDIR)/busybox install
+	$(MAKE) -C busybox-1.x ARCH=$(ARCH) CONFIG_PREFIX=$(INSTALLDIR)/busybox install
 
 busybox-clean:
-	[ ! -d busybox-1.x ] || $(MAKE) -C busybox-1.x ARCH=$(ARCH) clean
+	$(MAKE) -C busybox-1.x ARCH=$(ARCH) clean
 
 rc: netconf nvram shared
-	+$(MAKE) LINUX_OUTDIR=$(LINUX_OUTDIR) EXTRA_LDFLAGS=$(EXTRA_LDFLAGS) BUSYBOXDIR=$(BUSYBOXDIR) BUSYBOX_OUTDIR=$(BUSYBOX_OUTDIR) -C rc
+	+$(MAKE) LINUXDIR=$(LINUXDIR) EXTRA_LDFLAGS=$(EXTRA_LDFLAGS) -C rc
 ifneq ($(CONFIG_BUSYBOX),)
 ifeq ($(ROOTDIR),)
 rc: busybox-1.x/Config.h
@@ -999,13 +988,12 @@ endif #linux-2.6
 rc-install:
 	make LINUX_OUTDIR=$(LINUX_OUTDIR) BUSYBOXDIR=$(BUSYBOXDIR) BUSYBOX_OUTDIR=$(BUSYBOX_OUTDIR) INSTALLDIR=$(INSTALLDIR)/rc -C rc install
 
-ifeq ($(ROOTDIR),)
 lib-install:
-	make LX_VERS=$(LINUX_VERSION) INSTALLDIR=$(INSTALLDIR)/lib ARCH=$(ARCH) -C lib install
+	[ ! -d lib ] || make LX_VERS=$(LINUX_VERSION) INSTALLDIR=$(INSTALLDIR)/lib ARCH=$(ARCH) -C lib install
 
 www www-%:
-	[ ! -e www/Makefile ] || $(MAKE) -C www/$(CONFIG_VENDOR) $* INSTALLDIR=$(INSTALLDIR)/www
-endif
+	$(MAKE) -C www/$(CONFIG_VENDOR) $* INSTALLDIR=$(INSTALLDIR)/www
+
 
 
 
@@ -1026,26 +1014,26 @@ libusb :
 
 bcmdl :
 
-bcmdl-install :
+bcmdl-install :	
 	install -d $(INSTALLDIR)/dongle/sbin
 	install -D $(SRCBASE)/usbdev/usbdl/mips_$(LINUX_VERSION)/bcmdl $(INSTALLDIR)/dongle/sbin/bcmdl
 
 bridge:
 ifneq (2_4,$(LINUX_VERSION))
-	[ ! -d bridge-1.x ] || $(MAKE) -C bridge-1.x
+	$(MAKE) -C bridge-1.x
 else
-	[ ! -d bridge ] || $(MAKE) -C bridge brctl/brctl
+	$(MAKE) -C bridge brctl/brctl
 endif
 
 dongle :
 
 bridge-install:
 ifneq (2_4,$(LINUX_VERSION))
-	[ ! -d bridge-1.x ] || install -D bridge-1.x/brctl/brctl $(INSTALLDIR)/bridge/usr/sbin/brctl
+	install -D bridge-1.x/brctl/brctl $(INSTALLDIR)/bridge/usr/sbin/brctl
 else
-	[ ! -d bridge ] || install -D bridge/brctl/brctl $(INSTALLDIR)/bridge/usr/sbin/brctl
+	install -D bridge/brctl/brctl $(INSTALLDIR)/bridge/usr/sbin/brctl
 endif
-	-$(STRIP) $(INSTALLDIR)/bridge/usr/sbin/brctl
+	$(STRIP) $(INSTALLDIR)/bridge/usr/sbin/brctl
 
 bridge-clean:
 ifneq (2_4,$(LINUX_VERSION))
@@ -1065,13 +1053,13 @@ buzzz-clean:
 	$(MAKE) -C buzzz clean
 
 dnsmasq-install:
-	[ ! -d $(DNSMASQ_DIR) ] || install -D dnsmasq/dnsmasq $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
-	-$(STRIP) $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
+	install -D dnsmasq/dnsmasq $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
+	$(STRIP) $(INSTALLDIR)/dnsmasq/usr/sbin/dnsmasq
 
 ifneq ($(call kernel-is-version,2_6_36),)
 iptables:
-	[ ! -d iptables-1.4.12 ] || $(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
-	    KERNEL_DIR=$(LINUX_OUTDIR) DO_IPV6=1
+	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
+	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 
 iptables-install:
 ifeq ($(CONFIG_IPTABLES),y)
@@ -1086,11 +1074,11 @@ else
 	@true
 endif
 iptables-clean:
-	-$(MAKE) -C iptables-1.4.12 KERNEL_DIR=$(LINUX_OUTDIR) DO_IPV6=1 clean
+	-$(MAKE) -C iptables-1.4.12 KERNEL_DIR=$(LINUXDIR) DO_IPV6=1 clean
 
 else ifeq (2_6,$(LINUX_VERSION))
 iptables:
-	$(MAKE) -C iptables-1.x BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUX_OUTDIR)
+	$(MAKE) -C iptables-1.x BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUXDIR)
 
 iptables-install:
 ifeq ($(CONFIG_IPTABLES),y)
@@ -1104,10 +1092,10 @@ else
 	@true
 endif
 iptables-clean:
-	-$(MAKE) -C iptables-1.x KERNEL_DIR=$(LINUX_OUTDIR) clean
+	-$(MAKE) -C iptables-1.x KERNEL_DIR=$(LINUXDIR) clean
 else # linux-2.6
 iptables:
-	[ ! -d iptables ] || $(MAKE) -C iptables BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUX_OUTDIR)
+	$(MAKE) -C iptables BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUXDIR)
 
 iptables-install:
 ifeq ($(CONFIG_IPTABLES),y)
@@ -1121,31 +1109,29 @@ else
 	@true
 endif
 iptables-clean:
-	-$(MAKE) -C iptables KERNEL_DIR=$(LINUX_OUTDIR) clean
+	-$(MAKE) -C iptables KERNEL_DIR=$(LINUXDIR) clean
 endif # linux-2.6
 
 
-netconf: iptables
+netconf: $(call filter-out-external-packages,iptables)
 ifeq ($(CONFIG_NETCONF),y)
-	make LINUX_OUTDIR=$(LINUX_OUTDIR) IPTABLESDIR=$(IPTABLESDIR) -C netconf
+	make LINUXDIR=$(LINUXDIR) -C netconf
 else
 	# In case of "Prerequisite 'iptables' is newer than target 'netconf'"
 	@true
 endif
 
-ifeq ($(ROOTDIR),)
 ntpclient-install:
 	install -D ntpclient/ntpclient $(INSTALLDIR)/ntpclient/usr/sbin/ntpclient
 	$(STRIP) $(INSTALLDIR)/ntpclient/usr/sbin/ntpclient
 
 ppp ppp-%:
-	[ ! -d ppp ] || $(MAKE) -C ppp/pppoecd $* INSTALLDIR=$(INSTALLDIR)/ppp
-endif
+	$(MAKE) -C ppp/pppoecd $* INSTALLDIR=$(INSTALLDIR)/ppp
 
 udhcpd-install:
-	[ ! -d udhcpd ] || install -D udhcpd/udhcpd $(INSTALLDIR)/udhcpd/usr/sbin/udhcpd
-	-$(STRIP) $(INSTALLDIR)/udhcpd/usr/sbin/udhcpd
-	-cd $(INSTALLDIR)/udhcpd/usr/sbin && ln -sf udhcpd udhcpc
+	install -D udhcpd/udhcpd $(INSTALLDIR)/udhcpd/usr/sbin/udhcpd
+	$(STRIP) $(INSTALLDIR)/udhcpd/usr/sbin/udhcpd
+	cd $(INSTALLDIR)/udhcpd/usr/sbin && ln -sf udhcpd udhcpc
 
 upnp: netconf nvram shared
 
@@ -1161,13 +1147,13 @@ bcmupnp-clean:
 wlconf: nvram shared
 
 vlan:
-	[ ! -d vlan ] || $(MAKE) -C vlan CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP)
+	$(MAKE) -C vlan CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP)
 
 vlan-install:
-	[ ! -d vlan ] || $(MAKE) -C vlan CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP) INSTALLDIR=$(INSTALLDIR) install
+	$(MAKE) -C vlan CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP) INSTALLDIR=$(INSTALLDIR) install
 
 vlan-clean:
-	[ ! -d vlan ] || $(MAKE) -C vlan clean
+	$(MAKE) -C vlan clean
 
 emf:
 	$(MAKE) -C emf/emfconf CROSS=$(CROSS_COMPILE)
@@ -1194,16 +1180,16 @@ igs-clean:
 	#$(MAKE) -C emf/igsconf clean
 
 igmp:
-	[ ! -d igmp ] || $(MAKE) -C igmp CROSS=$(CROSS_COMPILE)
+	$(MAKE) -C igmp CROSS=$(CROSS_COMPILE)
 
 igmp-install:
 ifeq ($(CONFIG_IGMP_PROXY),y)
 	install -d $(TARGETDIR)
-	[ ! -d igmp ] || $(MAKE) -C igmp CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
+	$(MAKE) -C igmp CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
 endif
 
 igmp-clean:
-	[ ! -d igmp ] || $(MAKE) -C igmp clean
+	$(MAKE) -C igmp clean
 
 wps: nvram shared
 	[ ! -f wps/Makefile ] || $(MAKE) -C wps EXTRA_LDFLAGS=$(EXTRA_LDFLAGS)
@@ -1245,20 +1231,19 @@ endif
 
 acos_link:
 
-ifneq ($(ROOTDIR),)
+ifeq ($(ROOTDIR),)
 ifneq ($(PROFILE),)
 	cd ../../project/acos/include; rm -f ambitCfg.h; ln -s ambitCfg_$(FW_TYPE)_$(PROFILE).h ambitCfg.h
 else
 	cd ../../project/acos/include; rm -f ambitCfg.h; ln -s ambitCfg_$(FW_TYPE).h ambitCfg.h
-endif
 endif
 
 ifneq ($(PROFILE),)
 #	cp ../../project/acos/config_$(PROFILE).in ../../project/acos/config.in
 #	cp ../../project/acos/config_$(PROFILE).mk ../../project/acos/config.mk
 #	cp ../../project/acos/Makefile_$(PROFILE) ../../project/acos/Makefile
-#	cp $(LINUX_OUTDIR)/.config_$(PROFILE) $(LINUX_OUTDIR)/.config
-#	cp $(LINUX_OUTDIR)/autoconf.h_$(PROFILE) $(LINUX_OUTDIR)/include/linux/autoconf.h
+#	cp $(LINUXDIR)/.config_$(PROFILE) $(LINUXDIR)/.config
+#	cp $(LINUXDIR)/autoconf.h_$(PROFILE) $(LINUXDIR)/include/linux/autoconf.h
 #	cp $(BASEDIR)/ap/acos/access_control/Makefile_arm $(BASEDIR)/ap/acos/access_control/Makefile
 #	cp $(BASEDIR)/ap/acos/acos_nat/Makefile_arm $(BASEDIR)/ap/acos/acos_nat/Makefile
 #	cp $(BASEDIR)/ap/acos/acos_nat/acosnat.lds_arm $(BASEDIR)/ap/acos/acos_nat/acosnat.lds
@@ -1319,9 +1304,10 @@ else
 #	cp ../../project/acos/config_WNR3500v2.in ../../project/acos/config.in
 #	cp ../../project/acos/config_WNR3500v2.mk ../../project/acos/config.mk
 #	cp ../../project/acos/Makefile_WNR3500v2 ../../project/acos/Makefile
-#	cp $(LINUX_OUTDIR)/.config_WNR3500v2 $(LINUX_OUTDIR)/.config
-#	cp $(LINUX_OUTDIR)/autoconf.h_WNR3500v2 $(LINUX_OUTDIR)/include/linux/autoconf.h
+#	cp $(LINUXDIR)/.config_WNR3500v2 $(LINUXDIR)/.config
+#	cp $(LINUXDIR)/autoconf.h_WNR3500v2 $(LINUXDIR)/include/linux/autoconf.h
 endif
+endif # ROOTDIR
 
 acos:
 
@@ -1330,13 +1316,13 @@ acos-install:
 acos-clean:
 
 gpl:
-	[ -e ../../ap/gpl/Makefile ] && $(MAKE) -C ../../ap/gpl CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP)
+	$(MAKE) -C ../../ap/gpl CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP)
 
 gpl-install:
-	[ -e ../../ap/gpl/Makefile ] && $(MAKE) -C ../../ap/gpl CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP) INSTALLDIR=$(INSTALLDIR) install
+	$(MAKE) -C ../../ap/gpl CROSS=$(CROSS_COMPILE) STRIPTOOL=$(STRIP) INSTALLDIR=$(INSTALLDIR) install
 
 gpl-clean:
-	[ -e ../../ap/gpl/Makefile ] && $(MAKE) -C ../../ap/gpl clean
+	$(MAKE) -C ../../ap/gpl clean
 
 #Leon Lv Add below for UBD,Apr 15,2008
 .PHONY:ubd opendns
@@ -1369,7 +1355,7 @@ acos_nat-install:
 
 acos_nat-clean:
 
-ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
+ifneq ($(call kernel-is-version,2_6_36),)
 udev:
 	$(MAKE) -C udev CROSS_COMPILE=$(CROSS_COMPILE)
 
@@ -1423,7 +1409,7 @@ flex: dummy
 	[ ! -d $@ ] || $(MAKE) -C flex CC=$(CC) RANLIB=$(RANLIB)
 
 iproute2:
-	[ ! -d $@ ] || $(MAKE) -C iproute2 KERNEL_INCLUDE=$(LINUX_OUTDIR)/include CC=$(CC) AR=$(AR) LDLIBS=
+	[ ! -d $@ ] || $(MAKE) -C iproute2 KERNEL_INCLUDE=$(LINUXDIR)/include CC=$(CC) AR=$(AR) LDLIBS=
 
 iproute2-install:
 	[ ! -d iproute2 ] || install -D -m 755 iproute2/ip/ip $(INSTALLDIR)/iproute2/usr/sbin/ip
@@ -1431,7 +1417,7 @@ iproute2-install:
 
 iputils:
 	[ ! -d $@ ] || [ -f $@/include-glibc/bits/socket.h ] || ( cd $@/include-glibc/bits && ln -s ../socketbits.h socket.h && cd ../../.. )
-	[ ! -d $@ ] || $(MAKE) -C iputils KERNEL_INCLUDE=$(LINUX_OUTDIR)/include CC=$(CC) LDLIBS=
+	[ ! -d $@ ] || $(MAKE) -C iputils KERNEL_INCLUDE=$(LINUXDIR)/include CC=$(CC) LDLIBS=
 
 iputils-install:
 	[ ! -d iputils ] || install -D -m 755 iputils/ping6 $(INSTALLDIR)/iputils/usr/sbin/ping6
@@ -1486,11 +1472,7 @@ gpio-clean:
 	[ ! -e $*/Makefile ] || $(MAKE) -C $* clean
 
 %-install:
-ifeq ($(ROOTDIR),)
 	[ ! -e $*/Makefile ] || $(MAKE) -C $* install INSTALLDIR=$(INSTALLDIR)/$*
-else
-	[ ! -e $*/Makefile ] || $(MAKE) -C $* install INSTALLDIR=$(TARGETDIR)
-endif
 
 $(obj-y) $(obj-n) $(obj-clean) $(obj-install): dummy
 
