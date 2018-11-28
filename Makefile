@@ -3536,7 +3536,8 @@ emf$(BCMEX)$(EX7):
 emf$(BCMEX)$(EX7)-install:
 ifeq ($(RTCONFIG_EMF),y)
 	install -d $(TARGETDIR)
-	$(MAKE) -C emf$(BCMEX)$(EX7)/emfconf CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
+#	$(MAKE) -C emf$(BCMEX)$(EX7)/emfconf CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
+	install -D emf$(BCMEX)$(EX7)/emfconf/prebuilt/emf $(INSTALLDIR)/emf/usr/sbin/emf
 endif
 
 emf$(BCMEX)$(EX7)-clean:
@@ -3548,7 +3549,8 @@ igs$(BCMEX)$(EX7):
 igs$(BCMEX)$(EX7)-install:
 ifeq ($(RTCONFIG_EMF),y)
 	install -d $(TARGETDIR)
-	$(MAKE) -C emf$(BCMEX)$(EX7)/igsconf CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
+#	$(MAKE) -C emf$(BCMEX)$(EX7)/igsconf CROSS=$(CROSS_COMPILE) INSTALLDIR=$(INSTALLDIR) install
+	install -D emf$(BCMEX)$(EX7)/igsconf/prebuilt/igs $(INSTALLDIR)/emf/usr/sbin/igs
 endif
 
 igs$(BCMEX)$(EX7)-clean:
