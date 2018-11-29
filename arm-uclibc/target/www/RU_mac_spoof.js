@@ -102,7 +102,7 @@ function RU_check_spoof()
 	}
 	else if(parent.isp_type=="9") //pptp+static
 	{
-		alert("<%2438%>");
+		alert("<%2450%>");
 		cf.pptp_username.value=parent.pptp_username;
 		cf.pptp_passwd.value=parent.pptp_password;
 		cf.pptp_serv_ip.value=parent.pptp_server_ipaddr;
@@ -141,7 +141,7 @@ function RU_check_spoof()
 	}
 	else if(parent.isp_type=="13")//l2tp+static
 	{
-		alert("<%2438%>");
+		alert("<%2450%>");
 		cf.l2tp_username.value=parent.l2tp_username;
 		cf.l2tp_passwd.value=parent.l2tp_password;
 		cf.l2tp_serv_ip.value=parent.l2tp_server_ipaddr;

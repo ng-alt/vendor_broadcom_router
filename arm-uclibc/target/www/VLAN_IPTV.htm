@@ -163,12 +163,12 @@ function loadSettings()
         cf.iptv_ports_5.checked=false;
 
 
-<%4235%>
+<%4255%>
     if(iptv_interface & 0x40)
         cf.iptv_ports_6.checked=true;
     else
         cf.iptv_ports_6.checked=false;
-<%4236%>
+<%4256%>
 
 
 }
@@ -336,12 +336,12 @@ function checkData()
     {
         if( (!cf.iptv_ports_0.checked) && (!cf.iptv_ports_1.checked) && (!cf.iptv_ports_2.checked) &&
             (!cf.iptv_ports_3.checked) && (!cf.iptv_ports_4.checked) && (!cf.iptv_ports_5.checked)
-<%4237%>
+<%4257%>
             (!cf.iptv_ports_6.checked)
-<%4238%>
+<%4258%>
             )
         {
-            alert("<%4239%>");
+            alert("<%4259%>");
             return false;
         }
     }
@@ -350,12 +350,12 @@ function checkData()
     {
         if( (cf.iptv_ports_0.checked) && (cf.iptv_ports_1.checked) && (cf.iptv_ports_2.checked) &&
             (cf.iptv_ports_3.checked) && (cf.iptv_ports_4.checked) && (cf.iptv_ports_5.checked)
-<%4237%>
+<%4257%>
             (cf.iptv_ports_6.checked) 
-<%4238%>
+<%4258%>
             )
         {
-            alert("<%4240%>");
+            alert("<%4260%>");
             return false;
         }
     }
@@ -370,7 +370,7 @@ function confirmDel()
   
     if(cf.select.value<0)
     {
-        alert("<%4241%>");
+        alert("<%4261%>");
           return false;
     }
     
@@ -397,7 +397,7 @@ function confirmDel()
     if ( cf.select.value == 10)
         rule_name = vlan_rule[10];
         
-    if(!confirm("<%4242%>" + rule_name + " ?"))
+    if(!confirm("<%4262%>" + rule_name + " ?"))
         return false;
     return true;    
 }
@@ -426,7 +426,7 @@ function confirmDel()
   			<table style="border-collapse:collapse;width:97%">
           <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
           <tr>
-            <td><input type="checkbox" name="vlan_iptv_enable" value="enable" onclick="vlan_iptv_enable_click();"><%4243%></td>
+            <td><input type="checkbox" name="vlan_iptv_enable" value="enable" onclick="vlan_iptv_enable_click();"><%4263%></td>
           </tr>
           <tr>
             <td colspan="2" nowrap style="padding-left:40px"> 
@@ -434,7 +434,7 @@ function confirmDel()
                 <table border="0" cellpadding="2" cellspacing="0" width="100%">
   	              <tr>
   	                <td>
-                      <input type="radio" name="vlan_iptv_select" value="iptv_enable" onClick="check_iptv_checkbox();"><b> <%4244%></b> 
+                      <input type="radio" name="vlan_iptv_select" value="iptv_enable" onClick="check_iptv_checkbox();"><b> <%4264%></b> 
                     </td>
                   </tr>
                   <tr>
@@ -445,8 +445,8 @@ function confirmDel()
                       <div id="iptv_check" style="display: block;">
                         <table border="1" cellpadding="2" cellspacing="0" width="100%" style="">
                           <tr>
-                            <td nowrap align="center"><span class="thead"><%4245%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4246%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4265%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4266%></span></td>
                           </tr>
                           <tr>            
                             <td>
@@ -471,15 +471,15 @@ function confirmDel()
                                   <td align="center">
                                     <input type="checkbox" name="iptv_ports_4">WiFi-2.4G
                                     <input type="checkbox" name="iptv_ports_5">WiFi-5G
-<%4247%>
+<%4267%>
                                   </td>
                                 </tr>
-<%4248%>
-<%4249%>
+<%4268%>
+<%4269%>
                                     <input type="checkbox" name="iptv_ports_6">WiFi-5G-2
                                   </td>
                                 </tr>
-<%4250%>          
+<%4270%>          
                               </table>
                             </td>
                           </tr>
@@ -491,7 +491,7 @@ function confirmDel()
                     <td colspan="2">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td colspan="2" nowrap><input type="radio" name="vlan_iptv_select" value="vlan_enable" onClick="check_vlan_checkbox();"><b> <%4251%></b> 
+                    <td colspan="2" nowrap><input type="radio" name="vlan_iptv_select" value="vlan_enable" onClick="check_vlan_checkbox();"><b> <%4271%></b> 
                     </td>
                   </tr>
                   <tr>
@@ -503,14 +503,14 @@ function confirmDel()
                         <table border="1" cellpadding="2" cellspacing="0" width="100%">
                           <tr>
                             <td nowrap align="center" width="6%"></td>
-                            <td nowrap align="center" width="6%"><%4252%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4253%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4254%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4255%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4245%></span></td>
-                            <td nowrap align="center"><span class="thead"><%4246%></span></td>
+                            <td nowrap align="center" width="6%"><%4272%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4273%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4274%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4275%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4265%></span></td>
+                            <td nowrap align="center"><span class="thead"><%4266%></span></td>
                           </tr>
-                          <%4256%>     
+                          <%4276%>     
                         </table>
                       </div>
                     </td>
@@ -547,11 +547,11 @@ function confirmDel()
     </div>
 	  
 <input type="hidden" name="select" value="-1">
-<INPUT name="vlan_enable" type="hidden" value= "<%4257%>">
-<INPUT name="iptv_enable" type="hidden" value= "<%4258%>">
-<INPUT name="iptv_interfaces" type="hidden" value= "<%4259%>">
-<input type="hidden" name="vlan_rule_name" value="<%4260%>">
-<input type="hidden" name="vlan_rule_enable" value="<%4261%>">
+<INPUT name="vlan_enable" type="hidden" value= "<%4277%>">
+<INPUT name="iptv_enable" type="hidden" value= "<%4278%>">
+<INPUT name="iptv_interfaces" type="hidden" value= "<%4279%>">
+<input type="hidden" name="vlan_rule_name" value="<%4280%>">
+<input type="hidden" name="vlan_rule_enable" value="<%4281%>">
 <a name="helpframe-anchor"></a>
   </form>
   </div>

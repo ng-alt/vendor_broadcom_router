@@ -989,9 +989,20 @@ function hide_circle_window()
         document.getElementById("container").style.display="block";
         document.getElementById("main_screen").style.display="block";
 }
+
+// bling
+function check_ap_enable()
+{
+  if ("<%68%>" == "Disable" && "<%69%>" == "Disable") {
+    WPS_wizard_grayout();
+  } else {
+    WPS_wizard_ungrayout();
+  }  
+}
+
 </script>
 </head>
-<body style="padding:0;margin:0;background-color:#e5e5e5;overflow:none" onload="change_size();show_circle_window();" onResize="change_size();">
+<body style="padding:0;margin:0;background-color:#e5e5e5;overflow:none" onload="change_size();show_circle_window();check_ap_enable();" onResize="change_size();">
   <form name="frmLanguage">
 <table width="100%" CELLPADDING=0 CELLSPACING=0 style="padding:0;margin:0;" id="all">
 <tr width="100%">
@@ -1213,7 +1224,7 @@ function hide_circle_window()
 					  <li class="SubMenu SubMenuWDS SubMenuEXT SubMenuAP" id="ddns"><a href="DNS_ddns.htm" onClick="return false"><span class="subMenu_text"><%442%></span></a></li>
 					  <li class="<%383%> SubMenuWDS" id="openvpn"><a href="OPENVPN.htm" <%357%> onClick="return false"><span class="subMenu_text"><%443%></span></a></li>
 		              <li class="SubMenu SubMenuWDS SubMenuEXT SubMenuAP" id="sta_rout"><a href="STR_routes.htm" onClick="return false"><span class="subMenu_text"><%444%></span></a></li>		                
-		              <li class="<%383%> SubMenuWDS" id="remote"><a href="FW_remote.htm" <%357%> onClick="return false"><span class="subMenu_text"><%445%></span></a></li>		                
+		                          <li class="<%383%> SubMenuWDS" id="remote"><a href="FW_remote.htm" <%357%> onClick="return false"><span class="subMenu_text"><%445%></span></a></li>		                
 		              <li class="<%383%> SubMenuWDS" id="upnp"><a href="UPNP_upnp.htm"  <%357%> onClick="return false"><span class="subMenu_text"><%446%></span></a></li>
                       <li class="<%383%> SubMenuWDS"><a href="IPV6_basic.htm" <%357%> onClick="return false"><span class="subMenu_text"><%447%></span></a></li>
                       <li class="<%383%> SubMenuWDS"><a href="traffic_meter.htm" <%357%> onClick="return false"><span class="subMenu_text"><%448%></span></a></li>

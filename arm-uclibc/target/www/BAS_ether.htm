@@ -431,7 +431,8 @@ function loadSettings()
 function show_test()
 {
     var cf = document.forms[0];
-    cf.test.value = "1";
+    //cf.test.value = "1";
+    cf.runtest.value = "yes";
 }
 
 //-->
@@ -452,7 +453,7 @@ function show_test()
 <td  style="padding-top:10px;padding-bottom:10px" align="center" colspan="2" class="table-seperate-border">
 <button type="button" value="SUBMIT"  onClick="buttonClick(this,'<%78%>');return checkData()" name="apply" class="button-apply" style="padding-left:10px"> <span class="roundleft_apply" ><%81%>&nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
 <button type="button" value="BUTTON"  onClick="buttonClick(this,'<%83%>');reset();loadSettings();loadcheck();" name="Cancel" class="button-rule" style="padding-left:10px" ><span class="roundleft_button"><span class ="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%84%></span></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<button type="button" value="SUBMIT"  onClick="buttonClick(this,'<%540%>');show_test();return checkData()" name="Test" class="button-apply" style="padding-left:10px"> <span class="roundleft_apply" ><%540%> &nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
+<button type="button" value="SUBMIT"  onClick="buttonClick(this,'<%540%>');show_test();return goTestApply()" name="Test" class="button-apply" style="padding-left:10px"> <span class="roundleft_apply" ><%540%> &nbsp;<span class="apply-icon">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="roundright_apply">&nbsp;&nbsp;&nbsp;</span></button>
 
 </td>
 </tr>

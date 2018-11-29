@@ -18,8 +18,9 @@ function loadnext() {
     {
         if ("<%301%>" == "1")
             top.location.replace("welcome.htm");
-        else
+        else 
             top.location.replace("start.htm");
+            
     }
     else if ("<%302%>" == "1")
         top.location.replace("http://www.routerlogin.com/start.htm");
@@ -27,7 +28,9 @@ function loadnext() {
              "<%303%>" == "3")
         top.location.replace("http://<%304%>/traffic_start_update.htm");
     else
-        top.location.replace("start.htm"); 
+    {
+            top.location.replace("start.htm"); 
+    }
 }
 </script></head>
 <body bgcolor="#ffffff" text="#666666" onload="loadnext()"> 

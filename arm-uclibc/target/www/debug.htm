@@ -33,12 +33,7 @@ function isChecked()
 		cf2.action_Capture_Packets.checked=true;
 	else 
 		cf2.action_Capture_Packets.checked=false;
-/*
-	if (cf3.Enable_Telnet.value == "On")
-		cf3.action_Enable_Telnet.checked=true;
-	else 
-		cf3.action_Enable_Telnet.checked=false;		
-		*/
+
 	if (cf3.WAN_port_mirror_to_LAN_port.value == "On")
 		cf3.action_Mirror_Port.checked=true;
 	else 
@@ -71,16 +66,18 @@ function checkRAData()
 {
 	var enabled = 0;
     var cf4 = document.forms[4];
+/*
+	if (cf4.stageQa.value != cf4.raStageQa.value)
+		enabled=1;
 	if (cf4.stageDev.value != cf4.raStageDev.value)
 		enabled=1;
 	if (cf4.stageProd.value != cf4.raStageProd.value)
 		enabled=1;
+*/
 	if (cf4.serverIP.value != cf4.raServerIP.value)
 		enabled=1;
         if (cf4.HTTPserverIP.value != cf4.raHTTPServerIP.value)
                 enabled=1;
-	if (cf4.serverPath.value != cf4.raServerPath.value)
-		enabled=1;
 	if (cf4.initStartTime.value != cf4.raInitStartTime.value)
 		enabled=1;
 
@@ -90,52 +87,43 @@ function checkRAData()
 		raDisabled();
 }
 
+function stageQaChange()
+{
+    var cf4 = document.forms[4];
+    cf4.stageQa.value = "1";
+    cf4.stageQa.checked=true;
+    cf4.stageDev.value = "0";
+    cf4.stageDev.checked=false;
+    cf4.stageProd.value = "0";
+    cf4.stageProd.checked=false;
+	checkRAData();
+}
+
 function stageDevChange()
 {
     var cf4 = document.forms[4];
-	if (cf4.stageDev.value == "0")
-	{
-		cf4.stageDev.value = "1";
-		cf4.stageDev.checked=true;
-		cf4.stageProd.value = "0";
-		cf4.stageProd.checked=false;
-	}
-	else
-	{
-		cf4.stageProd.value = "1";
-		cf4.stageProd.checked=true;
-		cf4.stageDev.value = "0";
-		cf4.stageDev.checked=false;
-	}
+    cf4.stageQa.value = "0";
+    cf4.stageQa.checked=false;
+    cf4.stageDev.value = "1";
+    cf4.stageDev.checked=true;
+    cf4.stageProd.value = "0";
+    cf4.stageProd.checked=false;
 	checkRAData();
 }
 
 function stageProdChange()
 {
     var cf4 = document.forms[4];
-	if (cf4.stageProd.value == "1")
-	{
-		cf4.stageDev.value = "1";
-		cf4.stageDev.checked=true;
-		cf4.stageProd.value = "0";
-		cf4.stageProd.checked=false;
-	}
-	else
-	{
-		cf4.stageProd.value = "1";
-		cf4.stageProd.checked=true;
-		cf4.stageDev.value = "0";
-		cf4.stageDev.checked=false;
-	}
+    cf4.stageQa.value = "0";
+    cf4.stageQa.checked=false;
+    cf4.stageDev.value = "0";
+    cf4.stageDev.checked=false;
+    cf4.stageProd.value = "1";
+    cf4.stageProd.checked=true;
 	checkRAData();
 }
 
 function serverIPChange()
-{
-	checkRAData();
-}
-
-function serverPathChange()
 {
 	checkRAData();
 }
@@ -159,23 +147,23 @@ function initStartTimeChange()
 <table width="100%">
 <tr>
 <td width="22%"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CPU Load</b><br><br></td>
-<td width="78%"><b>CPU1: <%3432%>% CPU2: <%3433%>%</b><br><br></td>
+<td width="78%"><b>CPU1: <%3442%>% CPU2: <%3443%>%</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Memory Usage (Used/Total)</b><br><br></td>
-<td><b><%3434%>MB/<%3435%>MB</b><br><br></td>
+<td><b><%3444%>MB/<%3445%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flash Usage (Used/Total)</b><br><br></td>
-<td><b><%3436%>MB/<%3437%>MB</b><br><br></td>
+<td><b><%3446%>MB/<%3447%>MB</b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Network Session (Active/Total)</b><br><br></td>
-<td><b><%3438%></b><br><br></td>
+<td><b><%3448%></b><br><br></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System Uptime</b><br><br></td>
-<td><b><%3439%></b><br><br></td>
+<td><b><%3449%></b><br><br></td>
 </tr>
 </table>
 </form>
@@ -186,7 +174,7 @@ function initStartTimeChange()
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="checkbox" name="action_Start_When_Boot_Up" value="Start_When_Boot_Up" onclick="document.forms[1].submit();" ><b> Start Debug Log Capture when boot up</b>
 <br><br>
-<input type="hidden" name="Start_When_Boot_Up" value="<%3440%>">
+<input type="hidden" name="Start_When_Boot_Up" value="<%3450%>">
 <input type="hidden" name="form" value="1" >
 </form>
 <form id="cf2" action=newdebug.cgi method="POST">
@@ -198,8 +186,8 @@ function initStartTimeChange()
 <b>Store location</b>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <select name="store_location">
-<option value="memory" <%3441%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
-<option value="usb" <%3442%>>USB Storage</option>
+<option value="memory" <%3451%>>System Memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+<option value="usb" <%3452%>>USB Storage</option>
 </select>
 <br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -212,22 +200,17 @@ function initStartTimeChange()
 <span class="roundleft_button">Save Debug Log</span><span class="roundright_button">&nbsp;</span>
 </button> 
 <br><br>
-<input type="hidden" name="capture_in_process" value="<%3443%>">
-<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3444%>">
+<input type="hidden" name="capture_in_process" value="<%3453%>">
+<input type="hidden" name="dump_LAN_WAN_pkt" value="<%3454%>">
 <input type="hidden" name="form" value="2" >
 </form>
 <form id="cf3" action=newdebug.cgi method="POST">
 &nbsp;&nbsp;
-<!--
-<input type="checkbox" name="action_Enable_Telnet" value="Telnet_Enable" onclick="document.forms[3].submit();"><b> Enable Telnet</b>
-<input type="hidden" name="Enable_Telnet" value="<%3445%>">
-<br><br>-->
-&nbsp;&nbsp;
 <input type="checkbox" name="action_Mirror_Port" value="Port_mirror" onclick="document.forms[3].submit();"><b> WAN Port mirror to LAN port 1</b>
-<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3446%>">
+<input type="hidden" name="WAN_port_mirror_to_LAN_port" value="<%3455%>">
 <input type="hidden" name="form" value="3" >
 </form>
-<%3447%>
+<%3456%>
 <br>
 <form id="cf4" action=radebug.cgi method="POST">
 &nbsp;&nbsp;
@@ -235,39 +218,41 @@ function initStartTimeChange()
 <br><br>
 <table width="45%">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="checkbox" name="stageDev" value="<%3448%>" <%3449%> onclick="stageDevChange();" ><b> Dev </b>
+<!--
+<input type="checkbox" name="stageQa" value="<%3457%>" <%3458%> onclick="stageQaChange();" ><b> qa </b>
 &nbsp;&nbsp;
-<input type="checkbox" name="stageProd" value="<%3450%>" <%3451%> onclick="stageProdChange();" ><b> prod </b>
+<input type="checkbox" name="stageDev" value="<%3459%>" <%3460%> onclick="stageDevChange();" ><b> dev </b>
 &nbsp;&nbsp;
+<input type="checkbox" name="stageProd" value="<%3461%>" <%3462%> onclick="stageProdChange();" ><b> prod </b>
+&nbsp;&nbsp;
+-->
 <button type="SUBMIT" value="raChange" id="raParamSetting" disabled="disabled" class="button-rule" >
 <span id="raBtnLeft" class="roundleft_grey">&nbsp;&nbsp; Restart RA Process </span><span id="raBtnRight" class="roundright_grey">&nbsp;&nbsp;</span>
 </button>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ftp server:</b><br><br></td>
-<td nowrap width="20%" align="left"><input type="text" name="serverIP" value="<%3452%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
+<td nowrap width="20%" align="left"><input type="text" name="serverIP" value="<%3463%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https server:</b><br><br></td>
-<td nowrap width="20%" align="left"><input type="text" name="HTTPserverIP" value="<%3453%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
-</tr>
-<tr>
-<td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Directory path:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="serverPath" value="<%3454%>" onchange="serverPathChange();" size="18" maxlength="33"></td>
+<td nowrap width="20%" align="left"><input type="text" name="HTTPserverIP" value="<%3464%>" onchange="serverIPChange();" size="18" maxlength="33"></td>
 </tr>
 <tr>
 <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initial start time:</b><br><br></td>
-<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3455%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
+<td nowrap width="50%" align="left"><input type="text" name="initStartTime" value="<%3465%>" onchange="initStartTimeChange();" size="18" maxlength="33"></td>
 <br><br>
 </tr>
 </table>
 <input type="hidden" name="form" value="4" >
-<input type="hidden" name="raStageDev" value="<%3448%>" >
-<input type="hidden" name="raStageProd" value="<%3450%>" >
-<input type="hidden" name="raServerIP" value="<%3452%>" >
-<input type="hidden" name="raHTTPServerIP" value="<%3453%>" >
-<input type="hidden" name="raServerPath" value="<%3454%>" >
-<input type="hidden" name="raInitStartTime" value="<%3455%>" >
+<!--
+<input type="hidden" name="raStageQa" value="<%3457%>" >
+<input type="hidden" name="raStageDev" value="<%3459%>" >
+<input type="hidden" name="raStageProd" value="<%3461%>" >
+-->
+<input type="hidden" name="raServerIP" value="<%3463%>" >
+<input type="hidden" name="raHTTPServerIP" value="<%3464%>" >
+<input type="hidden" name="raInitStartTime" value="<%3465%>" >
 </form>
-<%3456%>
+<%3466%>
 </body>
 </html>

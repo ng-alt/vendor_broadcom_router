@@ -49,18 +49,18 @@
 
 function check_ra_opt()
 {
-<%2945%>
+<%2955%>
     var cf = document.forms[0];
     if( cf.router_full_tnc_select[0].checked==true || cf.router_full_tnc_select[1].checked==true)
         ungrayout_button("next");
     else
         grayout_button("next");
-<%2946%>
+<%2956%>
     return true;
 }
 function load_status()
 {
-<%2945%>
+<%2955%>
     var cf = document.forms[0];
     if(cf.auto_update_enable.value==1 && cf.router_tnc_enable.value==1)
         cf.router_full_tnc_select[0].checked=true;
@@ -71,7 +71,7 @@ function load_status()
         cf.router_full_tnc_select[0].checked=false;
         cf.router_full_tnc_select[1].checked=false;
     }
-<%2946%>
+<%2956%>
     return true;
 }
 //-->
@@ -87,21 +87,11 @@ function load_status()
 <tr align="center"><td class="scrollpane-table-seperate-border" colspan="2"><div align="left" class="scroll-pane" style="height:300px;width:90%;overflow:auto;scrolling:auto"><table style="border-collapse:collapse;width:97%" >
 <font size="4" align="center" color="gray">
 <div align="right">
-<%2967%>
+<%2977%>
 </div>
 <div align="center">
-<%2968%>
-</div>
-<%2969%>
-<%2970%>
-<%2971%>
-<%2972%>
-<%2973%>
-<%2974%>
-<%2975%>
-<%2976%>
-<%2977%>
 <%2978%>
+</div>
 <%2979%>
 <%2980%>
 <%2981%>
@@ -299,6 +289,16 @@ function load_status()
 <%3173%>
 <%3174%>
 <%3175%>
+<%3176%>
+<%3177%>
+<%3178%>
+<%3179%>
+<%3180%>
+<%3181%>
+<%3182%>
+<%3183%>
+<%3184%>
+<%3185%>
 </font>
 </tr>
 </td></div>
@@ -310,19 +310,19 @@ function load_status()
 <td>
 <div style="width:100%;">
 <font size="4" align="center">
-<%2960%>
-<%2961%>
-<%2962%>
-<%2963%>
-<%2935%>
-<%2964%>
+<%2970%>
+<%2971%>
+<%2972%>
+<%2973%>
+<%2945%>
+<%2974%>
 <br><br>
 </font>
 </div>
-<%2963%>
-<input type="radio" name="router_full_tnc_select" value="Yes" onclick="check_ra_opt();" > <font size="4" color="gray"><%2936%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="radio" name="router_full_tnc_select" value="No"  onclick="check_ra_opt();">  <font size="4" color="gray"><%2937%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<%2964%>
+<%2973%>
+<input type="radio" name="router_full_tnc_select" value="Yes" onclick="check_ra_opt();" > <font size="4" color="gray"><%2946%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="router_full_tnc_select" value="No"  onclick="check_ra_opt();">  <font size="4" color="gray"><%2947%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<%2974%>
 <br>
 </div>
 </td>
@@ -331,22 +331,22 @@ function load_status()
 <div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div>
 <br>
 <div style="position:relative;left:10%;width:100%;">
-<!--<a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')"  style="color: rgb(000,000,255);text-decoration:underline"><font size="3"><%2939%></font></a>
+<!--<a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')"  style="color: rgb(000,000,255);text-decoration:underline"><font size="3"><%2949%></font></a>
 --></div>
 <div align="center">
 
-<%2963%>
-&nbsp;&nbsp;&nbsp;<button value="next"  type="submit" name="next" style="width:100px" class="button-rule" id=next ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp;<%2846%> &nbsp;&nbsp;</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%2964%>
+<%2973%>
+&nbsp;&nbsp;&nbsp;<button value="next"  type="submit" name="next" style="width:100px" class="button-rule" id=next ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp;<%2856%> &nbsp;&nbsp;</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%2974%>
 
-<%2960%>
-&nbsp;&nbsp;&nbsp;<button value="agree"  type="submit" name="Apply" style="width:100px" class="button-rule" id=Apply ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp;<%2936%> &nbsp;&nbsp;</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-<%2962%>
+<%2970%>
+&nbsp;&nbsp;&nbsp;<button value="agree"  type="submit" name="Apply" style="width:100px" class="button-rule" id=Apply ><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp;<%2946%> &nbsp;&nbsp;</span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+<%2972%>
 
 </div>
 <input type="hidden" name="router_full_tnc_apply" value="1">
-<input type="hidden" name="auto_update_enable" value="<%1501%>">
-<input type="hidden" name="router_tnc_enable" value="<%2965%>">
+<input type="hidden" name="auto_update_enable" value="<%1511%>">
+<input type="hidden" name="router_tnc_enable" value="<%2975%>">
 </form>
 </body>
 </html>

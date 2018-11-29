@@ -17,14 +17,14 @@ function checkKey(evt)
     if ((lastkeypressed != 13) && (lastkeypressed != 8) && ( keyTooBig ))
     {
         keyTooBig = false;
-        alert("<%1629%> " + keysize + " <%1630%>");
+        alert("<%1639%> " + keysize + " <%1640%>");
         chkSize(lastObj); // for NS 6/7
         return false;
     }
     else if ((lastkeypressed != 13) && (lastkeypressed != 8) && ( keyTooBig_an ))
     {
         keyTooBig_an = false;
-        alert("<%1629%> " + keysize_an + " <%1630%>");
+        alert("<%1639%> " + keysize_an + " <%1640%>");
         chkSize_an(lastObj); // for NS 6/7
         return false;
     }

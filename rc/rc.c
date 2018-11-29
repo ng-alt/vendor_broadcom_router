@@ -3443,7 +3443,6 @@ sysinit(void)
 #endif  /* BRCM_GENERIC_IQOS */
 		}
 #endif /* LINUX_2_6_36 && __CONFIG_TREND_IQOS__ */
-		system("cd /tmp/trend; ./setup.sh start; cat /proc/ips_info > /tmp/trend/eng.version; ./setup.sh stop;");
 	}
 	/*Foxconn add start by Hank for enable WAN LED amber 12/07/2012*/
 	/*Foxconn add start by Hank for disable WAN LED blinking 12/07/2012*/

@@ -21,7 +21,7 @@ classes.num.all.fontSize = "10pt" ;
 <%14%>
 <script language="javascript" type="text/javascript">
 <!--
-//<%1994%>
+//<%2005%>
   
     $(document).ready(function()
     {	
@@ -416,7 +416,7 @@ function loadSettings(onCancelClick)
     }
 
     if(cf.quick_qos_firstlogin.value == "true")
-        alert("<%2045%>");
+        alert("<%2056%>");
         
     if(cf.fast_track_hid.value == "true")
         document.getElementById("fasttrack_hidden").style.display="none";
@@ -442,7 +442,7 @@ function loadSettings(onCancelClick)
         cf.check_bw.disabled = true;
         
         //var setButton=document.getElementsByName("setup_qos_rule");
-        // setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1996%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        // setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%2007%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
         //setButton[0].style.cursor='default'; 
 
         setDisabled(true,cf.quick_qos_mode[0],cf.quick_qos_mode[1],cf.quick_qos_rule[0],
@@ -465,7 +465,7 @@ function loadSettings(onCancelClick)
             //cf.check_bw.disabled = true;
             
             var checkButton=document.getElementsByName("check_bw");
-            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanBandWidth();"><span class="roundleft_grey">&nbsp;&nbsp; <%1496%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanBandWidth();"><span class="roundleft_grey">&nbsp;&nbsp; <%1506%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
             checkButton[0].style.cursor='default';       
             
             setDisabled(true,cf.quick_qos_mode[0],cf.quick_qos_mode[1],cf.quick_qos_rule[0],
@@ -532,7 +532,7 @@ function loadSettings(onCancelClick)
         cf.check_bw.disabled = true;
         
         var setButton=document.getElementsByName("setup_qos_rule");
-        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%1996%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+        setButton[0].outerHTML='<button type="submit" disabled value="qos_setrule_mark" name="setup_qos_rule" class="button-grey" onclick="buttonClick(this,\'qos_setrule_mark\');" ><span class="roundleft_grey">&nbsp;&nbsp; <%2007%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
         setButton[0].style.cursor='default';          
 	}
     else
@@ -549,7 +549,7 @@ function loadSettings(onCancelClick)
             //cf.check_bw.disabled = true;
             
             var checkButton=document.getElementsByName("check_bw");
-            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanBandWidth();"><span class="roundleft_grey">&nbsp;&nbsp; <%1496%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
+            checkButton[0].outerHTML='<button type="submit" disabled value="Check" name="check_bw" class="button-grey" onClick="buttonClick(this,\'Check\');return checkWanBandWidth();"><span class="roundleft_grey">&nbsp;&nbsp; <%1506%></span><span class="roundright_grey">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>';
             checkButton[0].style.cursor='default';        
         }
     }
@@ -570,7 +570,7 @@ var isApply;
 function checkData(btn,value)
 {
     var cf = document.forms[0];
-    var qos_up_bw_limit = "<%1997%>";
+    var qos_up_bw_limit = "<%2008%>";
     var interval_up = parseFloat(cf.bandwidthUp.value);
     var interval_down = parseFloat(cf.bandwidthDown.value);
     //check wan status
@@ -578,13 +578,13 @@ function checkData(btn,value)
     if(cf.qosEnable.checked == true && cf.qosTypeSelect[1].checked==true )
     {
         if ( cf.qosEnable.checked == true && cf.wan_status.value=='down'){
-            alert("<%2046%>");
+            alert("<%2057%>");
             return false;
         }
  
         if (cf.qosEnable.checked == true && cf.qosSetting[0].checked == true && cf.uplink_bw.value == "0 kbps" && cf.downlink_bw.value == "0 kbps"
             && cf.bandwidth_speedtest.value=="" && cf.bandwidth_speedtest.value=="" ){
-            if (confirm("<%2047%>") == true){
+            if (confirm("<%2058%>") == true){
                 isApply=1;
                 checkWanBandWidth();
             }
@@ -603,7 +603,7 @@ function checkData(btn,value)
                 if( (interval_up < 0.10)){
                     alert("Invalid Uplink/Download Bandwidth, the Uplink Bandwidth should be greater than 100Kbps");
                 }else{
-                    alert("<%1998%>");
+                    alert("<%2009%>");
                 }
                 return false;
             }
@@ -615,7 +615,7 @@ function checkData(btn,value)
                 if( interval_down < 0.10){
                     alert("Invalid Uplink/Download Bandwidth, the Downlink Bandwidth should be greater than 100Kbps");
                 }else{
-                    alert("<%2048%>");
+                    alert("<%2059%>");
                 }
                 return false;
             }
@@ -639,7 +639,7 @@ function checkData(btn,value)
         
             if  ( isNaN(interval_up) || isNaN(interval_down) )
             {
-                alert("<%2049%>");
+                alert("<%2060%>");
             }
             else if( (interval_up < 0.10) || (interval_up > qos_up_bw_limit) ||                    
                     !(/^[0-9]+(\.[0-9]{1,4})?$/).test(cf.bandwidth_manual.value)) 
@@ -647,7 +647,7 @@ function checkData(btn,value)
                 if( (interval_up < 0.10) ){
                     alert("Invalid Uplink/Download Bandwidth, the Uplink Bandwidth should be greater than 100Kbps");
                 }else{
-                    alert("<%1998%>");
+                    alert("<%2009%>");
                 }
                 return false;
             }
@@ -657,7 +657,7 @@ function checkData(btn,value)
                 if(  (interval_down < 0.10)){
                     alert("Invalid Uplink/Download Bandwidth, the Downlink Bandwidth should be greater than 100Kbps");
                 }else{
-                    alert("<%2048%>");
+                    alert("<%2059%>");
                 }
                 return false;
             }
@@ -673,7 +673,7 @@ function checkData(btn,value)
     }
     else if(cf.qosEnable.checked == true && cf.qosTypeSelect[0].checked==true )
     {
-        var qos_up_bw_limit = "<%1997%>";
+        var qos_up_bw_limit = "<%2008%>";
         interval = parseInt(cf.bandwidth.value);
 
         if(cf.quick_qos_mode[0].checked == true)
@@ -718,7 +718,7 @@ function checkData(btn,value)
             }
             else
             {
-                alert("<%1998%>");
+                alert("<%2009%>");
             }
             
             return false;
@@ -1020,7 +1020,7 @@ function loadAlert()
     var dflag;
     dflag= !cf.qosEnable.checked;
 
-    var user="<%2050%>";
+    var user="<%2061%>";
     if(user=="guest")
     {
         var guest_dflag=true;
@@ -1504,12 +1504,12 @@ function chg_qos_rule()
     {
         if (cf.qos_policy_name.value == "") 
         { 
-            alert("<%1978%>");
+            alert("<%1989%>");
             return false;
         }
         if (cf.qos_policy_name.value == "") 
         { 
-            alert("<%1109%>");
+            alert("<%1110%>");
             return false;
         }
         if (!check_mac())
@@ -1524,12 +1524,12 @@ function chg_qos_rule()
     {
         if (cf.qos_lan_port_name.value == "") 
         { 
-            alert("<%1978%>");
+            alert("<%1989%>");
             return false;
         }
         if (cf.qos_lan_port_num.value == "") 
         { 
-            alert("<%1109%>");
+            alert("<%1110%>");
             return false;
         }
         cf.quick_qos_select_rule.value = [cf.qos_lan_port_name.value,cf.qos_lan_port_num.value].join("&");
@@ -1761,7 +1761,7 @@ function show_fasttrack_warning()
                       <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;">
                         <tr style="height:30px">
                           <td colspan="2">
-                            <input type="checkbox" name="qosEnable" value="1" onClick="doQosCheck();"><b><%2051%></b>
+                            <input type="checkbox" name="qosEnable" value="1" onClick="doQosCheck();"><b><%2062%></b>
                           </td>
                           <td></td>
                         </tr>
@@ -1769,13 +1769,13 @@ function show_fasttrack_warning()
                       <table CELLPADDING=0 CELLSPACING=0 id="upstream-menu" style="padding:0;margin:0;">
                         <tr style="height:30px">
                           <td colspan="2" style="padding-left:40px">
-                            <input type="radio" name="qosTypeSelect" value="manual" onClick="qosTypeClick();"><b><%2052%></b>
+                            <input type="radio" name="qosTypeSelect" value="manual" onClick="qosTypeClick();"><b><%2063%></b>
                           </td>
                           <td></td>
                         </tr>
                         <tr style="height:30px">
                           <td colspan="2" style="padding-left:40px">
-                            <input type="radio" name="qosTypeSelect" value="dynamic" onClick="qosTypeClick();"><b><%2053%></b>
+                            <input type="radio" name="qosTypeSelect" value="dynamic" onClick="qosTypeClick();"><b><%2064%></b>
                           </td>
                           <td></td>
                         </tr>
@@ -1796,28 +1796,28 @@ function show_fasttrack_warning()
                           <tr>
                             <td><img src="spacer.gif" height="30" width="23" border="0"></td>
                             <td> 
-                              <label id ="bw_sel" for="bw_sel"><b><%2004%>:&nbsp;<%2005%></b></label>
+                              <label id ="bw_sel" for="bw_sel"><b><%2015%>:&nbsp;<%2016%></b></label>
                               <input type="text" name="bandwidth" size="6" maxlength="6" value="">
                               <select name="rate" size=1>
-                                <option value="1000"><%2006%></option>
-                                <option value="1000000"><%2007%></option>
+                                <option value="1000"><%2017%></option>
+                                <option value="1000000"><%2018%></option>
                               </select>
-                              &nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn_manual" value="<%2054%>" name="check_bw" class="<%486%>" onclick="buttonClick(this,'<%2054%>');return checkWanBandWidth();"><span class="<%487%>">&nbsp;&nbsp; <%2054%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                              &nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn_manual" value="<%2065%>" name="check_bw" class="<%486%>" onclick="buttonClick(this,'<%2065%>');return checkWanBandWidth();"><span class="<%487%>">&nbsp;&nbsp; <%2065%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                             </td>
                           </tr>
                         </table>
                         <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;border:0;">
                           <tr>
                             <td><img src="spacer.gif" height="12" width="23" border="0"></td>
-                            <td colspan="3" id="check_info_manual" style="display: none;"><%2055%>
+                            <td colspan="3" id="check_info_manual" style="display: none;"><%2066%>
                               <input type="text" name="progress_manual" class="prgbar" value="" style="color: blue" size="20"
                                    contentEditable="false" onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;">	
                             </td>
                             <td colspan="3" id="check_result_manual" style="display: none;">
-                              <%2056%>&nbsp;<font color=#ADA7D7><b id="uplink_bd_manual"></b></font>
+                              <%2067%>&nbsp;<font color=#ADA7D7><b id="uplink_bd_manual"></b></font>
                             </td>
-                            <td colspan="3" id="check_nowan_manual" style="display: none;"><%2057%></td>
-                            <td colspan="3" id="check_unreach_manual" style="display: none;"><%2058%></td>
+                            <td colspan="3" id="check_nowan_manual" style="display: none;"><%2068%></td>
+                            <td colspan="3" id="check_unreach_manual" style="display: none;"><%2069%></td>
                           </tr>
                         </table>
                         <table width="100%" CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;border:0;">
@@ -1825,13 +1825,13 @@ function show_fasttrack_warning()
                             <td>
                               <table cellspacing="3" cellpadding="0" width="100%">
                               	<tr>
-                              	  <td><b><%2059%></b></td>
-                              	  <td><input type="radio" name="quick_qos_mode" value="rule_mode" onClick="chg_quick_qos_mode();" ><B><%2060%></a></B></td>
+                              	  <td><b><%2070%></b></td>
+                              	  <td><input type="radio" name="quick_qos_mode" value="rule_mode" onClick="chg_quick_qos_mode();" ><B><%2071%></a></B></td>
                               	  <td>
                               	    <div id="fasttrack_hidden" style="display: block;">
                               	      <table cellpadding="0" cellspacing="3" width="100%">
                               	        <tr><td>
-                            	            <input type="radio" name="quick_qos_mode" value="fasttrack_mode" onClick="chg_quick_qos_mode();"><B><%2061%></a></B>
+                            	            <input type="radio" name="quick_qos_mode" value="fasttrack_mode" onClick="chg_quick_qos_mode();"><B><%2072%></a></B>
                             	          </td></tr>
                             	        </table>
                               	    </div>
@@ -1850,10 +1850,10 @@ function show_fasttrack_warning()
                                   <tr><td>
                                     <table cellspacing="3" cellpadding="0" width="80%">
                                       <tr>
-                                        <td width="25%"><b><%2062%></b></td>
-                                        <td width="25%"><input type="radio" name="quick_qos_rule" value="qos_service" onClick="chg_quick_qos_rule();" ><B><%2063%></a></B></td>
-                                        <td ><input type="radio" name="quick_qos_rule" value="qos_device" onClick="chg_quick_qos_rule();"><B><%2064%></a></B></td>
-                                        <td ><input type="radio" name="quick_qos_rule" value="qos_lan_port" onClick="chg_quick_qos_rule();"><B><%2065%></a></B></td>
+                                        <td width="25%"><b><%2073%></b></td>
+                                        <td width="25%"><input type="radio" name="quick_qos_rule" value="qos_service" onClick="chg_quick_qos_rule();" ><B><%2074%></a></B></td>
+                                        <td ><input type="radio" name="quick_qos_rule" value="qos_device" onClick="chg_quick_qos_rule();"><B><%2075%></a></B></td>
+                                        <td ><input type="radio" name="quick_qos_rule" value="qos_lan_port" onClick="chg_quick_qos_rule();"><B><%2076%></a></B></td>
 										
                                       </tr>
                                     </table>
@@ -1862,18 +1862,18 @@ function show_fasttrack_warning()
                                     <td colspan="2">
                                       <div id="qos_by_service" style="display: block;">
                                         <table cellpadding="0" cellspacing="3" width="80%">
-                                          <tr><td width="25%"><b><%1988%></b></td>
+                                          <tr><td width="25%"><b><%1999%></b></td>
                                             <td>
                                             	<select name="serviceList" size="1" onChange="add_service_rule();" style="height:20px;width:200px">
-                                                <%2066%>
+                                                <%2077%>
                                               </select>
                                             </td>
                                           </tr>
                                           <tr>
-                                            <td width="25%"><b><%1980%></b></td>
+                                            <td width="25%"><b><%1991%></b></td>
                                             <td>
                                             	<select name="service_priorityList" size="1" style="height:20px;width:80px">
-                                                <option value="0"><%1982%></option><option value="1"><%1983%></option><option value="2"><%1984%></option><option value="3"><%1985%></option>
+                                                <option value="0"><%1993%></option><option value="1"><%1994%></option><option value="2"><%1995%></option><option value="3"><%1996%></option>
                                               </select>
                                             </td>
                                           </tr>
@@ -1886,15 +1886,15 @@ function show_fasttrack_warning()
                                       <div id="qos_by_device" style="display: block;">
                                         <table cellpadding="0" cellspacing="3" width="100%">
                                           <tr><td colspan="2" background="liteblue.gif" height="12"> &nbsp;</td></tr>
-                                          <tr><td colspan="2"><b><%2067%></b></td></tr>
+                                          <tr><td colspan="2"><b><%2078%></b></td></tr>
                                           <tr><td colspan="2">
                                             <table border="1" cellpadding="0" cellspacing="0" width="100%">
-                                              <%2068%>
+                                              <%2079%>
                                             </table>
                                           </td></tr>
                                           <tr><td>&nbsp;</td></tr>
                                           <tr>
-                                            <td width="40%"><b><%1981%></b></td>
+                                            <td width="40%"><b><%1992%></b></td>
                                             <td><input type="text" name="qos_policy_name" size="20" maxlength="32"></td>
                                           </tr>
                                           <tr>
@@ -1906,10 +1906,10 @@ function show_fasttrack_warning()
                                             <td><input type="text" name="qos_device_name" size="20" maxlength="32"></td>
                                           </tr>
                                           <tr>
-                                            <td width="25%"><b><%1980%></b></td>
+                                            <td width="25%"><b><%1991%></b></td>
                                             <td>
                                               <select name="device_priorityList" size="1" style="height:20px;width:100px">
-                                                <option value="0"><%1982%></option><option value="1"><%1983%></option><option value="2"><%1984%></option><option value="3"><%1985%></option>
+                                                <option value="0"><%1993%></option><option value="1"><%1994%></option><option value="2"><%1995%></option><option value="3"><%1996%></option>
                                               </select>
                                             </td>
                                           </tr>
@@ -1921,18 +1921,18 @@ function show_fasttrack_warning()
                                     <td colspan="2"><div id="qos_by_lan_port" style="display: block;">
                                       <table cellpadding="0" cellspacing="3" width="80%">
                                         <tr>
-                                          <td width="40%"><b><%1981%></b></td>
+                                          <td width="40%"><b><%1992%></b></td>
                                           <td><input type="text" name="qos_lan_port_name" size="20" maxlength="32"></td>
                                         </tr>
                                         <tr>
-                                          <td width="40%"><b><%2019%></b></td>
+                                          <td width="40%"><b><%2030%></b></td>
                                           <td><select name=qos_lan_port_num><option value=1>1</option><option value=2>2</option><option value=3>3</option><option value=4>4</option></select></td>
                                         </tr>
                                         <br>
                                         <tr>
-                                          <td width="25%"><b><%1980%></b></td>
+                                          <td width="25%"><b><%1991%></b></td>
                                           <td><select name="lan_port_priority_list" size="1" style="height:20px;width:80px">
-                                            <option value="0"><%1982%></option><option value="1"><%1983%></option><option value="2"><%1984%></option><option value="3"><%1985%></option>
+                                            <option value="0"><%1993%></option><option value="1"><%1994%></option><option value="2"><%1995%></option><option value="3"><%1996%></option>
                                               </select>
                                           </td>
                                         </tr>
@@ -1947,47 +1947,47 @@ function show_fasttrack_warning()
                                 	<tr>
                                 	  <td colspan="2" align="center">
                                 	    &nbsp;&nbsp;&nbsp;<button type="submit" value="<%691%>" name="add_rule" class="<%486%>" onclick="buttonClick(this,'<%691%>');chg_qos_rule();" ><span class=<%487%>><span class="add-icon">&nbsp;&nbsp;&nbsp;&nbsp;<%691%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-                                	    &nbsp;&nbsp;&nbsp;<button type="submit" value="<%2069%>" name="reset_rule" class="<%486%>" onclick="buttonClick(this,'<%2069%>');return chg_rule_reset();" ><span class=<%487%>><span >&nbsp;&nbsp;&nbsp;&nbsp;  <%2069%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                                	    &nbsp;&nbsp;&nbsp;<button type="submit" value="<%2080%>" name="reset_rule" class="<%486%>" onclick="buttonClick(this,'<%2080%>');return chg_rule_reset();" ><span class=<%487%>><span >&nbsp;&nbsp;&nbsp;&nbsp;  <%2080%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                                 	  </td>
                                 	</tr>
                                 	<tr>
                                 	  <td colspan="2">
                                 	    <div id="qos_service_rule" style="display: block;">
                                 	      <table border="1" cellpadding="0" cellspacing="0" width="100%">
-                          	              <span class="thead"><%2060%></span>
+                          	              <span class="thead"><%2071%></span>
                         	                <tr>
                               	            <td nowrap width="25%" align="center">
-                              	              <span class="thead"><%2070%> 1: <%1982%></span>
+                              	              <span class="thead"><%2081%> 1: <%1993%></span>
                               	            </td>
                               	            <td nowrap width="25%" align="center">
-                              	              <span class="thead"><%2070%> 2: <%1983%></span>
+                              	              <span class="thead"><%2081%> 2: <%1994%></span>
                         	                  </td>
                         	                  <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 3: <%1984%></span>
+                                              <span class="thead"><%2081%> 3: <%1995%></span>
                                             </td>
                                              <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 4: <%1985%></span>
+                                              <span class="thead"><%2081%> 4: <%1996%></span>
                                             </td>
                                           </tr>
                                           <tr>
                                             <td nowrap width="25%" align="center">
                                                <select name="highestserviceList" size=9 onchange="click_service(0);" style="height:150px;width:100%;">
-                                                 <%2071%>
+                                                 <%2082%>
                                                </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="highserviceList" size=9 onchange="click_service(1);" style="height:150px;width:100%;">
-                                                <%2072%>
+                                                <%2083%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="normalserviceList" size=9 onchange="click_service(2);" style="height:150px;width:100%;">
-                                                <%2073%>
+                                                <%2084%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="lowserviceList" size=9 onchange="click_service(3);" style="height:150px;width:100%;">
-                                                <%2074%>
+                                                <%2085%>
                                               </select> 
                                             </td>
                                           </tr>
@@ -1999,40 +1999,40 @@ function show_fasttrack_warning()
                                     <td colspan="2">
                                       <div id="qos_device_rule" style="display: block;">
                                         <table border="1" cellpadding="0" cellspacing="0" width="100%">
-                                          <span class="thead"><%2060%></span>
+                                          <span class="thead"><%2071%></span>
                                           <tr>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 1: <%1982%></span>
+                                              <span class="thead"><%2081%> 1: <%1993%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 2: <%1983%></span>
+                                              <span class="thead"><%2081%> 2: <%1994%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 3: <%1984%></span>
+                                              <span class="thead"><%2081%> 3: <%1995%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 4: <%1985%></span>
+                                              <span class="thead"><%2081%> 4: <%1996%></span>
                                             </td>
                                           </tr>
                                           <tr>
                                           	<td nowrap width="25%" align="center">
                                       	      <select name="highestdeviceList" size=9 onchange="click_service(0);" style="height:150px;width:100%;">
-                                          	    <%2075%>
+                                          	    <%2086%>
                                           	  </select> 
                                           	</td>
                                             <td nowrap width="25%" align="center">
                                               <select name="highdeviceList" size=9 onchange="click_service(1);" style="height:150px;width:100%;">
-                                                <%2076%>
+                                                <%2087%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="normaldeviceList" size=9 onchange="click_service(2);" style="height:150px;width:100%;">
-                                                <%2077%>
+                                                <%2088%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="lowdeviceList" size=9 onchange="click_service(3);" style="height:150px;width:100%;">
-                                                <%2078%>
+                                                <%2089%>
                                               </select> 
                                             </td>
                                           </tr>
@@ -2049,40 +2049,40 @@ function show_fasttrack_warning()
                                     <td colspan="2">
                                       <div id="qos_lan_port_rule" style="display: none;">
                                         <table border="1" cellpadding="0" cellspacing="0" width="100%">
-                                          <span class="thead"><%2079%></span>
+                                          <span class="thead"><%2090%></span>
                                           <tr>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 1: <%1982%></span>
+                                              <span class="thead"><%2081%> 1: <%1993%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 2: <%1983%></span>
+                                              <span class="thead"><%2081%> 2: <%1994%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 3: <%1984%></span>
+                                              <span class="thead"><%2081%> 3: <%1995%></span>
                                             </td>
                                             <td nowrap width="25%" align="center">
-                                              <span class="thead"><%2070%> 4: <%1985%></span>
+                                              <span class="thead"><%2081%> 4: <%1996%></span>
                                             </td>
                                           </tr>
                                           <tr>
                                             <td nowrap width="25%" align="center">
                                               <select name="highestLanPortList" multiple onchange="click_service(0);" style="height:150px;width:100%;">
-                                                <%2080%>
+                                                <%2091%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="highLanPortList" multiple onchange="click_service(1);" style="height:150px;width:100%;">
-                                                <%2081%>
+                                                <%2092%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="normalLanPortList" multiple onchange="click_service(2);" style="height:150px;width:100%;">
-                                                <%2082%>
+                                                <%2093%>
                                               </select> 
                                             </td>
                                             <td nowrap width="25%" align="center">
                                               <select name="lowLanPortList" multiple onchange="click_service(3);" style="height:150px;width:100%;">
-                                                <%2083%>
+                                                <%2094%>
                                               </select> 
                                             </td>
                                           </tr>
@@ -2094,7 +2094,7 @@ function show_fasttrack_warning()
                                     <td colspan="2" align="center">
                                       &nbsp;&nbsp;&nbsp;<button type="submit" value="<%692%>" name="edit_rule" class="<%486%>" onclick="buttonClick(this,'<%692%>');" ><span class="<%487%>"><span class="edit-icon">&nbsp;&nbsp;&nbsp;&nbsp; <%692%></span></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                                       &nbsp;&nbsp;&nbsp;<button type="submit" value="<%693%>" name="delete_rule" class="<%486%>" onclick="buttonClick(this,'<%693%>');" ><span class=<%487%>><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%693%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
-                                      &nbsp;&nbsp;&nbsp;<button type="submit" value="<%2041%>" name="delete_all_rule" class="<%486%>" onclick="buttonClick(this,'<%2041%>');" ><span class=<%487%>><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%2041%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                                      &nbsp;&nbsp;&nbsp;<button type="submit" value="<%2052%>" name="delete_all_rule" class="<%486%>" onclick="buttonClick(this,'<%2052%>');" ><span class=<%487%>><span class="cancel-icon">&nbsp;&nbsp;&nbsp;&nbsp;  <%2052%></span></span><span class=<%488%>>&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                                     </td>
                                   </tr>
                                 </table>
@@ -2106,38 +2106,38 @@ function show_fasttrack_warning()
                               <div id="qos_fast_track" style="display:block;">
                                 <table cellpadding="0" cellspacing="3" width="100%">
                                   <tr>
-                                    <td width="20%"><b><%2084%></b></td>
-                                    <td><%2085%></td>
+                                    <td width="20%"><b><%2095%></b></td>
+                                    <td><%2096%></td>
                                   </tr>
                                   <tr>
-                                    <td><input type="checkbox" name="fast_track_enable" value="1"><b ><%2086%></b></td>
+                                    <td><input type="checkbox" name="fast_track_enable" value="1"><b ><%2097%></b></td>
                                   </tr>
                                   <tr><td colspan="2" background="liteblue.gif" height="12">&nbsp;</td></tr>
-                                  <tr><td colspan="2"><b><%2067%></b></td></tr>
+                                  <tr><td colspan="2"><b><%2078%></b></td></tr>
                                   <tr><td colspan="2">
                                     <table border="1" cellpadding="0" cellspacing="0" width="100%">
-                                      <%2087%>
+                                      <%2098%>
                                     </table>
                                   </td></tr>
                                   <tr>
-                                    <td width="25%"><b><%2088%>:</b></td>
-                                    <td><label id="trust_mac_label"><%2089%></label></td>
+                                    <td width="25%"><b><%2099%>:</b></td>
+                                    <td><label id="trust_mac_label"><%2100%></label></td>
                                   </tr>
                                   <tr>
-                           	        <td width="25%"><b><%2090%></b></td>
+                           	        <td width="25%"><b><%2101%></b></td>
                                     <td>
                                       <select name="priorityList" size="1" style="height:20px;width:80px">
-                                       <option value="50%" <%2091%> >50%</option><option value="60%" <%2092%>>60%</option><option value="70%" <%2093%>>70%</option><option value="80%" <%2094%>>80%</option>
+                                       <option value="50%" <%2102%> >50%</option><option value="60%" <%2103%>>60%</option><option value="70%" <%2104%>>70%</option><option value="80%" <%2105%>>80%</option>
                                       </select>
                                     </td>
                                   </tr>
-                                  <tr><td colspan="2"><%2095%></td></tr>
+                                  <tr><td colspan="2"><%2106%></td></tr>
                                   <tr>
-                                    <td><input type="radio" name="wps_fasttrack_button" value="wps"><B><%2096%></a></B></td>
+                                    <td><input type="radio" name="wps_fasttrack_button" value="wps"><B><%2107%></a></B></td>
                                   </tr> 
                                   <tr>
                                     <td>
-                                      <input type="radio" name="wps_fasttrack_button" value="fasttrack" onClick="show_fasttrack_warning();" ><B><%2097%></a></B> 
+                                      <input type="radio" name="wps_fasttrack_button" value="fasttrack" onClick="show_fasttrack_warning();" ><B><%2108%></a></B> 
                                     </td>
                                   </tr>   
                                 </table>
@@ -2149,18 +2149,18 @@ function show_fasttrack_warning()
                       <div id="dynamic_upstream">                        
                         <table width="100%" CELLPADDING=0 CELLSPACING=0 id="manual-table" style="padding:0;margin:0;border:0;">
                           <tr>
-                            <td colspan="2" style="height:30px;padding-left:23px"><%2098%></td>
+                            <td colspan="2" style="height:30px;padding-left:23px"><%2109%></td>
                           </tr>
                           <tr>
-                            <td colspan="2" style="height:30px;padding-left:23px"><b><%2099%></b></td>
+                            <td colspan="2" style="height:30px;padding-left:23px"><b><%2110%></b></td>
                           </tr>
 <!------------------------------------------  auto det---->
                           <tr style="height:30px">
-                            <td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><input type="radio" name="qosSetting" value="1" onClick="chk_qosrule_display();"><b><%2100%></b></td>
+                            <td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><input type="radio" name="qosSetting" value="1" onClick="chk_qosrule_display();"><b><%2111%></b></td>
                             <td></td>
                           </tr>
                           <tr>
-	                          <td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><%2101%></td>
+	                          <td colspan="2"><img src="spacer.gif" height="25" width="45" border="0"><%2112%></td>
                        	    <td></td>
                           </tr>
                         </table>
@@ -2172,15 +2172,15 @@ function show_fasttrack_warning()
                             </tr>
                             <tr>
                               <td>&nbsp;</td>
-                              <td align="center">&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="Speed Test" name="check_bw" class="<%486%>" onclick="buttonClick(this,'Speed Test');return checkWanBandWidth();"><span class="<%487%>">&nbsp;&nbsp; <%2054%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
+                              <td align="center">&nbsp;&nbsp;&nbsp;<button type="button" id="checkBtn" value="Speed Test" name="check_bw" class="<%486%>" onclick="buttonClick(this,'Speed Test');return checkWanBandWidth();"><span class="<%487%>">&nbsp;&nbsp; <%2065%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
                             </tr>
                             <tr>
                             	<td style="vertical-align:top;" align="right">
                             	  <div><img src="img/ookla_speedtest.jpg"></div>
-                            	  <div><a href="http://www.speedtest.net/privacy" target="_blank"><u><font color="#3020E0"> Privacy Policy</u></a></div>
+                            	  <div><a href="http://www.speedtest.net/privacy" target="_blank"><u><font color="#3020E0"> <%2113%></u></a></div>
                             	</td>
                               <td  style="vertical-align:top;">
-                                <font color="#408080">Latest test result: <span id="speedtest_time"><%2102%></span></font>
+                                <font color="#408080">Latest test result: <span id="speedtest_time"><%2114%></span></font>
                                 <table  style="padding:0;margin:0;" id="check_result" style="display: block;">
                                   <tr style="vertical-align:top;">
                                     <td> <img src="img/speedtest_download.jpg"> </td>
@@ -2192,12 +2192,12 @@ function show_fasttrack_warning()
                                   </tr>
                                 </table>
                                 <div colspan="2" id="check_info" style="display: none;" valign="middle">
-                                  <p><%2055%></p>
+                                  <p><%2066%></p>
                                   <p><input type="text" name="progress_dynamic" class="prgbar" value="" style="color: blue" size="20"
                                    contentEditable="false" onkeydown="return false;" onbeforeeditfocus="return false;" onpaste="return false;">
                                 </div>
-                                <div id="check_nowan" style="display: none;"><p>&nbsp;</p><%2057%></div>
-                                <div id="check_unreach" style="display: none;"><p>&nbsp;</p><%2058%></div>
+                                <div id="check_nowan" style="display: none;"><p>&nbsp;</p><%2068%></div>
+                                <div id="check_unreach" style="display: none;"><p>&nbsp;</p><%2069%></div>
                               </td>
                                                         
                             </tr>
@@ -2208,7 +2208,7 @@ function show_fasttrack_warning()
                         <table CELLPADDING=0 CELLSPACING=0  style="padding:0;margin:0;">
                           <tr style="height:30px">
                             <td><img src="spacer.gif" height="25" width="45" border="0"></td>
-                            <td colspan="2"><input type="radio" name="qosSetting" value="2" onClick="chk_qosrule_display();alert('<%2103%>');"><b><%2104%></b></td>
+                            <td colspan="2"><input type="radio" name="qosSetting" value="2" onClick="chk_qosrule_display();alert('<%2115%>');"><b><%2116%></b></td>
                             <td></td>
                           </tr>
                         </table>
@@ -2217,7 +2217,7 @@ function show_fasttrack_warning()
                             <tr>
                               <td><img src="spacer.gif" height="25" width="80" border="0"></td>
                               <td> 
-                                <label id ="bw_sel" for="bw_sel"><%2105%></label><img src="spacer.gif" height="20" width="30" border="0">
+                                <label id ="bw_sel" for="bw_sel"><%2117%></label><img src="spacer.gif" height="20" width="30" border="0">
                               </td>
                               <td>  
                                 <input type="text" name="bandwidthDown_manual" size="6" maxlength="6" value="">
@@ -2227,7 +2227,7 @@ function show_fasttrack_warning()
                             <tr>
                               <td><img src="spacer.gif" height="25" width="80" border="0"></td>
                               <td> 
-                                <label id ="bw_sel" for="bw_sel"><%2106%></label><img src="spacer.gif" height="20" width="30" border="0">
+                                <label id ="bw_sel" for="bw_sel"><%2118%></label><img src="spacer.gif" height="20" width="30" border="0">
                               </td>
                               <td>
                                 <input type="text" name="bandwidth_manual" size="6" maxlength="6" value="">
@@ -2239,26 +2239,26 @@ function show_fasttrack_warning()
                         <div id="qos_devlist" style="display: block;">
                           <table CELLPADDING=0 CELLSPACING=0 id="upstream-table" style="padding:0;margin:0;">
                             <tr>
-                              <td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%2107%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%2108%> </b></a>
-                                &nbsp;&nbsp;&nbsp;<button type="button" id="updateBtn" value="<%2109%>" name="check_update" class="<%486%>" onclick="check_start();"><span class="<%487%>">&nbsp;&nbsp; <%2110%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+                              <td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="AutoUpdateEnable" value="1" <%2119%>><a href="javascript:loadhelp('QOS_main','qos_on')" tabindex="-1"> <b><%2120%> </b></a>
+                                &nbsp;&nbsp;&nbsp;<button type="button" id="updateBtn" value="<%2121%>" name="check_update" class="<%486%>" onclick="check_start();"><span class="<%487%>">&nbsp;&nbsp; <%2122%></span><span class="<%488%>">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
                               </td>
                             </tr>
                             <tr>
-                              <td colspan="2" style="padding-left:35px;"><%2111%></td>
+                              <td colspan="2" style="padding-left:35px;"><%2123%></td>
                             </tr>
                             <tr>
-                              <td colspan="2" style="padding-left:60px;padding-top:10px;"><%2112%> v<%2113%>,<%2114%></td>
+                              <td colspan="2" style="padding-left:60px;padding-top:10px;"><%2124%> v<%2125%>,<%2126%></td>
                             </tr>
                             <tr>
-                              <td colspan="2" style="padding-left:60px;padding-top:10px;"><%2115%>  <%2116%></td>
+                              <td colspan="2" style="padding-left:60px;padding-top:10px;"><%2127%>  <%2128%></td>
                             </tr>
                             <tr style="display: none;">
-                              <td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="QosAnalyticsEnable" value="1" <%2117%>><b><%2118%></b>
+                              <td colspan="2" height=45px>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="QosAnalyticsEnable" value="1" <%2129%>><b><%2130%></b>
                               </td>
                             </tr>
                             <tr>
                               <td><img src="spacer.gif" height="30" width="23" border="0"></td>
-                              <td><a class="linktype" target="_self" href="DEV_redirect.htm"><u><font color="#0000ff"><%2119%></font></u></a></td>
+                              <td><a class="linktype" target="_self" href="DEV_redirect.htm"><u><font color="#0000ff"><%2131%></font></u></a></td>
                             </tr>
                           </table>
                         </div>
@@ -2271,10 +2271,10 @@ function show_fasttrack_warning()
                           <td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td>
                         </tr>
                         <tr>
-                          <td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2120%></b></a></td>
+                          <td colspan="2"><input type="checkbox" name="wmm_enable_2g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2132%></b></a></td>
                         </tr>
                         <tr>
-                          <td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2121%></b></a></td>
+                          <td colspan="2"><input type="checkbox" name="wmm_enable_5g" value="1"><a href="javascript:loadhelp('QOS_main','wifi')" tabindex="-1"> <b><%2133%></b></a></td>
                         </tr>
 <!-- content of WMM end -->
                       </table>
@@ -2283,7 +2283,7 @@ function show_fasttrack_warning()
                 </tr>
                 <tr><td colspan="2" height="12" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
                 <tr>
-                  <%2122%>
+                  <%2134%>
                 </tr>
               </table>
             </div>
@@ -2303,49 +2303,49 @@ function show_fasttrack_warning()
       <a name="helpframe-anchor"></a>
       <input type="hidden" name="select" value="-1">
       <input type="hidden" name="priority_sel" value="-1">
-      <INPUT type="hidden" name="WMM_value_2g" value="<%2123%>">
-      <INPUT type="hidden" name="WMM_value_5g" value="<%2124%>">
-      <INPUT type="hidden" name="WMM_value_5g_2" value="<%2125%>">
-      <input type="hidden" name="wifi_dual_5g_band" value="<%2126%>">
-      <input type="hidden" name="qos_manual_enable" value="<%2012%>">
-      <input type="hidden" name="qos_dynamic_enable" value="<%2127%>">
-      <input type="hidden" name="qos_bw_enable" value="<%2013%>">
-      <input type="hidden" name="uplink_bw" value="<%2128%>">
-      <input type="hidden" name="downlink_bw" value="<%2129%>">
+      <INPUT type="hidden" name="WMM_value_2g" value="<%2135%>">
+      <INPUT type="hidden" name="WMM_value_5g" value="<%2136%>">
+      <INPUT type="hidden" name="WMM_value_5g_2" value="<%2137%>">
+      <input type="hidden" name="wifi_dual_5g_band" value="<%2138%>">
+      <input type="hidden" name="qos_manual_enable" value="<%2023%>">
+      <input type="hidden" name="qos_dynamic_enable" value="<%2139%>">
+      <input type="hidden" name="qos_bw_enable" value="<%2024%>">
+      <input type="hidden" name="uplink_bw" value="<%2140%>">
+      <input type="hidden" name="downlink_bw" value="<%2141%>">
       <input type="hidden" name="repeater" value="<%470%>">
       <input type="hidden" name="repeater_an" value="<%471%>">
-      <input type="hidden" name="bw_set_sel" value="<%2015%>">
-      <input type="hidden" name="qos_down_streaming_enable" value="<%2130%>">
-      <input type="hidden" name="qos_update_enable" value="<%2131%>">
-      <input type="hidden" name="choose_selection" value="<%2132%>">
-      <input type="hidden" name="office_idx" value="<%2133%>">
-      <input type="hidden" name="custom_idx" value="<%2134%>">
-      <input type="hidden" name="custom_mac_idx" value="<%2135%>">
-      <input type="hidden" name="apply_page" value="<%2136%>">
-      <input type="hidden" name="qos_manual" value="<%2137%>">
-      <input type="hidden" name="uplink_bw_manual" value="<%2138%>">
-      <input type="hidden" name="qos_uplink_bw" value="<%2139%>">
-      <input type="hidden" name="downlink_bw_manual" value="<%2140%>">
+      <input type="hidden" name="bw_set_sel" value="<%2026%>">
+      <input type="hidden" name="qos_down_streaming_enable" value="<%2142%>">
+      <input type="hidden" name="qos_update_enable" value="<%2143%>">
+      <input type="hidden" name="choose_selection" value="<%2144%>">
+      <input type="hidden" name="office_idx" value="<%2145%>">
+      <input type="hidden" name="custom_idx" value="<%2146%>">
+      <input type="hidden" name="custom_mac_idx" value="<%2147%>">
+      <input type="hidden" name="apply_page" value="<%2148%>">
+      <input type="hidden" name="qos_manual" value="<%2149%>">
+      <input type="hidden" name="uplink_bw_manual" value="<%2150%>">
+      <input type="hidden" name="qos_uplink_bw" value="<%2151%>">
+      <input type="hidden" name="downlink_bw_manual" value="<%2152%>">
       <input type="hidden" name="bandwidthDown" value="">
       <input type="hidden" name="bandwidthUp" value="">
       <input type="hidden" name="bandwidthDown_speedtest" value="">
       <input type="hidden" name="bandwidth_speedtest" value="">
-      <input type="hidden" name="rate_manual" value="<%2141%>">
+      <input type="hidden" name="rate_manual" value="<%2153%>">
       <input type="hidden" name="rateUp" value="1000000">
       <input type="hidden" name="rateDown" value="1000000">
-      <input type="hidden" name="wan_status" value="<%2142%>">
-      <input type="hidden" name="fast_track_hid" value="<%2143%>">
-      <input type="hidden" name="quick_qos_mode_value" value="<%2144%>">
-      <input type="hidden" name="quick_qos_rule_value" value="<%1990%>">
-      <input type="hidden" name="wps_fasttrack_button_status" value="<%2145%>">
+      <input type="hidden" name="wan_status" value="<%2154%>">
+      <input type="hidden" name="fast_track_hid" value="<%2155%>">
+      <input type="hidden" name="quick_qos_mode_value" value="<%2156%>">
+      <input type="hidden" name="quick_qos_rule_value" value="<%2001%>">
+      <input type="hidden" name="wps_fasttrack_button_status" value="<%2157%>">
       <input type="hidden" name="add_new_service" value="0">
       <input type="hidden" name="quick_qos_click_rule" value="">
       <input type="hidden" name="quick_qos_click_priority" value="">
       <input type="hidden" name="quick_qos_select_rule" value="">
       <input type="hidden" name="quick_qos_select_priority" value="">
       <input type="hidden" name="qos_fasttrack_select_device" value="">
-      <input type="hidden" name="qos_fasttrack_enable" value="<%2146%>">
-      <input type="hidden" name="quick_qos_firstlogin" value="<%2147%>">
+      <input type="hidden" name="qos_fasttrack_enable" value="<%2158%>">
+      <input type="hidden" name="quick_qos_firstlogin" value="<%2159%>">
       <input type="hidden" name="enable_apmode" value="<%473%>">
       <input type="hidden" name="enable_stamode" value="<%474%>">
       <input type="hidden" name="enable_extmode" value="<%475%>">

@@ -1953,6 +1953,12 @@ function checkData()
     else
         WPS_wizard_ungrayout();
 
+    // bling
+    if (cf.security_type[1].checked == true) {
+        WPS_wizard_grayout();
+    } else {
+        WPS_wizard_ungrayout();
+    }
     
     return true;
 }
@@ -2168,7 +2174,15 @@ function is_dual_ssid_same()
     {
         band_steering_greyout(0);
         band_steering_enable=0;
-        cf.ssid_an.value = cf.ssid.value +"-5G";
+
+        // bling
+        if (cf.ssid.value.length > 29) {
+            alert("uncheck smart connect, the 5G's SSID is same than 2.4G's SSID.");
+        } else {
+            cf.ssid_an.value = cf.ssid.value + "-5G";
+        }        
+        // bling
+
         return true;
     }
 

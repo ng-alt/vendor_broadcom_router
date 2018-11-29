@@ -601,17 +601,17 @@ function checkData( )
 		cf.extmode_dns1_sec.value = cf.SPDAddr1.value+'.'+cf.SPDAddr2.value+'.'+cf.SPDAddr3.value+'.'+cf.SPDAddr4.value;
 	
 		/*if(<%474%>=="0" && <%473%>=="0")
-			alert("<%1112%>");*/        
+			alert("<%1113%>");*/        
 	}
 
-    if(<%2665%>==1 && cf.enable_other_mode.value!=1){
+    if(<%2676%>==1 && cf.enable_other_mode.value!=1){
         if((<%474%>=="0" && <%473%>!="1" && cf.ap_mode.value!="1") || (<%474%>=="1" && cf.sta_mode.value=="1"))
-            alert("<%1112%>");
+            alert("<%1113%>");
     }
     else
     {
         if(<%474%>=="0" && <%473%>=="0")
-            alert("<%1112%>");
+            alert("<%1113%>");
     }
 	
 	if(cf.wifi_band[0].checked==true)
@@ -1079,7 +1079,7 @@ function apply_wireless_auth(freq)
 					}
 			}
 			/* Foxconn modified start, Kent Huang, 05/22/2012, replace wep_or_wps_v20 with tkip_or_wps_v20 */	
-			if (!confirm("<%1742%>")){
+			if (!confirm("<%1752%>")){
 				return false;
 			}
 			show_tkip_or_wps_v20_msg = true;
@@ -1110,7 +1110,7 @@ function apply_wireless_auth(freq)
 			if (cf.security_type_2G.value == "WPA-PSK")
 			{
 				if (!show_tkip_or_wps_v20_msg) {
-					if (!confirm("<%1742%>")){
+					if (!confirm("<%1752%>")){
 						return false;
 					}
 				}
@@ -1120,14 +1120,14 @@ function apply_wireless_auth(freq)
 */		
 			if(cf.passphrase.value.length < 8)
 			{
-				alert("<%1640%>");
+				alert("<%1650%>");
 				return false;    
 			}
 			if(cf.passphrase.value.length > 63)
 			{
 				if ( isHex(cf.passphrase.value) == false)
 				{
-					alert("<%1641%>");
+					alert("<%1651%>");
 					cf.passphrase.value = "";
 					return false;
 				}    
@@ -1140,17 +1140,17 @@ function apply_wireless_auth(freq)
 				return false;
 			}
 /*
-			if("<%1642%>" == "checked")
+			if("<%1652%>" == "checked")
 			{
 				cf.security_type_2G.value = "WPA-PSK";
 			}
 			else 
 */
-			if("<%1643%>" == "checked")
+			if("<%1653%>" == "checked")
 			{
 				cf.security_type_2G.value = "WPA2-PSK";
 			}
-			else if("<%1644%>" == "checked")
+			else if("<%1654%>" == "checked")
 			{
 				cf.security_type_2G.value = "AUTO-PSK";
 			}
@@ -1193,14 +1193,14 @@ function apply_wireless_auth(freq)
 		
 			if(cf.passphrase_an.value.length < 8)
 			{
-				alert("<%1640%>");
+				alert("<%1650%>");
 				return false;    
 			}
 			if(cf.passphrase_an.value.length > 63)
 			{
 				if ( isHex(cf.passphrase_an.value) == false)
 				{
-					alert("<%1641%>");
+					alert("<%1651%>");
 					cf.passphrase_an.value = "";
 					return false;
 				}    
@@ -1213,11 +1213,11 @@ function apply_wireless_auth(freq)
 				return false;
 			}
 			
-			if("<%1744%>" == "checked")
+			if("<%1754%>" == "checked")
 			{
 				cf.security_type_5G.value = "WPA2-PSK";
 			}
-			else if("<%1745%>" == "checked")
+			else if("<%1755%>" == "checked")
 			{
 				cf.security_type_5G.value = "AUTO-PSK";
 			}
@@ -1250,7 +1250,7 @@ function apply_wireless_auth(freq)
 <tr align="left" valign="top">
 <td   align="center" colspan="2" class="table-seperate-border2">
 <input class="new_cancel_bt ui-corner-all" type="reset" name="Cancel" value="<%83%>" onClick="location.href='WLG_opmode_main.htm';">
-<input <%4656%> type="submit" name="Apply" value="<%78%>" onClick="return checkData();">
+<input <%4675%> type="submit" name="Apply" value="<%78%>" onClick="return checkData();">
 
 </td>
 </tr>
@@ -1262,33 +1262,33 @@ function apply_wireless_auth(freq)
 
 <div class="boxline">
 <div class="box ui-corner-all router">
-<div class="radio_box"><input type="radio" name="operation_type" value=0 onclick="select_type(0)"> <%4657%></div>
-<div class="<%4662%>" onclick="select_type(0)"><img src="img/opmode_router.gif"></div>
+<div class="radio_box"><input type="radio" name="operation_type" value=0 onclick="select_type(0)"> <%4676%></div>
+<div class="<%4681%>" onclick="select_type(0)"><img src="img/opmode_router.gif"></div>
 </div>
 <div class="box ui-corner-all ap">
-<div class="radio_box"><input type="radio" name="operation_type" value=1 onclick="select_type(1)"> <%1686%></div>
-<div class="<%4663%>" onclick="select_type(1)"><img src="img/opmode_ap.gif"></div>
+<div class="radio_box"><input type="radio" name="operation_type" value=1 onclick="select_type(1)"> <%1696%></div>
+<div class="<%4682%>" onclick="select_type(1)"><img src="img/opmode_ap.gif"></div>
 </div>
 <div class="box_select ui-corner-all extender">
-<div class="radio_box"><input type="radio" name="operation_type" value=2 checked> <%4670%> </div>
-<div class="<%4675%>" onclick="select_type(2)"><img src="img/opmode_extender.gif"></div>
+<div class="radio_box"><input type="radio" name="operation_type" value=2 checked> <%4689%> </div>
+<div class="<%4694%>" onclick="select_type(2)"><img src="img/opmode_extender.gif"></div>
 </div>
 </div>
 
 
 <table border=0 cellpadding=2 cellspacing=0 width=80%>
 <tr>
-<td colspan=3><%4676%></td>
+<td colspan=3><%4695%></td>
 </tr>
 <tr><td colspan=3><h1 style="FONT-SIZE: 16px"></h1></td></tr>
-<tr><td colspan=3><%1734%></td></tr>
+<tr><td colspan=3><%1744%></td></tr>
 <tr><td colspan=1 width="20px"><input type="radio" name="enable_fixed_ip_setting" value="dynamic" checked = "true" onclick="display_fixed_ip_setting(0)"></td>
-<td colspan=2><%1735%></td></tr>
+<td colspan=2><%1745%></td></tr>
 <tr><td colspan=1><input type="radio" name="enable_fixed_ip_setting" value="fixed" onClick="display_fixed_ip_setting(1)"></td>
-<td colspan=2><%1737%></td></tr>
+<td colspan=2><%1747%></td></tr>
 <tr><td colspan=3><h1 style="FONT-SIZE: 16px"></h1></td></tr>
 		<TR><TD nowrap colspan=3>&nbsp; <%748%>: 
-		<%1115%>
+		<%1116%>
  &nbsp;&nbsp;&nbsp; <input class="new_edit_bt ui-corner-all" type="button" name="Apply" value="<%692%>" onClick="location.href='DEV_name.htm';"></TD><TD></td></TR>
 <TR><TD height="10px"></TD></TR>
 		<TR id=learn>
@@ -1362,8 +1362,8 @@ function apply_wireless_auth(freq)
 <div id="choose_wireless" style="float:left; width:30%; height:100%;font-size:14px; ">
 <div style="position:relative;margin-left:25px;"> 
 <table border=0 cellpadding=2 cellspacing=0 width=100%>
-<TR><TD colspan="2" style="FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #000000;"><%4677%></TD></TR>
-<TR><TD colspan="2"><%4678%></TD></TR>
+<TR><TD colspan="2" style="FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #000000;"><%4696%></TD></TR>
+<TR><TD colspan="2"><%4697%></TD></TR>
 </table>
 </div>
 <div class="wireless_signal_head" style="position:relative;margin-left:25px; width:250px; border-bottom:5px solid #702b86">
@@ -1372,23 +1372,23 @@ function apply_wireless_auth(freq)
 	<img src="img/opmode_checked.png" id="uplink_checked_2G" style="position:absolute; left:10px; top:6px; display: none;"; z-index:999>
 	<img src="img/opmode_checked.png" id="uplink_checked_5G" style="position:absolute; left:120px; top:6px; display: none;"; z-index:999>
 </div>
-<div style="position:relative;margin-left:30px; width:250px;"> <H2 style="font-size:13px"><%4679%></H2></div>
+<div style="position:relative;margin-left:30px; width:250px;"> <H2 style="font-size:13px"><%4698%></H2></div>
 <div id="ssidContainer" class="wireless_signal_list" style="position:relative; height:30%; width:250px;margin-left:30px; overflow:auto">
 	<div class="waiting_img_div" align="center"><img src="img/wait.gif"></div>
 </div>
 
 <div class="router_wireless_setting" style="font-size:14px; margin-left:30px; position:relative; top:30px;" id="router_wireless_setting">
 <table border=0 cellpadding=2 cellspacing=0 width=100%>
-<TR><TD colspan="2" style="FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #000000;"><%4672%></TD></TR>
-<TR><TD colspan="2"><%4673%></TD></TR>
+<TR><TD colspan="2" style="FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #000000;"><%4691%></TD></TR>
+<TR><TD colspan="2"><%4692%></TD></TR>
 <tr><td colspan="2"><h1 style="FONT-SIZE: 16px"></h1></td></tr>
 <TR>
 	<TD nowrap  >2.4G SSID</TD>	
 	<TD nowrap  >5G SSID</TD>	
 </TR>
 <TR style="color: black" >
-	<TD nowrap><%4680%></TD>	
-	<TD nowrap><%4681%></TD>
+	<TD nowrap><%4699%></TD>	
+	<TD nowrap><%4700%></TD>
 </TR>
 <tr style="color: black">
 	<td>
@@ -1401,20 +1401,20 @@ function apply_wireless_auth(freq)
         <div id="24g_wep" style="display: none;">
 			<table>
 				<tr>
-					<td><%188%>: <%4682%></td></tr>
+					<td><%188%>: <%4701%></td></tr>
 				<tr>
-					<td><%190%>: <%4683%></td></tr>
+					<td><%190%>: <%4702%></td></tr>
 				<tr>
-					<td><%192%>: <%4684%></td></tr>
+					<td><%192%>: <%4703%></td></tr>
 				<tr>
-					<td><%194%>: <%4685%></td></tr>
+					<td><%194%>: <%4704%></td></tr>
 			</table>
         </div>
         <!------ 2.4G WEP DIV End ------>
 
         <!------ 2.4G WPA DIV Start ------>
         <div id="24g_wpa" style="display: none;">
-			<%4686%>
+			<%4705%>
         </div>
         <!-----------2.4G WPA DIV End---------->
 	</td>
@@ -1428,42 +1428,42 @@ function apply_wireless_auth(freq)
         <div id="5g_wep" style="display: none;">
 			<table>
 				<tr>
-					<td><%188%>: <%4687%></td></tr>
+					<td><%188%>: <%4706%></td></tr>
 				<tr>
-					<td><%190%>: <%4688%></td></tr>
+					<td><%190%>: <%4707%></td></tr>
 				<tr>
-					<td><%192%>: <%4689%></td></tr>
+					<td><%192%>: <%4708%></td></tr>
 				<tr>
-					<td><%194%>: <%4690%></td></tr>
+					<td><%194%>: <%4709%></td></tr>
 			</table>
         </div>
         <!------ 5G WEP DIV End ------>
 
         <!------ 5G WPA DIV Start ------>
         <div id="5g_wpa" style="display: none;">
-			<%4691%>
+			<%4710%>
         </div>
         <!-----------5G WPA DIV End---------->
 	</td>
 </tr>
 <TR><TD height="15px"></TD></TR>
 <TR>
-	<td nowrap colspan><%4674%>:</td> 
+	<td nowrap colspan><%4693%>:</td> 
 	<td nowrap><input class="wireless_bt ui-corner-all" type="button" name="Apply" value="<%429%>" onClick="goto_wireless();"></td>
 </TR>
 <tr><td  height="10px" nowrap colspan="2"></td></tr>
-<tr  style="color: black"><td nowrap colspan="2"><b><a tabindex=-1 href="javascript:loadhelp('_rae_extender','ethport')"><%4692%></a></b></td></tr>
+<tr  style="color: black"><td nowrap colspan="2"><b><a tabindex=-1 href="javascript:loadhelp('_rae_extender','ethport')"><%4711%></a></b></td></tr>
 <tr  style="color: black">
-<%4693%>
+<%4712%>
 	<td nowrap>
 	<input type=radio NAME="wifi_band" checked value="2.4G"> <b>2.4G</b>
 	</td>
-<%4694%>
-<%4695%>
+<%4713%>
+<%4714%>
 	<td nowrap>
 	<input type=radio NAME="wifi_band" value="5G"> <b>5G</b>
 	</td>
-<%4696%>
+<%4715%>
 </tr>
 <tr><td  height="20px" nowrap colspan="2"></td></tr>
 
@@ -1621,52 +1621,52 @@ function apply_wireless_auth(freq)
 
 
 <!--input type="hidden" name="hid_dyn_get_dns"-->
-<INPUT type="hidden" name="pre_mode" value="<%4660%>" >
+<INPUT type="hidden" name="pre_mode" value="<%4679%>" >
 <INPUT name=enable_operation_mode type=hidden value="extender">
 <INPUT type=hidden name=opmode value="enable_sta_mode">
 <input type="hidden" name="wl_hidden_sec_type">
 <input type="hidden" name="tmp_name">
 <input type="hidden" name="tmp_channel">
-<INPUT type=hidden name=dyn_get_ip value="<%4697%>"> <!-- ap_dyn_ip -->
-<INPUT type=hidden name=dyn_get_dns value="<%4698%>"> <!-- ap_dyn_dns -->
+<INPUT type=hidden name=dyn_get_ip value="<%4716%>"> <!-- ap_dyn_ip -->
+<INPUT type=hidden name=dyn_get_dns value="<%4717%>"> <!-- ap_dyn_dns -->
 <INPUT type=hidden name=ssid value="">
 <INPUT type=hidden name=ssid_an value="">
 
 <input type="hidden" name="sta_mode" value="<%474%>">
 <input type="hidden" name="ap_mode" value="<%473%>">
-<INPUT type="hidden" name="extmode_ipaddr" value= "<%1349%>">
-<INPUT type="hidden" name="extmode_netmask" value= "<%1350%>">
-<INPUT type="hidden" name="extmode_gateway" value= "<%1352%>">
-<INPUT type="hidden" name="extmode_dns1_pri" value= "<%1357%>">
-<INPUT type="hidden" name="extmode_dns1_sec" value= "<%1358%>">
+<INPUT type="hidden" name="extmode_ipaddr" value= "<%1359%>">
+<INPUT type="hidden" name="extmode_netmask" value= "<%1360%>">
+<INPUT type="hidden" name="extmode_gateway" value= "<%1362%>">
+<INPUT type="hidden" name="extmode_dns1_pri" value= "<%1367%>">
+<INPUT type="hidden" name="extmode_dns1_sec" value= "<%1368%>">
 <input type="hidden" name="enable_other_mode" value="1">
-<input type="hidden" name="ssid_ap_2G" value="<%4680%>">
-<input type="hidden" name="ssid_ap_5G" value="<%4681%>">
-<input type="hidden" name="ap_24g_sec" value="<%4699%>">
-<input type="hidden" name="ap_5g_sec" value="<%4700%>">
-<INPUT type="hidden" name="security_type_ap_2G" value="<%4701%>">
-<INPUT type="hidden" name="security_type_ap_5G" value="<%4702%>">
-<INPUT type="hidden" name="passphraseStr_ap_2G" value="<%4686%>">
-<INPUT type="hidden" name="passphraseStr_ap_5G" value="<%4691%>">
-<INPUT type="hidden" name="wepenc_ap_2G" value="<%4703%>">
-<INPUT type="hidden" name="wepenc_ap_5G" value="<%4704%>">
-<INPUT type="hidden" name="KEY1_ap_2G" value="<%4705%>">
-<INPUT type="hidden" name="KEY2_ap_2G" value="<%4706%>">
-<INPUT type="hidden" name="KEY3_ap_2G" value="<%4707%>">
-<INPUT type="hidden" name="KEY4_ap_2G" value="<%4708%>">
-<INPUT type="hidden" name="KEY1_ap_5G" value="<%4709%>">
-<INPUT type="hidden" name="KEY2_ap_5G" value="<%4710%>">
-<INPUT type="hidden" name="KEY3_ap_5G" value="<%4711%>">
-<INPUT type="hidden" name="KEY4_ap_5G" value="<%4712%>">
-<INPUT type="hidden" name="wep_key_no_ap_2G" value="<%4713%>">
-<INPUT type="hidden" name="wep_key_no_ap_5G" value="<%4714%>">
-<INPUT type="hidden" name="passphrase_ap_2G" value="<%4686%>">
-<INPUT type="hidden" name="passphrase_ap_5G" value="<%4691%>">
+<input type="hidden" name="ssid_ap_2G" value="<%4699%>">
+<input type="hidden" name="ssid_ap_5G" value="<%4700%>">
+<input type="hidden" name="ap_24g_sec" value="<%4718%>">
+<input type="hidden" name="ap_5g_sec" value="<%4719%>">
+<INPUT type="hidden" name="security_type_ap_2G" value="<%4720%>">
+<INPUT type="hidden" name="security_type_ap_5G" value="<%4721%>">
+<INPUT type="hidden" name="passphraseStr_ap_2G" value="<%4705%>">
+<INPUT type="hidden" name="passphraseStr_ap_5G" value="<%4710%>">
+<INPUT type="hidden" name="wepenc_ap_2G" value="<%4722%>">
+<INPUT type="hidden" name="wepenc_ap_5G" value="<%4723%>">
+<INPUT type="hidden" name="KEY1_ap_2G" value="<%4724%>">
+<INPUT type="hidden" name="KEY2_ap_2G" value="<%4725%>">
+<INPUT type="hidden" name="KEY3_ap_2G" value="<%4726%>">
+<INPUT type="hidden" name="KEY4_ap_2G" value="<%4727%>">
+<INPUT type="hidden" name="KEY1_ap_5G" value="<%4728%>">
+<INPUT type="hidden" name="KEY2_ap_5G" value="<%4729%>">
+<INPUT type="hidden" name="KEY3_ap_5G" value="<%4730%>">
+<INPUT type="hidden" name="KEY4_ap_5G" value="<%4731%>">
+<INPUT type="hidden" name="wep_key_no_ap_2G" value="<%4732%>">
+<INPUT type="hidden" name="wep_key_no_ap_5G" value="<%4733%>">
+<INPUT type="hidden" name="passphrase_ap_2G" value="<%4705%>">
+<INPUT type="hidden" name="passphrase_ap_5G" value="<%4710%>">
 <input type="hidden" name="select_2g_rootap" value="0">
 <input type="hidden" name="select_5g_rootap" value="0">
-<INPUT type="hidden" name="eth_bind_band" value= "<%4715%>">
-<INPUT type="hidden" name="link_status_2G" value="<%4716%>">
-<INPUT type="hidden" name="link_status_5G" value="<%4717%>">
+<INPUT type="hidden" name="eth_bind_band" value= "<%4734%>">
+<INPUT type="hidden" name="link_status_2G" value="<%4735%>">
+<INPUT type="hidden" name="link_status_5G" value="<%4736%>">
 
 <INPUT name=SPethr1 type=hidden value= "">
 <INPUT name=SPethr2 type=hidden value= "">

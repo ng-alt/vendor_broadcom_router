@@ -209,6 +209,12 @@ bh_ap_finish_warning="WARNING: Do not click the <b>Finish</b> button until you r
 bh_download_info="Preuzimanje…"
 bh_download_info_1="Nakon dovršetka preuzimanja instaliraj aplikaciju genie."
 bh_download_info_2="Kako biste dovršili konfiguriranje usmjerivača, nakon instalacije aplikacije genie pritisnite gumb Sljedeće."
+bh_download_info_3="Nakon dovršetka preuzimanja instaliraj aplikaciju ReadySHARE Vault."
+bh_download_info_4="Kako biste dovršili konfiguriranje usmjerivača, nakon instalacije aplikacije ReadySHARE Vault pritisnite gumb Sljedeće."
+bh_download_info_5="Instalirajte aplikaciju genie i aplikaciju ReadySHARE Vault kada se preuzimanje dovrši."
+bh_download_info_6="Kako biste dovršili konfiguriranje usmjerivača, nakon instalacije aplikacija genie i ReadySHARE Vault pritisnite gumb Sljedeće."
+h_dev_name="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px"><p><font size=4><b>Pomoć za naziv uređaja</b></font></p><p name=mode></p><p><b>Naziv uređaja:</b> Naziv uređaja upotrebljava se za identifikaciju usmjerivača. Mnoge značajke usmjerivača taj naziv prosljeđuju povezanim klijentskim uređajima radi identifikacije i prikaza. Ako naziv uređaja promijenite, ažurirat će se sva polja navedena u nastavku. Moći ćete i promijeniti put za pristup ReadySHARE spremištu na novi naziv uređaja.</p><p><b>Nazivi polja u korisničkom sučelju usmjerivača u kojima se prikazuje naziv uređaja</b><br>U nastavku su navedeni nazivi polja u korisničkom sučelju u kojima se prikazuje naziv uređaja te stranice na kojima se ta polja nalaze:<ul><li>Stranica za postavljanje interneta: Naziv računa</li><li>Stranica za postavljanje LAN mreže: Naziv uređaja</li><li>Stranica za postavljanje multimedijskog poslužitelja: Naziv multimedijskog poslužitelja</li><li>Način rada usmjerivača / pristupne točke / proširenja > stranica načina rada pristupne točke: Naziv uređaja</li><li>Način rada usmjerivača / pristupne točke / proširenja > stranica načina rada proširenja: Naziv uređaja</li></ul></p><p><b>Klijenti koji prikazuju naziv uređaja</b><br>Naziv uređaja prikazat će se u sljedećim klijentima:<ul><li>iTunes Server</li><li>Time Machine poslužitelj</li><li>ReadySHARE pisač ili Bonjour poslužitelj za ispis</li><li>LLTD</li><li>UPNP</li><li>WPS uređaj</li></ul></p></div></body>"
+bh_download_wait="Zahtjev se obrađuje…"
 
 /* Security GUI change */
 bh_admin_gui_header="Postavke administratorskog računa"
@@ -257,7 +263,7 @@ ra_collection_title="Router Analytics Data Collection"
 ra_title="Router Analytics Data Collection"
 auto_fw_title="Router Auto Firmware Update"
 tnc_str="Terms of Services"
-ra_service="Enable collection of <a href="#" onclick="window.open('ra_data_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);"> <font size="">router analytics data</font></a> that will help NETGEAR improve our services and products."
+ra_service="Enable collection of <a href="#" onclick="window.open('ra_data_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <font size="">router analytics data</font></a> that will help NETGEAR improve our services and products."
 auto_update_service="Enable router to automatically update to future firmware. This keeps your router up to date with the latest features and security fixes."
 
 //Data collection Term Conditions
@@ -701,4 +707,35 @@ router_full_tnc_detail_str_207=" Faks korporacijskog ureda: 353 21 2333 299 <br>
 router_full_tnc_detail_str_208=" © NETGEAR, Inc. Sva prava pridržana.<strong></strong><br><br>"
 router_full_tnc_version=""
 ra_selection_alarm="Please make your selection for both features above to continue."
+
+ra_selection_alarm="Please make your selection for both features above to continue."
+
+//security enhancement
+//passed="Passed"
+//weak_password_disallowed="Weak password disallowed!"
+
+router_password_reset="Ponovno postavljanje lozinke za usmjerivač"
+router_password_reset_msg="Provjerili smo vaš zahtjev za ponovno postavljanje lozinke U nastavku unesite novu lozinku, ispunite ostala polja, a zatim pritisnite gumb <b>Sljedeće</b>."
+reset_admin_passwd="Uspješno ste ponovo postavili administratorsku lozinku."
+reset_can_login="Pri sljedećoj prijavi upotrijebite lozinku koju ste upravo stvorili. Vaše korisničko ime uvijek će biti admin."
+can_help_reset="Možemo vam pomoći pri ponovnom postavljanju administratorske lozinke usmjerivača. Trebat će vam serijski broj usmjerivača koji je naveden na oznaci na samom usmjerivaču. Unesite serijski broj usmjerivača u polje i pritisnite gumb <b>Nastavi</b>."
+weak_password_rule1="Nadalje, preporučujemo da vaša lozinka ispunjava tri od sljedeća četiri uvjeta:"
+weak_password_rule1_1="Sadrži najmanje jedno veliko slovo"
+weak_password_rule1_2="Sadrži najmanje jedno malo slovo"
+weak_password_rule1_3="Sadrži najmanje jednu brojku"
+weak_password_rule1_4="Sadrži najmanje jedan poseban znak, primjerice @#&..."
+weak_password_rule2="Sadrži između 6 i 32 znakova"
+weak_password_rule4="Ne sadrži više od dva ista znaka zaredom"
+bh_secure_passwd_header="Zaštitite svoju lozinku"
+bh_secure_passwd_msg="Vaša administratorska lozinka nije sigurna. Preporučujemo da promijenite lozinku i odaberete sigurniju lozinku koja ispunjava naše uvjete za lozinke. Sigurnija lozinka zaštitit će vašu mrežu od vanjskih prijetnji."
+enable_password_reset="Omogući ponovno postavljanje lozinke"
+lastime_password_reset="Zadnje ponovno postavljanje lozinke"
+empty_passwd_not_allow="Morate unijeti lozinku."
+local_head="Lokalno upravljanje"
+force_to_use_https="Za pristup usmjerivaču uvijek upotrijebi HTTPS"
+wsm_head="Upravljanje web-uslugama"
+h_FW_webservice="<body style="margin:0px"><div id="content" style="overflow:auto;scrolling:auto;width:100%;height:140px" ><P><font size=4><B>Pomoć za upravljanje web-uslugama</B></font></P><p> Na zaslonu Daljinsko upravljanje možete dopustiti korisniku da konfigurira, nadograđuje i provjerava status vašeg usmjerivača na internetu.</p><p> <b>VAŽNO: </b><b id=italic>Obavezno promijenite zadanu lozinku usmjerivača i postavite iznimno sigurnu lozinku.</b></p><hr><p name=usehttps id=usehttps></p><p><b>Za pristup usmjerivaču uvijek upotrijebi HTTPS</b></p><p><ul>Ako omogućite tu značajku, poboljšat ćete sigurnost veze s web-sučeljem usmjerivača.<br>Kad je značajka omogućena, za pristup web-sučelju usmjerivača upotrebljava se HTTPS.<br>Kad je značajka onemogućena, za pristup web-sučelju usmjerivača mogu se upotrijebiti i HTTP i HTTPS.</ul></p><hr><p name=turnon id=turnon></p><p><b>Uključi daljinsko upravljanje</b></p><p><ul> 1. Odaberite potvrdni okvir <b>Uključi daljinsko upravljanje</b>.<br> Pritisnite gumb <b>Primijeni</b> kako biste spremili promjenu.</ul> </p> <hr> <p name=address id=address></p><p><b>Adresa za daljinsko upravljanje</b></p><p>To je trenutačna adresa koja se upotrebljava za internetski pristup usmjerivaču. Za pristup usmjerivaču morate unijeti IP adresu za WAN usmjerivača u polje za unos adrese preglednika (u IE) ili polje Lokacija (u Netscape), dvotočku (:) i prilagođeni broj priključka. Primjerice, ako vanjska adresa glasi 10.0.0.123, a vi upotrebljavate broj priključka 8080, u svoj preglednik unesite sljedeće podatke:</p> <p><screen>http://10.0.0.123:8080</screen></p><hr><p name=access id=access></p><p><b>Omogući daljinski pristup</b><p> Iz sigurnosnih razloga trebali biste ograničiti pristup na samo nekoliko vanjskih IP adresa. <p>Odaberite opciju Samo ovo računalo kako biste dopustili pristup samo jednoj IP adresi.</ul><p><ul>Odaberite opciju <b>Raspon IP adresa</b> kako biste dopustili pristup cijelom rasponu IP adresa na internetu. Unesite početnu i završnu IP adresu kako biste definirali dopušteni raspon.</ul><p><ul>Odaberite opciju <b>Svi</b> kako biste dopustili pristup svima na internetu.</ul><hr><p name=port id=port></p><p><b>Broj priključka</b></p><p>Za pristup web-pregledniku upotrebljava se standardni HTTP priključak usluge 80. Kako biste postigli još višu raznu sigurnosti, možete promijeniti web-sučelje za daljinsko upravljanje u prilagođeni priključak tako da unesete odgovarajući broj u predviđeno polje. Odaberite broj između 1024 i 65534, ali nemojte upotrebljavati broj uobičajenog priključka usluge.</p><hr> <p><b>Spremanje ili poništavanje promjena:</b></p><p name=To id=To></p><p>Pritisnite <b>Primijeni</b> kako bi se promjene počele primjenjivati.<br> Pritisnite <b>Odustani</b> za povratak na prethodne postavke.</p></div></body>"
+default_passwd_not_allow="Ne možete upotrijebiti zadanu administratorsku lozinku. Morate promijeniti administratorsku lozinku."
+weak_password_rule="Preporučujemo da vaša lozinka ispunjava sljedeće uvjete:"
+passwd_length_6="Minimum password length is 6 characters!"
 

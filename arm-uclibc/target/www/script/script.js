@@ -679,7 +679,7 @@ function setLanglistPosition()
         if($('.tabs')[0].scrollHeight>40)
         {
             $('#lang_menu_li').css("position", "relative");
-            $('#lang_menu_li').css("top", "-35px");
+            $('#lang_menu_li').css("top", "0px");
             $('#firmware-update').css("position", "relative");
             $('#firmware-update').css("left", "-50px");
         }
