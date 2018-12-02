@@ -779,7 +779,7 @@ function check_vpn_conflict() {		//if conflict with LAN ip & DHCP ip pool & stat
 	var origin_lan_ip = '<% nvram_get("lan_ipaddr"); %>';
 	var lan_ip_subnet = origin_lan_ip.split(".")[0]+"."+origin_lan_ip.split(".")[1]+"."+origin_lan_ip.split(".")[2]+".";
 	var lan_ip_end = parseInt(origin_lan_ip.split(".")[3]);
-	var dhcp_staticlists = '<% nvram_get("dhcp_staticlist"); %>'.replace(/&#62/g, ">").replace(/&#60/g, "<");;
+	var dhcp_staticlists = "<% nvram_get("dhcp_staticlist"); %>".replace(/&#62/g, ">").replace(/&#60/g, "<");
 	var staticclist_row = dhcp_staticlists.split('<');
 	var pptpd_clients_subnet = document.form._pptpd_clients_start.value.split(".")[0] 
 					   + "." + document.form._pptpd_clients_start.value.split(".")[1] 
@@ -870,7 +870,7 @@ function check_vpn_conflict() {		//if conflict with LAN ip & DHCP ip pool & stat
 									<div>&nbsp;</div>
 									<div id="divVPNTitle" class="formfonttitle"><#BOP_isp_heart_item#> - PPTP</div>
 									<div id="divSwitchMenu" style="margin-top:-40px;float:right;"></div>
-									<div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
+									<div style="margin:10px 0 10px 5px;" class="splitLine"></div>
 									<div id="privateIP_notes" class="formfontdesc" style="display:none;color:#FC0;"><#vpn_privateIP_hint#></div>
 									<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3" class="FormTable">
 										<thead>
@@ -935,7 +935,7 @@ function check_vpn_conflict() {		//if conflict with LAN ip & DHCP ip pool & stat
 											</thead>								
 											<tr>
 												<th><#PPPConnection_x_WANLink_itemname#></th>
-												<th><#HSDPAConfig_Username_itemname#></th>
+												<th><#Username#></th>
 												<th><#HSDPAConfig_Password_itemname#></th>
 												<th><#list_add_delete#></th>
 												<th><#pvccfg_edit#></th>

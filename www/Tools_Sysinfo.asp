@@ -396,8 +396,10 @@ function show_memcpu(){
 	document.getElementById("mem_free_td").innerHTML = mem_stats_arr[1] + " MB";
 	document.getElementById("mem_buffer_td").innerHTML = mem_stats_arr[2] + " MB";
 	document.getElementById("mem_cache_td").innerHTML = mem_stats_arr[3] + " MB";
-	document.getElementById("mem_swap_td").innerHTML = mem_stats_arr[4] + " / " + mem_stats_arr[5] + " MB";
-
+	if (parseInt(mem_stats_arr[5]) == 0)
+		document.getElementById("mem_swap_td").innerHTML = "<span>No swap configured</span>";
+	else
+		document.getElementById("mem_swap_td").innerHTML = mem_stats_arr[4] + " / " + mem_stats_arr[5] + " MB";
 	document.getElementById("nvram_td").innerHTML = mem_stats_arr[6] + " / " + <% sysinfo("nvram.total"); %> + " bytes";
 	document.getElementById("jffs_td").innerHTML = mem_stats_arr[7];
 }
@@ -477,7 +479,7 @@ function update_sysinfo(e){
                 <td valign="top">
                 <div>&nbsp;</div>
                 <div class="formfonttitle">Tools - System Information</div>
-                <div style="margin-left:5px;margin-top:10px;margin-bottom:10px"><img src="/images/New_ui/export/line_export.png"></div>
+		<div style="margin:10px 0 10px 5px;" class="splitLine"></div>
 
 				<table width="100%" border="1" align="center" cellpadding="4" cellspacing="0" bordercolor="#6b8fa3"  class="FormTable">
 					<thead>
