@@ -679,6 +679,9 @@ endif # ROOTDIR
 	rm -rf $(TARGETDIR)/usr/sbin/epi_ttcp
 	$(STRIP) $(TARGETDIR)/bin/eapd
 	install fbwifi/fbwifi $(TARGETDIR)/bin
+	# openvpn new cert
+	install /projects/hnd/tools/linux/hndtools-arm-linux-2.6.36-uclibc-4.5.3/arm-brcm-linux-uclibcgnueabi/sysroot/usr/bin/openssl $(TARGETDIR)/usr/local/sbin
+	cp -r new_opencrt $(TARGETDIR)/usr/share/
 	install -d $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
 	#install usbprinter/GPL_NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
 	#install usbprinter/NetUSB.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/drivers/usbprinter
