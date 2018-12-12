@@ -86,6 +86,9 @@ static const struct model_s model_list[] = {
 	{ "DSL-AC68U",	MODEL_DSLAC68U	},
 	{ "RT-AC1200G", MODEL_RTAC1200G	},
 	{ "RT-AC1200G+", MODEL_RTAC1200GP},
+#if defined(EXT_MERLIN)
+	{ "R6300v2",	MODEL_RTAC68U   },
+#endif /* EXT_MERLIN */
 #endif	/* !RTCONFIG_RALINK */
 	{ NULL, 0 },
 };

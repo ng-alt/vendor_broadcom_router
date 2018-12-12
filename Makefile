@@ -36,6 +36,10 @@ define filter-out-external-packages
 $(filter-out $(ROUTER_EXTERNAL_PACKAGES),$1)
 endef
 
+ifeq ($(VENDOR),merlin)
+export CFLAGS += -DEXT_MERLIN
+endif
+
 ifeq ($(RTCONFIG_RALINK),y)
 else ifeq ($(RTCONFIG_QCA),y)
 export CFLAGS += $(EXTRACFLAGS)
