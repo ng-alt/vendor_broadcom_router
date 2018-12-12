@@ -393,6 +393,9 @@ export CFLAGS += -DARP_PROTECTION
 export CFLAGS += -DINCLUDE_DETECT_AP_MODE
 endif
 
+ifeq ($(CONFIG_CIRCLE_PARENTAL_CONTROL),y)
+export CFLAGS += -DCIRCLE_PARENTAL_CONTROL
+endif
 
 ifeq ($(FW_TYPE),NA)
 export CFLAGS += -DFW_VERSION_NA
@@ -620,9 +623,17 @@ endif
 #
 
 
-all: acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
+all: openssl-1.0.2h acos_link version $(LINUXDIR)/.config linux_kernel $(obj-y)
         # Also build kernel
         
+openssl-1.0.2h: openssl-1.0.2h_config
+	$(MAKE)  -C ../../ap/gpl/openssl-1.0.2h 		
+
+openssl-1.0.2h_config:
+	if [ ! -f ../../ap/gpl/openssl-1.0.2h/Makefile ];then \
+        cd ../../ap/gpl/openssl-1.0.2h && (CC=gcc CFLAGS="$(CFLAGS)" \
+	./config no-asm shared --openssldir=../../ap/gpl/openssl-1.0.2h/build/usr/local/ssl); \
+        fi
         
 linux_kernel:        
 ifeq ($(LINUXDIR), $(BASEDIR)/components/opensource/linux/linux-2.6.36)
@@ -746,11 +757,14 @@ ifeq ($(PROFILE),R6400)
 	install ufsd/mkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
-	install utelnetd/ookla $(TARGETDIR)/usr/sbin
-	install utelnetd/settings.txt $(TARGETDIR)/usr/sbin
-	install fbwifi/fbwifi $(TARGETDIR)/bin
+	#install utelnetd/ookla $(TARGETDIR)/bin
+	#install fbwifi/fbwifi $(TARGETDIR)/bin
 	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
+	install ../../ap/gpl/openssl-1.0.2h/libssl.so.1.0.0 $(TARGETDIR)/usr/share
+	install ../../ap/gpl/openssl-1.0.2h/libcrypto.so.1.0.0 $(TARGETDIR)/usr/share
 	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin	
+	rm -f $(TARGETDIR)/usr/share/libssl.so $(TARGETDIR)/usr/share/libcrypto.so
+	cd $(TARGETDIR)/usr/share && ln -s libssl.so.1.0.0 libssl.so && ln -s libcrypto.so.1.0.0 libcrypto.so
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/opendns.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
 	install prebuilt/acos_nat.ko $(TARGETDIR)/lib/modules/2.6.36.4brcmarm+/kernel/lib
@@ -763,6 +777,8 @@ ifeq ($(CONFIG_IPERF),y)
 	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
 endif
+	$(STRIP) $(TARGETDIR)/usr/share/libssl.so.1.0.0
+	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 endif
 
 ifneq (2_4,$(LINUX_VERSION))
@@ -1231,19 +1247,17 @@ endif
 
 ifeq (2_6_36,$(LINUX_VERSION))
 iptables:
+	$(MAKE) -C iptables-1.4.12 BINDIR=/usr/sbin LIBDIR=/usr/lib \
+	    KERNEL_DIR=$(LINUXDIR) DO_IPV6=1
 
 iptables-install:
-ifeq ($(CONFIG_IPTABLES),y)
-	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
-	install iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables
-	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/iptables/*.so
-	cp -rf iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
+	install -d $(INSTALLDIR)/iptables/usr/lib/xtables
+	cp -rf $(TOP)/iptables-1.4.12/src/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/xtables
+	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/xtables/*.so
+	cp -rf $(TOP)/iptables-1.4.12/src/install/sbin $(INSTALLDIR)/iptables/usr/sbin
 	install -d $(INSTALLDIR)/iptables/usr/lib
-	cp -f iptables-1.4.12/src/install/lib/libip* $(INSTALLDIR)/iptables/usr/lib
-else
-	# So that generic rule does not take precedence
-	@true
-endif
+	cp -f $(TOP)/iptables-1.4.12/src/install/lib/libip* $(INSTALLDIR)/iptables/usr/lib
+	cp -f $(TOP)/iptables-1.4.12/src/install/lib/libxt* $(INSTALLDIR)/iptables/usr/lib
 iptables-clean:
 	-$(MAKE) -C iptables-1.4.12 KERNEL_DIR=$(LINUXDIR) DO_IPV6=1 clean
 
@@ -1269,16 +1283,11 @@ iptables:
 	$(MAKE) -C iptables BINDIR=/usr/sbin LIBDIR=/usr/lib KERNEL_DIR=$(LINUXDIR)
 
 iptables-install:
-ifeq ($(CONFIG_IPTABLES),y)
 	install -d $(INSTALLDIR)/iptables/usr/lib/iptables
 	install iptables/extensions/*.so $(INSTALLDIR)/iptables/usr/lib/iptables
 	$(STRIP) $(INSTALLDIR)/iptables/usr/lib/iptables/*.so
 	install -D iptables/iptables $(INSTALLDIR)/iptables/usr/sbin/iptables
 	$(STRIP) $(INSTALLDIR)/iptables/usr/sbin/iptables
-else
-	# So that generic rule does not take precedence
-	@true
-endif
 iptables-clean:
 	-$(MAKE) -C iptables KERNEL_DIR=$(LINUXDIR) clean
 endif # linux-2.6

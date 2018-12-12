@@ -148,15 +148,15 @@ function loadSettings()
 </script>
 </head>
 <body bgcolor="#ffffff" onload="loadSettings();loadcheck();document.forms[0].elements[0].focus();goTestApply();">
-<%1471%>
-<form name="formname" method="POST" action="wiz_fix2.cgi"> 
-<%1472%>
 <%1473%>
-<form name="formname" method="POST" action="bsw_fix.cgi"> 
+<form name="formname" method="POST" action="wiz_fix2.cgi"> 
 <%1474%>
+<%1475%>
+<form name="formname" method="POST" action="bsw_fix.cgi"> 
+<%1476%>
 <table border="0" cellpadding="0" cellspacing="3" width="99%">
 <tr>
-<td colspan="2"><h1><%1483%></h1></td>
+<td colspan="2"><h1><%1485%></h1></td>
 </tr>
 
 <tr> <!-- RULE -->
@@ -175,7 +175,7 @@ function loadSettings()
 	<TD NOWRAP align="right" class="num"><input type="text" name="WMask1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WMask4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr>
-	<TD NOWRAP><%567%></td>
+	<TD NOWRAP><%568%></td>
 	<TD NOWRAP align="right" class="num"><input type="text" name="WGateway1" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,1)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway2" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway3" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,0)">.<input type="text" name="WGateway4" class="num" size="4" maxlength="3" onFocus="if(DisableFixedIP) this.blur()" onkeydown="bscheck(event,this,0)" onkeyup="jumpcheck(this,1)"></td>
 </tr>
 <tr> <!-- RULE -->
@@ -197,14 +197,14 @@ function loadSettings()
 </tr>
 <tr>
 	<td colspan="2" align="center"><div ID="basbuttons" onmouseover="loadhelp('WIZ_fix','buttons')">
-<%1471%>
+<%1473%>
 	<input type="SUBMIT" name="apply" value="<%70%>" onClick="return checkData()">
 	<input type="BUTTON" name="Cancel" value="<%72%>" onClick="reset();loadSettings();">
 	<input type="SUBMIT" name="Test" value="<%469%>" onClick="return checkData()"></div>
-<%1472%>
-<%1473%>
-	<input type="SUBMIT" name="Next" value=" <%1465%> " onClick="return checkData()">
-<%1474%>    
+<%1474%>
+<%1475%>
+	<input type="SUBMIT" name="Next" value=" <%1467%> " onClick="return checkData()">
+<%1476%>    
 	</td></tr>
 </table>
 <input type="hidden" name="runtest" value="<%489%>">
