@@ -113,7 +113,7 @@ vmlinux: vmlinux.lds $(OBJECTS) piggy.o
 
 vmlinux.lds: $(VMLINUZ_LDS_IN) Makefile
 	sed -e s/TEXT_START/$(TEXT_START)/ \
-	     -e s/TARGET_ARCH/mips/ < $< > $@
+	     -e s/TARGET_ARCH/$(ARCH)/ < $< > $@
 
 # Create a linkable version of the (possibly compressed) kernel binary
 piggy.o: piggz piggy.lds
