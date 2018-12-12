@@ -1294,7 +1294,9 @@ void btn_check(void)
 				}
 			}
 #endif	/* ! RTCONFIG_WPS_RST_BTN */
-
+#ifndef RTCONFIG_WPS
+#define is_wps_stopped() 1
+#endif
 			if (is_wps_stopped() || --wsc_timeout == 0)
 			{
 				wsc_timeout = 0;

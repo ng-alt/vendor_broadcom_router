@@ -1755,6 +1755,7 @@ check_wps_enable()
 int
 start_wps_pbc(int unit)
 {
+#if RTCONFIG_WPS
 	if (no_need_to_start_wps()) return 1;
 
 	if (wps_band_radio_off(get_radio_band(unit))) return 1;
@@ -1788,11 +1789,15 @@ start_wps_pbc(int unit)
 	nvram_set("wps_sta_pin", "00000000");
 
 	return start_wps_method();
+#else
+	return -1;
+#endif
 }
 
 int
 start_wps_pin(int unit)
 {
+#ifdef RTCONFIG_WPS
 	if (!strlen(nvram_safe_get("wps_sta_pin"))) return 0;
 
 	if (wl_wpsPincheck(nvram_safe_get("wps_sta_pin"))) return 0;
@@ -1800,6 +1805,9 @@ start_wps_pin(int unit)
 	nvram_set_int("wps_band_x", unit);
 
 	return start_wps_method();
+#else
+	return -1;
+#endif
 }
 
 #ifdef RTCONFIG_WPS
@@ -1911,6 +1919,7 @@ stop_wps(void)
 void
 reset_wps(void)
 {
+#ifdef RTCONFIG_WPS
 #ifdef CONFIG_BCMWL5
 	stop_wps_method();
 
@@ -1923,6 +1932,7 @@ reset_wps(void)
 	restart_wireless();
 #elif defined (RTCONFIG_RALINK) || defined (RTCONFIG_QCA)
 	wps_oob_both();
+#endif
 #endif
 }
 
@@ -6745,7 +6755,9 @@ again:
 				stop_lan_wl();
 				stop_dnsmasq();
 				stop_networkmap();
+#ifdef RTCONFIG_WPS
 				stop_wpsaide();
+#endif
 #endif
 				if (!(r = build_temp_rootfs(TMP_ROOTFS_MNT_POINT)))
 					sw = 1;
@@ -8536,11 +8548,14 @@ check_ddr_done:
 	else if (strcmp(script, "wps_method")==0)
 	{
 		if(action & RC_SERVICE_STOP) {
+#ifdef RTCONFIG_WPS
 			stop_wps_method();
+#endif
 			if(!nvram_match("wps_ign_btn", "1"))
 				kill_pidfile_s("/var/run/watchdog.pid", SIGUSR2);
 		}
 		if(action & RC_SERVICE_START) {
+#ifdef RTCONFIG_WPS
 			if (!wps_band_radio_off(get_radio_band(nvram_get_int("wps_band_x"))) &&
 			    !wps_band_ssid_broadcast_off(get_radio_band(nvram_get_int("wps_band_x")))) {
 				start_wps_method();
@@ -8549,6 +8564,7 @@ check_ddr_done:
 				else
 					kill_pidfile_s("/var/run/watchdog.pid", SIGTSTP);
 			}
+#endif
 			nvram_unset("wps_ign_btn");
 		}
 	}
