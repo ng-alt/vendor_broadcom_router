@@ -14,8 +14,14 @@
 
 include $(TOP)/.config
 
+ifeq ($(VENDOR),merlin)
+srcbase=$(SRCBASE_A)
+else
+srcbase=$(SRCBASE)
+endif
+
 WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
-ifneq ($(wildcard $(SRCBASE)/wl/exe/wlu_common.c),)
+ifneq ($(wildcard $(srcbase)/wl/exe/wlu_common.c),)
 WLU_OBJS += wlu_common.o
 endif
 WLU_OBJS += wlc_clm_data.o
@@ -37,8 +43,8 @@ WL_EXE  := wl
 endif
 
 UTILS := epi_ttcp
-CFLAGS += -s -I$(SRCBASE)/include -I$(SRCBASE)/common/include
-CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(SRCBASE)/shared/bcmwifi/include)))
+CFLAGS += -s -I$(srcbase)/include -I$(srcbase)/common/include
+CFLAGS += $(if $(WLAN_ComponentIncPath),$(WLAN_ComponentIncPath),$(addprefix -I,$(wildcard $(srcbase)/shared/bcmwifi/include)))
 ifeq ($(CONFIG_RTR_OPTIMIZE_SIZE),y)
 CFLAGS  += -Os
 else
@@ -46,7 +52,7 @@ CFLAGS  += -O2
 endif
 CFLAGS += -DBCMINTERNAL -DBCMDBG
 
-CFLAGS += -DLINUX -I$(SRCBASE)/wl/exe
+CFLAGS += -DLINUX -I$(srcbase)/wl/exe
 
 # Use newer 11ac ratespec for wl command line
 CFLAGS += -DD11AC_IOTYPES -DPPR_API
@@ -59,17 +65,17 @@ ifeq ($(CONFIG_TRAFFIC_MGMT),y)
 CFLAGS += -DTRAFFIC_MGMT
 endif
 
-vpath %.c $(SRCBASE)/tools/misc $(WLAN_ComponentSrcDirs)
+vpath %.c $(srcbase)/tools/misc $(WLAN_ComponentSrcDirs)
 
-ifneq ($(wildcard $(SRCBASE)/et/linux/et.c $(SRCBASE_A)/et/linux/et.c),)
+ifneq ($(wildcard $(srcbase)/et/linux/et.c $(srcbase)/et/linux/et.c),)
 UTILS += et
-vpath %.c $(SRCBASE)/et/linux $(SRCBASE_A)/et/linux
+vpath %.c $(srcbase)/et/linux $(srcbase)/et/linux
 endif
 
-ifneq ($(wildcard $(SRCBASE)/wl/exe $(SRCBASE_A)/wl/exe),)
-CFLAGS += -I$(SRCBASE)/wl/exe -I$(SRCBASE_A)/wl/exe
+ifneq ($(wildcard $(srcbase)/wl/exe $(srcbase)/wl/exe),)
+CFLAGS += -I$(srcbase)/wl/exe -I$(srcbase)/wl/exe
 UTILS += wl
-vpath %.c $(foreach d,$(SRCBASE) $(SRCBASE_A),$d/wl/exe $d/wl/clm/src $d/shared)
+vpath %.c $(foreach d,$(srcbase) $(srcbase),$d/wl/exe $d/wl/clm/src $d/shared)
 endif
 
 ifeq ($(RWL),1)
@@ -81,14 +87,14 @@ vpath %.c $(TOP)/aput
 endif
 endif
 
-ifneq ($(wildcard $(SRCBASE)/wl/exe),)
+ifneq ($(wildcard $(srcbase)/wl/exe),)
 UTILS += $(SERVER_SOCKET)
-vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
+vpath %.c $(srcbase)/wl/exe $(srcbase)/shared
 endif
 
-ifneq ($(wildcard $(SRCBASE)/wl/exe),)
+ifneq ($(wildcard $(srcbase)/wl/exe),)
 UTILS += $(SERVER_WIFI)
-vpath %.c $(SRCBASE)/wl/exe $(SRCBASE)/shared
+vpath %.c $(srcbase)/wl/exe $(srcbase)/shared
 endif
 endif
 
@@ -99,9 +105,9 @@ UTILS += robocfg
 
 all: $(UTILS)
 
-ifeq ($(wildcard $(SRCBASE)/wl/exe/*.c $(SRCBASE_A)/wl/exe/*.c),)
+ifeq ($(wildcard $(srcbase)/wl/exe/*.c),)
 wl:
-	-cp -f $(firstword $(wildcard $(SRCBASE)/wl/exe/prebuilt/wl $(SRCBASE_A)/wl/exe/prebuilt/wl)) wl
+	-cp -f $(srcbase)/wl/exe/prebuilt/wl wl
 else
 wl: $(WLU_OBJS)
 	$(CC) $^ -o $@ $(LDFLAGS)
@@ -109,7 +115,7 @@ endif
 
 ifeq ($(RWL),1)
 $(WFA_APUT_ALL): $(WFA_APUT_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+	$(CC) $(LDFLAGS) -o $@ $^
 
 aput/%.o: %.c
 	@mkdir -p aput
@@ -131,7 +137,7 @@ endif
 
 ifeq ($(wildcard robocfg.c),)
 robocfg:
-	-cp -f $(SRCBASE)/wl/exe/prebuilt/robocfg robocfg
+	-cp -f $(srcbase)/wl/exe/prebuilt/robocfg robocfg
 else
 robocfg: robocfg.c etc53xx.h
 endif
