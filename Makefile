@@ -515,8 +515,8 @@ obj-prelibs =$(filter nvram libbcmcrypto shared netconf libupnp libz libid3tag f
 obj-postlibs := $(filter-out $(obj-prelibs), $(obj-y))
 
 ifneq (2_4,$(LINUX_VERSION))
-ifneq ($(shell grep "CONFIG_BLK_DEV_INITRD=y" $(LINUXDIR)/.config),)
-ifeq ($(shell grep "CONFIG_BLK_DEV_RAM=y" $(LINUXDIR)/.config),)
+ifneq ($(shell grep "CONFIG_BLK_DEV_INITRD=y" $(LINUX_DIR)/.config),)
+ifeq ($(shell grep "CONFIG_BLK_DEV_RAM=y" $(LINUX_DIR)/.config),)
 export BUILD_MFG := 1
 export WLTEST := 1
 endif
@@ -524,7 +524,7 @@ endif
 endif
 
 ifneq ($(WLTEST),1)
-ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUXDIR)/.config),)
+ifneq ($(shell grep "CONFIG_EMBEDDED_RAMDISK=y" $(LINUX_DIR)/.config),)
 export WLTEST := 1
 endif
 endif
