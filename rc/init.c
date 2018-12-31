@@ -4663,6 +4663,13 @@ int init_nvram(void)
 		nvram_set("wl0_vifnames", "wl0.1 wl0.2 wl0.3");
 		nvram_set("wl1_vifnames", "wl1.1 wl1.2 wl1.3");
 
+#if defined(R6300v2)
+#ifdef RTCONFIG_WIFI_TOG_BTN
+		nvram_set_int("btn_wltog_gpio", 5|GPIO_ACTIVE_LOW);
+#endif
+		nvram_set_int("btn_wps_gpio", 4|GPIO_ACTIVE_LOW);
+		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
+#else
 #ifdef RT4GAC68U
 		nvram_set_int("led_lan_gpio", 10|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_3g_gpio", 1|GPIO_ACTIVE_LOW);
@@ -4705,6 +4712,7 @@ int init_nvram(void)
 #endif
 		if (is_ac66u_v2_series())
 		nvram_set_int("led_wan_gpio", 5);
+#endif // R6300v2
 
 #ifdef RTCONFIG_XHCIMODE
 		nvram_set("xhci_ports", "1-1");

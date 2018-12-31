@@ -355,7 +355,7 @@ int init_gpio(void)
 	return 0;
 }
 
-#ifdef RTCONFIG_BCMARM
+#if defined(RTCONFIG_BCMARM) && !defined(R6300v2)
 int set_pwr_usb(int boolOn) {
 	int use_gpio, gpio_pin;
 
