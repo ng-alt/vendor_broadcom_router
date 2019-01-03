@@ -4669,6 +4669,10 @@ int init_nvram(void)
 #endif
 		nvram_set_int("btn_wps_gpio", 4|GPIO_ACTIVE_LOW);
 		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_logo_gpio", 1);
+		nvram_set_int("led_pwr_gpio", 2);
+		nvram_set_int("led_usb_gpio", 8|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_2g_gpio", 11|GPIO_ACTIVE_LOW);
 #else
 #ifdef RT4GAC68U
 		nvram_set_int("led_lan_gpio", 10|GPIO_ACTIVE_LOW);
