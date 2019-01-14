@@ -1304,8 +1304,8 @@ ifeq ($(RTCONFIG_L7PAT),y)
 	@cd layer7 && ./squish.sh
 	cp layer7/squished/*.pat $(TARGETDIR)/rom/etc/l7-protocols
 endif
-endif # ROOTDIR
 	$(firstword $(wildcard $(BUSYBOXDIR) busybox))/examples/depmod.pl -k $(firstword $(wildcard $(LINUX_DIR)/vmlinux $(LINUXDIR)/vmlinux)) -b $(TARGETDIR)/lib/modules/*/
+endif # ROOTDIR
 
 ifeq ($(RTCONFIG_ROMCFE),y)
 	-cp $(SRCBASE)/cfe/cfe_`echo $(BUILD_NAME)|tr A-Z a-z`.bin $(TARGETDIR)/rom/cfe
