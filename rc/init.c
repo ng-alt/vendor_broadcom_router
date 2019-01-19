@@ -6316,6 +6316,9 @@ fa_override_vlan2ports()
 void
 fa_mode_adjust()
 {
+#ifdef R6300v2
+	nvram_set_int("ctf_fa_mode", CTF_FA_DISABLED);
+#else
 	char *wan_proto;
 	char buf[16];
 	int sw_mode = nvram_get("sw_mode") ? nvram_get_int("sw_mode") : SW_MODE_ROUTER;
@@ -6370,6 +6373,7 @@ fa_mode_adjust()
 	if (vlan_enable())
 		nvram_set_int("ctf_fa_mode", CTF_FA_DISABLED);
 #endif
+#endif /* R6300v2 */
 }
 
 void
