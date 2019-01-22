@@ -4605,6 +4605,10 @@ int init_nvram(void)
 		if (nvram_get_int("sw_mode") == SW_MODE_ROUTER) {
 			if (get_wans_dualwan()&WANSCAP_WAN && get_wans_dualwan()&WANSCAP_LAN)
 				nvram_set("wandevs", "vlan2 vlan3");
+#ifdef R6300v2
+			else if (get_wans_dualwan()&WANSCAP_WAN)
+				nvram_set("wandevs", "vlan2");
+#endif /* R6300v2 */
 			else
 				nvram_set("wandevs", "et0");
 
@@ -4637,7 +4641,11 @@ int init_nvram(void)
 							else
 								add_wan_phy(the_wan_phy());
 						}
+#ifdef R6300v2
+						else if (get_wans_dualwan()&WANSCAP_WAN)
+#else
 						else if (get_wans_dualwan()&WANSCAP_LAN)
+#endif /* R6300v2 */
 							add_wan_phy("vlan2");
 						else
 							add_wan_phy(the_wan_phy());

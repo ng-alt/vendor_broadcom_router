@@ -256,6 +256,9 @@ GetPhyStatus(int verbose)
 	case MODEL_RTN10P:
 	case MODEL_RTN10D1:
 	case MODEL_RTN10PV2:
+#ifdef R6300v2
+	case MODEL_RTAC68U:
+#endif /* R6300v2 */
 		/* WAN L1 L2 L3 L4 */
 		ports[0]=4; ports[1]=3; ports[2]=2, ports[3]=1; ports[4]=0;
 		break;
@@ -286,7 +289,9 @@ GetPhyStatus(int verbose)
 
 	case MODEL_DSLAC68U:
 	case MODEL_RPAC68U:
+#ifndef R6300v2
 	case MODEL_RTAC68U:
+#endif /* R6300v2 */
 	case MODEL_RTN18U:
 	case MODEL_RTAC53U:
 	case MODEL_RTN66U:

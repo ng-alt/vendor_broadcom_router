@@ -728,7 +728,11 @@ void generate_switch_para(void)
 		case MODEL_RTN18U:						/* 0  1  2  3  4 */
 		case MODEL_RTAC53U:
 		{				/* WAN L1 L2 L3 L4 CPU */	/*vision: WAN L1 L2 L3 L4 */
+#ifdef R6300v2
+			const int ports[SWPORT_COUNT] = { 4, 0, 1, 2, 3, 5 };
+#else
 			const int ports[SWPORT_COUNT] = { 0, 1, 2, 3, 4, 5 };
+#endif /* R6300v2 */
 			int wancfg = (!nvram_match("switch_wantag", "none")&&!nvram_match("switch_wantag", "")&&!nvram_match("switch_wantag", "hinet")) ? SWCFG_DEFAULT : cfg;
 
 			wan_phyid = ports[0];	// record the phy num of the wan port on the case
@@ -743,7 +747,11 @@ void generate_switch_para(void)
 
 				// The first WAN port.
 				if (get_wans_dualwan()&WANSCAP_WAN) {
+#ifdef R6300v2
+					switch_gen_config(wan, ports, wancfg, 1, "");
+#else
 					switch_gen_config(wan, ports, wancfg, 1, (get_wans_dualwan()&WANSCAP_LAN && wan1cfg >= 1 && wan1cfg <= 4)?"":"u");
+#endif /* R6300v2 */
 					nvram_set("vlan2ports", wan);
 					nvram_set("vlan2hwname", "et0");
 				}
