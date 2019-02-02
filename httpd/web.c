@@ -12324,7 +12324,7 @@ do_vpnupload_cgi(char *url, FILE *stream)
 		//websApply(stream, "OvpnChecking.asp");
 
 		if(!strcmp(filetype, "ovpn")) {
-			reset_ovpn_setting(OVPN_TYPE_CLIENT, unit);
+			reset_ovpn_setting(OVPN_TYPE_CLIENT, unit, 0);
 			ret = read_config_file(VPN_CLIENT_UPLOAD, unit);
 			nvram_set_int("vpn_upload_state", ret);
 			nvram_commit();
@@ -22961,13 +22961,9 @@ ej_get_wan_lan_status(int eid, webs_t wp, int argc, char **argv)
 	FILE *fp;
 	char line[128], name[sizeof("WAN XXXXXXXXXX")], *ptr, *item, *port, *speed;
 	int wan_count, lan_count, ret = 0;
-
-	struct json_object *wanLanStatus = json_object_new_object();
-	struct json_object *wanLanLinkSpeed = json_object_new_object();
-	struct json_object *wanLanCount = json_object_new_object();
-
-	if (wanLanStatus == NULL || wanLanLinkSpeed == NULL || wanLanCount == NULL)
-		goto error;
+	struct json_object *wanLanLinkSpeed = NULL;
+	struct json_object *wanLanCount = NULL;
+	struct json_object *wanLanStatus = NULL;
 
 	fp = popen("ATE Get_WanLanStatus", "r");
 	if (fp == NULL)
@@ -22975,9 +22971,18 @@ ej_get_wan_lan_status(int eid, webs_t wp, int argc, char **argv)
 
 	ptr = fgets(line, sizeof(line), fp);
 	pclose(fp);
+	if (ptr == NULL)
+		goto error;
+	ptr = strsep(&ptr, "\r\n");
+
+	wanLanStatus = json_object_new_object();
+	wanLanLinkSpeed = json_object_new_object();
+	wanLanCount = json_object_new_object();
+	if (wanLanStatus == NULL || wanLanLinkSpeed == NULL || wanLanCount == NULL)
+		goto error_put;
 
 	wan_count = lan_count = 0;
-	while ((item = strsep(&ptr, ";\r\n")) != NULL) {
+	while ((item = strsep(&ptr, ";")) != NULL) {
 		if (vstrsep(item, "=", &port, &speed) < 2)
 			continue;
 #if defined(DSL_AC68U)
@@ -23003,22 +23008,24 @@ ej_get_wan_lan_status(int eid, webs_t wp, int argc, char **argv)
 	json_object_object_add(wanLanCount, "lanCount", json_object_new_int(lan_count));
 	json_object_object_add(wanLanStatus, "portSpeed", wanLanLinkSpeed);
 	json_object_object_add(wanLanStatus, "portCount", wanLanCount);
+	wanLanLinkSpeed = wanLanCount = NULL;
 
 	ptr = (char *)json_object_get_string(wanLanStatus);
 	if (ptr == NULL)
-		goto error;
+		goto error_put;
 
 	ret = websWrite(wp, "%s", ptr);
 
-error:
-	if (ret == 0)
-		ret = websWrite(wp, "{}");
+error_put:
 	if (wanLanStatus)
 		json_object_put(wanLanStatus);
 	if (wanLanLinkSpeed)
 		json_object_put(wanLanLinkSpeed);
 	if (wanLanCount)
 		json_object_put(wanLanCount);
+error:
+	if (ret == 0)
+		ret = websWrite(wp, "{}");
 
 	return ret;
 }
@@ -23116,7 +23123,9 @@ struct ej_handler ej_handlers[] = {
 	{ "iptmon", ej_iptmon},
 	{ "ipt_bandwidth", ej_ipt_bandwidth},
 #endif
-
+#ifdef RTCONFIG_BWDPI
+	{ "bwdpi_conntrack", ej_bwdpi_conntrack},
+#endif
 	{ "bandwidth", ej_bandwidth},
 #ifdef RTCONFIG_DSL
 	{ "spectrum", ej_spectrum}, //Ren
@@ -23782,11 +23791,13 @@ do_jffsupload_cgi(char *url, FILE *stream)
 				shutdown(fileno(stream), SHUT_RDWR);
 		} else {
 			logmessage("httpd", "Error while restoring JFFS backup - no change made");
+			unlink(JFFS_BACKUP_FILE);
 		}
 	}
 	else
 	{
 		websApply(stream, "UploadError.asp");
+		unlink(JFFS_BACKUP_FILE);
 	}
 }
 
@@ -23794,31 +23805,30 @@ static void
 do_jffsupload_post(char *url, FILE *stream, int len, char *boundary)
 {
 	FILE *fifo = NULL;
-	char buf[1024];
 	int count, ret = EINVAL, ch;
 	long filelen = 0;
 
 	/* Look for our part */
 	while (len > 0) {
-		if (!fgets(buf, MIN(len + 1, sizeof(buf)), stream)) {
+		if (!fgets(post_buf, MIN(len + 1, sizeof(post_buf)), stream)) {
 			goto err;
 		}
 
-		len -= strlen(buf);
+		len -= strlen(post_buf);
 
-		if (!strncasecmp(buf, "Content-Disposition:", 20)
-				&& strstr(buf, "name=\"file2\""))
+		if (!strncasecmp(post_buf, "Content-Disposition:", 20)
+				&& strstr(post_buf, "name=\"file2\""))
 			break;
 	}
 
 	/* Skip boundary and headers */
 	while (len > 0) {
-		if (!fgets(buf, MIN(len + 1, sizeof(buf)), stream)) {
+		if (!fgets(post_buf, MIN(len + 1, sizeof(post_buf)), stream)) {
 			goto err;
 		}
 
-		len -= strlen(buf);
-		if (!strcmp(buf, "\n") || !strcmp(buf, "\r\n")) {
+		len -= strlen(post_buf);
+		if (!strcmp(post_buf, "\n") || !strcmp(post_buf, "\r\n")) {
 			break;
 		}
 	}
@@ -23827,15 +23837,16 @@ do_jffsupload_post(char *url, FILE *stream, int len, char *boundary)
 		goto err;
 
 	while (len > 0) {
-		count = fread(buf, 1, MIN(len, sizeof(buf)), stream);
+		count = fread(post_buf, 1, MIN(len, sizeof(post_buf)), stream);
 		if(count <= 0)
 			goto err;
 
 		len -= count;
 		filelen += count;
-		fwrite(buf, 1, count, fifo);
+		fwrite(post_buf, 1, count, fifo);
 	}
 
+	ret = 0;
 	fclose(fifo);
 	fifo = NULL;
 
