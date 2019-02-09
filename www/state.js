@@ -284,6 +284,7 @@ var isSwMode = function(mode){
 
 var current_url = location.pathname.substring(location.pathname.lastIndexOf('/') + 1) || "index.asp";
 var productid = '<#Web_Title2#>';
+var brand = '<% nvram_get("brand"); %>';
 var based_modelid = '<% nvram_get("productid"); %>';
 var odmpid = '<% nvram_get("odmpid"); %>';
 var support_site_modelid = (odmpid == "")? based_modelid : odmpid;

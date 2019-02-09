@@ -165,7 +165,8 @@ function show_etherstate(){
 
 	if ((based_modelid == "RT-N16") || (based_modelid == "RT-AC87U")
 	    || (based_modelid == "RT-AC3200") || (based_modelid == "RT-AC88U")
-	    || (based_modelid == "RT-AC3100"))
+	    || (based_modelid == "RT-AC3100")
+	    || (based_modelid == "RT-AC68U" && brand == "NETGEAR"))
 		reversed = true;
 	else
 		reversed = false;
@@ -206,7 +207,7 @@ function show_etherstate(){
 
 			if (port == "8") {		// CPU Port
 				continue;
-			} else if ((based_modelid == "RT-AC56U") || (based_modelid == "RT-AC56S") || (based_modelid == "RT-AC88U") || (based_modelid == "RT-AC3100")) {
+			} else if ((based_modelid == "RT-AC56U") || (based_modelid == "RT-AC56S") || (based_modelid == "RT-AC88U") || (based_modelid == "RT-AC3100") || (based_modelid == "RT-AC68U" && brand == "NETGEAR")) {
 				port++;		// Port starts at 0
 				if (port == "5") port = 0;	// Last port is WAN
 			} else if (based_modelid == "RT-AC87U") {
