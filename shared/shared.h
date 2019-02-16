@@ -371,6 +371,8 @@ enum {
 	MODEL_RTAC88S,
 	MODEL_RTAC58U,
 	MODEL_RTAC82U,
+	// Extended models
+	MODEL_R6300v2,
 };
 
 /* NOTE: Do not insert new entries in the middle of this enum,
@@ -423,6 +425,7 @@ enum {
 extern int check_hw_type(void);
 //	extern int get_hardware(void) __attribute__ ((weak, alias ("check_hw_type")));
 extern int get_model(void);
+extern int get_alias(void);
 extern char *get_modelid(int model);
 extern char *get_productid(void);
 extern int get_switch(void);

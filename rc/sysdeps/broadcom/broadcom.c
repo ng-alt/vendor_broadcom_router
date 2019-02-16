@@ -237,7 +237,7 @@ GetPhyStatus(int verbose)
 	int i, ret, lret=0, model, mask;
 	char out_buf[30];
 
-	model = get_model();
+	model = get_alias();
 	switch(model) {
 	case MODEL_RTN14UHP:
 		/* WAN L1 L2 L3 L4 */
@@ -265,11 +265,9 @@ GetPhyStatus(int verbose)
 		/* WAN L1 L2 L3 L4 */
 		ports[0]=0; ports[1]=4; ports[2]=3, ports[3]=2; ports[4]=1;
 		break;
-#ifdef R6300v2
-	case MODEL_RTAC68U:
-#endif /* R6300v2 */
 	case MODEL_RTAC88U:
 	case MODEL_RTAC3100:
+	case MODEL_R6300v2:
 		/* WAN L1 L2 L3 L4 */
 		ports[0]=4; ports[1]=3; ports[2]=2; ports[3]=1; ports[4]=0;
 #if defined(RTCONFIG_EXT_RTL8365MB) || defined(RTCONFIG_EXT_RTL8370MB)
@@ -289,9 +287,7 @@ GetPhyStatus(int verbose)
 
 	case MODEL_DSLAC68U:
 	case MODEL_RPAC68U:
-#ifndef R6300v2
 	case MODEL_RTAC68U:
-#endif /* R6300v2 */
 	case MODEL_RTN18U:
 	case MODEL_RTAC53U:
 	case MODEL_RTN66U:

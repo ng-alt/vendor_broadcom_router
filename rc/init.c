@@ -2198,6 +2198,7 @@ void chk_gmac3_excludes()
 int init_nvram(void)
 {
 	int model = get_model();
+	int alias = get_alias();
 #if defined(RTCONFIG_RALINK) || defined(RTCONFIG_DUALWAN) || defined(RTCONFIG_QCA)
 	int unit = 0;
 #endif
@@ -2348,7 +2349,7 @@ int init_nvram(void)
 	}
 #endif
 
-	switch (model) {
+	switch (alias) {
 #ifdef RTCONFIG_RALINK
 	case MODEL_EAN66:
 		nvram_set("lan_ifname", "br0");
@@ -4596,6 +4597,7 @@ int init_nvram(void)
 
 #ifdef RTAC68U
 	case MODEL_RTAC68U:
+	case MODEL_R6300v2:
 		check_cfe_ac68u();
 		nvram_set("vlan1hwname", "et0");
 		nvram_set("lan_ifname", "br0");
@@ -4605,10 +4607,8 @@ int init_nvram(void)
 		if (nvram_get_int("sw_mode") == SW_MODE_ROUTER) {
 			if (get_wans_dualwan()&WANSCAP_WAN && get_wans_dualwan()&WANSCAP_LAN)
 				nvram_set("wandevs", "vlan2 vlan3");
-#ifdef R6300v2
-			else if (get_wans_dualwan()&WANSCAP_WAN)
+			else if (get_wans_dualwan()&WANSCAP_WAN && alias == MODEL_R6300v2)
 				nvram_set("wandevs", "vlan2");
-#endif /* R6300v2 */
 			else
 				nvram_set("wandevs", "et0");
 
@@ -4641,11 +4641,9 @@ int init_nvram(void)
 							else
 								add_wan_phy(the_wan_phy());
 						}
-#ifdef R6300v2
-						else if (get_wans_dualwan()&WANSCAP_WAN)
-#else
+						else if (get_wans_dualwan()&WANSCAP_WAN && alias == MODEL_R6300v2)
+							add_wan_phy("vlan2");
 						else if (get_wans_dualwan()&WANSCAP_LAN)
-#endif /* R6300v2 */
 							add_wan_phy("vlan2");
 						else
 							add_wan_phy(the_wan_phy());
@@ -4671,7 +4669,7 @@ int init_nvram(void)
 		nvram_set("wl0_vifnames", "wl0.1 wl0.2 wl0.3");
 		nvram_set("wl1_vifnames", "wl1.1 wl1.2 wl1.3");
 
-#if defined(R6300v2)
+	if (alias == MODEL_R6300v2) {
 #ifdef RTCONFIG_WIFI_TOG_BTN
 		nvram_set_int("btn_wltog_gpio", 5|GPIO_ACTIVE_LOW);
 #endif
@@ -4682,7 +4680,7 @@ int init_nvram(void)
 		nvram_set_int("led_usb_gpio", 8|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_usb3_gpio", 8|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_2g_gpio", 11|GPIO_ACTIVE_LOW);
-#else
+	} else {
 #ifdef RT4GAC68U
 		nvram_set_int("led_lan_gpio", 10|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_3g_gpio", 1|GPIO_ACTIVE_LOW);
@@ -4725,7 +4723,7 @@ int init_nvram(void)
 #endif
 		if (is_ac66u_v2_series())
 		nvram_set_int("led_wan_gpio", 5);
-#endif // R6300v2
+	}
 
 #ifdef RTCONFIG_XHCIMODE
 		nvram_set("xhci_ports", "1-1");
@@ -6325,9 +6323,11 @@ fa_override_vlan2ports()
 void
 fa_mode_adjust()
 {
-#ifdef R6300v2
-	nvram_set_int("ctf_fa_mode", CTF_FA_DISABLED);
-#else
+	if (get_alias() == MODEL_R6300v2) {
+		nvram_set_int("ctf_fa_mode", CTF_FA_DISABLED);
+		return;
+	}
+
 	char *wan_proto;
 	char buf[16];
 	int sw_mode = nvram_get("sw_mode") ? nvram_get_int("sw_mode") : SW_MODE_ROUTER;
@@ -6382,7 +6382,6 @@ fa_mode_adjust()
 	if (vlan_enable())
 		nvram_set_int("ctf_fa_mode", CTF_FA_DISABLED);
 #endif
-#endif /* R6300v2 */
 }
 
 void

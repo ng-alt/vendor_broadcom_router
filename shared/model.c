@@ -11,6 +11,7 @@
 struct model_s {
 	char *pid;
 	int model;
+	int alias;
 };
 
 static const struct model_s model_list[] = {
@@ -87,7 +88,7 @@ static const struct model_s model_list[] = {
 	{ "RT-AC1200G", MODEL_RTAC1200G	},
 	{ "RT-AC1200G+", MODEL_RTAC1200GP},
 #if defined(R6300v2)
-	{ "R6300v2",	MODEL_RTAC68U   },
+	{ "R6300V2",	MODEL_RTAC68U, MODEL_R6300v2 },
 #endif /* R6300v2 */
 #endif	/* !RTCONFIG_RALINK */
 	{ NULL, 0 },
@@ -164,7 +165,7 @@ int get_model(void)
 
 	pid = nvram_safe_get("productid");
 	for (p = &model_list[0]; p->pid; ++p) {
-		if (!strcmp(pid, p->pid)) {
+		if (pid && !strcmp(pid, p->pid)) {
 			model = p->model;
 			break;
 		}
@@ -177,7 +178,40 @@ int get_model(void)
 	if (model == MODEL_APN12)
 		model = get_model_by_hw();
 #endif
+
+	if (model <= MODEL_UNKNOWN) {
+#if defined(R6300v2)
+		model = MODEL_RTAC68U;
+#endif
+	}
+
 	return model;
+}
+
+int get_alias(void)
+{
+	static int alias = MODEL_UNKNOWN;
+	char *pmod;
+	const struct model_s *p;
+
+	if (alias != MODEL_UNKNOWN)
+		return alias;
+
+	pmod = nvram_get("model");
+	for (p = &model_list[0]; p->pid; ++p) {
+		if (pmod && !strcmp(pmod, p->pid)) {
+			alias = p->alias ?: p->model;
+			break;
+		}
+	}
+
+	if (alias == MODEL_UNKNOWN) {
+#if defined(R6300v2)
+		alias = MODEL_R6300v2;
+#endif
+	}
+
+	return alias;
 }
 
 #if defined(RTCONFIG_RALINK)
