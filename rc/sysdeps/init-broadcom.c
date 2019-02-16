@@ -2250,6 +2250,10 @@ void init_syspara(void)
 	nvram_set("extendno", rt_extendno);
 	nvram_set("buildinfo", rt_buildinfo);
 	nvram_set("swpjverno", rt_swpjverno);
+	if (rt_brand[0] != 0) {
+		nvram_set("brand", rt_brand);
+	}
+
 	ptr = nvram_get("regulation_domain");
 
 	model = get_model();

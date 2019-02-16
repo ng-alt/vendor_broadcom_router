@@ -106,6 +106,7 @@ extern const char *rt_extendno;
 extern const char *rt_buildname;
 extern const char *rt_buildinfo;
 extern const char *rt_swpjverno;
+extern const char *rt_brand;
 
 #ifdef DEBUG_NOISY
 #define _dprintf		cprintf

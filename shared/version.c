@@ -8,3 +8,9 @@ const char *rt_extendno = RT_EXTENDNO;
 const char *rt_buildname = RT_BUILD_NAME;
 const char *rt_buildinfo = RT_BUILD_INFO;
 const char *rt_swpjverno = RT_SWPJVERNO;
+
+#ifdef RT_BRAND
+const char *rt_brand = RT_BRAND;
+#else
+const char *rt_brand = "";
+#endif
