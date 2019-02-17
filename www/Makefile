@@ -56,18 +56,18 @@ ifeq ($(RTCONFIG_AUTODICT), y)
 	rm -f $(INSTALLDIR)/www/*.dict
 	mkdir -p $(OUTDIR)
 	# Tool dir , dictctrl.txt , modem name , header mapping , src , dst , output msg file
-	$(ASUSWRTTOOLSDIR)/LnxDictPrep $(ASUSWRTTOOLSDIR) dictctrl.txt $(BUILD_NAME) HdrMapping.txt . $(INSTALLDIR)/www $(OUTDIR)/dictenum.txt $(OUTDIR)/dict_prep.txt
+	$(ASUSWRTTOOLSDIR)/LnxDictPrep $(ASUSWRTTOOLSDIR) dictctrl.txt $(if $(PROFILE),$(PROFILE),$(BUILD_NAME)) HdrMapping.txt . $(INSTALLDIR)/www $(OUTDIR)/dictenum.txt $(OUTDIR)/dict_prep.txt
 	# generate sh file for clear up html and dict auto enum
 	# this is for compression
-	$(ASUSWRTTOOLSDIR2)/genshfile.pl $(ASUSWRTTOOLSDIR2) $(INSTALLDIR)/www $(OUTDIR)/compress.sh $(OUTDIR)/dictenum.txt $(OUTDIR)/output2.txt $(BUILD_NAME) $(OUTDIR)/output3.txt
+	$(ASUSWRTTOOLSDIR2)/genshfile.pl $(ASUSWRTTOOLSDIR2) $(INSTALLDIR)/www $(OUTDIR)/compress.sh $(OUTDIR)/dictenum.txt $(OUTDIR)/output2.txt $(if $(PROFILE),$(PROFILE),$(BUILD_NAME)) $(OUTDIR)/output3.txt
 	chmod 777 $(OUTDIR)/compress.sh
 	sh $(OUTDIR)/compress.sh
 else
 	for F in $(wildcard *.dict); do \
-		./gendict.pl $(BUILD_NAME) $$F $(INSTALLDIR)/www/$$F; \
+		./gendict.pl $(if $(PROFILE),$(PROFILE),$(BUILD_NAME)) $$F $(INSTALLDIR)/www/$$F; \
 	done
 endif
-	echo " WWW FOR $(BUILD_NAME)"
+	echo " WWW FOR $(if $(PROFILE),$(PROFILE),$(BUILD_NAME))"
 
 	rm -rf $(INSTALLDIR)/www/images/New_ui/asustitle_ie6.png
 #ifneq ($(RTCONFIG_FANCTRL),y)
