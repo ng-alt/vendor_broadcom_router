@@ -173,7 +173,9 @@ wps_restore_defaults(void)
 	if (strlen(macstr))
 		for (i = 0; i < strlen(macstr); i++)
 			macstr[i] = tolower(macstr[i]);
+#ifndef R6300v2
 	nvram_set("boardnum", nvram_get("serial_no") ? : macstr);
+#endif
 }
 #endif /* RTCONFIG_WPS */
 
