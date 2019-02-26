@@ -173,7 +173,7 @@ wps_restore_defaults(void)
 	if (strlen(macstr))
 		for (i = 0; i < strlen(macstr); i++)
 			macstr[i] = tolower(macstr[i]);
-#ifndef R6300v2
+#ifndef NETGEAR
 	nvram_set("boardnum", nvram_get("serial_no") ? : macstr);
 #endif
 }
