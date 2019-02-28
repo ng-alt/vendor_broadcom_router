@@ -2254,6 +2254,12 @@ void init_syspara(void)
 		nvram_set("brand", rt_brand);
 	}
 
+#ifdef NETGEAR
+#ifdef R6300v2
+	nvram_set("model", "R6300V2");
+#endif
+#endif
+
 	ptr = nvram_get("regulation_domain");
 
 	model = get_model();
