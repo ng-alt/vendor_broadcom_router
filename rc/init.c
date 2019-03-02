@@ -4599,7 +4599,6 @@ int init_nvram(void)
 
 #ifdef RTAC68U
 	case MODEL_RTAC68U:
-	case MODEL_R6300v2:
 		check_cfe_ac68u();
 		nvram_set("vlan1hwname", "et0");
 		nvram_set("lan_ifname", "br0");
@@ -4609,8 +4608,6 @@ int init_nvram(void)
 		if (nvram_get_int("sw_mode") == SW_MODE_ROUTER) {
 			if (get_wans_dualwan()&WANSCAP_WAN && get_wans_dualwan()&WANSCAP_LAN)
 				nvram_set("wandevs", "vlan2 vlan3");
-			else if (get_wans_dualwan()&WANSCAP_WAN && alias == MODEL_R6300v2)
-				nvram_set("wandevs", "vlan2");
 			else
 				nvram_set("wandevs", "et0");
 
@@ -4643,8 +4640,6 @@ int init_nvram(void)
 							else
 								add_wan_phy(the_wan_phy());
 						}
-						else if (get_wans_dualwan()&WANSCAP_WAN && alias == MODEL_R6300v2)
-							add_wan_phy("vlan2");
 						else if (get_wans_dualwan()&WANSCAP_LAN)
 							add_wan_phy("vlan2");
 						else
@@ -4671,18 +4666,6 @@ int init_nvram(void)
 		nvram_set("wl0_vifnames", "wl0.1 wl0.2 wl0.3");
 		nvram_set("wl1_vifnames", "wl1.1 wl1.2 wl1.3");
 
-	if (alias == MODEL_R6300v2) {
-#ifdef RTCONFIG_WIFI_TOG_BTN
-		nvram_set_int("btn_wltog_gpio", 5|GPIO_ACTIVE_LOW);
-#endif
-		nvram_set_int("btn_wps_gpio", 4|GPIO_ACTIVE_LOW);
-		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
-		nvram_set_int("led_logo_gpio", 1);
-		nvram_set_int("led_pwr_gpio", 2);
-		nvram_set_int("led_usb_gpio", 8|GPIO_ACTIVE_LOW);
-		nvram_set_int("led_usb3_gpio", 8|GPIO_ACTIVE_LOW);
-		nvram_set_int("led_2g_gpio", 11|GPIO_ACTIVE_LOW);
-	} else {
 #ifdef RT4GAC68U
 		nvram_set_int("led_lan_gpio", 10|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_3g_gpio", 1|GPIO_ACTIVE_LOW);
@@ -4725,7 +4708,137 @@ int init_nvram(void)
 #endif
 		if (is_ac66u_v2_series())
 		nvram_set_int("led_wan_gpio", 5);
-	}
+
+#ifdef RTCONFIG_XHCIMODE
+		nvram_set("xhci_ports", "1-1");
+#ifdef RT4GAC68U
+		nvram_set("ehci_ports", "2-1 2-2.2 2-2.1");
+		nvram_set("ohci_ports", "3-1 3-2.2 3-2.1");
+#else
+		nvram_set("ehci_ports", "2-1 2-2");
+		nvram_set("ohci_ports", "3-1 3-2");
+#endif
+#else // RTCONFIG_XHCIMODE
+		if (nvram_get_int("usb_usb3") == 1) {
+			nvram_set("xhci_ports", "1-1");
+#ifdef RT4GAC68U
+			nvram_set("ehci_ports", "2-1 2-2.2 2-2.1");
+			nvram_set("ohci_ports", "3-1 3-2.2 3-2.1");
+#else
+			nvram_set("ehci_ports", "2-1 2-2");
+			nvram_set("ohci_ports", "3-1 3-2");
+#endif
+		}
+		else{
+			nvram_unset("xhci_ports");
+#ifdef RT4GAC68U
+			nvram_set("ehci_ports", "1-1 1-2.2 1-2.1");
+			nvram_set("ohci_ports", "2-1 2-2.2 2-2.1");
+#else
+			nvram_set("ehci_ports", "1-1 1-2");
+			nvram_set("ohci_ports", "2-1 2-2");
+#endif
+		}
+#endif // RTCONFIG_XHCIMODE
+
+		if (!nvram_get("ct_max"))
+			nvram_set("ct_max", "300000");
+		add_rc_support("mssid 2.4G 5G usbX2");
+#ifdef RTCONFIG_MERLINUPDATE
+		add_rc_support("update");
+#endif
+		add_rc_support("switchctrl"); // broadcom: for jumbo frame only
+		add_rc_support("manual_stb");
+		add_rc_support("pwrctrl");
+		add_rc_support("WIFI_LOGO");
+		add_rc_support("nandflash");
+		if (!hw_vht_cap())
+			add_rc_support("no_vht");
+
+		break;
+#endif
+#ifdef R6300v2
+	case MODEL_R6300v2:
+		check_cfe_ac68u();
+		nvram_set("vlan1hwname", "et0");
+		nvram_set("lan_ifname", "br0");
+		nvram_set("landevs", "vlan1 wl0 wl1");
+
+#ifdef RTCONFIG_DUALWAN
+		if (nvram_get_int("sw_mode") == SW_MODE_ROUTER) {
+			if (get_wans_dualwan()&WANSCAP_WAN && get_wans_dualwan()&WANSCAP_LAN)
+				nvram_set("wandevs", "vlan2 vlan3");
+			else
+				nvram_set("wandevs", "vlan2");
+
+			set_lan_phy("vlan1");
+
+			if (!(get_wans_dualwan()&WANSCAP_2G))
+				add_lan_phy("eth1");
+			if (!(get_wans_dualwan()&WANSCAP_5G))
+				add_lan_phy("eth2");
+
+			if (nvram_get("wans_dualwan")) {
+				set_wan_phy("");
+				for(unit = WAN_UNIT_FIRST; unit < WAN_UNIT_MAX; ++unit) {
+					if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_LAN) {
+						if (get_wans_dualwan()&WANSCAP_WAN)
+							add_wan_phy("vlan3");
+						else
+							add_wan_phy(the_wan_phy());
+					}
+					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_2G)
+						add_wan_phy("eth1");
+					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_5G)
+						add_wan_phy("eth2");
+					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_WAN) {
+						if (nvram_get("switch_wantag") && !nvram_match("switch_wantag", "") && !nvram_match("switch_wantag", "none")) {
+							if (!nvram_match("switch_wan0tagid", "")) {
+								sprintf(wan_if, "vlan%s", nvram_safe_get("switch_wan0tagid"));
+								add_wan_phy(wan_if);
+							}
+							else
+								add_wan_phy(the_wan_phy());
+						}
+						else if (get_wans_dualwan()&WANSCAP_WAN)
+							add_wan_phy("vlan2");
+						else
+							add_wan_phy(the_wan_phy());
+					}
+					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_USB)
+						add_wan_phy("usb");
+				}
+			}
+			else
+				nvram_set("wan_ifnames", "eth0 usb");
+		}
+		else{
+			nvram_set("wandevs", "et0");
+			nvram_set("lan_ifnames", "vlan1 eth1 eth2");
+			nvram_set("wan_ifnames", the_wan_phy());
+			nvram_unset("wan1_ifname");
+		}
+#else
+		nvram_set("lan_ifnames", "vlan1 eth1 eth2");
+		nvram_set("wan_ifnames", "eth0");
+#endif
+		nvram_set("wl_ifnames", "eth1 eth2");
+		nvram_set("wl0_ifname", "eth2");
+		nvram_set("wl1_ifname", "eth1");
+
+		nvram_set("wl0_vifnames", "wl0.1 wl0.2 wl0.3");
+		nvram_set("wl1_vifnames", "wl1.1 wl1.2 wl1.3");
+
+#ifdef RTCONFIG_WIFI_TOG_BTN
+		nvram_set_int("btn_wltog_gpio", 5|GPIO_ACTIVE_LOW);
+#endif
+		nvram_set_int("btn_wps_gpio", 4|GPIO_ACTIVE_LOW);
+		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_logo_gpio", 1);
+		nvram_set_int("led_pwr_gpio", 2);
+		nvram_set_int("led_usb_gpio", 8|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_usb3_gpio", 8|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_2g_gpio", 11|GPIO_ACTIVE_LOW);
 
 #ifdef RTCONFIG_XHCIMODE
 		nvram_set("xhci_ports", "1-1");
