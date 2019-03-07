@@ -2255,6 +2255,7 @@ void init_syspara(void)
 	}
 
 #ifdef NETGEAR
+	nvram_set("bl_version", "1.0.0.0");
 #ifdef R6300v2
 	nvram_set("model", "R6300V2");
 #endif
