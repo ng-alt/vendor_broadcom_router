@@ -1284,11 +1284,15 @@ void bcmvlan_models(int model, char *vlan)
 
 char *get_productid(void)
 {
+#ifdef NETGEAR
+	char *productid = nvram_safe_get("model");
+#else
 	char *productid = nvram_safe_get("productid");
 #ifdef RTCONFIG_ODMPID
 	char *odmpid = nvram_safe_get("odmpid");
 	if (*odmpid)
 		productid = odmpid;
+#endif
 #endif
 	return productid;
 }
