@@ -1214,7 +1214,7 @@ obj-y += asm1042
 endif
 
 obj-$(RTCONFIG_QUICKSEC) += quicksec-7.0
-obj-$(RTCONFIG_STRONGSWAN) += strongswan-5.2.1
+obj-$(RTCONFIG_STRONGSWAN) += strongswan
 
 ifneq ($(RTCONFIG_4M_SFP),y)
 obj-y += netstat-nat
@@ -1240,6 +1240,12 @@ obj-$(RTCONFIG_SAMBA36X) += libiconv-1.14
 obj-$(RTCONFIG_TELENET) += lanauth
 obj-y += inadyn
 obj-y += libconfuse
+ifeq ($(RTCONFIG_OPENSSL11),y)
+obj-$(RTCONFIG_OPENSSL11) += openssl-1.1.x
+OPENSSLDIR=openssl-1.1.x
+else
+OPENSSLDIR=openssl
+endif
 
 ifneq ($(HND_ROUTER),y)
 obj-y += cstats
@@ -2439,7 +2445,7 @@ cyassl-install:
 	@true
 
 ifeq ($(RTCONFIG_OPENVPN),y)
-OPENSSL_CIPHERS:=enable-rc5 no-rc4
+OPENSSL_CIPHERS:=enable-rc5 no-rc4 no-ssl3
 else
 #OPENSSL_CIPHERS:=no-dh no-idea no-rc2 no-rc5 no-aes no-aes192 no-cast no-des no-modes no-tls1 no-tlsext
 OPENSSL_CIPHERS:=no-rc4
@@ -2485,9 +2491,9 @@ openssl-1.0.0q-stage:
 
 openssl/Makefile:
 	cd openssl && \
-	./Configure $(HOSTCONFIG) -DOPENSSL_NO_BUF_FREELISTS --prefix=/usr --openssldir=/etc --cross-compile-prefix=' ' \
+	./Configure $(HOSTCONFIG) -O2 -DOPENSSL_NO_BUF_FREELISTS --prefix=/usr --openssldir=/etc --cross-compile-prefix=' ' \
 	-ffunction-sections -fdata-sections -Wl,--gc-sections \
-	shared $(OPENSSL_CIPHERS) no-ssl2 no-ssl3
+	shared $(OPENSSL_CIPHERS) no-ssl2 no-err
 #	no-sha0 no-smime no-camellia no-krb5 no-rmd160 no-ripemd \
 #	no-seed no-capieng no-cms no-gms no-gmp no-rfc3779 \
 #	no-ec no-ecdh no-ecdsa no-err no-hw no-jpake no-threads \
@@ -2497,6 +2503,7 @@ openssl/Makefile:
 	-@$(MAKE) -C openssl depend clean
 	@touch $@
 
+ifeq ($(HND_ROUTER),y)
 fsbuild:
 	-mkdir -p $(BCM_FSBUILD_DIR)/public/lib
 	-mkdir -p $(BCM_FSBUILD_DIR)/public/bin
@@ -2520,13 +2527,11 @@ fsbuild:
 	-mkdir -p $(INSTALL_DIR)/www
 	#-cp $(TOOLCHAIN)/arm-buildroot-linux-gnueabi/lib/libgcc_s* $(INSTALL_DIR)/lib/public
 	#-cd $(INSTALL_DIR)/lib/public && rm -f libgcc_s.so && ln -sf libgcc_s.so.1 libgcc_s.so
-
-
-ifeq ($(HND_ROUTER),y)
-openssl: openssl/Makefile fsbuild
-else
-openssl: openssl/Makefile
 endif
+
+
+openssl: openssl/Makefile $(if $(filter y,$(HND_ROUTER)),fsbuild,)
+	@$(SEP)
 	$(MAKE) -C openssl && $(MAKE) $@-stage
 
 openssl-clean:
@@ -2562,7 +2567,7 @@ endif
 openssl-stage:
 	$(MAKE) -C openssl install_sw INSTALL_PREFIX=$(STAGEDIR)
 
-mssl: openssl
+mssl: $(OPENSSLDIR)
 
 mssl-install:
 	$(MAKE) -C mssl INSTALLDIR=$(INSTALLDIR)/mssl install
@@ -3601,7 +3606,8 @@ quagga/stamp-h1:
 	CC=$(CC) AR=$(AR) RANLIB=$(RANLIB) LD=$(LD) \
 	CFLAGS="$(CFLAGS) -Os -Wall -ffunction-sections -fdata-sections -fPIC" \
 	LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections" \
-	$(CONFIGURE) --enable-shared=lib --disable-ripngd --disable-ospfd --disable-doc --disable-ospfclient \
+	$(CONFIGURE) --prefix=/usr --sysconfdir=/etc --enable-shared --disable-static \
+	--disable-ripngd --disable-ospfd --disable-doc --disable-ospfclient \
 	--disable-ospf6d --disable-bgpd --disable-bgp-announce --disable-babeld \
 	--disable-silent-rules \
 	--disable-isisd
@@ -3618,20 +3624,18 @@ quagga-install:
 	install -d $(INSTALLDIR)/quagga/usr/lib
 	libtool --mode=install install -c quagga/lib/libzebra.la $(INSTALLDIR)/quagga/usr/lib
 	libtool --finish $(INSTALLDIR)/quagga/usr/lib
-ifneq ($(HND_ROUTER),y)
-	rm -f $(INSTALLDIR)/quagga/usr/lib/libzebra.a
 	rm -f $(INSTALLDIR)/quagga/usr/lib/libzebra.la
-endif
+	$(STRIP)  $(INSTALLDIR)/quagga/usr/lib/libzebra.so
 	install -d $(INSTALLDIR)/quagga/usr/sbin
-	install -d $(INSTALLDIR)/quagga/usr/local/etc
 	libtool --mode=install install -c quagga/zebra/zebra $(INSTALLDIR)/quagga/usr/sbin
-	install -c -m 777 quagga/zebra/zebra.conf.sample $(INSTALLDIR)/quagga/usr/local/etc/zebra.conf
 	libtool --mode=install install -c quagga/ripd/ripd $(INSTALLDIR)/quagga/usr/sbin
-	install -c -m 777 quagga/ripd/ripd.conf.sample $(INSTALLDIR)/quagga/usr/local/etc/ripd.conf
 	libtool --mode=install install -c quagga/watchquagga/watchquagga $(INSTALLDIR)/quagga/usr/sbin
 	$(STRIP) $(INSTALLDIR)/quagga/usr/sbin/zebra
 	$(STRIP) $(INSTALLDIR)/quagga/usr/sbin/ripd
 	$(STRIP) $(INSTALLDIR)/quagga/usr/sbin/watchquagga
+	install -d $(INSTALLDIR)/quagga/rom/etc
+	install -c -m 600 quagga/zebra/zebra.conf.sample $(INSTALLDIR)/quagga/rom/etc/zebra.conf
+	install -c -m 600 quagga/ripd/ripd.conf.sample $(INSTALLDIR)/quagga/rom/etc/ripd.conf
 ifneq ($(HND_ROUTER),y)
 	install -D $(shell dirname $(shell which $(CXX)))/../lib/librt.so.0 $(TARGETDIR)/lib/librt.so.0
 else
@@ -3961,19 +3965,20 @@ libevent-2.0.21-clean:
 	[ ! -f libevent-2.0.21/Makefile ] || $(MAKE) -C libevent-2.0.21 clean
 	@rm -f libevent-2.0.21/Makefile
 
-tor: openssl zlib libevent-2.0.21 tor/Makefile
+tor: $(OPENSSLDIR) zlib libevent-2.0.21 tor/Makefile
 	@$(SEP)
 	$(MAKE) -C $@ $(PARALLEL_BUILD)
 
 tor/Makefile:
-	(cd tor ; $(CONFIGURE) --enable-static-libevent --with-libevent-dir=$(STAGEDIR)/usr \
-					--with-openssl-dir=$(TOP)/openssl \
-					--with-zlib-dir=$(TOP)/zlib \
-					--disable-asciidoc --disable-unittests \
-					--disable-tool-name-check)
+	(cd tor ; $(CONFIGURE) --with-libevent-dir=$(STAGEDIR)/usr \
+		--with-openssl-dir=$(TOP)/$(OPENSSLDIR) --with-zlib-dir=$(TOP)/zlib \
+		--disable-asciidoc --disable-unittests \
+		--disable-tool-name-check --disable-unittests \
+		CFLAGS="-I$(TOP)/$(OPENSSLDIR)/include" \
+		CPPFLAGS="-I$(TOP)/$(OPENSSLDIR)/include")
 
 tor-install:
-	install -D tor/src/or/tor $(INSTALLDIR)/tor/usr/sbin/Tor
+	install -D tor/src/app/tor $(INSTALLDIR)/tor/usr/sbin/Tor
 	$(STRIP) $(INSTALLDIR)/tor/usr/sbin/Tor
 
 tor-clean:
@@ -4155,7 +4160,7 @@ endif
 
 FFMPEG_FILTER_CONFIG= $(foreach c, $(2), --$(1)="$(c)")
 
-FFMPEG_DECODERS:=aac ac3 atrac3 h264 jpegls mp3 mpeg1video mpeg2video mpeg4 mpegvideo png wmav1 wmav2
+FFMPEG_DECODERS:=aac ac3 atrac3 h264 jpegls mp3 mpeg1video mpeg2video mpeg4 mpeg4aac mpegvideo png wmav1 wmav2
 FFMPEG_CONFIGURE_DECODERS:=$(call FFMPEG_FILTER_CONFIG,enable-decoder,$(FFMPEG_DECODERS))
 
 FFMPEG_PARSERS:=aac ac3 h264 mpeg4video mpegaudio mpegvideo
@@ -4164,34 +4169,28 @@ FFMPEG_CONFIGURE_PARSERS:=$(call FFMPEG_FILTER_CONFIG,enable-parser,$(FFMPEG_PAR
 FFMPEG_PROTOCOLS:=file
 FFMPEG_CONFIGURE_PROTOCOLS:=$(call FFMPEG_FILTER_CONFIG,enable-protocol,$(FFMPEG_PROTOCOLS))
 
-FFMPEG_DISABLED_DEMUXERS:=aa acm act adf adp ads adx afc aix amr amrnb amrwb apc ape apng aptx aptx_hd aqtitle asf_o ass ast avr bethsoftvid bfi bfstm bit bmv boa brstm c93 cdxl cine codec2 codec2raw concat data daud dcstr dfa dirac dnxhd dsf dsicin dss dtshd dvbsub dvbtxt dxa epaf ffmetadata fits frm fsb g722 g723_1 g726 g726le g729 gdv genh gif gsm gxf hevc hls hnm ico idcin idf iff ilbc image2 image2pipe image_bmp_pipe image_dds_pipe image_dpx_pipe image_exr_pipe image_j2k_pipe image_jpeg_pipe image_jpegls_pipe image_pam_pipe image_pbm_pipe image_pcx_pipe image_pgm_pipe image_pgmyuv_pipe image_pictor_pipe image_png_pipe image_ppm_pipe image_psd_pipe image_qdraw_pipe image_sgi_pipe image_sunrast_pipe image_svg_pipe image_tiff_pipe image_webp_pipe image_xpm_pipe ingenient ipmovie ircam ivf ivr jacosub jv live_flv lmlm4 loas lrc lvf lxf mgsts microdvd mjpeg_2000 mlv mm mmf mpjpeg mpl2 mpsub msf msnwc_tcp mtaf mtv musx mv mxf mxg nistsphere nsp nsv nut oma paf pjs pmp pva pvf rawvideo realtext redspark rl2 roq rpl rsd rso s337m sami sbc sbg scc sdr2 sds sdx segafilm shorten siff sln smacker smjpeg smush sol spdif srt stl str subviewer subviewer1 sup svag tak tedcaptions thp threedostr tiertexseq tta tty txd ty v210 v210x vag vivo vmd vobsub voc vpk vplayer wc3 webm_dash_manifest webvtt wsaud wsd wsvqa wtv wve xa xbin xmv xvag xwma yuv4mpegpipe
+FFMPEG_DISABLED_DEMUXERS:=amr apc ape ass bethsoftvid bfi c93 daud dnxhd dsicin dxa ffm gsm gxf idcin iff image2 image2pipe ingenient ipmovie lmlm4 mm mmf msnwc_tcp mtv mxf nsv nut oma pva rawvideo rl2 roq rpl segafilm shorten siff smacker sol str thp tiertexseq tta txd vmd voc wc3 wsaud wsvqa xa yuv4mpegpipe
 FFMPEG_CONFIGURE_DEMUXERS:=$(call FFMPEG_FILTER_CONFIG,disable-demuxer,$(FFMPEG_DISABLED_DEMUXERS))
 
-ffmpeg/stamp-h1: $(if $(FFMPEG_ZLIB_REQD),zlib,)
+ffmpeg/stamp-h1: zlib
 	cd ffmpeg && symver_asm_label=no symver_gnu_asm=no symver=no CC=$(CC) LDFLAGS="-ldl"\
 		./configure --enable-cross-compile --arch=$(ARCH) --target_os=linux \
-		--cross-prefix=$(CROSS_COMPILE) --enable-gpl \
-		$(if $(MEDIA_SERVER_STATIC),,--disable-static --enable-shared) --enable-small \
-		--disable-runtime-cpudetect --disable-mipsfpu --disable-mipsdsp --disable-mipsdspr2 \
-		--disable-programs --disable-doc \
-		--disable-avdevice --disable-swresample --disable-swscale --disable-postproc \
-		--disable-avfilter --enable-pthreads --disable-network \
-		--disable-encoders \
-		--disable-decoders $(FFMPEG_CONFIGURE_DECODERS) \
-		--disable-hwaccels \
-		--disable-muxers \
+		--cross-prefix=$(CROSS_COMPILE) --enable-shared --enable-gpl --disable-doc \
+		--enable-pthreads --enable-small --disable-encoders --disable-filters \
+		--disable-muxers --disable-devices --disable-ffmpeg --disable-ffplay \
+		--disable-ffserver --disable-ffprobe --disable-avdevice --disable-swscale \
+		--disable-hwaccels --disable-network --disable-bsfs --disable-mpegaudio-hp \
 		--enable-demuxers $(FFMPEG_CONFIGURE_DEMUXERS) \
+		--disable-decoders $(FFMPEG_CONFIGURE_DECODERS) \
 		--disable-parsers $(FFMPEG_CONFIGURE_PARSERS) \
-		--disable-bsfs \
 		--disable-protocols $(FFMPEG_CONFIGURE_PROTOCOLS) \
-		--disable-devices --disable-filters \
-		--extra-cflags="-Os $(EXTRACFLAGSx) -ffunction-sections -fdata-sections -fPIC $(if $(FFMPEG_ZLIB_REQD),-I$(TOP)/zlib,)" \
+		--extra-cflags="-Os $(EXTRACFLAGSx) -ffunction-sections -fdata-sections -fPIC -I$(TOP)/zlib" \
 		--extra-ldflags="-ffunction-sections -fdata-sections -Wl,--gc-sections -fPIC" \
-		$(if $(FFMPEG_ZLIB_REQD),--extra-libs="-L$(TOP)/zlib -lz" --enable-zlib,--disable-zlib) \
-		--disable-debug --prefix=''
+		--extra-libs="-L$(TOP)/zlib -lz" \
+		--enable-zlib --disable-debug --prefix=''
 	touch $@
 
-ffmpeg: ffmpeg/stamp-h1 $(if $(FFMPEG_ZLIB_REQD),zlib,)
+ffmpeg: ffmpeg/stamp-h1 zlib
 	$(MAKE) -C ffmpeg all $(PARALLEL_BUILD)
 
 ffmpeg-clean:
@@ -4201,12 +4200,12 @@ ffmpeg-clean:
 ffmpeg-install: ffmpeg
 	@$(SEP)
 ifneq ($(MEDIA_SERVER_STATIC),y)
-	install -D ffmpeg/libavformat/libavformat.so.58 $(INSTALLDIR)/ffmpeg/usr/lib/libavformat.so.58
-	install -D ffmpeg/libavcodec/libavcodec.so.58 $(INSTALLDIR)/ffmpeg/usr/lib/libavcodec.so.58
-	install -D ffmpeg/libavutil/libavutil.so.56 $(INSTALLDIR)/ffmpeg/usr/lib/libavutil.so.56
-	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavformat.so.58
-	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavcodec.so.58
-	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavutil.so.56
+	install -D ffmpeg/libavformat/libavformat.so.52 $(INSTALLDIR)/ffmpeg/usr/lib/libavformat.so.52
+	install -D ffmpeg/libavcodec/libavcodec.so.52 $(INSTALLDIR)/ffmpeg/usr/lib/libavcodec.so.52
+	install -D ffmpeg/libavutil/libavutil.so.50 $(INSTALLDIR)/ffmpeg/usr/lib/libavutil.so.50
+	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavformat.so.52
+	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavcodec.so.52
+	$(STRIP) $(INSTALLDIR)/ffmpeg/usr/lib/libavutil.so.50
 endif
 
 .PHONY: ffmpeg
@@ -4885,40 +4884,20 @@ openpam-clean:
 	[ ! -f openpam/Makefile ] || $(MAKE) -C openpam distclean
 	@rm -f openpam/Makefile
 
-openvpn: shared openssl lzo openpam zlib openvpn/Makefile
+openvpn: shared $(OPENSSLDIR) lzo openpam zlib openvpn/Makefile
 	$(MAKE) -C $@ $(PARALLEL_BUILD)
 
 openvpn/Makefile:
-ifeq ($(HND_ROUTER),y)
-	cd $(SRCBASE) && rm -f kernel
-	( cd openvpn ; ./autogen.sh && export OPENSSL_CFLAGS="-I$(TOP)/openssl -I$(LINUX_INC_DIR)/include"; \
-		export OPENSSL_LIBS="-L$(TOP)/openssl -lcrypto -lssl"; \
-		CFLAGS="-O3 -Wall $(EXTRACFLAGS) -ffunction-sections -fdata-sections $(if $(RTCONFIG_HTTPS),-I$(TOP)/openssl/include/openssl) $(if $(RTCONFIG_BCMARM),-I$(SRCBASE)/shared/bcmwifi/include) -I$(LINUX_INC_DIR)/include" \
-		LDFLAGS="$(EXTRALDFLAGS) -L$(TOP)/nvram$(BCMEX)$(EX7) -lnvram $(shell if [[ "$(HND_ROUTER)" = "y" ]] ; then echo "-L$(TOP)/wlcsm -lwlcsm"; else echo ""; fi) -L$(TOP)/shared -lshared $(if $(RTCONFIG_QTN),-L$(TOP)/libqcsapi_client -lqcsapi_client) $(if $(RTCONFIG_HTTPS),-L$(TOP)/openssl -lcrypto -lssl) -L$(TOP)/zlib -lz -lpthread -ldl -L$(TOP)/lzo/src/.libs -L$(TOP)/openpam/lib/libpam/.libs -ffunction-sections -fdata-sections -Wl,--gc-sections" \
-		CPPFLAGS="-I$(TOP)/lzo/include -I$(TOP)/openssl/include -I$(TOP)/openpam/include -I$(TOP)/shared -I$(SRCBASE)/include -I$(LINUX_INC_DIR)/include" \
-		IPROUTE="/bin/ip" IFCONFIG="/sbin/ifconfig" ROUTE="/sbin/route" \
-		$(CONFIGURE) --enable-shared --bindir=/usr/sbin --libdir=/usr/lib \
-			--disable-debug --enable-management --disable-small \
-			--disable-selinux --disable-socks \
-			--enable-plugin-auth-pam --enable-iproute2 \
-			ac_cv_lib_resolv_gethostbyname=no \
-	)
-	#cd openvpn; sed -i 's/build_libtool_libs=no/build_libtool_libs=yes/g' libtool;
-	cd $(SRCBASE) && ln -sf ../../../../../../../kernel kernel
-else
-	( cd openvpn ; ./autogen.sh && export OPENSSL_CFLAGS="-I$(TOP)/openssl"; \
-		export OPENSSL_LIBS="-L$(TOP)/openssl -lcrypto -lssl"; \
-		CFLAGS="-O3 -Wall $(EXTRACFLAGS) -ffunction-sections -fdata-sections $(if $(RTCONFIG_BCMARM),-I$(SRCBASE)/shared/bcmwifi/include) $(if $(RTCONFIG_HTTPS),-I$(TOP)/openssl/include/openssl)" \
-		LDFLAGS="$(EXTRALDFLAGS) -L$(TOP)/nvram$(BCMEX)${EX7} ${EXTRA_NV_LDFLAGS} -lnvram -L$(TOP)/shared -lshared $(if $(RTCONFIG_QTN),-L$(TOP)/libqcsapi_client -lqcsapi_client) $(if $(RTCONFIG_HTTPS),-L$(TOP)/openssl -lcrypto -lssl) -L$(TOP)/zlib -lz -lpthread -ldl -L$(TOP)/lzo/src/.libs -L$(TOP)/openpam/lib/libpam/.libs -ffunction-sections -fdata-sections -Wl,--gc-sections" \
-		CPPFLAGS="-I$(TOP)/lzo/include -I$(TOP)/openssl/include -I$(TOP)/openpam/include -I$(TOP)/shared -I$(SRCBASE)/include" \
-		IPROUTE="/usr/sbin/ip" IFCONFIG="/sbin/ifconfig" ROUTE="/sbin/route" \
+	( cd openvpn ; ./autogen.sh && OPENSSL_CFLAGS="-I$(TOP)/$(OPENSSLDIR)/include" \
+		OPENSSL_LIBS="-L$(TOP)/$(OPENSSLDIR) -lcrypto -lssl" \
+		CFLAGS="-O3 -Wall $(EXTRACFLAGS) -ffunction-sections -fdata-sections $(if $(RTCONFIG_BCMARM),-I$(SRCBASE)/shared/bcmwifi/include)" \
+		LDFLAGS="$(EXTRALDFLAGS) -L$(TOP)/nvram$(BCMEX)${EX7} ${EXTRA_NV_LDFLAGS} -lnvram -L$(TOP)/shared -lshared $(if $(RTCONFIG_QTN),-L$(TOP)/libqcsapi_client -lqcsapi_client) -L$(TOP)/zlib -lz -lpthread -ldl -L$(TOP)/lzo/src/.libs -L$(TOP)/openpam/lib/libpam/.libs -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+		CPPFLAGS="-I$(TOP)/lzo/include -I$(TOP)/$(OPENSSLDIR)/include  -I$(TOP)/openpam/include -I$(TOP)/shared -I$(SRCBASE)/include" \
+		IPROUTE="$(if $(RTCONFIG_HND_ROUTER),/bin/ip,/usr/sbin/ip)" IFCONFIG="/sbin/ifconfig" ROUTE="/sbin/route" \
 		$(CONFIGURE) --prefix=/usr --bindir=/usr/sbin --libdir=/usr/lib \
-			--disable-debug --enable-management --disable-small \
-			--disable-selinux --disable-socks \
-			--enable-plugin-auth-pam --enable-iproute2 \
+			--disable-debug --enable-management --enable-plugin-auth-pam --enable-iproute2 \
 			ac_cv_lib_resolv_gethostbyname=no \
 	)
-endif
 
 openvpn-clean:
 	[ ! -f openvpn/Makefile ] || $(MAKE) -C openvpn clean
@@ -5269,9 +5248,9 @@ usbclient-clean:
 	rm -rf usbclient/stamp-h1
 
 ##strongswan/IPSEC
-strongswan-5.2.1/stamp-h1:
-	cd strongswan-5.2.1 && autoreconf -i -f && \
-	$(if $(RTCONFIG_HND_ROUTER),$(CONFIGURE_64) CC=$(CROSS_COMPILE_64)gcc RANLIB=$(CROSS_COMPILE_64)ranlib, $(CONFIGURE) CC=$(CC)) \
+strongswan/stamp-h1: $(OPENSSLDIR)
+	cd strongswan && autoreconf -i -f && \
+	$(CONFIGURE) \
 	--prefix=/usr/ --sysconfdir=/etc/ --localstatedir=/var/ \
 	--bindir=/usr/sbin --libdir=/usr/lib \
 	--libexecdir=/usr/lib --with-ipsecdir=/usr/lib/ipsec --with-user=admin \
@@ -5279,44 +5258,37 @@ strongswan-5.2.1/stamp-h1:
 	--enable-eap-md5 --enable-eap-mschapv2 --enable-eap-identity \
 	--with-strongswan-conf=/etc/strongswan.conf --enable-md4 --enable-acert \
 	--enable-cmd --enable-eap-tls --enable-libipsec \
-	CFLAGS="-O3 -I$(STAGEDIR)/usr/include -I$(TOP)/openssl/include $(if $(RTCONFIG_HND_ROUTER),-DHND_ROUTER,)" \
-	LDFLAGS="$(if $(RTCONFIG_HND_ROUTER), -L$(TOP)/strongswan-5.2.1, -L$(STAGEDIR)/usr/lib -L$(TOP)/openssl)" \
+	CFLAGS="-O3 -I$(TOP)/$(OPENSSLDIR)/include $(if $(RTCONFIG_HND_ROUTER),-DHND_ROUTER,)" \
+	LDFLAGS="-L$(TOP)/$(OPENSSLDIR) -L$(STAGEDIR)/usr/lib" \
 	LIBS="-lssl -lcrypto -lpthread -ldl -lm"
 	touch $@
 
-strongswan-5.2.1: strongswan-5.2.1/stamp-h1
-	$(MAKE) $(PARALLEL_BUILD) -C strongswan-5.2.1
+strongswan: strongswan/stamp-h1
+	$(MAKE) $(PARALLEL_BUILD) -C strongswan
 
-strongswan-5.2.1-install: strongswan-5.2.1
+strongswan-install: strongswan
 	@$(SEP)
-	@$(MAKE) -C strongswan-5.2.1 install DESTDIR=$(INSTALLDIR)/strongswan-5.2.1/ ; chmod 755 $(INSTALLDIR)/strongswan-5.2.1/usr/lib
-	@rm -rf $(INSTALLDIR)/strongswan-5.2.1/usr/etc
-	@rm -f $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/*.la
-	@rm -f $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/plugins/*.la
-ifeq ($(HND_ROUTER),y)
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/*.so
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/starter
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/stroke
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/scepclient
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/charon
-	$(STRIP_64) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/plugins/*.so
-else
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/*.so
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/starter
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/stroke
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/scepclient
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/charon
-	$(STRIP) $(INSTALLDIR)/strongswan-5.2.1/usr/lib/ipsec/plugins/*.so
-endif
+	@$(MAKE) -C strongswan install DESTDIR=$(INSTALLDIR)/strongswan/ ; chmod 755 $(INSTALLDIR)/strongswan/usr/lib
+	@rm -rf $(INSTALLDIR)/strongswan/usr/etc
+	@rm -f $(INSTALLDIR)/strongswan/usr/lib/ipsec/*.la
+	@rm -f $(INSTALLDIR)/strongswan/usr/lib/ipsec/plugins/*.la
+	@rm -f $(INSTALLDIR)/strongswan/usr/lib/ipsec/*.a
+	@rm -f $(INSTALLDIR)/strongswan/usr/lib/ipsec/plugins/*.a
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/*.so
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/starter
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/stroke
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/scepclient
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/charon
+	$(STRIP) $(INSTALLDIR)/strongswan/usr/lib/ipsec/plugins/*.so
 
-	mv $(INSTALLDIR)/strongswan-5.2.1/etc $(INSTALLDIR)/strongswan-5.2.1/usr/
+	mv $(INSTALLDIR)/strongswan/etc $(INSTALLDIR)/strongswan/usr/
 
-strongswan-5.2.1-clean:
-	-@$(MAKE) -C strongswan-5.2.1 clean
-	@rm -f strongswan-5.2.1/stamp-h1
-	@rm -rf $(INSTALLDIR)/strongswan-5.2.1/
-	@rm -rf $(TARGETDIR)/usr/sbin/strongswan-5.2.1/*
-	@rm -rf $(TARGETDIR)/usr/lib/strongswan-5.2.1/*
+strongswan-clean:
+	-@$(MAKE) -C strongswan clean
+	@rm -f strongswan/stamp-h1
+	@rm -rf $(INSTALLDIR)/strongswan/
+	@rm -rf $(TARGETDIR)/usr/sbin/strongswan/*
+	@rm -rf $(TARGETDIR)/usr/lib/strongswan/*
 
 sw-hw-auth:
 	cd sw-hw-auth && \
@@ -5435,8 +5407,8 @@ net-snmp-5.7.2/stamp-h1:
 	cd $(TOP)/net-snmp-5.7.2 && $(CONFIGURE) --prefix=$(INSTALLDIR)/net-snmp-5.7.2/usr \
 		--disable-embedded-perl --with-perl-modules=no --disable-debugging --enable-mini-agent \
 		--with-transports=UDP --without-kmem-usage --disable-applications --disable-mib-loading \
-		--disable-scripts --disable-mibs --disable-manuals --with-openssl=$(TOP)/openssl \
-		--with-ldflags="-L$(TOP)/openssl" --with-libs="$(EXTRA_FLAG)" \
+		--disable-scripts --disable-mibs --disable-manuals --with-openssl=$(TOP)/$(OPENSSLDIR) \
+		--with-ldflags="-L$(TOP)/$(OPENSSLDIR)" --with-libs="$(EXTRA_FLAG) -pthread" \
 		--with-cflags="$(SNMPD_CFLAGS)" --with-default-snmp-version="3" \
 		--with-sys-location=Unknown --with-logfile=/var/log/snmpd.log \
 		--with-persistent-directory=/var/net-snmp --with-sys-contact=root@localhost \
@@ -5649,7 +5621,7 @@ db-4.8.30-clean:
 	-@$(MAKE) -C db-4.8.30/build_unix clean
 	@rm -f db-4.8.30/build_unix/stamp-h1
 
-netatalk-3.0.5-dep: openssl libgcrypt-1.5.1 db-4.8.30
+netatalk-3.0.5-dep: $(OPENSSLDIR) libgcrypt-1.5.1 db-4.8.30
 
 netaconfig netatalk-3.0.5/stamp-h1:
 	if [ ! -f netatalk-3.0.5/stamp-h1 ] ; then \
@@ -5664,7 +5636,7 @@ netaconfig netatalk-3.0.5/stamp-h1:
 		--with-bdb=$(TOP)/db-4.8.30/build_unix \
 		--prefix=/usr \
 		--with-dtrace=no \
-		--with-ssl-dir=$(TOP)/openssl \
+		--with-ssl-dir=$(TOP)/$(OPENSSLDIR) \
 		--with-libgcrypt-dir=$(TOP)/libgcrypt-1.5.1 \
 		--with-ld-library-path=$(SRCBASE)/toolchains/hndtools-arm-linux-2.6.36-uclibc-4.5.3/lib ; \
 		touch stamp-h1 ; \
@@ -6169,29 +6141,29 @@ norton${BCMEX}-clean:
 .PHONY : email-3.1.3 email-3.1.3-clean
 
 ifeq ($(RTCONFIG_NOTIFICATION_CENTER),y)
-email-3.1.3/stamp-h1: openssl
+email-3.1.3/Makefile: $(OPENSSLDIR)
 	cd $(TOP)/email-3.1.3 && \
 	$(CONFIGURE) --with-ssl --sysconfdir=/etc \
-		CFLAGS="-I$(SRCBASE)/router/openssl/include -I$(TOP)/nt_center/lib -I$(TOP)/sqlite -DRTCONFIG_NOTIFICATION_CENTER" \
-		LDFLAGS="-L$(SRCBASE)/router/openssl -L$(TOP)/nt_center/lib -L$(TOP)/sqlite/.libs" \
+		CFLAGS="-Os -Wall -I$(SRCBASE)/router/$(OPENSSLDIR)/include -I$(TOP)/nt_center/lib -I$(TOP)/sqlite -DRTCONFIG_NOTIFICATION_CENTER" \
+		LDFLAGS="-L$(SRCBASE)/router/$(OPENSSLDIR) -L$(TOP)/nt_center/lib -L$(TOP)/sqlite/.libs" \
 		LIBS="-lnt -lsqlite3 -lpthread -lcrypto -lssl $(if $(RTCONFIG_QCA), -ldl)"
 	touch $@
 else
-email-3.1.3/stamp-h1: openssl
+email-3.1.3/Makefile: $(OPENSSLDIR)
 	cd $(TOP)/email-3.1.3 && \
 	$(CONFIGURE) --with-ssl --sysconfdir=/etc \
-		CFLAGS=-I$(SRCBASE)/router/openssl/include \
-		LDFLAGS="-L$(SRCBASE)/router/openssl" \
+		CFLAGS="-Os -Wall -I$(SRCBASE)/router/$(OPENSSLDIR)/include" \
+		LDFLAGS="-L$(SRCBASE)/router/$(OPENSSLDIR)" \
 		LIBS="-lcrypto -lssl $(if $(RTCONFIG_QCA), -ldl)"
 	touch $@
 endif
 
-email-3.1.3: email-3.1.3/stamp-h1
+email-3.1.3: email-3.1.3/Makefile
 	$(MAKE) -C email-3.1.3
 
 email-3.1.3-clean:
-	-@$(MAKE) -C email-3.1.3 clean
-	@rm -f email-3.1.3/stamp-h1
+	-[ ! -f email-3.1.3/Makefile ] || $(MAKE) -C email-3.1.3 distclean
+	@rm -f email-3.1.3/Makefile
 
 email-3.1.3-install:
 	if [ -f email-3.1.3/Makefile ] ; then \
@@ -6298,10 +6270,14 @@ wget/Makefile: wget/Makefile.in
 		--disable-opie --disable-ntlm --disable-debug --disable-nls --disable-rpath \
 		$(if $(RTCONFIG_IPV6),,--disable-ipv6) --disable-iri --without-included-regex  \
 		--disable-dependency-tracking \
+		OPENSSL_LIBS="-L$(TOP)/$(OPENSSLDIR) -lcrypto -lssl" \
+		OPENSSL_CFLAGS="-I$(TOP)/$(OPENSSLDIR)/include" \
+		ZLIB_CFLAGS="-I$(TOP)zlib" \
+		ZLIB_LIBS="-L$(TOP)/zlib -lz "\
 		CFLAGS="-Os -Wall $(EXTRACFLAGS) -ffunction-sections -fdata-sections -I$(STAGEDIR)/usr/include" \
-		LDFLAGS="$(EXTRALDFLAGS) -Wl,--gc-sections -L$(STAGEDIR)/usr/lib"
+		LDFLAGS="$(EXTRALDFLAGS) -Wl,--gc-sections -pthread"
 
-wget: openssl zlib wget/Makefile
+wget: $(OPENSSLDIR) zlib wget/Makefile
 	$(MAKE) -C $@
 
 wget-clean:
@@ -6917,10 +6893,10 @@ inadyn/Makefile:
 	cd inadyn && $(CONFIGURE) \
 		confuse_CFLAGS="-I$(TOP)/libconfuse/src" \
 		confuse_LIBS="-L$(TOP)/libconfuse/src/.libs -lconfuse" \
-		OpenSSL_CFLAGS="-I$(TOP)/openssl" \
-		OpenSSL_LIBS="-L$(TOP)/openssl -lcrypto" \
+		OpenSSL_CFLAGS="-I$(TOP)/$(OPENSSLDIR)/include" \
+		OpenSSL_LIBS="-L$(TOP)/$(OPENSSLDIR) -lcrypto" \
 		CFLAGS="$(EXTRACFLAGS) -Os -I$(TOP)/shared -I$(SRCBASE)/include -I$(SRCBASE)/shared/bcmwifi/include -DTYPEDEF_FLOAT_T -I$(STAGEDIR)/usr/include -ffunction-sections -fdata-sections -fPIC -DASUSWRT $(if $(RTCONFIG_LETSENCRYPT),-DASUS_LE,)" \
-		LDFLAGS="$(LDFLAGS) $(shell if [[ "$(HND_ROUTER)" = "y" ]] ; then echo "-L$(TOP)/wlcsm -lwlcsm"; else echo ""; fi) -L$(TOP)/nvram$(BCMEX)$(EX7) -lnvram -L$(TOP)/shared -lshared $(if $(RTCONFIG_QTN),-L$(TOP)/libqcsapi_client -lqcsapi_client) -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+		LDFLAGS="$(LDFLAGS) $(EXTRA_NV_LDFLAGS) -L$(TOP)/nvram$(BCMEX)$(EX7) -lnvram -L$(TOP)/shared -lshared $(if $(RTCONFIG_QTN),-L$(TOP)/libqcsapi_client -lqcsapi_client) -ffunction-sections -fdata-sections -Wl,--gc-sections -pthread" \
 		--prefix="" --enable-openssl
 
 inadyn: shared nvram${BCMEX}$(EX7) libconfuse inadyn/Makefile
@@ -6940,7 +6916,7 @@ ncurses-6.0/Makefile: ncurses-6.0/configure
 	cd ncurses-6.0 && $(CONFIGURE) \
 		CFLAGS="$(EXTRACFLAGS) -Os -I$(STAGEDIR)/usr/include -ffunction-sections -fdata-sections -fPIC" \
 		LDFLAGS="$(LDFLAGS) -ffunction-sections -fdata-sections -Wl,--gc-sections -L$(STAGEDIR)/usr/lib" \
-		$(if $(HND_ROUTER),CPPFLAGS="-P",) \
+		CPPFLAGS="-P" \
 		--prefix=/usr --without-cxx --without-cxx-binding \
 		--enable-echo --enable-const --enable-overwrite --disable-rpath --without-ada \
 		$(if $(RTCONFIG_BCMARM),--enable-widec,) \
@@ -7069,7 +7045,8 @@ libmnl-install: libmnl
 		ln -sf libmnl.so.0.1.0 libmnl.so
 
 libmnl-clean:
-	-@$(MAKE) -C libmnl clean
+	-@$(MAKE) -C libmnl distclean
+	-@rm -rf libmnl/stamp-h1
 	-@rm -rf libmnl/staged
 
 ipset_arm/stamp-h1: libmnl
@@ -7079,7 +7056,7 @@ ipset_arm/stamp-h1: libmnl
 	LDFLAGS="-ffunction-sections -fdata-sections -Wl,--gc-sections" \
 	libmnl_CFLAGS="-I$(TOP)/libmnl/staged/usr/include" \
 	libmnl_LIBS="-L$(TOP)/libmnl/staged/usr/lib -lmnl" \
-	$(CONFIGURE) --prefix=/usr --with-kmod=$(if $(HND_ROUTER),no,yes) --with-kbuild=$(LINUXDIR)
+	$(CONFIGURE) --prefix=/usr --with-kmod=no --with-kbuild=$(LINUXDIR)
 	touch ipset_arm/stamp-h1
 
 ipset_arm: ipset_arm/stamp-h1
@@ -7134,7 +7111,7 @@ nfs-utils-1.3.4: nfs-utils-1.3.4/stamp-h1
 	$(MAKE) -C $@
 
 nfs-utils-1.3.4-clean:
-	-@$(MAKE) -C nfs-utils distclean
+	-@$(MAKE) -C nfs-utils-1.3.4 distclean
 	@rm -f nfs-utils-1.3.4/stamp-h1
 
 nfs-utils-1.3.4-install:
@@ -7151,6 +7128,42 @@ portmap: portmap/Makefile
 portmap-install:
 	install -D portmap/portmap $(INSTALLDIR)/portmap/usr/sbin/portmap
 	$(STRIP) $(INSTALLDIR)/portmap/usr/sbin/portmap
+
+openssl-1.1.x/Makefile:
+	cd openssl-1.1.x && \
+	./Configure $(HOSTCONFIG) --prefix=/usr --openssldir=/etc --cross-compile-prefix=' ' \
+	-O2 -ffunction-sections -fdata-sections -Wl,--gc-sections \
+	shared $(OPENSSL_CIPHERS) no-err no-async --api=1.0.0 \
+	no-aria no-sm2 no-sm3 no-sm4 \
+	$(if $(filter y,$(HND_ROUTER)),,-DOPENSSL_PREFER_CHACHA_OVER_GCM)
+	-@$(MAKE) -C openssl-1.1.x depend clean
+	@touch $@
+
+openssl-1.1.x: openssl-1.1.x/Makefile
+	$(MAKE) -C openssl-1.1.x $(PARALLEL_BUILD)
+
+openssl-1.1.x-clean:
+	[ ! -f openssl-1.1.x/Makefile ] || $(MAKE) -C openssl-1.1.x clean
+	@rm -f openssl-1.1.x/Makefile
+
+openssl-1.1.x-install:
+	$(SEP)
+	if [ -f openssl-1.1.x/Makefile ] ; then \
+		install -D openssl-1.1.x/libcrypto.so.1.1 $(INSTALLDIR)/openssl-1.1.x/usr/lib/libcrypto.so.1.1 ; \
+		install -D openssl-1.1.x/libssl.so.1.1 $(INSTALLDIR)/openssl-1.1.x/usr/lib/libssl.so.1.1 ; \
+		$(STRIP) $(INSTALLDIR)/openssl-1.1.x/usr/lib/libssl.so.1.1 ; \
+		$(STRIP) $(INSTALLDIR)/openssl-1.1.x/usr/lib/libcrypto.so.1.1 ; \
+		install -D openssl-1.1.x/apps/openssl $(INSTALLDIR)$(INSTALLSUBDIR)/usr/sbin/openssl11 ; \
+		$(STRIP) $(INSTALLDIR)$(INSTALLSUBDIR)/usr/sbin/openssl11 ; \
+		chmod 0500 $(INSTALLDIR)$(INSTALLSUBDIR)/usr/sbin/openssl11 ; \
+	fi
+
+openssl-1.1.x-stage:
+	 $(MAKE) -C openssl-1.1.x install_sw INSTALL_PREFIX=$(STAGEDIR)
+
+libvpn: shared nvram$(BCMEX)$(EX7)
+	@$(SEP)
+	$(MAKE) -C libvpn
 # End merlin components
 
 readline-6.2/Makefile: readline-6.2/configure
