@@ -771,8 +771,11 @@ void generate_switch_para(void)
 						switch_gen_config(lan, ports, wan1cfg, 0, NULL);
 						nvram_set("lanports", lan);
 					}
-
+#ifdef R6300v2
+					switch_gen_config(wan, ports, wan1cfg, 1, "u");
+#else
 					switch_gen_config(wan, ports, wan1cfg, 1, (get_wans_dualwan()&WANSCAP_WAN)?"":"u");
+#endif
 					if (get_wans_dualwan()&WANSCAP_WAN) {
 						nvram_set("vlan3ports", wan);
 						nvram_set("vlan3hwname", "et0");

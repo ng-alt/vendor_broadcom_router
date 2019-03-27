@@ -1224,7 +1224,11 @@ struct nvram_tuple router_defaults[] = {
 	{ "wans_dualwan", "wan " DEF_SECOND_WANIF},
 #endif
 	{ "wans_standby", "0" },
+#ifdef R6300v2
+	{ "wans_lanport", "4" },
+#else
 	{ "wans_lanport", "1" },
+#endif
 	{ "wans_lb_ratio", "3:1" }, 	// only support two wan simultaneously
 	{ "wans_routing_enable", "0" },
 	{ "wans_routing_rulelist", "" },
@@ -3602,12 +3606,15 @@ struct nvram_tuple bcm4360ac_defaults[] = {
 	{ "pci/2/1/txchain", "7", 0 },
 	{ "pci/2/1/venid", "0x14e4", 0 },
 	{ "pci/2/1/xtalfreq", "40000", 0 },
+	{ "territory_code", "CN/02", 0 },
 	{ "wl0_corerev", "29", 0 },
 	{ "wl0_country_code", "#a", 0},
 	{ "wl0_country_rev", "0", 0},
 	{ "wl1_corerev", "42", 0 },
 	{ "wl1_country_code", "#a", 0},
 	{ "wl1_country_rev", "0", 0},
+	{ "wl1_bw_cap", "7", 0},
+	{ "wl1_band5grp", "f", 0},
 	{ "wl0_bsd_if_qualify_policy", "0 0x0", 0 },
 	{ "wl0_bsd_if_select_policy", "eth2", 0 },
 	{ "wl0_bsd_sta_select_policy", "10 -52 0 110 0 1 1 0 0 0 0x122", 0 },
@@ -3616,6 +3623,12 @@ struct nvram_tuple bcm4360ac_defaults[] = {
 	{ "wl1_bsd_if_select_policy", "eth1", 0 },
 	{ "wl1_bsd_sta_select_policy", "10 -82 0 0 0 1 1 0 0 0 0x20", 0 },
 	{ "wl1_bsd_steering_policy", "80 5 3 -82 0 0 0x20", 0 },
+	{ "wl0_rxchain", "7" },
+	{ "wl0_txchain", "7" },
+	{ "wl1_rxchain", "7" },
+	{ "wl1_txchain", "7" },
+	{ "wl1_hw_rxchain", "7" },
+	{ "wl1_hw_txchain", "7" },
 	{ 0, 0, 0 }
 };
 #elif defined(RTAC3200)
