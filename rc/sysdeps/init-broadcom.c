@@ -2250,10 +2250,14 @@ void fini_wl(void)
 #endif
 }
 
+#ifdef NETGEAR
+extern char *macaddr_off(char *macaddr, int offset);
+#endif
+
 void init_syspara(void)
 {
 	char *ptr;
-	int model;
+	int alias;
 
 	nvram_set("firmver", rt_version);
 	nvram_set("productid", rt_buildname);
@@ -2274,8 +2278,8 @@ void init_syspara(void)
 
 	ptr = nvram_get("regulation_domain");
 
-	model = get_model();
-	switch(model) {
+	alias = get_alias();
+	switch(alias) {
 		case MODEL_RTN53:
 		case MODEL_RTN16:
 		case MODEL_RTN15U:
@@ -2377,6 +2381,17 @@ void init_syspara(void)
 				nvram_set("1:macaddr", "00:22:15:A5:03:04");
 			nvram_set("0:macaddr", nvram_safe_get("et0macaddr"));
 			break;
+
+#ifdef R6300v2
+		case MODEL_R6300v2:
+			if (!nvram_get("et0macaddr"))	//eth0, eth1
+				nvram_set("et0macaddr", "00:22:15:A5:03:00");
+			if (!nvram_get("0:macaddr"))
+				nvram_set("0:macaddr", nvram_safe_get("et0macaddr"));
+			if (!nvram_get("1:macaddr"))	//eth2(5G)
+				nvram_set("1:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
+			break;
+#endif
 
 		case MODEL_RTAC5300:
 		case MODEL_RTAC5300R:

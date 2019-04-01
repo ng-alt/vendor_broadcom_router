@@ -315,7 +315,7 @@ misc_ioctrl(void)
 }
 
 #ifdef NETGEAR
-static char *
+char *
 macaddr_off(char *macaddr, int offset)
 {
 #if 0
