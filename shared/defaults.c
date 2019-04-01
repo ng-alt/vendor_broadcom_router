@@ -3433,7 +3433,7 @@ struct nvram_tuple bcm4360ac_defaults[] = {
 	{ 0, 0, 0 }
 };
 #else
-#if defined(R6300v2)
+#if defined(NETGEAR)
 struct nvram_tuple bcm4360ac_defaults[] = {
 	{ "pci/1/1/aa2g", "7", 0 },
 	{ "pci/1/1/ag0", "0", 0 },
@@ -3607,6 +3607,8 @@ struct nvram_tuple bcm4360ac_defaults[] = {
 	{ "pci/2/1/venid", "0x14e4", 0 },
 	{ "pci/2/1/xtalfreq", "40000", 0 },
 	{ "territory_code", "CN/02", 0 },
+	{ "wl_country_rev", "0", 0 },
+	{ "wl_country_code", "#a", 0 },
 	{ "wl0_corerev", "29", 0 },
 	{ "wl0_country_code", "#a", 0},
 	{ "wl0_country_rev", "0", 0},
