@@ -314,6 +314,56 @@ misc_ioctrl(void)
 #endif
 }
 
+#ifdef NETGEAR
+static char *
+macaddr_off(char *macaddr, int offset)
+{
+#if 0
+	static char mac_buff[20] = {0};
+	int last, len, capital;
+
+	if (macaddr == NULL || *macaddr == 0)
+		return mac_buff;
+
+	strncpy(mac_buff, macaddr, sizeof(mac_buff));
+	len = strlen(macaddr);
+
+	last = mac_buff[len - 1];
+	capital = 'A' <= last && last <= 'F';
+
+	last = ('A' <= last && last <= 'F' ? last - 'A' + 10 : (
+		'a' <= last && last <= 'f' ? last - 'a' + 10 : (
+		'0' <= last && last <= '9' ? last - '0' : -offset)) + offset) % 0x0f;
+
+	mac_buff[len - 1] = last < 10 ? '0' + last : (
+		capital ? last + 'A' - 10 : last + 'a' - 10);
+
+	return mac_buff;
+#endif
+
+	static char mac_buff[20];
+	unsigned char mac_binary[13];
+
+	ether_atoe(macaddr, mac_binary);
+	mac_binary[5] += offset;
+	sprintf(mac_buff, "%02X:%02X:%02X:%02X:%02X:%02X",
+			mac_binary[0],
+			mac_binary[1],
+			mac_binary[2],
+			mac_binary[3],
+			mac_binary[4],
+			mac_binary[5]);
+	return mac_buff;
+}
+
+void update_nvram_if_noexists(char *name, char *value)
+{
+	if (!nvram_get(name))
+		nvram_set(name, value);
+}
+
+#endif
+
 /* assign none-exist value */
 void
 wl_defaults(void)
@@ -331,6 +381,9 @@ wl_defaults(void)
 	char *pNic;
 #endif
 	unsigned int max_mssid;
+#ifdef NETGEAR
+	char hwaddr[20];
+#endif
 
 	memset(wlx_vifnames, 0, sizeof(wlx_vifnames));
 	memset(wl_vifnames, 0, sizeof(wl_vifnames));
@@ -374,6 +427,19 @@ wl_defaults(void)
 	}
 
 //	virtual_radio_restore_defaults();
+
+#ifdef NETGEAR
+	char *addr = nvram_get("lan_hwaddr");
+	if (addr == NULL || *addr == 0)
+		addr = nvram_get("et0macaddr");
+	if (addr)
+		strncpy(hwaddr, addr, sizeof(hwaddr));
+
+	update_nvram_if_noexists("pci/1/1/macaddr", hwaddr);
+	update_nvram_if_noexists("pci/2/1/macaddr", macaddr_off(hwaddr, 4));
+	update_nvram_if_noexists("wl_hwaddr", nvram_get("pci/1/1/macaddr"));
+	update_nvram_if_noexists("wl1_hwaddr", nvram_get("pci/2/1/macaddr"));
+#endif
 
 	unit = 0;
 	max_mssid = num_of_mssid_support(unit);
@@ -4759,7 +4825,6 @@ int init_nvram(void)
 #endif
 #ifdef R6300v2
 	case MODEL_R6300v2:
-		check_cfe_ac68u();
 		nvram_set("vlan1hwname", "et0");
 		nvram_set("lan_ifname", "br0");
 		nvram_set("landevs", "vlan1 wl0 wl1");
@@ -4769,7 +4834,7 @@ int init_nvram(void)
 			if (get_wans_dualwan()&WANSCAP_WAN && get_wans_dualwan()&WANSCAP_LAN)
 				nvram_set("wandevs", "vlan2 vlan3");
 			else
-				nvram_set("wandevs", "vlan2");
+				nvram_set("wandevs", "et0");
 
 			set_lan_phy("vlan1");
 
@@ -4799,10 +4864,7 @@ int init_nvram(void)
 							}
 							else
 								add_wan_phy(the_wan_phy());
-						}
-						else if (get_wans_dualwan()&WANSCAP_WAN)
-							add_wan_phy("vlan2");
-						else
+						}else
 							add_wan_phy(the_wan_phy());
 					}
 					else if (get_dualwan_by_unit(unit) == WANS_DUALWAN_IF_USB)

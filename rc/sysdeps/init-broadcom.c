@@ -1753,7 +1753,7 @@ reset_mssid_hwaddr(int unit)
 	unsigned char mac_binary[6];
 	unsigned long long macvalue;
 	unsigned char *macp;
-	int model = get_model();
+	int alias = get_alias();
 	int unit_total = 0, idx, subunit;
 	int max_mssid = num_of_mssid_support(unit);
 	char tmp[100], prefix[]="wlXXXXXXX_";
@@ -1768,7 +1768,7 @@ reset_mssid_hwaddr(int unit)
 		memset(mac_binary, 0x0, 6);
 		memset(macbuf, 0x0, 13);
 
-		switch(model) {
+		switch(alias) {
 			case MODEL_RTN53:
 			case MODEL_RTN16:
 			case MODEL_RTN15U:
@@ -1820,6 +1820,9 @@ reset_mssid_hwaddr(int unit)
 					snprintf(macaddr_str, sizeof(macaddr_str), "0:macaddr");
 				else		/* 5G */
 					snprintf(macaddr_str, sizeof(macaddr_str), "sb/1/macaddr");
+				break;
+			case MODEL_R6300v2:
+				snprintf(macaddr_str, sizeof(macaddr_str), "pci/%d/1/macaddr", unit + 1);
 				break;
 			default:
 #ifdef RTCONFIG_BCMARM
