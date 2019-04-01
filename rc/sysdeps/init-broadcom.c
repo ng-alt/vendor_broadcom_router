@@ -1855,6 +1855,11 @@ reset_mssid_hwaddr(int unit)
 			/* including primary ssid */
 			for (subunit = 1; subunit < max_mssid + 1 ; subunit++)
 			{
+#ifdef NETGEAR
+				if (((macvalue + 1) & 0xff) == 0x0)
+					macvalue &= ~0xffLL;
+				else
+#endif
 				macvalue++;
 
 				macp = (unsigned char*) &macvalue;
