@@ -748,7 +748,7 @@ void generate_switch_para(void)
 				// The first WAN port.
 				if (get_wans_dualwan()&WANSCAP_WAN) {
 #ifdef R6300v2
-					switch_gen_config(wan, ports, wancfg, 1, "");
+					switch_gen_config(wan, ports, wancfg, 1, "u");
 #else
 					switch_gen_config(wan, ports, wancfg, 1, (get_wans_dualwan()&WANSCAP_LAN && wan1cfg >= 1 && wan1cfg <= 4)?"":"u");
 #endif /* R6300v2 */
