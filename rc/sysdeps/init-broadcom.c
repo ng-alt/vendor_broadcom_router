@@ -2390,6 +2390,7 @@ void init_syspara(void)
 				nvram_set("0:macaddr", nvram_safe_get("et0macaddr"));
 			if (!nvram_get("1:macaddr"))	//eth2(5G)
 				nvram_set("1:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
+			nvram_unset("et1macaddr");
 			break;
 #endif
 
