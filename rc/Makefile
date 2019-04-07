@@ -169,10 +169,7 @@ endif
 else ifeq ($(RTCONFIG_QCA),y)
 OBJS += init-qca.o wps-qca.o qca.o ate-qca.o $(if $(wildcard sysdeps/qca/ctl.c),ctl.obj,prebuild/ctl.obj)
 else
-OBJS += init-broadcom.o broadcom.o ate-broadcom.o
-ifeq ($(RTCONFIG_WPS),y)
-OBJS += wps-broadcom.o
-endif
+OBJS += init-broadcom.o wps-broadcom.o broadcom.o ate-broadcom.o
 ifeq ($(BUILD_NAME), RT-AC68U)
 OBJS += cfe.o
 endif
