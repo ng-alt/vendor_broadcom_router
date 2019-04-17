@@ -1822,6 +1822,7 @@ reset_mssid_hwaddr(int unit)
 					snprintf(macaddr_str, sizeof(macaddr_str), "sb/1/macaddr");
 				break;
 			case MODEL_R6300v2:
+			case MODEL_R6400:
 				snprintf(macaddr_str, sizeof(macaddr_str), "pci/%d/1/macaddr", unit + 1);
 				break;
 			default:
@@ -2273,6 +2274,8 @@ void init_syspara(void)
 	nvram_set("bl_version", "1.0.0.0");
 #ifdef R6300v2
 	nvram_set("model", "R6300V2");
+#elif R6400
+	nvram_set("model", "R6400");
 #endif
 #endif
 
@@ -2382,8 +2385,8 @@ void init_syspara(void)
 			nvram_set("0:macaddr", nvram_safe_get("et0macaddr"));
 			break;
 
-#ifdef R6300v2
 		case MODEL_R6300v2:
+		case MODEL_R6400:
 			if (!nvram_get("et0macaddr"))	//eth0, eth1
 				nvram_set("et0macaddr", "00:22:15:A5:03:00");
 			if (!nvram_get("0:macaddr"))
@@ -2392,7 +2395,6 @@ void init_syspara(void)
 				nvram_set("1:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
 			nvram_unset("et1macaddr");
 			break;
-#endif
 
 		case MODEL_RTAC5300:
 		case MODEL_RTAC5300R:

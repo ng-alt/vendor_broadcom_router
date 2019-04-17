@@ -41,6 +41,10 @@ export CFLAGS += -DNETGEAR
 ifeq ($(PROFILE),R6300v2)
 export CFLAGS += -DR6300v2
 endif
+
+ifeq ($(PROFILE),R6400)
+export CFLAGS += -DR6400
+endif
 endif
 
 ifeq ($(RTCONFIG_RALINK),y)
