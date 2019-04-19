@@ -5032,6 +5032,7 @@ int init_nvram(void)
 		nvram_set_int("led_usb3_gpio", 13|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_2g_gpio", 9|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_5g_gpio", 8|GPIO_ACTIVE_LOW);
+		nvram_set_int("pwr_usb_gpio", 0);
 
 #ifdef RTCONFIG_XHCIMODE
 		nvram_set("xhci_ports", "1-1");
