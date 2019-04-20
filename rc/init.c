@@ -5027,7 +5027,12 @@ int init_nvram(void)
 //		nvram_set_int("led_logo_gpio", 1);
 		nvram_set_int("led_wps_gpio", 10);
 		nvram_set_int("led_wan_gpio", 11);
-		nvram_set_int("led_pwr_gpio", 2|GPIO_ACTIVE_LOW);
+
+#ifdef RTCONFIG_PWRRED_LED
+		nvram_set_int("led_pwr_red_gpio", 2|GPIO_ACTIVE_LOW);
+#endif
+		nvram_set_int("led_pwr_gpio", 1|GPIO_ACTIVE_LOW);
+
 		nvram_set_int("led_usb_gpio", 12|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_usb3_gpio", 13|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_2g_gpio", 9|GPIO_ACTIVE_LOW);
