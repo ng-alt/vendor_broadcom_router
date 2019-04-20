@@ -2210,7 +2210,7 @@ void led_check(int sig)
 #ifdef RTCONFIG_WLAN_LED
 	if (nvram_contains_word("rc_support", "led_2g"))
 	{
-#if defined(RTN53)
+#if defined(RTN53) || defined(R6400)
 		if (nvram_get_int("wl0_radio") == 0)
 			led_control(LED_2G, LED_OFF);
 		else
@@ -2263,7 +2263,10 @@ void led_check(int sig)
 		fake_dev_led(nvram_safe_get("mmc_irq"), LED_MMC);
 #endif
 
-#if defined(RTCONFIG_BRCM_USBAP) || defined(RTAC66U) || defined(BCM4352)
+#if defined(R6400)
+	if (nvram_match("led_5g", "1") && nvram_get_int("wl1_radio") == 0)
+		led_control(LED_5G, LED_OFF);
+#elif defined(RTCONFIG_BRCM_USBAP) || defined(RTAC66U) || defined(BCM4352)
 #if defined(RTAC66U) || defined(BCM4352)
 	if (nvram_match("led_5g", "1") &&
 	   (wlonunit == -1 || wlonunit == 1))

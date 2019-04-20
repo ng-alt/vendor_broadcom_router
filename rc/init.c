@@ -5039,6 +5039,11 @@ int init_nvram(void)
 		nvram_set_int("led_5g_gpio", 8|GPIO_ACTIVE_LOW);
 		nvram_set_int("pwr_usb_gpio", 0);
 
+#ifdef RTCONFIG_WLAN_LED
+		add_rc_support("led_2g");
+		nvram_set("led_5g", "1");
+#endif
+
 #ifdef RTCONFIG_XHCIMODE
 		nvram_set("xhci_ports", "1-1");
 #ifdef RT4GAC68U
