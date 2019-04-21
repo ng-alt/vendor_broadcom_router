@@ -2210,7 +2210,18 @@ void led_check(int sig)
 #ifdef RTCONFIG_WLAN_LED
 	if (nvram_contains_word("rc_support", "led_2g"))
 	{
-#if defined(RTN53) || defined(R6400)
+#if defined(R6400)
+		if (nvram_get_int("wl0_radio") == 0) {
+			led_control(LED_2G, LED_OFF);
+			if (nvram_match("led_5g", "1") != 1) {
+				led_control(LED_WAN, LED_OFF);
+			}
+		} else if (nvram_get_int("wl0_radio") == 1) {
+			// FIXME: use wanduck to control LED_WAN?
+			led_control(LED_WAN, LED_ON);
+		} else
+#endif
+#if defined(RTN53)
 		if (nvram_get_int("wl0_radio") == 0)
 			led_control(LED_2G, LED_OFF);
 		else
@@ -2264,8 +2275,14 @@ void led_check(int sig)
 #endif
 
 #if defined(R6400)
-	if (nvram_match("led_5g", "1") && nvram_get_int("wl1_radio") == 0)
-		led_control(LED_5G, LED_OFF);
+	if (nvram_match("led_5g", "1") == 1) {
+		if (nvram_get_int("wl1_radio") == 0)
+			led_control(LED_5G, LED_OFF);
+		else {
+			// FIXME: use wanduck to control LED_WAN?
+			led_control(LED_WAN, LED_ON);
+		}
+	}
 #elif defined(RTCONFIG_BRCM_USBAP) || defined(RTAC66U) || defined(BCM4352)
 #if defined(RTAC66U) || defined(BCM4352)
 	if (nvram_match("led_5g", "1") &&
