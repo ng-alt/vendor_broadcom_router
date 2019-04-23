@@ -592,6 +592,10 @@ static inline int have_usb3_led(int model)
 {
 	/* Return true if a model has USB LED and USB3 LED both. */
 	switch (model) {
+#ifdef NETGEAR
+		case MODEL_R6300v2:
+			return 0;
+#endif
 		case MODEL_RTN18U:
 		case MODEL_RTAC56U:
 		case MODEL_RTAC56S:

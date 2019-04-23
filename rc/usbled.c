@@ -296,7 +296,11 @@ usbled_main(int argc, char *argv[])
 {
 	FILE *fp;
 	sigset_t sigs_to_catch;
+#ifdef NETGEAR
+	model = get_alias();
+#else
 	model = get_model();
+#endif
 
 	/* write pid */
 	if ((fp = fopen("/var/run/usbled.pid", "w")) != NULL)
