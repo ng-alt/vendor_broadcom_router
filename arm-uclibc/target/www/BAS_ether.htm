@@ -156,7 +156,16 @@ function setIP()
 function isParentalControlEnable()
 {
 	var cf = document.forms[0];
-    if((cf.parental_control.value=='1') && (SkipParentalControlCheck==0))
+    if(((cf.parental_control.value=='1') ) && (SkipParentalControlCheck==0))
+        return true;
+    else
+        return false;
+}
+
+function isCircleControlEnable()
+{
+	var cf = document.forms[0];
+    if(( (cf.parental_circle.value=='1')) && (SkipParentalControlCheck==0))
         return true;
     else
         return false;
@@ -166,19 +175,19 @@ function setDNS()
 {
 	var cf = document.forms[0];
 	var dflag = cf.DNSAssign[0].checked;
-  if(isParentalControlEnable() && cf.DNSAssign[0].checked)
+	if(isParentalControlEnable() && cf.DNSAssign[0].checked)
   {
   	alert('<%454%>');
 		cf.DNSAssign[1].checked=true;
     dflag=false;      
   }
   
-	if (cf.WANAssign[1].checked && cf.DNSAssign[0].checked)
-	{
-		cf.DNSAssign[1].checked=true;
-		dflag = false;
-	}
-
+  if(isCircleControlEnable() && cf.DNSAssign[1].checked)
+  {
+  	alert('<%454%>');
+		cf.DNSAssign[0].checked=true;
+  }
+  
 	setDisabled(dflag,cf.DAddr1,cf.DAddr2,cf.DAddr3,cf.DAddr4,cf.PDAddr1,cf.PDAddr2,cf.PDAddr3,cf.PDAddr4);
 	DisableFixedDNS = dflag;
 }
@@ -526,7 +535,8 @@ function loadSettings()
 <INPUT name=lan_ipaddr type=hidden value= "<%281%>">
 <INPUT name=lan_netmask type=hidden value= "<%498%>">
 <INPUT name=parental_control type=hidden value= "<%499%>">
-<INPUT name=ipv6_proto type=hidden value= "<%500%>">
+<INPUT name=parental_circle type=hidden value= "<%500%>">
+<INPUT name=ipv6_proto type=hidden value= "<%501%>">
 <a name="helpframe-anchor"></a>
 </form>
 

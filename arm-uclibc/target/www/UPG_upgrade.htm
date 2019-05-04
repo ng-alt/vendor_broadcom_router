@@ -177,7 +177,7 @@ function enableFwCheck()
 
 var pchar = "|"; // progress char
 var maxchars = 94;
-var delay_time = <%847%>;
+var delay_time = <%848%>;
 var charcount = 0;
 
 function makeStr(strSize, fillChar)
@@ -288,10 +288,6 @@ function pre_check()
  <button type="button" name="Check" class="button-rule"  value="<%1370%>" onClick="buttonClick(this,'<%1370%>');set_check_upgrade();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1370%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
  </TD>
  </tr>
-<!--
-<tr>
-    <td colspan="2" class="table-seperate-border"><input type="checkbox" <%1371%> name="enable" value="1" onclick="enableFwCheck();submit();"><b><%1372%></b></td></tr>
--->
 </table>
 <input type="hidden" name="ver_check_enable" value="1">
 
@@ -299,7 +295,7 @@ function pre_check()
 
 <tr><td colspan="2" height="12" class="" ><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 <tr>
-	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1373%></b></a></td>
+	<td colspan="2" align="left" class="" ><a href="javascript:loadhelp('UPG_upgrade','locate')" > <b><%1371%></b></a></td>
 
 </tr>
 <tr>
@@ -316,7 +312,7 @@ function pre_check()
 
 <tr>
  <td colspan="2" align="center" class="" >
-	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1374%>" class="button-rule" onClick="buttonClick(this,'<%1374%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1374%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
+	<button  type="SUBMIT" NAME="Upgrade" VALUE=" <%1372%>" class="button-rule" onClick="buttonClick(this,'<%1372%>');return checkData();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%1372%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button>
 	&nbsp;&nbsp;&nbsp;<button type="RESET" name="Cancel" VALUE=" <%72%>" class="button-rule" onClick="stopAnimation();"><span class="roundleft_button">&nbsp;&nbsp;&nbsp;&nbsp; <%72%></span><span class="roundright_button">&nbsp;&nbsp;&nbsp;&nbsp;</span></button></td>
 
 </tr>
@@ -331,7 +327,7 @@ function pre_check()
 <table border="0" style="border-collapse:collapse;" >
 
 <tr>
- <td colspan="2" ><BIG><%1375%>  2  <%1376%>
+ <td colspan="2" ><BIG><%1373%>  2  <%1374%>
  </BIG></td>
 </tr>
 <tr>
@@ -351,8 +347,8 @@ function pre_check()
 </table>
 </form>
 <form method="POST" action="router_tnc_config.cgi">
-<input type="hidden" name="auto_update_state" value="<%1377%>">
-<input type="hidden" name="ra_state" value="<%1378%>">
+<input type="hidden" name="auto_update_state" value="<%1375%>">
+<input type="hidden" name="ra_state" value="<%1376%>">
 <input type="hidden" name="wla_region" value="<%24%>">
 <table style="border-collapse:collapse;width:97%">
 <tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
@@ -368,48 +364,53 @@ function pre_check()
 <tr>
 <td colspan="2" height="12" class="">
 
-<b><%1379%></b>
+<b><%1377%></b>
 <br><br>
-<%1380%>
+<%1378%>
 
 <br>
 
-<%1381%>
+<%1379%>
 
 <br>
-<input type="radio" name="auto_update_enable" value="Yes" onclick="" ><font color="gray"> <%1382%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="radio" name="auto_update_enable" value="No"  onclick="" ><font color="gray"> <%1383%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="auto_update_enable" value="Yes" onclick="" ><font color="gray"> <%1380%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="auto_update_enable" value="No"  onclick="" ><font color="gray"> <%1381%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 <br>
 </td>
 </tr>
-
+<%1382%>
 <tr><td colspan="2" height="12" class=""><div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div></td></tr>
 
 <tr>
 <td colspan="2" height="12" class="">
 
-<b><%1384%></b>
+<b><%1383%></b>
 <br><br>
-<%1385%>
+<%1384%>
 
 <br>
 
-<%1381%>
+<%1379%>
 
 <br>
-<input type="radio" name="ra_enable" value="Yes" onclick="" ><font color="gray"> <%1382%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="radio" name="ra_enable" value="No"  onclick=""> <font color="gray"> <%1383%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<!--<a href="javascript:window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400')" target="_blank" style="color: rgb(000,000,255);text-decoration:underline"><font><%1386%></font></a>
---><br>
+<input type="radio" name="ra_enable" value="Yes" onclick="" ><font color="gray"> <%1380%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="ra_enable" value="No"  onclick=""> <font color="gray"> <%1381%></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
 </td>
+<%1385%>
 </tr>
 <tr><td colspan="2" height="12" class="">
 <div style="background-image:url('liteblue.gif');width:100%">&nbsp;</div>
 <div align="right" style="width:100%;">
 <a href="#" onclick="window.open('https://www.netgear.com/about/privacy-policy/?cid=wmt_netgear_organic','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"><%1386%></a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="#" onclick="window.open('router_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1387%></a>
+<%1387%>
+<a href="#" onclick="window.open('router_full_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1388%></a>
+<%1389%>
+<%1382%>
+<a href="#" onclick="window.open('router_tnc_detail.htm','name','width=600,height=400,scrollbars=1,resizable=1','blank')" style="color: rgb(000,000,255);text-decoration:underline"> <%1388%></a>
+<%1385%>
 </div>
 </td></tr>
 </table>
