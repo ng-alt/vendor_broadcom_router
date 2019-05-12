@@ -582,7 +582,7 @@ CFLAGS	+= -DPLC -DWPS_LONGPUSH_DISABLE
 endif
 
 #ifdef __CONFIG_TREND_IQOS__
-ifeq ($(LINUX_VERSION),2_6_36)
+ifneq ($(call kernel-is-version,2_6_36),)
 ifeq ($(CONFIG_TREND_IQOS),y)
 obj-$(CONFIG_TREND_IQOS) += iqos
 
