@@ -375,6 +375,7 @@ enum {
 	// Extended models
 	MODEL_R6300v2,
 	MODEL_R6400,
+	MODEL_R7000,
 };
 
 /* NOTE: Do not insert new entries in the middle of this enum,

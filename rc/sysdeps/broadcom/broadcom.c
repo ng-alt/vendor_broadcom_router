@@ -295,6 +295,7 @@ GetPhyStatus(int verbose)
 	case MODEL_RTAC1200G:
 	case MODEL_RTAC1200GP:
 	case MODEL_R6400:
+	case MODEL_R7000:
 		/* WAN L1 L2 L3 L4 */
 		ports[0]=0; ports[1]=1; ports[2]=2; ports[3]=3; ports[4]=4;
 		break;
