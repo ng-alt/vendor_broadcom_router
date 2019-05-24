@@ -516,7 +516,7 @@ static void handle_eject_usb_button(void)
 		/* If DUT has two USB LED, associate 2-nd USB LED with eject USB button
 		 * based on number of eject USB button.
 		 */
-		model = get_model();
+		model = get_alias();
 		switch (nr_ejusb_btn) {
 		case 2:
 			if (have_usb3_led(model)) {

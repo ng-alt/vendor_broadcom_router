@@ -611,6 +611,8 @@ static inline int have_usb3_led(int model)
 		case MODEL_RTAC3100:
 		case MODEL_RTAC5300:
 		case MODEL_RTAC5300R:
+		case MODEL_R6400:
+		case MODEL_R7000:
 			return 1;
 	}
 	return 0;

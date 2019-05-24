@@ -3468,7 +3468,7 @@ after_change_xhcimode:
 		}
 	}
 
-	if (have_usb3_led(model) || have_sata_led(model)) {
+	if (have_usb3_led(get_alias()) || have_sata_led(model)) {
 		enum led_id id = LED_USB;
 
 		if (is_usb3_port(usb_node))
