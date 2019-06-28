@@ -823,15 +823,15 @@ endif # ROOTDIR
 	install prebuilt/ubd.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/lib
 	install prebuilt/br_dns_hijack.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/lib
 	install prebuilt/l7_filter.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/lib
-ifeq ($(CONFIG_IPERF),y)
 ifeq ($(ROOTDIR),)
+ifeq ($(CONFIG_IPERF),y)
 	install -D $(TOOLCHAIN)/usr/lib/libstdc++.so.6 $(TARGETDIR)/usr/lib/libstdc++.so.6
 	$(STRIP) $(TARGETDIR)/usr/lib/libstdc++.so.6
-endif # ROOTDIR
 endif
 	$(STRIP) $(TARGETDIR)/usr/share/libssl.so.1.0.0
 	$(STRIP) $(TARGETDIR)/usr/share/libcrypto.so.1.0.0
 endif
+endif # ROOTDIR
 
 ifneq (2_4,$(LINUX_VERSION))
 ifeq ("$(CONFIG_USBAP)","y")
