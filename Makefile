@@ -803,10 +803,10 @@ endif # ROOTDIR
 	install ufsd/mkntfs $(TARGETDIR)/bin
 	install utelnetd/utelnetd $(TARGETDIR)/bin
 	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
-ifeq ($(ROOTDIR),)
 	install utelnetd/ookla $(TARGETDIR)/usr/sbin
 	install utelnetd/settings.txt $(TARGETDIR)/usr/sbin
 	install fbwifi/fbwifi $(TARGETDIR)/bin
+ifeq ($(ROOTDIR),)
 	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
 	install ../../ap/gpl/openssl-1.0.2h/libssl.so.1.0.0 $(TARGETDIR)/usr/share
 	install ../../ap/gpl/openssl-1.0.2h/libcrypto.so.1.0.0 $(TARGETDIR)/usr/share
