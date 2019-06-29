@@ -593,7 +593,7 @@ obj-$(CONFIG_PHYMON_UTILITY) += phymon
 #endif
 #if defined(EXT_ACS)
 ifeq ($(PROFILE),R6400)
-#obj-$(CONFIG_EXTACS) += acsd
+obj-$(CONFIG_EXTACS) += acsd
 else
 #obj-$(CONFIG_EXTACS) += acsd
 endif
