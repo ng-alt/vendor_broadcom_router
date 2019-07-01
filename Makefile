@@ -813,8 +813,6 @@ ifeq ($(ROOTDIR),)
 	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin	
 	rm -f $(TARGETDIR)/usr/share/libssl.so $(TARGETDIR)/usr/share/libcrypto.so
 	cd $(TARGETDIR)/usr/share && ln -s libssl.so.1.0.0 libssl.so && ln -s libcrypto.so.1.0.0 libcrypto.so
-else
-	cp -r openssl/new_opencrt $(TARGETDIR)/usr/share/
 endif # ROOTDIR
 	install -d $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/lib
 	install prebuilt/AccessCntl.ko $(TARGETDIR)/lib/modules/$(KERNEL_RELEASE)/kernel/lib
