@@ -772,8 +772,8 @@ ifeq ($(PROFILE),R7000)
 #	install arm-uclibc/netgear-streaming-db $(TARGETDIR)/etc
 	install utelnetd/ookla $(TARGETDIR)/bin
 #	install fbwifi/fbwifi $(TARGETDIR)/bin
-	cp -r $(OPENSSLDIR)/new_opencrt $(TARGETDIR)/usr/share/
 ifeq ($(ROOTDIR),)
+	cp -r ../../ap/gpl/openssl-1.0.2h/new_opencrt $(TARGETDIR)/usr/share/
 	install ../../ap/gpl/openssl-1.0.2h/apps/openssl $(TARGETDIR)/usr/local/sbin
 	install ../../ap/gpl/openssl-1.0.2h/libssl.so.1.0.0 $(TARGETDIR)/usr/share
 	install ../../ap/gpl/openssl-1.0.2h/libcrypto.so.1.0.0 $(TARGETDIR)/usr/share
