@@ -89,7 +89,7 @@ static const struct model_s model_list[] = {
 	{ "RT-AC1200G+", MODEL_RTAC1200GP},
 	{ "R6300V2",	MODEL_RTAC68U,	MODEL_R6300v2 },
 	{ "R6400",	MODEL_RTAC68U,	MODEL_R6400 },
-	{ "R7000",	MODEL_RTAC3200,	MODEL_R7000 },
+	{ "R7000",	MODEL_RTAC68U,	MODEL_R7000 },
 #endif	/* !RTCONFIG_RALINK */
 	{ NULL, 0 },
 };
@@ -180,10 +180,8 @@ int get_model(void)
 #endif
 
 	if (model <= MODEL_UNKNOWN) {
-#if defined(R6300v2) || defined(R6400)
+#if defined(R6300v2) || defined(R6400) || defined(R7000)
 		model = MODEL_RTAC68U;
-#elif defined(R7000)
-		model = MODEL_RTAC3200;
 #endif
 	}
 
