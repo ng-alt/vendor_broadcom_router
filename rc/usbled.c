@@ -46,6 +46,7 @@
 #define USBLED_URGENT_PERIOD		100 * 1000	/* microsecond */	
 
 static int model = MODEL_UNKNOWN;
+static int alias = MODEL_UNKNOWN;
 
 static int usb_busy, count = 0;
 static struct itimerval itv;
@@ -92,7 +93,7 @@ check_usb2(void)
 {
 	if (usb_busy)
 		return 0;
-	else if (have_usb3_led(model) && *nvram_safe_get("usb_led2"))
+	else if (have_usb3_led(alias) && *nvram_safe_get("usb_led2"))
 		return 1;
 	else
 		return 0;
@@ -103,7 +104,7 @@ check_usb3(void)
 {
 	if (usb_busy)
 		return 0;
-	else if (have_usb3_led(model) && nvram_invmatch("usb_led1", ""))
+	else if (have_usb3_led(alias) && nvram_invmatch("usb_led1", ""))
 		return 1;
 	else
 		return 0;
@@ -126,7 +127,7 @@ static void no_blink(int sig)
 {
 	alarmtimer(USBLED_NORMAL_PERIOD, 0);
 	status_usb = -1;
-	if (have_usb3_led(model)) {
+	if (have_usb3_led(alias)) {
 		got_usb2 = -1;
 		got_usb3 = -1;
 	}
@@ -137,7 +138,7 @@ static void no_blink(int sig)
 	}
 #endif
 	usb_busy = 0;
-	if (have_usb3_led(model) || have_sata_led(model))
+	if (have_usb3_led(alias) || have_sata_led(model))
 		nvram_unset("usb_led_id");
 }
 
@@ -165,14 +166,14 @@ static void usbled_exit(int sig)
 {
 	alarmtimer(0, 0);
 	status_usb = 0;
-	if (have_usb3_led(model)) {
+	if (have_usb3_led(alias)) {
 		got_usb2 = 0;
 		got_usb3 = 0;
 	}
 	usb_busy = 0;
 
 	led_control(LED_USB, LED_OFF);
-	if (have_usb3_led(model))
+	if (have_usb3_led(alias))
 		led_control(LED_USB3, LED_OFF);
 	if (have_sata_led(model))
 		led_control(LED_SATA, LED_OFF);
@@ -192,7 +193,7 @@ static void usbled(int sig)
 	status_usb = usb_status();
 
 #ifdef RTCONFIG_USB_XHCI
-	if (have_usb3_led(model)) {
+	if (have_usb3_led(alias)) {
 		got_usb2_old = got_usb2;
 		got_usb2 = check_usb2();
 		got_usb3_old = got_usb3;
@@ -217,7 +218,7 @@ static void usbled(int sig)
 			)
 	{
 #ifdef RTCONFIG_USB_XHCI
-		if (have_usb3_led(model)) {
+		if (have_usb3_led(alias)) {
 			if (model==MODEL_RTN18U && (nvram_match("bl_version", "3.0.0.7") || nvram_match("bl_version", "1.0.0.0")))
 			{
 				if ((got_usb2 != got_usb2_old) || (got_usb3 != got_usb3_old)) {

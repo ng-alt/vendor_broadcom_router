@@ -374,6 +374,8 @@ enum {
 	MODEL_RTAC82U,
 	// Extended models
 	MODEL_R6300v2,
+	MODEL_R6400,
+	MODEL_R7000,
 };
 
 /* NOTE: Do not insert new entries in the middle of this enum,
@@ -613,6 +615,8 @@ static inline int have_usb3_led(int model)
 		case MODEL_RTAC3100:
 		case MODEL_RTAC5300:
 		case MODEL_RTAC5300R:
+		case MODEL_R6400:
+		case MODEL_R7000:
 			return 1;
 	}
 	return 0;

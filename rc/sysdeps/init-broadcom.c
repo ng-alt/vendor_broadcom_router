@@ -1821,9 +1821,13 @@ reset_mssid_hwaddr(int unit)
 				else		/* 5G */
 					snprintf(macaddr_str, sizeof(macaddr_str), "sb/1/macaddr");
 				break;
+#ifdef NETGEAR
 			case MODEL_R6300v2:
+			case MODEL_R6400:
+			case MODEL_R7000:
 				snprintf(macaddr_str, sizeof(macaddr_str), "pci/%d/1/macaddr", unit + 1);
 				break;
+#endif
 			default:
 #ifdef RTCONFIG_BCMARM
 				snprintf(macaddr_str, sizeof(macaddr_str), "%d:macaddr", unit);
@@ -2273,6 +2277,10 @@ void init_syspara(void)
 	nvram_set("bl_version", "1.0.0.0");
 #ifdef R6300v2
 	nvram_set("model", "R6300V2");
+#elif R6400
+	nvram_set("model", "R6400");
+#elif R7000
+	nvram_set("model", "R7000");
 #endif
 #endif
 
@@ -2382,8 +2390,10 @@ void init_syspara(void)
 			nvram_set("0:macaddr", nvram_safe_get("et0macaddr"));
 			break;
 
-#ifdef R6300v2
+#ifdef NETGEAR
 		case MODEL_R6300v2:
+		case MODEL_R6400:
+		case MODEL_R7000:
 			if (!nvram_get("et0macaddr"))	//eth0, eth1
 				nvram_set("et0macaddr", "00:22:15:A5:03:00");
 			if (!nvram_get("0:macaddr"))

@@ -516,7 +516,7 @@ static void handle_eject_usb_button(void)
 		/* If DUT has two USB LED, associate 2-nd USB LED with eject USB button
 		 * based on number of eject USB button.
 		 */
-		model = get_model();
+		model = get_alias();
 		switch (nr_ejusb_btn) {
 		case 2:
 			if (have_usb3_led(model)) {
@@ -2210,7 +2210,7 @@ void led_check(int sig)
 #ifdef RTCONFIG_WLAN_LED
 	if (nvram_contains_word("rc_support", "led_2g"))
 	{
-#if defined(R6300v2)
+#if defined(R6300v2) || defined(R6400) || defined(R7000)
 		if (nvram_get_int("wl0_radio") == 0) {
 			led_control(LED_2G, LED_OFF);
 			if (nvram_match("led_5g", "1") != 1) {
@@ -2274,7 +2274,7 @@ void led_check(int sig)
 		fake_dev_led(nvram_safe_get("mmc_irq"), LED_MMC);
 #endif
 
-#if defined(R6300v2)
+#if defined(R6300v2) || defined(R6400) || defined(R7000)
 	if (nvram_match("led_5g", "1") == 1) {
 		if (nvram_get_int("wl1_radio") == 0)
 			led_control(LED_5G, LED_OFF);
