@@ -435,8 +435,8 @@ wl_defaults(void)
 	if (addr)
 		strncpy(hwaddr, addr, sizeof(hwaddr));
 
-	update_nvram_if_noexists("pci/1/1/macaddr", hwaddr);
-	update_nvram_if_noexists("pci/2/1/macaddr", macaddr_off(hwaddr, 4));
+	update_nvram_if_noexists("pci/1/1/macaddr", macaddr_off(hwaddr, 1));
+	update_nvram_if_noexists("pci/2/1/macaddr", macaddr_off(hwaddr, 5));
 	update_nvram_if_noexists("wl_hwaddr", nvram_get("pci/1/1/macaddr"));
 	update_nvram_if_noexists("wl1_hwaddr", nvram_get("pci/2/1/macaddr"));
 #endif
