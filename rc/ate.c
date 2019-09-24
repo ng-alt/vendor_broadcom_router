@@ -546,7 +546,7 @@ int asus_ate_command(const char *command, const char *value, const char *value2)
 		}
 		return 0;
 	}
-#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R) || defined(R8000)
 	else if (!strcmp(command, "Set_MacAddr_5G_2")) {
 #if defined(RTCONFIG_CFEZ) && defined(RTCONFIG_BCMARM)
 		if (!chk_envrams_proc())
@@ -987,7 +987,7 @@ int asus_ate_command(const char *command, const char *value, const char *value2)
 #endif
 		return 0;
 	}
-#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R) || defined(R8000)
 	else if (!strcmp(command, "Get_MacAddr_5G_2")) {
 		getMAC_5G_2();
 		return 0;
@@ -1145,7 +1145,7 @@ int asus_ate_command(const char *command, const char *value, const char *value2)
 			puts("ATE_ERROR");
 		return 0;
 	}
-#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC5300)|| defined(RTAC5300R) || defined(R8000)
 	else if (!strcmp(command, "Get_ChannelList_5G_2")) {
 		if (!Get_ChannelList_5G_2())
 			puts("ATE_ERROR");

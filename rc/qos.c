@@ -180,7 +180,7 @@ void add_EbtablesRules(void)
 			eval("ebtables","-D","INPUT","-i","wl1.3","-j","mark","--set-mark","1","--mark-target", "ACCEPT");
 			eval("ebtables","-A","INPUT","-i",nvram_safe_get("fbwifi_5g"),"-j","mark","--set-mark","1","--mark-target", "ACCEPT");
 		}
-#ifdef RTAC3200
+#if defined(RTAC3200) || defined(R8000)
 		if(!nvram_match("fbwifi_5g_2","off"))
 		{
 			eval("ebtables","-D","INPUT","-i","wl2.1","-j","mark","--set-mark","1","--mark-target", "ACCEPT");

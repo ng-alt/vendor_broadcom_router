@@ -75,7 +75,7 @@ static int erp_check_wl_stat(int model)
 	if (nvram_get_int("wl1_radio")) ret++;
 
 	/* special case */
-	if (model == MODEL_RTAC5300 || model == MODEL_RTAC3200)
+	if (model == MODEL_RTAC5300 || model == MODEL_RTAC3200 || model == MODEL_R8000)
 	{
 		if (nvram_get_int("wl2_radio")) ret++;
 	}
@@ -281,7 +281,7 @@ static void erp_standby_mode(int model)
 		eval("qcsapi_sockrpc", "pm", "idle");
 	}
 
-	if (model == MODEL_RTAC5300 || model == MODEL_RTAC3200)
+	if (model == MODEL_RTAC5300 || model == MODEL_RTAC3200 || model == MODEL_R8000)
 	{
 		// triple band
 		eval("wl", "-i", "eth3", "down"); // turn off 5g-2 radio
@@ -459,9 +459,10 @@ static void ERP_CHECK_MODE()
 		return;
 	}
 
+	int alias = get_alias();
 	// step4. check wl, gphy ,arp, and dsl status
 	int erp_usb  = erp_check_usb_stat();
-	int erp_wl   = erp_check_wl_stat(model);
+	int erp_wl   = erp_check_wl_stat(alias);
 	int erp_arp  = erp_check_arp_stat(model);
 	int erp_gphy = erp_check_gphy_stat(model);
 	int erp_dsl  = erp_check_dsl_stat(model); // DSL model
@@ -498,7 +499,7 @@ static void ERP_CHECK_MODE()
 				erp_count--;
 
 			if (erp_count == 0)
-				erp_standby_mode(model);
+				erp_standby_mode(alias);
 		}
 		else { // not match erp standby condition
 			goto wakeup;

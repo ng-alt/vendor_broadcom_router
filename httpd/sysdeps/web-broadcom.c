@@ -1737,7 +1737,7 @@ int
 ej_wl_extent_channel(int eid, webs_t wp, int argc, char_t **argv)
 {
 
-#if defined(RTAC3200) || defined(RTAC5300)
+#if defined(RTAC3200) || defined(RTAC5300) || defined(R8000)
 	return websWrite(wp, "[\"%d\", \"%d\", \"%d\"]", wl_extent_channel(0), wl_extent_channel(1), wl_extent_channel(2));
 #else
 	return websWrite(wp, "[\"%d\", \"%d\"]", wl_extent_channel(0), wl_extent_channel(1));
@@ -1802,7 +1802,7 @@ ej_wl_control_channel(int eid, webs_t wp, int argc, char_t **argv)
 
 	ret = websWrite(wp, "[\"%d\", \"%d\"", wl_control_channel(0), wl_control_channel(1));
 
-#if defined(RTAC3200) || defined(RTAC5300) || defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 	ret += websWrite(wp, ", \"%d\"", wl_control_channel(2));
 #endif
 	ret += websWrite(wp, "]");

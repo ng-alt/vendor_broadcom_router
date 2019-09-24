@@ -10113,7 +10113,7 @@ void setup_leds()
 #endif
 
 		if (nvram_match("wl1_radio", "1")
-#if defined(RTAC3200) || defined(RTAC5300)
+#if defined(RTAC3200) || defined(RTAC5300) || defined(R8000)
 		    || nvram_match("wl2_radio", "1")
 #endif
 		   ) {
@@ -10128,7 +10128,7 @@ void setup_leds()
 		led_control_atomic(LED_SWITCH, LED_ON);
 		led_control_atomic(LED_POWER, LED_ON);
 
-#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300)
+#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(R8000)
 		kill_pidfile_s("/var/run/wanduck.pid", SIGUSR2);
 #endif
 	}
@@ -10852,7 +10852,7 @@ set_fbwifi_profile(void) {
 		}
 	}
 
-#ifdef RTAC3200
+#if defined(RTAC3200) || defined(R8000)
 //backup 5G-2 profile and set fbwifi profile to wl2.X
 	memset(wl_unit, 0, sizeof(wl_unit));
 	memset(wl_unit_temp, 0, sizeof(wl_unit_temp));

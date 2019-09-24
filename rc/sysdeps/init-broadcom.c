@@ -1825,6 +1825,7 @@ reset_mssid_hwaddr(int unit)
 			case MODEL_R6300v2:
 			case MODEL_R6400:
 			case MODEL_R7000:
+			case MODEL_R8000:
 				snprintf(macaddr_str, sizeof(macaddr_str), "pci/%d/1/macaddr", unit + 1);
 				break;
 #endif
@@ -1885,7 +1886,7 @@ reset_psr_hwaddr()
 	unsigned char mac_binary[6];
 	unsigned long long macvalue;
 	unsigned char *macp;
-	int model = get_model();
+	int model = get_alias();
 	int unit = 0;
 
 	if (!(is_psr(nvram_get_int("wlc_band")) && !nvram_get_int("wlc_band")))
@@ -1896,6 +1897,7 @@ reset_psr_hwaddr()
 
 	switch(model) {
 		case MODEL_RTAC3200:
+		case MODEL_R8000:
 			unit = 1;
 			break;
 	}
@@ -2281,6 +2283,8 @@ void init_syspara(void)
 	nvram_set("model", "R6400");
 #elif R7000
 	nvram_set("model", "R7000");
+#elif R8000
+	nvram_set("model", "R8000");
 #endif
 #endif
 
@@ -2391,6 +2395,9 @@ void init_syspara(void)
 			break;
 
 #ifdef NETGEAR
+		case MODEL_R8000:
+			if (!nvram_get("2:macaddr"))    // eth3(5GHz)
+				nvram_set("2:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 3));
 		case MODEL_R6300v2:
 		case MODEL_R6400:
 		case MODEL_R7000:
