@@ -117,7 +117,12 @@ struct nvram_tuple router_defaults[] = {
 #endif
 #if defined(NETGEAR)
 	{ "wl_ssid", "NETGEAR", 0 },	/* Service set ID (network name) */
+#if !defined(R8000)
 	{ "wl1_ssid", "NETGEAR_5G" },
+#else
+	{ "wl1_ssid", "NETGEAR_5G-1" },
+	{ "wl2_ssid", "NETGEAR_5G-2" },
+#endif
 #else
 	{ "wl_ssid", "ASUS", 0 },		/* Service set ID (network name) */
 #if !defined (RTAC3200) && !defined (RTAC5300) && !defined (RTAC5300R)
@@ -341,7 +346,7 @@ struct nvram_tuple router_defaults[] = {
 	{ "wl1_nband", "1", 0 },		/* 5 GHz */
 #else
 	{ "wl_nband", "2", 0 },			/* N-BAND */
-#if defined (RTAC3200) || defined (RTAC5300) || defined (RTAC5300R)
+#if defined (RTAC3200) || defined (RTAC5300) || defined (RTAC5300R) || defined(R8000)
 	{ "wl1_nband", "1", 0 },
 	{ "wl2_nband", "1", 0 },
 #else

@@ -417,7 +417,7 @@ extern int wlcscan_core_escan(char *ofile, char *wif);
 #endif
 extern int setRegrev_2G(const char *regrev);
 extern int setRegrev_5G(const char *regrev);
-#if defined(RTAC3200) || defined(RTAC5300) || defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 extern int setMAC_5G_2(const char *mac);
 extern int getMAC_5G_2(void);
 extern int Get_ChannelList_5G_2(void);
@@ -432,7 +432,7 @@ extern int getRegrev_5G(void);
 extern int getSSID(int unit);
 extern void check_wl_country();
 extern void wl_dfs_support(int unit);
-#if defined(RTAC3200) || defined(RTAC68U) || defined(RTAC5300) || defined(RTAC5300R) || defined(RTAC88U) || defined(RTAC3100)
+#if defined(RTAC3200) || defined(RTAC68U) || defined(RTAC5300) || defined(RTAC5300R) || defined(RTAC88U) || defined(RTAC3100) || defined(R8000)
 extern void wl_disband5grp();
 #endif
 #ifdef RTCONFIG_BCMARM

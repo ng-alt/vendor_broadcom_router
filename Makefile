@@ -47,6 +47,9 @@ endif
 ifeq ($(PROFILE),R7000)
 export CFLAGS += -DR7000
 endif
+ifeq ($(PROFILE),R8000)
+export CFLAGS += -DR8000
+endif
 endif
 
 ifeq ($(RTCONFIG_RALINK),y)

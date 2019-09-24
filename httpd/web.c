@@ -1223,7 +1223,7 @@ ej_dump(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 	else if (strcmp(file, "wps_info.log")==0)
 	{
-#ifndef RTAC3200
+#if !defined(RTAC3200) && !defined(R8000)
 		if (nvram_match("wps_band_x", "0"))
 			return (ej_wps_info_2g(eid, wp, 0, NULL));
 		else

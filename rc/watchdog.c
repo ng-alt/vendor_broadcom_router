@@ -369,7 +369,7 @@ static int handle_btn_in_mfg(void)
 #endif
 
 #ifdef RTCONFIG_LED_BTN /* currently for RT-AC68U only */
-#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 	if (!button_pressed(BTN_LED))
 #elif defined(RTAC68U)
 	if (is_ac66u_v2_series())
@@ -1028,7 +1028,7 @@ void btn_check(void)
 				LED_status_changed = 1;
 		}
 	}
-#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 	if (!LED_status &&
 	    (LED_status != LED_status_old))
 	{
@@ -1055,25 +1055,25 @@ void btn_check(void)
 #endif
 #endif
 
-#if defined(RTAC68U)
+#if defined(RTAC68U) && !defined(R8000)
 		if (((!nvram_match("cpurev", "c0") || nvram_get_int("PA") == 5023) && LED_status == LED_status_on) ||
 		      (nvram_match("cpurev", "c0") && nvram_get_int("PA") != 5023 && LED_status_on))
-#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 		if (LED_status_on)
 #endif
 			nvram_set_int("AllLED", 1);
 		else
 			nvram_set_int("AllLED", 0);
-#if defined(RTAC68U)
+#if defined(RTAC68U) && !defined(R8000)
 		if (((!nvram_match("cpurev", "c0") || nvram_get_int("PA") == 5023) && LED_status == LED_status_on) ||
 		      (nvram_match("cpurev", "c0") && nvram_get_int("PA") != 5023 && LED_status_on))
-#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#elif defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 		if (LED_status_on)
 #endif
 		{
 			led_control(LED_POWER, LED_ON);
 
-#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 			kill_pidfile_s("/var/run/wanduck.pid", SIGUSR2);
 #else
 #ifdef RTAC68U
@@ -1086,24 +1086,24 @@ void btn_check(void)
 #endif
 
 			if (wlonunit == -1 || wlonunit == 0) {
-#ifdef RTAC68U
+#if defined(RTAC68U) && !defined(R8000)
 				eval("wl", "ledbh", "10", "7");
-#elif defined(RTAC3200)
+#elif defined(RTAC3200) || defined(R8000)
 				eval("wl", "-i", "eth2", "ledbh", "10", "7");
 #elif defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
 				eval("wl", "ledbh", "9", "7");
 #endif
 			}
 			if (wlonunit == -1 || wlonunit == 1) {
-#ifdef RTAC68U
+#if defined(RTAC68U) && !defined(R8000)
 				eval("wl", "-i", "eth2", "ledbh", "10", "7");
-#elif defined(RTAC3200)
+#elif defined(RTAC3200) || defined(R8000)
 				eval("wl", "ledbh", "10", "7");
 #elif defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
 				eval("wl", "-i", "eth2", "ledbh", "9", "7");
 #endif
 			}
-#if defined(RTAC3200)
+#if defined(RTAC3200) || defined(R8000)
 			if (wlonunit == -1 || wlonunit == 2) {
 				eval("wl", "-i", "eth3", "ledbh", "10", "7");
 			}
@@ -1112,7 +1112,7 @@ void btn_check(void)
 				eval("wl", "-i", "eth3", "ledbh", "9", "7");
 			}
 #endif
-#ifdef RTAC68U
+#if defined(RTAC68U) && !defined(R8000)
 			if (nvram_match("wl1_radio", "1") &&
 			   (wlonunit == -1 || wlonunit == 1))
 			{
@@ -1148,7 +1148,7 @@ void btn_check(void)
 
 		if (LED_status_on) {
 			led_control(LED_POWER, LED_ON);
-#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R)
+#if defined(RTAC3200) || defined(RTAC88U) || defined(RTAC3100) || defined(RTAC5300) || defined(RTAC5300R) || defined(R8000)
 			eval("et", "-i", "eth0", "robowr", "0", "0x18", "0x01ff");
 			eval("et", "-i", "eth0", "robowr", "0", "0x1a", "0x01ff");
 #else
@@ -2210,7 +2210,7 @@ void led_check(int sig)
 #ifdef RTCONFIG_WLAN_LED
 	if (nvram_contains_word("rc_support", "led_2g"))
 	{
-#if defined(R6400) || defined(R7000)
+#if defined(R6400) || defined(R7000) || defined(R8000)
 		if (nvram_get_int("wl0_radio") == 0) {
 			led_control(LED_2G, LED_OFF);
 			if (nvram_match("led_5g", "1") != 1) {
@@ -2274,7 +2274,7 @@ void led_check(int sig)
 		fake_dev_led(nvram_safe_get("mmc_irq"), LED_MMC);
 #endif
 
-#if defined(R6400) || defined(R7000)
+#if defined(R6400) || defined(R7000) || defined(R8000)
 	if (nvram_match("led_5g", "1") == 1) {
 		if (nvram_get_int("wl1_radio") == 0)
 			led_control(LED_5G, LED_OFF);
