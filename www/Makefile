@@ -1,9 +1,9 @@
 include ../common.mak
 
 ASUSWRTTOOLSDIR = $(firstword \
-    $(wildcard $(ROUTER_DIR)/tools/Lnx_AsusWrtDictPrep $(SRCBASE_A)/router/tools/Lnx_AsusWrtDictPrep $(SRCBASE)/router/tools/Lnx_AsusWrtDictPrep))
+    $(wildcard $(ROUTER_DIR)/tools/Lnx_AsusWrtDictPrep $(SRCBASE)/router/tools/Lnx_AsusWrtDictPrep))
 ASUSWRTTOOLSDIR2 = $(firstword \
-    $(wildcard $(ROUTER_DIR)/tools/Lnx_ToolHelp $(SRCBASE_A)/router/tools/Lnx_ToolHelp $(SRCBASE)/router/tools/Lnx_ToolHelp))
+    $(wildcard $(ROUTER_DIR)/tools/Lnx_ToolHelp $(SRCBASE)/router/tools/Lnx_ToolHelp))
 	
 ifeq ($(BUILD_ROOT),true)
 OUTDIR = $(SRCBASE)/image
