@@ -14,11 +14,7 @@
 
 include $(TOP)/.config
 
-ifeq ($(VENDOR),merlin)
-srcbase=$(SRCBASE_A)
-else
 srcbase=$(SRCBASE)
-endif
 
 WLU_OBJS := wlu.o wlu_cmd.o wlu_iov.o wlu_linux.o bcmutils.o bcmwifi_channels.o wlu_client_shared.o wlu_pipe.o wlu_pipe_linux.o miniopt.o bcm_app_utils.o wlu_rates_matrix.o wlc_ppr.o
 ifneq ($(wildcard $(srcbase)/wl/exe/wlu_common.c),)
