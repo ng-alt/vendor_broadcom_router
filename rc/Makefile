@@ -1,7 +1,7 @@
 include ../common.mak
 
 CFLAGS += -Wall -Os $(EXTRACFLAGS)
-CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/shared -I$(SRCBASE)/include -I$(SRCBASE_A)/include -idirafter$(LINUXDIR)/include
+CFLAGS += -I. -I$(TOP)/shared -I$(SRCBASE)/shared -I$(SRCBASE)/include -idirafter$(LINUXDIR)/include
 CFLAGS += -I$(TOP)/openssl/include
 CFLAGS += -I$(TOP)/push_log
 ifeq ($(RTCONFIG_DPSTA),y)
@@ -13,7 +13,7 @@ CFLAGS += -DDLM -DASUS_DDNS -DASUS_EXT -DBTN_SETUP -DWEB_REDIRECT -DRTCONFIG_CRO
 CFLAGS += -DDEBUG_RCTEST
 
 ifeq ($(RTCONFIG_WPS),y)
-CFLAGS += -I$(firstword $(wildcard $(SRCBASE)/wps/brcm_apps/include $(SRCBASE_A)/wps/brcm_apps/include))
+CFLAGS += -I$(SRCBASE)/wps/brcm_apps/include
 endif
 
 ifeq ($(RTCONFIG_RALINK),y)
