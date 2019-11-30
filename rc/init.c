@@ -5302,13 +5302,16 @@ int init_nvram(void)
 		nvram_set("wl0_vifnames", "wl0.1 wl0.2 wl0.3");
 		nvram_set("wl1_vifnames", "wl1.1 wl1.2 wl1.3");
 
-#ifdef RTCONFIG_WIFI_TOG_BTN
-		nvram_set_int("btn_wltog_gpio", 5|GPIO_ACTIVE_LOW);
+#ifdef RTCONFIG_LED_BTN
+		nvram_set_int("btn_led_gpio", 19);		// active high
 #endif
-		nvram_set_int("btn_wps_gpio", 4|GPIO_ACTIVE_LOW);
+#ifdef RTCONFIG_WIFI_TOG_BTN
+		nvram_set_int("btn_wltog_gpio", 4|GPIO_ACTIVE_LOW);
+#endif
+		nvram_set_int("btn_wps_gpio", 5|GPIO_ACTIVE_LOW);
 		nvram_set_int("btn_rst_gpio", 6|GPIO_ACTIVE_LOW);
-		nvram_set_int("led_wps_gpio", 14);
-		nvram_set_int("led_wan_gpio", 15);
+		nvram_set_int("led_wan_gpio", 14);
+		nvram_set_int("led_wps_gpio", 15);
 
 #ifdef RTCONFIG_PWRRED_LED
 		nvram_set_int("led_pwr_red_gpio", 3|GPIO_ACTIVE_LOW);
@@ -5318,8 +5321,9 @@ int init_nvram(void)
 		nvram_set_int("pwr_usb_gpio", 0);
 		nvram_set_int("led_usb_gpio", 18|GPIO_ACTIVE_LOW);
 		nvram_set_int("led_usb3_gpio", 17|GPIO_ACTIVE_LOW);
-		nvram_set_int("led_2g_gpio", 13);
-		nvram_set_int("led_5g_gpio", 12);
+		nvram_set_int("led_2g_gpio", 13|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_5g_gpio", 12|GPIO_ACTIVE_LOW);
+		nvram_set_int("led_5g_2_gpio", 16|GPIO_ACTIVE_LOW);
 
 #ifdef RTCONFIG_WLAN_LED
 		add_rc_support("led_2g");
