@@ -2286,6 +2286,7 @@ void init_syspara(void)
 #elif R8000
 	nvram_set("model", "R8000");
 #endif
+	char *addr = nvram_get("et0macaddr");
 #endif
 
 	ptr = nvram_get("regulation_domain");
@@ -2395,19 +2396,20 @@ void init_syspara(void)
 			break;
 
 #ifdef NETGEAR
-		case MODEL_R8000:
-			if (!nvram_get("2:macaddr"))    // eth3(5GHz)
-				nvram_set("2:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 3));
 		case MODEL_R6300v2:
 		case MODEL_R6400:
 		case MODEL_R7000:
-			if (!nvram_get("et0macaddr"))	//eth0, eth1
-				nvram_set("et0macaddr", "00:22:15:A5:03:00");
+		case MODEL_R8000:
+			if (!addr || !strcmp(addr, "00:ff:ff:ff:ff:ff") || !strcmp(addr, "00:00:00:00:00:00"))
+				nvram_set("et0macaddr", "00:22:15:A5:03:00");	//eth0, eth1
 			if (!nvram_get("0:macaddr"))
 				nvram_set("0:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
 			if (!nvram_get("1:macaddr"))	//eth2(5G)
 				nvram_set("1:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 2));
+			if (alias == MODEL_R8000 && !nvram_get("2:macaddr"))    // eth3(5GHz)
+				nvram_set("2:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 3));
 			nvram_unset("et1macaddr");
+			nvram_unset("et2macaddr");
 			break;
 #endif
 
