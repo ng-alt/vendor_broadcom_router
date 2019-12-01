@@ -89,7 +89,7 @@ static const struct model_s model_list[] = {
 	{ "RT-AC1200G+", MODEL_RTAC1200GP},
 	{ "R6300V2",	MODEL_RTAC68U,	MODEL_R6300v2 },
 	{ "R6400",	MODEL_RTAC68U,	MODEL_R6400 },
-	{ "R8000",	MODEL_RTAC3200,	MODEL_R7000 },
+	{ "R8000",	MODEL_RTAC3200,	MODEL_R8000 },
 #endif	/* !RTCONFIG_RALINK */
 	{ NULL, 0 },
 };
