@@ -1807,7 +1807,10 @@ reset_mssid_hwaddr(int unit)
 			case MODEL_RTAC5300R:
 			case MODEL_RTAC88U:
 			case MODEL_RTAC3100:
-#ifdef RTAC3200
+#ifdef NETGEAR
+			case MODEL_R8000:
+#endif
+#if defined(RTAC3200) || defined(R8000)
 				if (unit < 2)
 					snprintf(macaddr_str, sizeof(macaddr_str), "%d:macaddr", 1 - unit);
 				else
@@ -1825,7 +1828,6 @@ reset_mssid_hwaddr(int unit)
 			case MODEL_R6300v2:
 			case MODEL_R6400:
 			case MODEL_R7000:
-			case MODEL_R8000:
 				snprintf(macaddr_str, sizeof(macaddr_str), "pci/%d/1/macaddr", unit + 1);
 				break;
 #endif
@@ -1897,7 +1899,9 @@ reset_psr_hwaddr()
 
 	switch(model) {
 		case MODEL_RTAC3200:
+#ifdef R8000
 		case MODEL_R8000:
+#endif
 			unit = 1;
 			break;
 	}
@@ -2406,10 +2410,17 @@ void init_syspara(void)
 				nvram_set("0:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
 			if (!nvram_get("1:macaddr"))	//eth2(5G)
 				nvram_set("1:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 2));
-			if (alias == MODEL_R8000 && !nvram_get("2:macaddr"))    // eth3(5GHz)
-				nvram_set("2:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 3));
-			nvram_unset("et1macaddr");
-			nvram_unset("et2macaddr");
+			if (alias == MODEL_R8000) {
+				if (!nvram_get("2:macaddr"))    // eth3(5GHz)
+					nvram_set("2:macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 3));
+
+				if (!nvram_get("et1macaddr"))
+					nvram_set("et1macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 1));
+				if (!nvram_get("et2macaddr"))
+					nvram_set("et2macaddr", macaddr_off(nvram_safe_get("et0macaddr"), 2));
+			} else {
+				nvram_unset("et1macaddr");
+			}
 			break;
 #endif
 
